@@ -199,7 +199,7 @@ Use `references/refactor_templates.md#batch-report`.
 
 ## Verification
 
-- Validate package structure with `scripts/validate_skill_package.py`.
+- Validate package structure with `../../scripts/validate_skill_package.py`.
 - Compare behavior-critical rules against source when constraints change.
 - Check moved content destinations exist.
 - Check unresolved ambiguity is listed in `review_needed`.

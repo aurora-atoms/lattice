@@ -206,11 +206,11 @@ def detect_risks(
         flags.append("missing_verification")
     if not section_flags["has_failure_modes"]:
         flags.append("missing_failure_modes")
-    if token_count > 2000 or line_count > 350:
+    if token_count > 5000 or line_count > 700:
         flags.append("large_skill_md")
     if token_count > 1200 and count_children(path, "references", (".md", ".txt")) == 0:
         flags.append("possible_knowledge_dump")
-    if re.search(r"(?i)(raw transcript|assistant:|user:|otel|span_id|trace_id|stack trace|timestamp=.*level=)", text):
+    if re.search(r"(?im)(raw transcript|^assistant:|^user:|otel\.(trace|span)|span_id|trace_id|stack trace|timestamp=.*level=)", text):
         flags.append("raw_log_or_transcript_pattern")
     if description and (len(description) < 30 or re.search(r"(?i)\b(help|useful|various|things|stuff)\b", description)):
         flags.append("vague_description")

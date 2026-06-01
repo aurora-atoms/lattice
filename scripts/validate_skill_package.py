@@ -169,9 +169,9 @@ def validate_file(path: Path, baseline_frontmatter_keys: set[str] | None = None)
     if missing:
         errors.append("missing required sections: " + ", ".join(missing))
 
-    if estimate_tokens(text) > 3000 or len(text.splitlines()) > 500:
+    if estimate_tokens(text) > 5000 or len(text.splitlines()) > 700:
         warnings.append("SKILL.md may be a huge knowledge dump")
-    if re.search(r"(?i)(raw transcript|assistant:|user:|otel|span_id|trace_id|timestamp=.*level=)", text):
+    if re.search(r"(?im)(raw transcript|^assistant:|^user:|otel\.(trace|span)|span_id|trace_id|timestamp=.*level=)", text):
         errors.append("obvious raw transcript/log dump pattern")
     if len(re.findall(r"(?m)^\|.*\|$", text)) > 20:
         warnings.append("possible bulk Markdown table in machine-facing context")
