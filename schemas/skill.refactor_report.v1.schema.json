@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/skill.refactor_report.v1.schema.json",
+  "title": "Skill Refactor Report",
+  "type": "object",
+  "required": ["metadata", "verdict", "source_inventory", "moved_content_plan", "review_needed"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "source_path": {"type": "string"},
+        "source_commit": {"type": "string"},
+        "conport_record_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["auto_safe", "review_needed", "blocked"]
+    },
+    "source_inventory": {"type": "object"},
+    "optimized_description": {"type": "string"},
+    "frontmatter_preservation": {
+      "type": "object",
+      "properties": {
+        "frontmatter_keys": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "schema_preserved": {"type": "boolean"},
+        "preserved_properties": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "review_needed_changes": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "policy_checks": {
+      "type": "object",
+      "properties": {
+        "description_progressive_disclosure_ready": {"type": "boolean"},
+        "conport_first_policy": {"type": "boolean"},
+        "token_roi_policy": {"type": "boolean"},
+        "stable_prefix_guidance": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "moved_content_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_section", "destination", "reason"],
+        "properties": {
+          "source_section": {"type": "string"},
+          "destination": {
+            "type": "string",
+            "enum": ["KEEP_SKILL", "MOVE_REFERENCE", "MOVE_SCRIPT", "MOVE_SCHEMA", "MOVE_EVAL", "DISCARD_DUP", "REVIEW_NEEDED"]
+          },
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "candidates": {
+      "type": "object",
+      "properties": {
+        "scripts": {"type": "array", "items": {"type": "string"}},
+        "schemas": {"type": "array", "items": {"type": "string"}},
+        "evals": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "review_needed": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": true
+}
