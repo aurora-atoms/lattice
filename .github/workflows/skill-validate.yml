@@ -1,0 +1,20 @@
+name: skill-validate
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  skill-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Inventory skills
+        run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+      - name: Validate skills
+        run: python scripts/validate_skill_package.py --root skills
+      - name: Generate report
+        run: python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md

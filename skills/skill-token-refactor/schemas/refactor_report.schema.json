@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/skill-token-refactor/refactor_report.schema.json",
+  "title": "Skill Token Refactor Report",
+  "type": "object",
+  "required": ["verdict", "source_inventory", "optimized_description", "review_needed"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["auto_safe", "review_needed", "blocked"]
+    },
+    "source_inventory": {
+      "type": "object"
+    },
+    "optimized_description": {
+      "type": "string"
+    },
+    "moved_content_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_section", "destination", "reason"],
+        "properties": {
+          "source_section": {"type": "string"},
+          "destination": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "review_needed": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

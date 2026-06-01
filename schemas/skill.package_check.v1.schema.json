@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/skill.package_check.v1.schema.json",
+  "title": "Skill Package Check",
+  "type": "object",
+  "required": ["path", "status", "errors", "warnings"],
+  "properties": {
+    "path": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["pass", "warn", "fail"]
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "warnings": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {"type": "boolean"}
+    },
+    "frontmatter_keys": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": true
+}

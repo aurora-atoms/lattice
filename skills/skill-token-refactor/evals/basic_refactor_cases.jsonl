@@ -1,0 +1,5 @@
+{"case_id":"compact-control-plane","input":"verbose skill with long examples","expected":"examples moved to references and SKILL.md retains workflow/rules"}
+{"case_id":"conport-missing","input":"ConPort unavailable","expected":"targeted source read allowed and conport_record_missing flagged"}
+{"case_id":"behavior-critical-rule","input":"source contains safety rejection rule","expected":"rule preserved or review_needed emitted"}
+{"case_id":"frontmatter-preserve-extra-keys","input":"source frontmatter contains allowed-tools and model","expected":"allowed-tools and model preserved; description optimized without adding use_when fields"}
+{"case_id":"token-roi","input":"source has edge cases that cost tokens","expected":"edge cases preserved because token efficiency means quality-adjusted ROI"}
