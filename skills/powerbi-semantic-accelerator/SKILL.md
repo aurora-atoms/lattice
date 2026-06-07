@@ -1,11 +1,55 @@
 ---
 name: powerbi-semantic-accelerator
-description: catalog-driven Power BI semantic model engineering for AI coding agents. Use when creating, reviewing, or modifying PBIP/TMDL projects, DAX measures, calculation groups, star-schema model contracts, metric/display/selector/source catalogs, user semantic requests, reusable dashboards, or quick-win self-service semantic-layer workflows using Databricks batch preprocessing to PostgreSQL snapshots and Power BI Import while avoiding Databricks Serverless, DirectQuery, semantic forks, and uncontrolled report JSON edits.
+description: "Catalog-first Power BI semantic model engineering for PBIP/TMDL, DAX measures, calculation groups, star-schema contracts, metric/display/selector/source catalogs, semantic requests, reusable dashboards, and quick-win self-service workflows. Use Databricks batch -> PostgreSQL snapshot -> Power BI Import. Do not use for Databricks Serverless/DirectQuery serving, semantic forks, ad hoc report JSON rewrites, uncataloged user DAX, or non-Power BI analytics. Output patches, validation commands, smoke-test DAX, and dependency notes."
 ---
 
 # Power BI Semantic Accelerator
 
-Use this skill to build an AI-maintained Power BI semantic-layer MVP that is quick to ship and safe to evolve.
+## Goal
+
+Build AI-maintained Power BI semantic-layer MVPs: accurate, catalog-governed, quick to ship, safe to evolve; optimize for quality-adjusted token ROI.
+
+## Use When
+
+```text
+PBIP/TMDL semantic model
+DAX measure/calculation group
+model/source/metric/display/selector catalog
+user semantic request -> governed catalog patch
+Metric Explorer/thin dashboard reuse
+Databricks batch -> PostgreSQL snapshot -> Power BI Import
+```
+
+## Do Not Use When
+
+```text
+Databricks Serverless/DirectQuery BI serving
+dual-source DirectQuery
+semantic model fork without reuse proof
+uncataloged user DAX/model edit
+large undocumented PBIP report JSON rewrite
+non-Power BI analytics work
+```
+
+## Inputs
+
+```text
+PBIP/TMDL path
+spec catalog path
+user semantic request
+source binding details
+validation/publish constraints
+```
+
+## Outputs
+
+```text
+catalog-first patch plan
+TMDL/DAX patch or generator command
+validation command/result
+smoke-test DAX query
+unresolved dependency list
+```
 
 Default path:
 
@@ -19,7 +63,7 @@ Databricks batch preprocessing, if needed
 
 ## Core Principle
 
-Treat the semantic model as the product. Treat reports as thin consumers.
+Semantic model = product. Reports = thin consumers.
 
 Source of truth:
 
@@ -33,45 +77,46 @@ spec catalogs + PBIP/TMDL in Git
 ## Rules
 
 ```text
-PBI.001 | MUST  | metrics      | Define every business KPI as an explicit measure. | reject implicit KPI use
-PBI.002 | NEVER | visuals      | Bind visuals directly to raw numeric columns for business KPIs. | block
-PBI.003 | MUST  | catalog      | Update metric-catalog.yaml before adding public measures. | reject uncataloged measures
-PBI.004 | MUST  | display      | Update display-catalog.yaml before exposing public fields/measures. | reject ungoverned objects
-PBI.005 | MUST  | metadata     | Give every public measure description, format string, and display folder. | reject incomplete metadata
-PBI.006 | NEVER | exposure     | Expose technical IDs, raw values, ETL fields, staging fields, or source-system fields. | hide
-PBI.007 | SHOULD| dax          | Reuse approved DAX patterns before custom DAX. | prefer pattern reuse
-PBI.008 | NEVER | report       | Freely rewrite undocumented PBIP report JSON. | block except approved small patch
-PBI.009 | MUST  | contract     | Reference only fields declared in model-contract.yaml. | reject
-PBI.010 | MUST  | validate     | Run spec validation before final model changes. | enforce
-PBI.011 | MUST  | source       | Use Power BI Import for v0.1 quick-win semantic models. | block DirectQuery unless approved
-PBI.012 | NEVER | source       | Depend on Databricks Serverless SQL, Databricks DirectQuery, dual-source DirectQuery, or live Databricks BI serving for v0.1. | block
-PBI.013 | MAY   | source       | Use Databricks batch preprocessing to create delayed PostgreSQL snapshots/import tables. | allow with latency declared
-PBI.014 | MUST  | migration    | Preserve semantic object names across source migrations. | enforce stable contract
-PBI.015 | MUST  | self_service | Treat Metric Explorer and governed selectors as the primary quick-win proof. | enforce
-PBI.016 | MUST  | selectors    | Map every selector option to a governed measure, calculation item, or visible field. | reject unsafe options
-PBI.017 | SHOULD| reuse        | Build second dashboards as thin reports/live-connected reuse before model forks. | prefer shared model reuse
-PBI.018 | MUST  | user_defined | Convert user semantic requests into catalogs first; never publish arbitrary user DAX/model edits. | enforce compilation
-PBI.019 | SHOULD| publish      | Keep PBIP/TMDL/catalogs as source of truth; allow PBIX publish for v0.1. | pragmatic release
-PBI.020 | SHOULD| scope        | Push heavy joins, windowing, cleansing, and snapshot creation upstream or shrink MVP scope. | avoid ETL in DAX
-PBI.021 | MUST  | modeling     | Each model table declares role, grain, key/relationship path, and fact/dimension intent. | enforce star contract
-PBI.022 | SHOULD| modeling     | Prefer star schema; mark wide-table shortcuts as non-shared POC debt. | prevent future debt
-PBI.023 | SHOULD| selectors    | Prefer Field Parameters for visual measure/dimension switching; use disconnected selectors for custom semantic logic. | prefer native self-service
-PBI.024 | MUST  | user_defined | Move user requests through draft -> validated -> compiled -> reviewed -> approved/published/deprecated. | enforce lifecycle
-PBI.025 | MUST  | metrics      | Declare aggregation_semantics and time_behavior for every self-service public metric. | prevent wrong aggregation
-PBI.026 | MUST  | date         | Define governed date table/date role before time-intelligence calculation groups. | prevent ambiguity
-PBI.027 | MUST  | migration    | Future Fabric/Direct Lake bindings preserve star-shaped semantic tables and declare fallback/DirectQuery risk. | future-proof migration
-PBI.028 | SHOULD| source       | PostgreSQL snapshots emulate future Gold/semantic serving tables, not raw exports. | keep source migratable
+PBI.001 | MUST  | metrics      | every business KPI = explicit measure | reject implicit KPI
+PBI.002 | NEVER | visuals      | business KPI visual -> raw numeric column | block
+PBI.003 | MUST  | catalog      | metric-catalog.yaml precedes public measure | reject uncataloged measure
+PBI.004 | MUST  | display      | display-catalog.yaml precedes public field/measure exposure | reject ungoverned object
+PBI.005 | MUST  | metadata     | public measure has description + format string + display folder | reject incomplete metadata
+PBI.006 | NEVER | exposure     | expose technical IDs/raw values/ETL/staging/source-system fields | hide
+PBI.007 | SHOULD| dax          | approved pattern before custom DAX | prefer reuse
+PBI.008 | NEVER | report       | broad undocumented PBIP report JSON rewrite | block except approved tiny patch
+PBI.009 | MUST  | contract     | reference model-contract.yaml fields only | reject unknown field
+PBI.010 | MUST  | validate     | run spec validation before final model change | fail if skipped
+PBI.011 | MUST  | source       | v0.1 quick-win model uses Power BI Import | block DirectQuery unless approved
+PBI.012 | NEVER | source       | v0.1 depends on Databricks Serverless SQL/DirectQuery/dual-source DirectQuery/live Databricks BI serving | block
+PBI.013 | MAY   | source       | Databricks batch -> delayed PostgreSQL snapshots/import tables | require declared latency
+PBI.014 | MUST  | migration    | source migration preserves semantic object names | fail unstable contract
+PBI.015 | MUST  | self-service | Metric Explorer + governed selectors = primary quick-win proof | fail missing proof
+PBI.016 | MUST  | selectors    | selector option maps to governed measure/calculation item/visible field | reject unsafe option
+PBI.017 | SHOULD| reuse        | second dashboard = thin/live-connected before model fork | prefer shared model
+PBI.018 | MUST  | user-defined | user semantic request -> catalogs before publish | block arbitrary DAX/model edit
+PBI.019 | SHOULD| publish      | PBIP/TMDL/catalogs = source of truth; PBIX publish allowed for v0.1 | prefer Git source
+PBI.020 | SHOULD| scope        | heavy joins/windowing/cleansing/snapshot upstream or shrink MVP | avoid DAX ETL
+PBI.021 | MUST  | modeling     | table declares role + grain + key/relationship path + fact/dimension intent | fail weak star contract
+PBI.022 | SHOULD| modeling     | star schema preferred; wide-table shortcut = non-shared POC debt | prevent hidden debt
+PBI.023 | SHOULD| selectors    | Field Parameters for visual switching; disconnected selectors for semantic logic | prefer native self-service
+PBI.024 | MUST  | user-defined | request lifecycle: draft -> validated -> compiled -> reviewed -> approved/published/deprecated | fail lifecycle skip
+PBI.025 | MUST  | metrics      | public self-service metric declares aggregation_semantics + time_behavior | prevent wrong aggregation
+PBI.026 | MUST  | date         | governed date table/date role before time-intelligence calculation groups | prevent ambiguity
+PBI.027 | MUST  | migration    | Fabric/Direct Lake binding preserves star-shaped semantic tables + declares fallback/DirectQuery risk | fail migration risk gap
+PBI.028 | SHOULD| source       | PostgreSQL snapshots emulate future Gold/semantic serving tables, not raw exports | keep source migratable
 ```
 
 ## Workflow
 
-1. Classify the change: source adapter, source binding, model contract, metric, display, selector, DAX/TMDL, report shell, or user request.
-2. Patch the smallest upstream artifact first, usually a catalog/request file.
-3. Generate or patch TMDL/DAX only from declared catalog entries and model-contract fields.
-4. Validate with `scripts/validate_powerbi_semantic_specs.py <specs-dir>` when specs exist.
-5. Generate starter measures with `scripts/generate_measures_tmdl.py <specs-dir> --out <file>` when useful; review before applying.
-6. Provide a smoke-test DAX query for changed public measures.
-7. State unresolved dependencies: gateway, PostgreSQL credentials, Databricks batch job, snapshot latency, or USGov feature availability.
+1. Query ConPort before loading or searching full skill/reference text when inventory exists.
+2. Classify change: source adapter, source binding, model contract, metric, display, selector, DAX/TMDL, report shell, or user request.
+3. Patch the smallest upstream artifact first, usually a catalog/request file.
+4. Generate or patch TMDL/DAX only from declared catalog entries and model-contract fields.
+5. Validate with `scripts/validate_powerbi_semantic_specs.py <specs-dir>` when specs exist.
+6. Generate starter measures with `scripts/generate_measures_tmdl.py <specs-dir> --out <file>` when useful; review before applying.
+7. Provide a smoke-test DAX query for changed public measures.
+8. State unresolved dependencies: gateway, PostgreSQL credentials, Databricks batch job, snapshot latency, or USGov feature availability.
 
 ## Routing
 
@@ -98,6 +143,25 @@ reuse proof: one second thin dashboard using the same semantic model
 ```
 
 Do not escalate to certified models, separate workspaces, full deployment pipelines, DAX UDFs, multi-agent orchestration, or report JSON generation unless the user asks for v1+ governance.
+
+## Verification
+
+```text
+spec validation: scripts/validate_powerbi_semantic_specs.py <specs-dir>
+measure smoke: DAX query for changed public measures
+catalog check: metric/display/selector/source/model contract names align
+stable prefix: keep global semantic rules stable; vary only target paths/spec excerpts
+```
+
+## Failure Modes
+
+```text
+missing-spec: required catalog/model contract absent
+uncataloged-measure: public measure lacks metric/display entry
+unsafe-source: DirectQuery/Serverless dependency appears in v0.1 path
+unsafe-report-json: broad undocumented report JSON rewrite requested
+blocked-dependency: credentials/gateway/snapshot latency/USGov capability unresolved
+```
 
 ## References
 
