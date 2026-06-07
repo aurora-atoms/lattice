@@ -1,0 +1,17 @@
+{
+  "validate_jsonl_exit": 1,
+  "validate_task_packet_exit": 1,
+  "expected_failure_codes": [
+    "RAW_CONTEXT_FORBIDDEN",
+    "UNKNOWN_PAYLOAD_FIELD",
+    "UNBOUNDED_SCOPE",
+    "SCOPE_TOO_LARGE",
+    "MISSING_VALIDATION_COMMANDS"
+  ],
+  "expected_waste_patterns": [
+    "oversized_context",
+    "repeated_context_read",
+    "duplicate_analysis"
+  ],
+  "expect_dossier": false
+}

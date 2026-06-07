@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/yield.optimization_signal.v1.schema.json",
+  "title": "FDH Yield Optimization Signal",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "signal_type", "recommendation", "expected_effect", "evidence_refs", "promotion_status"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "signal_type": {"type": "string"},
+    "recommendation": {"type": "string"},
+    "expected_effect": {"type": "string"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "promotion_status": {"type": "string", "enum": ["candidate", "review_required", "promoted", "rejected"]}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "validate_jsonl_exit": 0,
+  "validate_task_packet_exit": 0,
+  "expected_failure_codes": [],
+  "expected_waste_patterns": [
+    "duplicate_analysis",
+    "failed_repair_loop",
+    "review_loop_without_progress"
+  ],
+  "expect_dossier": true
+}

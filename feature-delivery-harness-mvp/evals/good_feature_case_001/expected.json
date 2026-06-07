@@ -1,0 +1,7 @@
+{
+  "validate_jsonl_exit": 0,
+  "validate_task_packet_exit": 0,
+  "expected_failure_codes": [],
+  "expected_waste_patterns": [],
+  "expect_dossier": true
+}

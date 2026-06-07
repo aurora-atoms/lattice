@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/scope.v1.schema.json",
+  "title": "FDH Scope",
+  "type": "object",
+  "required": ["project_id", "feature_delivery_case_id", "module_id"],
+  "properties": {
+    "project_id": {"const": "lattice"},
+    "feature_delivery_case_id": {"type": "string", "minLength": 1},
+    "module_id": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

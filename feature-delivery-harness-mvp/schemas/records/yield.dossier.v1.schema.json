@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/yield.dossier.v1.schema.json",
+  "title": "FDH Yield Dossier",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "delivery_status_ref", "total_tokens", "total_cost", "stage_breakdown_refs", "waste_pattern_refs", "optimization_signal_refs", "limitations", "claim_ledger"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "delivery_status_ref": {"type": "string"},
+    "total_tokens": {"type": "object"},
+    "total_cost": {"type": "object"},
+    "stage_breakdown_refs": {"type": "array", "items": {"type": "string"}},
+    "waste_pattern_refs": {"type": "array", "items": {"type": "string"}},
+    "optimization_signal_refs": {"type": "array", "items": {"type": "string"}},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "claim_ledger": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}
