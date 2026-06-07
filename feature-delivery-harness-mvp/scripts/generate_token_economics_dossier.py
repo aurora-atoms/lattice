@@ -102,10 +102,10 @@ def build_dossier(records: list[dict[str, Any]]) -> tuple[dict[str, Any], str]:
         },
         "constraints": {"deliveryyield_boundary": "economics_only"},
     }
-    stage_lines = [f"- {record['payload']['stage']}: {metric_text(record['payload']['tokens'])}; cost {metric_text(record['payload']['cost'])}; refs {', '.join(sorted(record['payload'].get('source_refs', [])))}" for record in sorted(stages, key=lambda item: item["id"])]
-    waste_lines = [f"- {record['payload']['pattern']}: {record['payload']['severity']}; {record['payload']['recommendation']}; refs {', '.join(sorted(record['payload'].get('evidence_refs', [])))}" for record in sorted(wastes, key=lambda item: item["id"])]
-    signal_lines = [f"- {record['payload']['signal_type']}: {record['payload']['recommendation']}; status {record['payload']['promotion_status']}; refs {', '.join(sorted(record['payload'].get('evidence_refs', [])))}" for record in sorted(signals, key=lambda item: item["id"])]
-    claim_lines = [f"- {item['claim']} evidence_refs={','.join(item['evidence_refs']) if item['evidence_refs'] else 'insufficient_evidence'} status={item['status']}" for item in claim_ledger]
+    stage_lines = [f"{record['payload']['stage']}: {metric_text(record['payload']['tokens'])}; cost {metric_text(record['payload']['cost'])}; refs {', '.join(sorted(record['payload'].get('source_refs', [])))}" for record in sorted(stages, key=lambda item: item["id"])]
+    waste_lines = [f"{record['payload']['pattern']}: {record['payload']['severity']}; {record['payload']['recommendation']}; refs {', '.join(sorted(record['payload'].get('evidence_refs', [])))}" for record in sorted(wastes, key=lambda item: item["id"])]
+    signal_lines = [f"{record['payload']['signal_type']}: {record['payload']['recommendation']}; status {record['payload']['promotion_status']}; refs {', '.join(sorted(record['payload'].get('evidence_refs', [])))}" for record in sorted(signals, key=lambda item: item["id"])]
+    claim_lines = [f"{item['claim']} evidence_refs={','.join(item['evidence_refs']) if item['evidence_refs'] else 'insufficient_evidence'} status={item['status']}" for item in claim_ledger]
     markdown = "\n".join(
         [
             f"# Token Economics Dossier: {title}",

@@ -15,7 +15,12 @@
     "validation_commands": {"type": "array", "items": {"type": "object"}},
     "evidence_requirements": {"type": "array", "items": {"type": "string"}},
     "risk_controls": {"type": "array", "items": {"type": "string"}},
-    "rollback_notes": {"type": "array", "items": {"type": "string"}}
+    "rollback_notes": {"type": "array", "items": {"type": "string"}},
+    "context_token_count": {"type": "integer", "minimum": 0},
+    "context_refs": {"type": "array", "items": {"type": "string"}},
+    "repair_attempts": {"type": "integer", "minimum": 0},
+    "review_iterations": {"type": "integer", "minimum": 0},
+    "analysis_fingerprints": {"type": "array", "items": {"type": "string"}}
   },
   "additionalProperties": false
 }
