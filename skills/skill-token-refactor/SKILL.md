@@ -1,6 +1,6 @@
 ---
 name: skill-token-refactor
-description: "Use in GitHub Copilot or Claude Code when rewriting existing SKILL.md or Markdown skill instructions into accurate, dense, token-efficient, machine-readable skill packages while preserving behavior and existing YAML frontmatter schema. Use for skill compression, restructuring, validation, batch refactor planning, language-format selection, or splitting content into references/scripts/schemas/evals. Do not use to execute the domain task described by a skill, invent behavior, weaken constraints, or refactor when source material is insufficient to preserve rules. Put when-to-use and when-not-to-use guidance inside description instead of adding Claude-specific frontmatter fields unless explicitly required. Before raw skill text, use ConPort MCP summaries/inventory when available; optimize for quality-adjusted token ROI, not blind token minimization."
+description: "Rewrite existing SKILL.md/Markdown skill instructions into accurate, dense, token-efficient, machine-readable packages while preserving behavior and YAML frontmatter schema. Use for compression, restructuring, validation, batch refactor planning, language-format selection, or splitting content into references/scripts/schemas/evals. Do not use to execute the source skill's domain task, invent behavior, weaken constraints, or refactor insufficient source. Prefer ConPort summaries before raw skill text; optimize quality-adjusted token ROI."
 ---
 
 # Skill Token Refactor
@@ -53,7 +53,7 @@ All refactored skills follow this control plane unless a more specific source ru
 ```text
 GLOBAL.001 | MUST  | quality | accuracy + behavior preservation before compression | fail if degraded
 GLOBAL.002 | MUST  | tokens  | token efficiency = quality-adjusted output per token | reject blind minimization
-GLOBAL.003 | MUST  | runtime | portable for GitHub Copilot + Claude Code unless source requires otherwise | flag runtime-specific drift
+GLOBAL.003 | MUST  | runtime | portable across coding-agent skill runtimes unless source requires otherwise | flag runtime-specific drift
 GLOBAL.004 | MUST  | frontmatter | preserve existing YAML properties; optimize values only | fail schema drift
 GLOBAL.005 | MUST  | description | include use + do-not-use boundaries in description | fail weak trigger
 GLOBAL.006 | NEVER | frontmatter | add use_when/do_not_use_when/required_inputs/expected_outputs/retrieval_policy/token_policy unless explicit | block schema expansion

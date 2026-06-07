@@ -1,6 +1,6 @@
 ---
 name: powerbi-semantic-accelerator
-description: "Use for AI coding agents in GitHub Copilot or Claude Code when creating, reviewing, or modifying PBIP/TMDL semantic models, DAX measures, calculation groups, star-schema contracts, metric/display/selector/source catalogs, semantic requests, reusable dashboards, or quick-win self-service workflows using Databricks batch preprocessing to PostgreSQL snapshots and Power BI Import. Do not use for Databricks Serverless/DirectQuery serving, semantic forks, ad hoc report JSON rewrites, uncataloged user DAX, or non-Power BI analytics work. Output catalog-first patches, validation commands, smoke-test DAX, and unresolved dependency notes."
+description: "Catalog-first Power BI semantic model engineering for PBIP/TMDL, DAX measures, calculation groups, star-schema contracts, metric/display/selector/source catalogs, semantic requests, reusable dashboards, and quick-win self-service workflows. Use Databricks batch -> PostgreSQL snapshot -> Power BI Import. Do not use for Databricks Serverless/DirectQuery serving, semantic forks, ad hoc report JSON rewrites, uncataloged user DAX, or non-Power BI analytics. Output patches, validation commands, smoke-test DAX, and dependency notes."
 ---
 
 # Power BI Semantic Accelerator
