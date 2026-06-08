@@ -20,6 +20,9 @@ SCHEMA_FILES = {
     "yield.waste_pattern": "yield.waste_pattern.v1.schema.json",
     "yield.optimization_signal": "yield.optimization_signal.v1.schema.json",
     "yield.dossier": "yield.dossier.v1.schema.json",
+    "context_pack": "context_pack.v1.schema.json",
+    "promotion.candidate": "promotion.candidate.v1.schema.json",
+    "promotion.review": "promotion.review.v1.schema.json",
 }
 
 

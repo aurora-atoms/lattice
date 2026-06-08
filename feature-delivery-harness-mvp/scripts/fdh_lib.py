@@ -107,6 +107,37 @@ PAYLOAD_FIELDS: dict[str, set[str]] = {
         "limitations",
         "claim_ledger",
     },
+    "context_pack": {
+        "feature_delivery_case_id",
+        "purpose",
+        "source_refs",
+        "included_refs",
+        "excluded_refs",
+        "projected_items",
+        "token_budget",
+        "token_estimate",
+        "raw_source_policy",
+    },
+    "promotion.candidate": {
+        "feature_delivery_case_id",
+        "candidate_kind",
+        "candidate_ref",
+        "source_refs",
+        "scope",
+        "evidence_refs",
+        "ip_status",
+        "promotion_status",
+    },
+    "promotion.review": {
+        "feature_delivery_case_id",
+        "candidate_id",
+        "reviewer",
+        "decision",
+        "evidence_refs",
+        "validation_refs",
+        "resulting_artifact_type",
+        "review_notes",
+    },
 }
 
 REQUIRED_PAYLOAD_FIELDS: dict[str, set[str]] = {
@@ -135,6 +166,10 @@ ENUMS: dict[tuple[str, str], set[str]] = {
     },
     ("yield.waste_pattern", "severity"): {"info", "warning", "error", "critical"},
     ("yield.optimization_signal", "promotion_status"): {"candidate", "review_required", "promoted", "rejected"},
+    ("promotion.candidate", "candidate_kind"): {"asset", "automation", "skill", "learning", "rule", "contextpack"},
+    ("promotion.candidate", "ip_status"): {"synthetic", "open", "sanitized", "review_required"},
+    ("promotion.candidate", "promotion_status"): {"candidate", "review_required", "promoted"},
+    ("promotion.review", "decision"): {"approved", "rejected", "needs_changes"},
 }
 
 

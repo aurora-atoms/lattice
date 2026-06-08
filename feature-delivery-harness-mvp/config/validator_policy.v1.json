@@ -10,7 +10,10 @@
     "yield.stage_breakdown",
     "yield.waste_pattern",
     "yield.optimization_signal",
-    "yield.dossier"
+    "yield.dossier",
+    "context_pack",
+    "promotion.candidate",
+    "promotion.review"
   ],
   "blocked_raw_payload_fields": ["raw", "dump", "full_log", "trace", "html", "unbounded_context"]
 }

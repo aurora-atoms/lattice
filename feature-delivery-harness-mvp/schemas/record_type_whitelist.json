@@ -6,5 +6,8 @@
   "yield.stage_breakdown": "lat.yield.stage_breakdown.v1",
   "yield.waste_pattern": "lat.yield.waste_pattern.v1",
   "yield.optimization_signal": "lat.yield.optimization_signal.v1",
-  "yield.dossier": "lat.yield.dossier.v1"
+  "yield.dossier": "lat.yield.dossier.v1",
+  "context_pack": "lat.context_pack.v1",
+  "promotion.candidate": "lat.promotion.candidate.v1",
+  "promotion.review": "lat.promotion.review.v1"
 }

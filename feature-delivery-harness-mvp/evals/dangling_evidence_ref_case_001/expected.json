@@ -3,6 +3,9 @@
   "validate_task_packet_exit": 0,
   "expected_failure_codes": [],
   "expected_waste_patterns": [],
-  "expect_dossier": true,
-  "expect_context_pack": true
+  "expect_dossier": false,
+  "check_evidence_exit": 1,
+  "expected_evidence_failure_codes": [
+    "DANGLING_EVIDENCE_REF"
+  ]
 }

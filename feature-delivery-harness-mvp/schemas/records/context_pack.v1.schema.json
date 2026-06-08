@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/context_pack.v1.schema.json",
+  "title": "FDH Context Pack",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "purpose", "source_refs", "included_refs", "excluded_refs", "projected_items", "token_budget", "token_estimate", "raw_source_policy"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "purpose": {"type": "string"},
+    "source_refs": {"type": "array", "items": {"type": "string"}},
+    "included_refs": {"type": "array", "items": {"type": "string"}},
+    "excluded_refs": {"type": "array", "items": {"type": "string"}},
+    "projected_items": {"type": "array", "items": {"type": "object"}},
+    "token_budget": {"type": "integer", "minimum": 0},
+    "token_estimate": {"type": "integer", "minimum": 0},
+    "raw_source_policy": {"type": "string", "enum": ["projected_only", "raw_forbidden"]}
+  },
+  "additionalProperties": false
+}

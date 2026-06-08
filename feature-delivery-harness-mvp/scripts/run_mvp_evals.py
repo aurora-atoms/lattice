@@ -40,6 +40,30 @@ def collect_waste_patterns(text: str) -> set[str]:
     return patterns
 
 
+def run_expected_code_check(
+    name: str,
+    result: subprocess.CompletedProcess[str],
+    expected_exit: int,
+    expected_codes: set[str],
+    allowed_extra_codes: set[str],
+    notes: list[str],
+) -> bool:
+    ok = True
+    if result.returncode != expected_exit:
+        ok = False
+        notes.append(f"{name} exit {result.returncode}, expected {expected_exit}")
+    actual_codes = collect_codes(result.stderr)
+    missing_codes = expected_codes - actual_codes
+    if missing_codes:
+        ok = False
+        notes.append(f"{name} missing failure codes: " + ", ".join(sorted(missing_codes)))
+    unexpected_codes = actual_codes - expected_codes - allowed_extra_codes
+    if unexpected_codes:
+        ok = False
+        notes.append(f"{name} unexpected failure codes: " + ", ".join(sorted(unexpected_codes)))
+    return ok
+
+
 def run_case(case_dir: Path) -> tuple[bool, str]:
     expected = json.loads((case_dir / "expected.json").read_text(encoding="utf-8"))
     input_path = case_dir / "input.jsonl"
@@ -104,6 +128,27 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
         elif expected_dossier.read_text(encoding="utf-8").strip() != out_md.read_text(encoding="utf-8").strip():
             ok = False
             notes.append("generated dossier differs from expected_dossier.md")
+    if "check_evidence_exit" in expected:
+        evidence_result = run([PYTHON, str(BASE_DIR / "scripts" / "check_evidence_completeness.py"), str(input_path)])
+        evidence_ok = run_expected_code_check(
+            "check_evidence_completeness",
+            evidence_result,
+            int(expected.get("check_evidence_exit", 0)),
+            set(expected.get("expected_evidence_failure_codes", [])),
+            set(expected.get("allowed_extra_evidence_failure_codes", [])),
+            notes,
+        )
+        ok = ok and evidence_ok
+    if expected.get("expect_context_pack"):
+        out_context = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.context_pack.jsonl"
+        context_result = run([PYTHON, str(BASE_DIR / "scripts" / "build_context_pack.py"), str(input_path), "--out", str(out_context)])
+        if context_result.returncode != 0:
+            ok = False
+            notes.append(f"build_context_pack exit {context_result.returncode}: {context_result.stderr.strip()}")
+        validate_context = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_context)])
+        if validate_context.returncode != 0:
+            ok = False
+            notes.append(f"context_pack validation exit {validate_context.returncode}: {validate_context.stderr.strip()}")
     return ok, "; ".join(notes) if notes else "ok"
 
 
