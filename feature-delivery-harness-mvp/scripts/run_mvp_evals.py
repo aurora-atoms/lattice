@@ -40,6 +40,16 @@ def collect_waste_patterns(text: str) -> set[str]:
     return patterns
 
 
+def read_single_jsonl(path: Path) -> dict[str, object]:
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(lines) != 1:
+        raise ValueError(f"expected one JSONL record in {path}, found {len(lines)}")
+    record = json.loads(lines[0])
+    if not isinstance(record, dict):
+        raise ValueError(f"record in {path} is not an object")
+    return record
+
+
 def run_expected_code_check(
     name: str,
     result: subprocess.CompletedProcess[str],
@@ -149,6 +159,39 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
         if validate_context.returncode != 0:
             ok = False
             notes.append(f"context_pack validation exit {validate_context.returncode}: {validate_context.stderr.strip()}")
+    if expected.get("expect_delivery_verdict"):
+        out_verdict = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.delivery_verdict.jsonl"
+        verdict_result = run([PYTHON, str(BASE_DIR / "scripts" / "author_delivery_verdict.py"), str(input_path), "--out", str(out_verdict)])
+        if verdict_result.returncode != 0:
+            ok = False
+            notes.append(f"author_delivery_verdict exit {verdict_result.returncode}: {verdict_result.stderr.strip()}")
+        validate_verdict = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_verdict)])
+        if validate_verdict.returncode != 0:
+            ok = False
+            notes.append(f"delivery_verdict validation exit {validate_verdict.returncode}: {validate_verdict.stderr.strip()}")
+        if out_verdict.exists():
+            try:
+                verdict_record = read_single_jsonl(out_verdict)
+                payload = verdict_record.get("payload", {})
+                if not isinstance(payload, dict):
+                    raise ValueError("delivery.verdict payload is not an object")
+                expected_verdict = expected.get("expected_delivery_verdict")
+                if expected_verdict and payload.get("verdict") != expected_verdict:
+                    ok = False
+                    notes.append(f"delivery verdict {payload.get('verdict')}, expected {expected_verdict}")
+                expected_conflicts = set(expected.get("expected_verdict_conflict_codes", []))
+                actual_conflicts = set(str(item) for item in payload.get("conflict_codes", []))
+                missing_conflicts = expected_conflicts - actual_conflicts
+                if missing_conflicts:
+                    ok = False
+                    notes.append("missing verdict conflict codes: " + ", ".join(sorted(missing_conflicts)))
+                unexpected_conflicts = actual_conflicts - expected_conflicts - set(expected.get("allowed_extra_verdict_conflict_codes", []))
+                if unexpected_conflicts:
+                    ok = False
+                    notes.append("unexpected verdict conflict codes: " + ", ".join(sorted(unexpected_conflicts)))
+            except Exception as exc:
+                ok = False
+                notes.append(f"delivery_verdict readback failed: {exc}")
     return ok, "; ".join(notes) if notes else "ok"
 
 

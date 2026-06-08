@@ -45,6 +45,10 @@ def sum_metric(records: list[dict[str, Any]], field: str, unit: str) -> dict[str
 
 
 def determine_delivery_status(records: list[dict[str, Any]]) -> tuple[str, str]:
+    verdicts = records_by_type(records, "delivery.verdict")
+    if verdicts:
+        verdict = verdicts[0]
+        return str(verdict["payload"].get("verdict", "insufficient_evidence")), str(verdict["id"])
     evidence = records_by_type(records, "delivery.evidence")
     if not evidence:
         return "insufficient_evidence", "unknown"

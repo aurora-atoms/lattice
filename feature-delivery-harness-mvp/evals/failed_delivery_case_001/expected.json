@@ -7,5 +7,10 @@
     "failed_repair_loop",
     "review_loop_without_progress"
   ],
-  "expect_dossier": true
+  "expect_dossier": true,
+  "expect_delivery_verdict": true,
+  "expected_delivery_verdict": "not_user_usable",
+  "expected_verdict_conflict_codes": [
+    "TESTS_PASS_ACCEPTANCE_FAIL"
+  ]
 }

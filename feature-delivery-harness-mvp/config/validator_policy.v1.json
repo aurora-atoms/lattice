@@ -6,6 +6,7 @@
     "feature_delivery_case",
     "task.packet",
     "delivery.evidence",
+    "delivery.verdict",
     "validation.result",
     "yield.stage_breakdown",
     "yield.waste_pattern",

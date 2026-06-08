@@ -60,6 +60,17 @@ PAYLOAD_FIELDS: dict[str, set[str]] = {
         "user_usable_status",
         "limitations",
     },
+    "delivery.verdict": {
+        "feature_delivery_case_id",
+        "verdict",
+        "verdict_reason",
+        "delivery_evidence_refs",
+        "validation_result_refs",
+        "acceptance_summary",
+        "unresolved_risks",
+        "limitations",
+        "conflict_codes",
+    },
     "validation.result": {
         "command_id",
         "status",
@@ -148,6 +159,13 @@ REQUIRED_PAYLOAD_FIELDS: dict[str, set[str]] = {
 ENUMS: dict[tuple[str, str], set[str]] = {
     ("feature_delivery_case", "status"): {"draft", "ready", "in_progress", "delivered", "failed", "blocked"},
     ("delivery.evidence", "user_usable_status"): {
+        "usable",
+        "not_user_usable",
+        "requires_human_review",
+        "insufficient_evidence",
+        "blocked",
+    },
+    ("delivery.verdict", "verdict"): {
         "usable",
         "not_user_usable",
         "requires_human_review",

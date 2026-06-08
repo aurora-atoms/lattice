@@ -15,6 +15,7 @@ SCHEMA_FILES = {
     "feature_delivery_case": "feature_delivery_case.v1.schema.json",
     "task.packet": "task.packet.v1.schema.json",
     "delivery.evidence": "delivery.evidence.v1.schema.json",
+    "delivery.verdict": "delivery.verdict.v1.schema.json",
     "validation.result": "validation.result.v1.schema.json",
     "yield.stage_breakdown": "yield.stage_breakdown.v1.schema.json",
     "yield.waste_pattern": "yield.waste_pattern.v1.schema.json",

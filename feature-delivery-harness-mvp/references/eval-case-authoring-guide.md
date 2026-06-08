@@ -10,4 +10,6 @@ failed_delivery_case_001    | tests pass while acceptance or usability fails
 missing_evidence_case_001   | acceptance criterion lacks validation or delivery evidence
 dangling_evidence_ref_case_001 | evidence_refs item does not resolve to record id or declared external ref
 promotion_candidate_no_auto_case_001 | promoted candidate lacks approved promotion.review
+missing_manual_acceptance_case_001 | delivery.verdict marks missing manual acceptance as insufficient_evidence
+blocked_dependency_case_001 | delivery.verdict marks blocked dependency as blocked
 ```
