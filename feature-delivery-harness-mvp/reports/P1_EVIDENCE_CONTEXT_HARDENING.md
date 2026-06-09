@@ -1,6 +1,6 @@
 # P1 Evidence And Context-Pack Hardening
 
-Status: implemented acceptance candidate.
+Status: accepted after current implementation review.
 
 ```text
 scope:
@@ -29,6 +29,8 @@ new_eval_cases:
 hardening_rules:
   every acceptance criterion has validation.result or delivery.evidence coverage
   every evidence_refs item resolves to a record id or declared external ref
+  every machine ref array resolves to a record id or declared external ref
+  every delivery_status_ref resolves to a record id or declared external ref
   promotion.candidate cannot be promoted without approved promotion.review
   context_pack contains projected summaries only, never raw source dumps
 ```
@@ -49,4 +51,17 @@ Expected-failure spot checks:
 check_evidence_completeness.py missing_evidence_case_001 -> MISSING_EVIDENCE_FOR_ACCEPTANCE
 check_evidence_completeness.py dangling_evidence_ref_case_001 -> DANGLING_EVIDENCE_REF
 check_evidence_completeness.py promotion_candidate_no_auto_case_001 -> AUTO_PROMOTION_FORBIDDEN
+```
+
+Current review notes:
+
+```text
+review_date:
+  2026-06-08
+
+review_result:
+  no blocking P1 findings
+
+scope_adjustment:
+  candidate_ref remains an artifact identifier, not an evidence graph edge
 ```

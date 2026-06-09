@@ -1,13 +1,15 @@
 # P1.5 Delivery Verdict Machine Contract
 
-Status: implemented acceptance candidate.
+Status: accepted after current implementation review.
 
 ```text
 scope:
   delivery.verdict JSONL record
   deterministic delivery verdict authoring
   verdict JSONL validation in eval runner
+  verdict-first dossier evidence path
   tests-pass-plus-acceptance-fail conflict handling
+  generic failed validation handling
   missing manual acceptance conflict handling
   blocked dependency verdict handling
 
@@ -27,7 +29,24 @@ verdicts:
 conflict_codes:
   TESTS_PASS_ACCEPTANCE_FAIL
   MISSING_MANUAL_ACCEPTANCE
-  BLOCKED_DEPENDENCY
+BLOCKED_DEPENDENCY
+```
+
+Current review notes:
+
+```text
+review_date:
+  2026-06-08
+
+review_result:
+  no blocking P1.5 findings
+
+new_regression_case:
+  validation_failed_status_case_001
+
+contract_clarification:
+  any validation.result status=fail prevents a usable delivery.verdict
+  Token Economics Dossier cites delivery.verdict when a verdict record is present
 ```
 
 Passing acceptance commands:

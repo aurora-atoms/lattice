@@ -5,7 +5,7 @@ Status: stabilized acceptance candidate.
 ```text
 scope:
   feature_delivery_case vertical slice
-  JSONL envelope + eight record types
+  JSONL envelope + eight P0-beta record types
   deterministic validators
   deterministic waste detection
   deterministic Token Economics Dossier
@@ -25,6 +25,19 @@ boundaries:
   examples=synthetic
   deliveryyield=economics_only
   no_raw_company_context
+```
+
+Current hardening overlay:
+
+```text
+implemented_after_p0_beta:
+  P1 evidence/context-pack hardening
+  P1.5 delivery verdict machine contract
+  schema-subset runtime payload validation
+  verdict-first dossier evidence path
+
+current_eval_count:
+  10 deterministic eval cases
 ```
 
 Acceptance commands:
