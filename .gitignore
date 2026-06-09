@@ -1,0 +1,40 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environments and local env files
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Dependency caches and installed packages
+node_modules/
+.npm/
+.pnpm-store/
+
+# Editor, OS, and local temp files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
