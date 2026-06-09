@@ -23,9 +23,8 @@ from typing import Any
 
 try:
     import yaml  # type: ignore
-except Exception as exc:  # pragma: no cover
-    print("ERROR: PyYAML is required. Install with: pip install pyyaml", file=sys.stderr)
-    raise SystemExit(2) from exc
+except Exception:  # pragma: no cover
+    yaml = None  # type: ignore
 
 
 REQUIRED_FILES = ["model-contract.yaml", "metric-catalog.yaml", "display-catalog.yaml"]
@@ -39,9 +38,140 @@ ALLOWED_SELECTOR_IMPLEMENTATIONS = {"field_parameter", "disconnected_selector", 
 ALLOWED_REQUEST_LIFECYCLE = {"draft", "validated", "compiled", "reviewed", "approved", "published", "deprecated", "rejected"}
 
 
+def parse_scalar(value: str) -> Any:
+    text = value.strip()
+    if text in {"", "null", "Null", "NULL", "~"}:
+        return None
+    if text in {"true", "True", "TRUE"}:
+        return True
+    if text in {"false", "False", "FALSE"}:
+        return False
+    if text.startswith("[") and text.endswith("]"):
+        inner = text[1:-1].strip()
+        if not inner:
+            return []
+        return [parse_scalar(item.strip()) for item in inner.split(",")]
+    if (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
+        return text[1:-1]
+    try:
+        return int(text)
+    except ValueError:
+        return text
+
+
+def strip_yaml_comment(line: str) -> str:
+    in_single = False
+    in_double = False
+    for index, char in enumerate(line):
+        if char == "'" and not in_double:
+            in_single = not in_single
+        elif char == '"' and not in_single:
+            in_double = not in_double
+        elif char == "#" and not in_single and not in_double:
+            return line[:index]
+    return line
+
+
+def next_meaningful(lines: list[tuple[int, str]], start: int) -> tuple[int, str] | None:
+    for index in range(start, len(lines)):
+        return lines[index]
+    return None
+
+
+def parse_key_value(text: str) -> tuple[str, Any]:
+    if ":" not in text:
+        raise ValueError(f"expected key/value pair, got: {text}")
+    key, value = text.split(":", 1)
+    key = key.strip()
+    if not key:
+        raise ValueError(f"empty YAML key in: {text}")
+    value = value.strip()
+    return key, parse_scalar(value) if value else {}
+
+
+def parse_block(lines: list[tuple[int, str]], index: int, indent: int) -> tuple[Any, int]:
+    next_item = next_meaningful(lines, index)
+    if next_item is None:
+        return {}, index
+    if next_item[0] < indent:
+        return {}, index
+    if next_item[1].startswith("- "):
+        values: list[Any] = []
+        while index < len(lines):
+            current_indent, text = lines[index]
+            if current_indent < indent:
+                break
+            if current_indent != indent or not text.startswith("- "):
+                break
+            item_text = text[2:].strip()
+            if not item_text:
+                item, index = parse_block(lines, index + 1, indent + 2)
+                values.append(item)
+                continue
+            if ":" in item_text and not item_text.startswith(("'", '"')):
+                key, value = parse_key_value(item_text)
+                item_obj: dict[str, Any] = {key: value}
+                index += 1
+                while index < len(lines):
+                    child_indent, child_text = lines[index]
+                    if child_indent <= current_indent:
+                        break
+                    child_key, child_value = parse_key_value(child_text)
+                    if child_value == {}:
+                        child_value, index = parse_block(lines, index + 1, child_indent + 2)
+                    else:
+                        index += 1
+                    item_obj[child_key] = child_value
+                values.append(item_obj)
+            else:
+                values.append(parse_scalar(item_text))
+                index += 1
+        return values, index
+    values: dict[str, Any] = {}
+    while index < len(lines):
+        current_indent, text = lines[index]
+        if current_indent < indent:
+            break
+        if current_indent != indent:
+            break
+        key, value = parse_key_value(text)
+        index += 1
+        if value == {}:
+            nested, index = parse_block(lines, index, indent + 2)
+            value = nested
+        values[key] = value
+    return values, index
+
+
+def simple_yaml_load(text: str) -> Any:
+    lines: list[tuple[int, str]] = []
+    for raw_line in text.splitlines():
+        line = strip_yaml_comment(raw_line).rstrip()
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        lines.append((indent, line.strip()))
+    if not lines:
+        return {}
+    parsed, index = parse_block(lines, 0, lines[0][0])
+    if index != len(lines):
+        raise ValueError(f"unsupported YAML structure near: {lines[index][1]}")
+    return parsed
+
+
 def load_yaml(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    text = path.read_text(encoding="utf-8")
+    if yaml is not None:
+        return yaml.safe_load(text) or {}
+    return simple_yaml_load(text) or {}
+
+
+def load_yaml_checked(path: Path, errors: list[str]) -> Any:
+    try:
+        return load_yaml(path)
+    except Exception as exc:
+        err(errors, f"{path.name}: failed to parse YAML with dependency-free fallback: {exc}")
+        return {}
 
 
 def err(errors: list[str], msg: str) -> None:
@@ -398,9 +528,9 @@ def main() -> int:
             print(f"ERROR: {e}")
         return 1
 
-    model = load_yaml(specs_dir / "model-contract.yaml")
-    metrics = load_yaml(specs_dir / "metric-catalog.yaml")
-    display = load_yaml(specs_dir / "display-catalog.yaml")
+    model = load_yaml_checked(specs_dir / "model-contract.yaml", errors)
+    metrics = load_yaml_checked(specs_dir / "metric-catalog.yaml", errors)
+    display = load_yaml_checked(specs_dir / "display-catalog.yaml", errors)
 
     model_index = build_model_index(model, errors)
     public_metric_objects = validate_metrics(metrics, model_index, errors)
@@ -408,17 +538,17 @@ def main() -> int:
 
     selector_path = specs_dir / "selector-catalog.yaml"
     if selector_path.exists():
-        selectors = load_yaml(selector_path)
+        selectors = load_yaml_checked(selector_path, errors)
         validate_selectors(selectors, public_metric_objects, display_index, errors)
 
     source_path = specs_dir / "source-catalog.yaml"
     if source_path.exists():
-        source_doc = load_yaml(source_path)
+        source_doc = load_yaml_checked(source_path, errors)
         validate_source_catalog(source_doc, model_index, errors)
 
     request_path = specs_dir / "semantic-request.yaml"
     if request_path.exists():
-        request_doc = load_yaml(request_path)
+        request_doc = load_yaml_checked(request_path, errors)
         validate_semantic_request(request_doc, model_index, public_metric_objects, display_index, errors)
 
     if errors:

@@ -8,6 +8,7 @@ import argparse
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -48,6 +49,18 @@ def read_single_jsonl(path: Path) -> dict[str, object]:
     if not isinstance(record, dict):
         raise ValueError(f"record in {path} is not an object")
     return record
+
+
+def append_single_jsonl_record(input_path: Path, record_path: Path) -> Path:
+    source = input_path.read_text(encoding="utf-8").rstrip()
+    record = record_path.read_text(encoding="utf-8").strip()
+    with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8", newline="\n", suffix=".jsonl") as temp:
+        if source:
+            temp.write(source)
+            temp.write("\n")
+        temp.write(record)
+        temp.write("\n")
+        return Path(temp.name)
 
 
 def run_expected_code_check(
@@ -117,48 +130,7 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
         ok = False
         notes.append("unexpected waste patterns: " + ", ".join(sorted(unexpected_waste)))
 
-    if expected.get("expect_dossier"):
-        out_md = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.token_economics_dossier.md"
-        out_jsonl = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.yield_dossier.jsonl"
-        dossier = run([PYTHON, str(BASE_DIR / "scripts" / "generate_token_economics_dossier.py"), str(input_path), "--out-md", str(out_md), "--out-jsonl", str(out_jsonl)])
-        if dossier.returncode != 0:
-            ok = False
-            notes.append(f"dossier generation exit {dossier.returncode}: {dossier.stderr.strip()}")
-        validate_dossier = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_jsonl)])
-        if validate_dossier.returncode != 0:
-            ok = False
-            notes.append(f"generated dossier JSONL validation exit {validate_dossier.returncode}: {validate_dossier.stderr.strip()}")
-        expected_dossier = case_dir / "expected_dossier.md"
-        if not expected_dossier.exists():
-            ok = False
-            notes.append("missing expected_dossier.md for dossier-producing case")
-        elif not out_md.exists():
-            ok = False
-            notes.append("dossier Markdown was not generated")
-        elif expected_dossier.read_text(encoding="utf-8").strip() != out_md.read_text(encoding="utf-8").strip():
-            ok = False
-            notes.append("generated dossier differs from expected_dossier.md")
-    if "check_evidence_exit" in expected:
-        evidence_result = run([PYTHON, str(BASE_DIR / "scripts" / "check_evidence_completeness.py"), str(input_path)])
-        evidence_ok = run_expected_code_check(
-            "check_evidence_completeness",
-            evidence_result,
-            int(expected.get("check_evidence_exit", 0)),
-            set(expected.get("expected_evidence_failure_codes", [])),
-            set(expected.get("allowed_extra_evidence_failure_codes", [])),
-            notes,
-        )
-        ok = ok and evidence_ok
-    if expected.get("expect_context_pack"):
-        out_context = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.context_pack.jsonl"
-        context_result = run([PYTHON, str(BASE_DIR / "scripts" / "build_context_pack.py"), str(input_path), "--out", str(out_context)])
-        if context_result.returncode != 0:
-            ok = False
-            notes.append(f"build_context_pack exit {context_result.returncode}: {context_result.stderr.strip()}")
-        validate_context = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_context)])
-        if validate_context.returncode != 0:
-            ok = False
-            notes.append(f"context_pack validation exit {validate_context.returncode}: {validate_context.stderr.strip()}")
+    out_verdict: Path | None = None
     if expected.get("expect_delivery_verdict"):
         out_verdict = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.delivery_verdict.jsonl"
         verdict_result = run([PYTHON, str(BASE_DIR / "scripts" / "author_delivery_verdict.py"), str(input_path), "--out", str(out_verdict)])
@@ -192,6 +164,58 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
             except Exception as exc:
                 ok = False
                 notes.append(f"delivery_verdict readback failed: {exc}")
+
+    if expected.get("expect_dossier"):
+        out_md = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.token_economics_dossier.md"
+        out_jsonl = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.yield_dossier.jsonl"
+        dossier_input = input_path
+        temp_dossier_input: Path | None = None
+        if out_verdict is not None and out_verdict.exists():
+            temp_dossier_input = append_single_jsonl_record(input_path, out_verdict)
+            dossier_input = temp_dossier_input
+        try:
+            dossier = run([PYTHON, str(BASE_DIR / "scripts" / "generate_token_economics_dossier.py"), str(dossier_input), "--out-md", str(out_md), "--out-jsonl", str(out_jsonl)])
+            if dossier.returncode != 0:
+                ok = False
+                notes.append(f"dossier generation exit {dossier.returncode}: {dossier.stderr.strip()}")
+            validate_dossier = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_jsonl)])
+            if validate_dossier.returncode != 0:
+                ok = False
+                notes.append(f"generated dossier JSONL validation exit {validate_dossier.returncode}: {validate_dossier.stderr.strip()}")
+            expected_dossier = case_dir / "expected_dossier.md"
+            if not expected_dossier.exists():
+                ok = False
+                notes.append("missing expected_dossier.md for dossier-producing case")
+            elif not out_md.exists():
+                ok = False
+                notes.append("dossier Markdown was not generated")
+            elif expected_dossier.read_text(encoding="utf-8").strip() != out_md.read_text(encoding="utf-8").strip():
+                ok = False
+                notes.append("generated dossier differs from expected_dossier.md")
+        finally:
+            if temp_dossier_input is not None:
+                temp_dossier_input.unlink(missing_ok=True)
+    if "check_evidence_exit" in expected:
+        evidence_result = run([PYTHON, str(BASE_DIR / "scripts" / "check_evidence_completeness.py"), str(input_path)])
+        evidence_ok = run_expected_code_check(
+            "check_evidence_completeness",
+            evidence_result,
+            int(expected.get("check_evidence_exit", 0)),
+            set(expected.get("expected_evidence_failure_codes", [])),
+            set(expected.get("allowed_extra_evidence_failure_codes", [])),
+            notes,
+        )
+        ok = ok and evidence_ok
+    if expected.get("expect_context_pack"):
+        out_context = BASE_DIR / "reports" / "generated" / f"{case_dir.name}.context_pack.jsonl"
+        context_result = run([PYTHON, str(BASE_DIR / "scripts" / "build_context_pack.py"), str(input_path), "--out", str(out_context)])
+        if context_result.returncode != 0:
+            ok = False
+            notes.append(f"build_context_pack exit {context_result.returncode}: {context_result.stderr.strip()}")
+        validate_context = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(out_context)])
+        if validate_context.returncode != 0:
+            ok = False
+            notes.append(f"context_pack validation exit {validate_context.returncode}: {validate_context.stderr.strip()}")
     return ok, "; ".join(notes) if notes else "ok"
 
 

@@ -12,6 +12,20 @@ from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 WHITELIST_PATH = BASE_DIR / "schemas" / "record_type_whitelist.json"
+SCHEMA_RECORD_FILES = {
+    "feature_delivery_case": "feature_delivery_case.v1.schema.json",
+    "task.packet": "task.packet.v1.schema.json",
+    "delivery.evidence": "delivery.evidence.v1.schema.json",
+    "delivery.verdict": "delivery.verdict.v1.schema.json",
+    "validation.result": "validation.result.v1.schema.json",
+    "yield.stage_breakdown": "yield.stage_breakdown.v1.schema.json",
+    "yield.waste_pattern": "yield.waste_pattern.v1.schema.json",
+    "yield.optimization_signal": "yield.optimization_signal.v1.schema.json",
+    "yield.dossier": "yield.dossier.v1.schema.json",
+    "context_pack": "context_pack.v1.schema.json",
+    "promotion.candidate": "promotion.candidate.v1.schema.json",
+    "promotion.review": "promotion.review.v1.schema.json",
+}
 ENVELOPE_FIELDS = {"type", "id", "schema", "source", "target", "scope", "payload", "constraints"}
 SCOPE_FIELDS = {"project_id", "feature_delivery_case_id", "module_id"}
 TOKEN_STATUSES = {"unknown", "estimated", "provider_reported", "known"}
@@ -195,6 +209,11 @@ def load_whitelist() -> dict[str, str]:
     return json.loads(WHITELIST_PATH.read_text(encoding="utf-8"))
 
 
+def load_record_schema(record_type: str) -> dict[str, Any]:
+    filename = SCHEMA_RECORD_FILES[record_type]
+    return json.loads((BASE_DIR / "schemas" / "records" / filename).read_text(encoding="utf-8"))
+
+
 def read_jsonl(path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     records: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
@@ -263,9 +282,95 @@ def validate_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         for (enum_type, field), values in ENUMS.items():
             if enum_type == record_type and field in payload and payload[field] not in values:
                 failures.append(failure("INVALID_ENUM", f"{field} must be one of {', '.join(sorted(values))}", line_no, record_id))
+        failures.extend(validate_json_schema_value(payload, load_record_schema(record_type), "payload", line_no, record_id))
         failures.extend(validate_token_cost_values(record_type, payload, line_no, record_id))
         if contains_raw_context(public_record):
             failures.append(failure("RAW_CONTEXT_FORBIDDEN", "record contains raw context marker or blocked raw payload field", line_no, record_id))
+    return failures
+
+
+def json_type_name(value: Any) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, int):
+        return "integer"
+    if isinstance(value, float):
+        return "number"
+    if isinstance(value, str):
+        return "string"
+    if isinstance(value, list):
+        return "array"
+    if isinstance(value, dict):
+        return "object"
+    return type(value).__name__
+
+
+def matches_json_type(value: Any, expected_type: str) -> bool:
+    if expected_type == "null":
+        return value is None
+    if expected_type == "boolean":
+        return isinstance(value, bool)
+    if expected_type == "integer":
+        return isinstance(value, int) and not isinstance(value, bool)
+    if expected_type == "number":
+        return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if expected_type == "string":
+        return isinstance(value, str)
+    if expected_type == "array":
+        return isinstance(value, list)
+    if expected_type == "object":
+        return isinstance(value, dict)
+    return True
+
+
+def type_matches(value: Any, expected: Any) -> bool:
+    if isinstance(expected, str):
+        return matches_json_type(value, expected)
+    if isinstance(expected, list):
+        return any(isinstance(item, str) and matches_json_type(value, item) for item in expected)
+    return True
+
+
+def validate_json_schema_value(
+    value: Any,
+    schema: dict[str, Any],
+    path: str,
+    line_no: int | None,
+    record_id: str,
+) -> list[dict[str, Any]]:
+    failures: list[dict[str, Any]] = []
+    expected_type = schema.get("type")
+    if expected_type is not None and not type_matches(value, expected_type):
+        expected = ", ".join(expected_type) if isinstance(expected_type, list) else str(expected_type)
+        failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} must be {expected}, got {json_type_name(value)}", line_no, record_id))
+        return failures
+    if "const" in schema and value != schema["const"]:
+        failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} must equal {schema['const']!r}", line_no, record_id))
+    if "enum" in schema and value not in schema["enum"]:
+        failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} must be one of {', '.join(str(item) for item in schema['enum'])}", line_no, record_id))
+    if "minimum" in schema and isinstance(value, (int, float)) and not isinstance(value, bool) and value < schema["minimum"]:
+        failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} must be at least {schema['minimum']}", line_no, record_id))
+    if isinstance(value, dict):
+        properties = schema.get("properties", {})
+        if isinstance(properties, dict):
+            required = schema.get("required", [])
+            if isinstance(required, list):
+                missing = sorted(str(item) for item in required if item not in value)
+                if missing:
+                    failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} missing required fields: {', '.join(missing)}", line_no, record_id))
+            if schema.get("additionalProperties") is False:
+                extra = sorted(set(value) - set(properties))
+                if extra:
+                    failures.append(failure("INVALID_SCHEMA_VALUE", f"{path} has unknown fields: {', '.join(extra)}", line_no, record_id))
+            for key, subschema in properties.items():
+                if key in value and isinstance(subschema, dict):
+                    failures.extend(validate_json_schema_value(value[key], subschema, f"{path}.{key}", line_no, record_id))
+    if isinstance(value, list) and isinstance(schema.get("items"), dict):
+        item_schema = schema["items"]
+        for index, item in enumerate(value):
+            failures.extend(validate_json_schema_value(item, item_schema, f"{path}[{index}]", line_no, record_id))
     return failures
 
 

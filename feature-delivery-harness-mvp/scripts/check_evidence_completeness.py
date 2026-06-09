@@ -13,6 +13,22 @@ from typing import Any
 from fdh_lib import failure, list_value, read_jsonl, records_by_type, validate_records
 
 
+REF_ARRAY_FIELDS = {
+    "delivery_evidence_refs",
+    "evidence_refs",
+    "included_refs",
+    "optimization_signal_refs",
+    "source_refs",
+    "stage_breakdown_refs",
+    "validation_refs",
+    "validation_result_refs",
+    "waste_pattern_refs",
+}
+REF_SCALAR_FIELDS = {
+    "delivery_status_ref",
+}
+
+
 def declared_external_refs(records: list[dict[str, Any]]) -> set[str]:
     refs: set[str] = set()
     for record in records:
@@ -35,8 +51,14 @@ def acceptance_id(item: Any) -> str | None:
 def evidence_ref_values(record: dict[str, Any]) -> list[str]:
     payload = record.get("payload", {})
     values: list[str] = []
-    for field in ("evidence_refs",):
+    if not isinstance(payload, dict):
+        return values
+    for field in sorted(REF_ARRAY_FIELDS):
         values.extend(str(item) for item in list_value(payload.get(field)))
+    for field in sorted(REF_SCALAR_FIELDS):
+        value = payload.get(field)
+        if isinstance(value, str) and value.strip():
+            values.append(value)
     return values
 
 

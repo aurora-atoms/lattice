@@ -3,6 +3,7 @@
   "validate_task_packet_exit": 1,
   "expected_failure_codes": [
     "RAW_CONTEXT_FORBIDDEN",
+    "INVALID_SCHEMA_VALUE",
     "UNKNOWN_PAYLOAD_FIELD",
     "UNBOUNDED_SCOPE",
     "SCOPE_TOO_LARGE",

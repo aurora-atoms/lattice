@@ -27,6 +27,6 @@ Total Cost: 0.48 usd (estimated)
 
 ## Claim Ledger
 
-- Delivery status is usable. evidence_refs=delivery_001 status=supported
+- Delivery status is usable. evidence_refs=verdict_fdc_001 status=supported
 - Detected 0 waste pattern(s). evidence_refs=insufficient_evidence status=unknown
 - Total token usage is 16000 tokens (estimated). evidence_refs=stage_dev_001,stage_spec_001 status=supported

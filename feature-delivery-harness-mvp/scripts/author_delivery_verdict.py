@@ -87,7 +87,7 @@ def author_verdict(records: list[dict[str, Any]]) -> dict[str, Any]:
             has_blocked_dependency = True
             conflict_codes.add("BLOCKED_DEPENDENCY")
             limitations.add(str(payload.get("remediation_hint") or "Blocking dependency prevents validation."))
-        if payload.get("status") == "fail" and ("ACCEPTANCE_FAILED" in failure_codes or payload.get("blocking")):
+        if payload.get("status") == "fail":
             has_acceptance_fail = True
 
     for record in delivery:
