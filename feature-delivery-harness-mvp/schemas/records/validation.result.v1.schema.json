@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/validation.result.v1.schema.json",
+  "title": "FDH Validation Result",
+  "type": "object",
+  "required": ["command_id", "status", "severity", "failure_codes", "target_acceptance_ids", "observed_output_ref", "blocking", "remediation_hint"],
+  "properties": {
+    "command_id": {"type": "string"},
+    "status": {"type": "string", "enum": ["pass", "fail", "warn", "not_run"]},
+    "severity": {"type": "string", "enum": ["info", "warning", "error", "critical"]},
+    "failure_codes": {"type": "array", "items": {"type": "string"}},
+    "target_acceptance_ids": {"type": "array", "items": {"type": "string"}},
+    "observed_output_ref": {"type": "string"},
+    "blocking": {"type": "boolean"},
+    "remediation_hint": {"type": "string"}
+  },
+  "additionalProperties": false
+}

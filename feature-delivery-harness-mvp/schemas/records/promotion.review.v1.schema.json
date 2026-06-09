@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/promotion.review.v1.schema.json",
+  "title": "FDH Promotion Review",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "candidate_id", "reviewer", "decision", "evidence_refs", "validation_refs", "resulting_artifact_type", "review_notes"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "candidate_id": {"type": "string"},
+    "reviewer": {"type": "string"},
+    "decision": {"type": "string", "enum": ["approved", "rejected", "needs_changes"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "validation_refs": {"type": "array", "items": {"type": "string"}},
+    "resulting_artifact_type": {"type": "string"},
+    "review_notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}

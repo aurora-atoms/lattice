@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/yield.stage_breakdown.v1.schema.json",
+  "title": "FDH Yield Stage Breakdown",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "stage", "tokens", "cost", "source_refs", "status"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "stage": {"type": "string"},
+    "tokens": {"type": "object"},
+    "cost": {"type": "object"},
+    "source_refs": {"type": "array", "items": {"type": "string"}},
+    "status": {"type": "string", "enum": ["unknown", "estimated", "provider_reported", "known"]}
+  },
+  "additionalProperties": false
+}
