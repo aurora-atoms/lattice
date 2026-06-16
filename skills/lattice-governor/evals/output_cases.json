@@ -1,0 +1,35 @@
+[
+  {
+    "id": "latgov-output-001",
+    "prompt": "Review a public SKILL.md and produce a token-efficient refactor plan.",
+    "expected": [
+      "classifies SKILL.md as control plane",
+      "preserves behavior-critical rules before token reduction",
+      "moves long background to references",
+      "keeps description as trigger surface",
+      "adds validation and eval gates"
+    ],
+    "forbidden": [
+      "copies private downstream context into public repo",
+      "adds unsupported YAML frontmatter fields without runtime need",
+      "deletes safety or failure-mode rules for brevity"
+    ],
+    "judge_notes": "Pass only if the plan is public-safe, behavior-preserving, and release-gate oriented."
+  },
+  {
+    "id": "latgov-output-002",
+    "prompt": "Design a registry record and release gate for a candidate skill package.",
+    "expected": [
+      "uses lifecycle status",
+      "includes runtime targets",
+      "includes risk tier and side effects",
+      "requires trigger eval and output eval",
+      "produces promote/revise/quarantine/reject recommendation"
+    ],
+    "forbidden": [
+      "treats generated skills as active by default",
+      "omits public/private boundary review"
+    ],
+    "judge_notes": "Pass only if the output is machine-checkable and compatible with the public registry schema."
+  }
+]
