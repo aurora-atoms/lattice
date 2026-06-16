@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lattice Governor"
+  short_description: "Govern public Lattice skill standards, registries, evals, and token-efficient refactors."
+  icon: "⚖️"
