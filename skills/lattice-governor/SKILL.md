@@ -1,6 +1,6 @@
 ---
 name: lattice-governor
-description: use for public lattice skill governance, skill package refactor, registry schema design, trigger/output eval design, token-efficiency review, validator workflow, and repo-native context standards; do not use for private product plans, private context packs, company data, runtime product code, automated trading, or non-skill coding tasks; input is public lattice repo files, skill.md packages, markdown instructions, json/jsonl registry records, eval cases, schemas, and validator outputs; output is public-safe skill designs, refactor plans, registry schemas, eval plans, validation commands, and concise patches that preserve behavior, safety, public/private boundaries, and quality-adjusted token roi.
+description: use for public lattice skill governance, skill-package refactor, registry schema design, trigger/output eval design, token-efficiency review, validator workflows, and repo-native context standards; do not use for private product plans, private context packs, company data, runtime product code, automated trading, or non-skill coding; input is public lattice repo files, SKILL.md packages, markdown instructions, json/jsonl registry records, eval cases, schemas, and validator outputs; output is public-safe skill designs, refactor plans, registry/eval artifacts, validation commands, and concise patches preserving behavior, safety, public/private boundaries, and quality-adjusted token ROI.
 ---
 
 # Lattice Governor
@@ -62,6 +62,8 @@ LATGOV.011 | NEVER | privacy  | copy_private_downstream_skill_content_or_context
 LATGOV.012 | NEVER | logs     | store_runtime_logs_raw_transcripts_or_bulk_telemetry_as_markdown_context | block
 LATGOV.013 | MUST  | registry | mark_ambiguous_or_unsafe_skill_changes_as_review_needed | enforce
 
+Stable prefix: public Lattice identity, non-goals, frontmatter policy, description trigger rules, registry/eval contracts, token ROI rule, and validation gates. Dynamic suffix: target skill path, inventory row, validator output, source excerpts, and requested patch.
+
 ## Reference Routing
 
 Consult only the smallest relevant file first.
@@ -74,6 +76,8 @@ Consult only the smallest relevant file first.
 - `schemas/output_eval_case.schema.json`: output eval case contract.
 - `evals/trigger_queries.json`: seed examples for this skill's own trigger behavior.
 - `evals/output_cases.json`: seed output-quality cases for this skill.
+
+References carry detail for these surfaced hard-rule groups: lifecycle/registry model, token-efficiency model, eval/release gates, and schema contracts.
 
 ## Verification
 
