@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/feature_delivery_case.v1.schema.json",
+  "title": "FDH Feature Delivery Case",
+  "type": "object",
+  "required": ["title", "user_usable_outcome", "status", "scope_summary", "in_scope", "non_goals", "acceptance_criteria", "risks", "evidence_refs", "unresolved_questions"],
+  "properties": {
+    "title": {"type": "string"},
+    "user_usable_outcome": {"type": "string"},
+    "status": {"type": "string", "enum": ["draft", "ready", "in_progress", "delivered", "failed", "blocked"]},
+    "scope_summary": {"type": "string"},
+    "in_scope": {"type": "array", "items": {"type": "string"}},
+    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "acceptance_criteria": {"type": "array", "items": {"type": "object"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "evidence_refs": {"type": "array"},
+    "unresolved_questions": {"type": "array", "items": {"type": "string"}},
+    "context_token_count": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": false
+}

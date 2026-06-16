@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/yield.waste_pattern.v1.schema.json",
+  "title": "FDH Yield Waste Pattern",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "pattern", "severity", "detection_method", "thresholds", "evidence_refs", "estimated_token_impact", "recommendation"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "pattern": {"type": "string", "enum": ["repeated_context_read", "oversized_context", "duplicate_analysis", "failed_repair_loop", "review_loop_without_progress"]},
+    "severity": {"type": "string", "enum": ["info", "warning", "error", "critical"]},
+    "detection_method": {"type": "string"},
+    "thresholds": {"type": "object"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "estimated_token_impact": {"type": "object"},
+    "recommendation": {"type": "string"}
+  },
+  "additionalProperties": false
+}

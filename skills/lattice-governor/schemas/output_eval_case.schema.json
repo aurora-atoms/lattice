@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/output_eval_case.schema.json",
+  "title": "Output Eval Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "prompt", "expected", "forbidden", "judge_notes"],
+  "properties": {
+    "id": {"type": "string"},
+    "prompt": {"type": "string"},
+    "expected": {"type": "array", "items": {"type": "string"}},
+    "forbidden": {"type": "array", "items": {"type": "string"}},
+    "judge_notes": {"type": "string"}
+  }
+}

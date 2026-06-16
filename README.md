@@ -1,6 +1,6 @@
 # Lattice
 
-Lattice is a project workspace for repo-native tooling. This phase focuses only on the Skill Rewrite / Skill Refactor System.
+Lattice is a project workspace for repo-native tooling. This phase focuses on the Skill Rewrite / Skill Refactor System and public skill governance standards.
 
 License: Apache-2.0.
 
@@ -20,7 +20,17 @@ Pipeline:
 old Markdown skill -> ConPort-first retrieval -> inventory -> classification -> token-friendly rewrite plan -> optimized SKILL.md -> moved content plan -> validation report
 ```
 
+Governance pipeline:
+
+```text
+candidate skill -> registry record -> trigger eval -> output eval -> validator -> release recommendation
+```
+
 Deferred: rewriting large skill libraries, implementing active modules, and integrating a hard ConPort adapter into local scripts.
+
+## Current Skills
+
+- `skills/lattice-governor`: public Lattice governance skill for skill registry design, trigger/output evals, token-efficient refactor plans, validator workflows, and release gates.
 
 ## Revision 1 Rules
 
@@ -77,6 +87,10 @@ Optional token estimate:
 ```bash
 python scripts/estimate_skill_tokens.py --root skills
 ```
+
+## Registry
+
+Public skill records live in `registry/skills.index.jsonl`. Public records must not contain private downstream project context.
 
 ## Outputs
 

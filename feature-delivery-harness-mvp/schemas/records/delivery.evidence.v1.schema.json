@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/delivery.evidence.v1.schema.json",
+  "title": "FDH Delivery Evidence",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "task_id", "evidence_kind", "evidence_refs", "acceptance_results", "validation_summary", "user_usable_status", "limitations"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "evidence_kind": {"type": "string"},
+    "evidence_refs": {"type": "array"},
+    "acceptance_results": {"type": "array", "items": {"type": "object"}},
+    "validation_summary": {"type": "string"},
+    "user_usable_status": {"type": "string", "enum": ["usable", "not_user_usable", "requires_human_review", "insufficient_evidence", "blocked"]},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

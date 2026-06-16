@@ -1,0 +1,16 @@
+{
+  "validate_jsonl_exit": 0,
+  "validate_task_packet_exit": 1,
+  "expected_failure_codes": [
+    "VAGUE_OUTCOME",
+    "MISSING_ACCEPTANCE_CRITERIA",
+    "MISSING_NON_GOALS",
+    "MISSING_ALLOWED_CHANGES",
+    "MISSING_FORBIDDEN_CHANGES",
+    "MISSING_EVIDENCE_REQUIREMENTS",
+    "UNBOUNDED_SCOPE",
+    "MISSING_VALIDATION_COMMANDS"
+  ],
+  "expected_waste_patterns": [],
+  "expect_dossier": false
+}

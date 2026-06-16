@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/promotion.candidate.v1.schema.json",
+  "title": "FDH Promotion Candidate",
+  "type": "object",
+  "required": ["feature_delivery_case_id", "candidate_kind", "candidate_ref", "source_refs", "scope", "evidence_refs", "ip_status", "promotion_status"],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string"},
+    "candidate_kind": {"type": "string", "enum": ["asset", "automation", "skill", "learning", "rule", "contextpack"]},
+    "candidate_ref": {"type": "string"},
+    "source_refs": {"type": "array", "items": {"type": "string"}},
+    "scope": {"type": "string"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "ip_status": {"type": "string", "enum": ["synthetic", "open", "sanitized", "review_required"]},
+    "promotion_status": {"type": "string", "enum": ["candidate", "review_required", "promoted"]}
+  },
+  "additionalProperties": false
+}

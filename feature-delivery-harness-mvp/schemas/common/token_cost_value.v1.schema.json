@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/token_cost_value.v1.schema.json",
+  "title": "FDH Token Or Cost Value",
+  "type": "object",
+  "required": ["value", "unit", "status", "source_ref"],
+  "properties": {
+    "value": {"type": ["number", "null"]},
+    "unit": {"type": "string", "enum": ["tokens", "usd", "unknown"]},
+    "status": {"type": "string", "enum": ["unknown", "estimated", "provider_reported", "known"]},
+    "source_ref": {"type": "string"}
+  },
+  "additionalProperties": false
+}

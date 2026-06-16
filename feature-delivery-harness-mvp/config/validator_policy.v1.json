@@ -1,0 +1,20 @@
+{
+  "project_id": "lattice",
+  "namespace": "lat",
+  "context_token_budget": 24000,
+  "allowed_record_types": [
+    "feature_delivery_case",
+    "task.packet",
+    "delivery.evidence",
+    "delivery.verdict",
+    "validation.result",
+    "yield.stage_breakdown",
+    "yield.waste_pattern",
+    "yield.optimization_signal",
+    "yield.dossier",
+    "context_pack",
+    "promotion.candidate",
+    "promotion.review"
+  ],
+  "blocked_raw_payload_fields": ["raw", "dump", "full_log", "trace", "html", "unbounded_context"]
+}

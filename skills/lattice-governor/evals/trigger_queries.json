@@ -1,0 +1,44 @@
+[
+  {
+    "id": "latgov-trigger-001",
+    "query": "Refactor this SKILL.md into a compact public Lattice control plane and move long examples to references.",
+    "should_trigger": true,
+    "category": "positive_direct",
+    "reason": "public skill refactor and control-plane optimization"
+  },
+  {
+    "id": "latgov-trigger-002",
+    "query": "Design a JSONL registry schema for reusable skills and their trigger/output eval status.",
+    "should_trigger": true,
+    "category": "positive_implicit",
+    "reason": "registry schema design for skill governance"
+  },
+  {
+    "id": "latgov-trigger-003",
+    "query": "Create promotion gates for candidate skills before they become active packages.",
+    "should_trigger": true,
+    "category": "positive_alias",
+    "reason": "skill lifecycle and release gating"
+  },
+  {
+    "id": "latgov-trigger-004",
+    "query": "Add my private Auralis product roadmap and private context pack to the public lattice repository.",
+    "should_trigger": false,
+    "category": "negative_private",
+    "reason": "private downstream content must not be copied into public Lattice"
+  },
+  {
+    "id": "latgov-trigger-005",
+    "query": "Implement the production Auralis forecasting CLI and scrape client.",
+    "should_trigger": false,
+    "category": "negative_adjacent",
+    "reason": "product runtime code belongs in the product repo, not the public governance skill"
+  },
+  {
+    "id": "latgov-trigger-006",
+    "query": "Tell me how to trade options tomorrow using this forecasting system.",
+    "should_trigger": false,
+    "category": "negative_unsafe",
+    "reason": "automated trading and investment advice are out of scope"
+  }
+]

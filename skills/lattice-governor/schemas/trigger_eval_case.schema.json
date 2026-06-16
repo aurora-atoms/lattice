@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/trigger_eval_case.schema.json",
+  "title": "Trigger Eval Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "query", "should_trigger", "category", "reason"],
+  "properties": {
+    "id": {"type": "string"},
+    "query": {"type": "string"},
+    "should_trigger": {"type": "boolean"},
+    "category": {"type": "string", "enum": ["positive_direct", "positive_implicit", "positive_alias", "negative_adjacent", "negative_private", "negative_unsafe", "negative_out_of_scope"]},
+    "reason": {"type": "string"}
+  }
+}
