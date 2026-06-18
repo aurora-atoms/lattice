@@ -1,0 +1,4 @@
+interface:
+  display_name: "VS Code Workspace AI Context"
+  short_description: "Maintain VS Code workspace AI customization and skill discovery."
+  default_prompt: "Review or update VS Code workspace AI settings, instructions, and skill discovery without adding unsupported settings."

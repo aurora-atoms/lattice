@@ -1,0 +1,37 @@
+[
+  {
+    "id": "vsaic-trigger-001",
+    "query": "Fix Unknown Configuration Setting for auroraContext.skillDiscovery in this .code-workspace file.",
+    "should_trigger": true,
+    "category": "positive_unknown_setting",
+    "reason": "workspace AI setting maintenance and replacement"
+  },
+  {
+    "id": "vsaic-trigger-002",
+    "query": "Update VS Code workspace settings so agent skills are discovered from the skills folder and instructions from .github/instructions.",
+    "should_trigger": true,
+    "category": "positive_discovery",
+    "reason": "chat.agentSkillsLocations and chat.instructionsFilesLocations configuration"
+  },
+  {
+    "id": "vsaic-trigger-003",
+    "query": "Create a registry-first progressive disclosure policy for AI context in a multi-root workspace.",
+    "should_trigger": true,
+    "category": "positive_context_policy",
+    "reason": "progressive-disclosure workspace context setup"
+  },
+  {
+    "id": "vsaic-trigger-004",
+    "query": "Implement the actual product feature described in this workspace.",
+    "should_trigger": false,
+    "category": "negative_product_code",
+    "reason": "product runtime implementation is out of scope"
+  },
+  {
+    "id": "vsaic-trigger-005",
+    "query": "Copy our private skill package into public lattice as an example.",
+    "should_trigger": false,
+    "category": "negative_private",
+    "reason": "private downstream content must not enter public Lattice"
+  }
+]

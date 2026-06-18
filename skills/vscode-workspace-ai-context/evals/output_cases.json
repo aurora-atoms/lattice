@@ -1,0 +1,36 @@
+[
+  {
+    "id": "vsaic-output-001",
+    "prompt": "Replace an unknown custom workspace setting that was intended to guide AI skill discovery.",
+    "expected": [
+      "removes the unsupported custom setting",
+      "uses supported VS Code settings where possible",
+      "moves agent guidance into an instruction file",
+      "keeps deterministic discovery in a helper script or registry",
+      "validates workspace JSON"
+    ],
+    "forbidden": [
+      "claims VS Code enforces arbitrary custom settings",
+      "keeps deprecated code generation instruction settings without caveat",
+      "bulk-loads private skill references"
+    ],
+    "judge_notes": "Pass only if output separates native VS Code settings from agent-convention metadata."
+  },
+  {
+    "id": "vsaic-output-002",
+    "prompt": "Design VS Code settings for a narrow multi-root workspace that still discovers multiple Git repositories and agent skills.",
+    "expected": [
+      "uses git.scanRepositories and git.openRepositoryInParentFolders",
+      "uses chat.agentSkillsLocations for skill discovery",
+      "uses chat.instructionsFilesLocations for instruction discovery",
+      "uses search.exclude and files.watcherExclude only for noise reduction",
+      "states that excludes are not security boundaries"
+    ],
+    "forbidden": [
+      "opens broad parent folders only for Git visibility",
+      "uses unknown setting keys as policy",
+      "hides intentional tracked artifacts without review"
+    ],
+    "judge_notes": "Pass only if the workspace remains narrow and settings are VS Code-supported."
+  }
+]
