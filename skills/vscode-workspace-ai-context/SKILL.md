@@ -78,16 +78,16 @@ Optimize for quality-adjusted token ROI. Keep stable prefix context across repea
 ## Rules
 
 ```text
-VSAI.001 | MUST   | settings | use_only_supported_VS_Code_settings_unless_extension_contributes_configuration | enforce
-VSAI.002 | MUST   | verify   | verify_fast_moving_AI_setting_names_from_official_docs_before_new_guidance | enforce
-VSAI.003 | MUST   | skills   | use_chat.agentSkillsLocations_for_workspace_agent_skill_discovery | enforce
-VSAI.004 | MUST   | instr    | use_instruction_files_for_general_agent_guidance_when_supported | enforce
-VSAI.005 | MUST   | boundary | keep_private_downstream_context_out_of_public_Lattice | block
-VSAI.006 | SHOULD | context  | use_registry_or_index_first_then_selected_SKILL_md_then_routed_references | prefer
-VSAI.007 | SHOULD | exclude  | exclude_noisy_generated_or_bulk_context_from_search_and_watchers | prefer
-VSAI.008 | SHOULD | git      | use_explicit_git_scan_roots_for_narrow_multi_repo_workspaces | prefer
-VSAI.009 | NEVER  | custom   | leave_unknown_custom_setting_in_workspace_as_if_VS_Code_enforces_it | block
-VSAI.010 | NEVER  | privacy  | treat_search_exclude_or_watcher_exclude_as_a_security_boundary | block
+VSAI.001 | MUST   | settings | use only supported VS Code settings unless extension contributes configuration
+VSAI.002 | MUST   | verify   | verify fast-moving AI setting names from official docs before new guidance
+VSAI.003 | MUST   | skills   | use chat.agentSkillsLocations for workspace agent skill discovery
+VSAI.004 | MUST   | instr    | use instruction files for general agent guidance when supported
+VSAI.005 | MUST   | boundary | keep private downstream context out of public Lattice
+VSAI.006 | SHOULD | context  | use registry or index first, then selected SKILL.md, then routed references
+VSAI.007 | SHOULD | exclude  | exclude noisy generated or bulk context from search and watchers
+VSAI.008 | SHOULD | git      | use explicit git scan roots for narrow multi-repo workspaces
+VSAI.009 | NEVER  | custom   | leave unknown custom setting as if VS Code enforces it
+VSAI.010 | NEVER  | privacy  | treat search or watcher exclude as a security boundary
 ```
 
 ## Verification
@@ -107,7 +107,7 @@ Useful commands:
 ```powershell
 Get-Content <workspace.code-workspace> | ConvertFrom-Json | Out-Null
 git diff --check
-python scripts\validate_skill_package.py --root skills
+python3.14 scripts\validate_skill_package.py --root skills
 ```
 
 ## Failure Modes

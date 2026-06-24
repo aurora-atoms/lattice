@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fdh_lib import read_jsonl, records_by_type, stable_json, validate_records
+from fdh_lib import read_jsonl, records_by_type, stable_json, validate_records, write_text_lf
 
 
 def metric_text(metric: dict[str, Any]) -> str:
@@ -167,13 +167,11 @@ def main() -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     if args.out_md:
-        Path(args.out_md).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.out_md).write_text(markdown, encoding="utf-8", newline="\n")
+        write_text_lf(Path(args.out_md), markdown)
     else:
         print(markdown)
     if args.out_jsonl:
-        Path(args.out_jsonl).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.out_jsonl).write_text(stable_json(record) + "\n", encoding="utf-8", newline="\n")
+        write_text_lf(Path(args.out_jsonl), stable_json(record) + "\n")
     return 0
 
 

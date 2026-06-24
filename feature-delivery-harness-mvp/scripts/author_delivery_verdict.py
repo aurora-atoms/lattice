@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fdh_lib import list_value, read_jsonl, records_by_type, stable_json, validate_records
+from fdh_lib import list_value, read_jsonl, records_by_type, stable_json, validate_records, write_text_lf
 
 
 VERDICT_ORDER = ["usable", "requires_human_review", "insufficient_evidence", "not_user_usable", "blocked"]
@@ -175,8 +175,7 @@ def main() -> int:
         return 2
     output = stable_json(verdict) + "\n"
     if args.out:
-        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.out).write_text(output, encoding="utf-8", newline="\n")
+        write_text_lf(Path(args.out), output)
     else:
         print(output, end="")
     return 0

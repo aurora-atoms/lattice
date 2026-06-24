@@ -10,7 +10,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from fdh_lib import list_value, read_jsonl, records_by_type, stable_json
+from fdh_lib import list_value, read_jsonl, records_by_type, stable_json, write_text_lf
 
 
 def token_cost(value: int | None, source_ref: str) -> dict[str, Any]:
@@ -50,25 +50,52 @@ def detect(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     all_payloads = [record.get("payload", {}) for record in records]
     max_context = max([int(payload.get("context_token_count", 0) or 0) for payload in all_payloads] + [0])
     if max_context > 24000 or any(code in failures for code in ("RAW_CONTEXT_FORBIDDEN", "TOKEN_BUDGET_EXCEEDED", "SCOPE_TOO_LARGE")):
-        emitted.append(waste_record(case_id, "oversized_context", "error", ["validation_context_budget"], "Project raw sources into a bounded context pack before model-visible use.", max_context - 24000 if max_context > 24000 else None))
+        evidence_refs = [
+            str(record.get("id"))
+            for record in records
+            if int(record.get("payload", {}).get("context_token_count", 0) or 0) > 24000
+            or any(code in list_value(record.get("payload", {}).get("failure_codes")) for code in ("RAW_CONTEXT_FORBIDDEN", "TOKEN_BUDGET_EXCEEDED", "SCOPE_TOO_LARGE"))
+        ]
+        emitted.append(waste_record(case_id, "oversized_context", "error", evidence_refs, "Project raw sources into a bounded context pack before model-visible use.", max_context - 24000 if max_context > 24000 else None))
 
     context_refs = [ref for payload in all_payloads for ref in list_value(payload.get("context_refs"))]
     repeated_refs = [ref for ref, count in Counter(context_refs).items() if count > 1]
     if repeated_refs:
-        emitted.append(waste_record(case_id, "repeated_context_read", "warning", repeated_refs, "Reuse the existing bounded context pack instead of rereading the same source.", None))
+        evidence_refs = [
+            str(record.get("id"))
+            for record in records
+            if set(repeated_refs).intersection(str(ref) for ref in list_value(record.get("payload", {}).get("context_refs")))
+        ]
+        emitted.append(waste_record(case_id, "repeated_context_read", "warning", evidence_refs, "Reuse the existing bounded context pack instead of rereading the same source.", None))
 
     fingerprints = [fp for payload in all_payloads for fp in list_value(payload.get("analysis_fingerprints"))]
     duplicate_fps = [fp for fp, count in Counter(fingerprints).items() if count > 1]
     if duplicate_fps:
-        emitted.append(waste_record(case_id, "duplicate_analysis", "warning", duplicate_fps, "Collapse duplicate analysis into one cited conclusion.", None))
+        evidence_refs = [
+            str(record.get("id"))
+            for record in records
+            if set(duplicate_fps).intersection(str(fp) for fp in list_value(record.get("payload", {}).get("analysis_fingerprints")))
+        ]
+        emitted.append(waste_record(case_id, "duplicate_analysis", "warning", evidence_refs, "Collapse duplicate analysis into one cited conclusion.", None))
 
     repair_attempts = max([int(payload.get("repair_attempts", 0) or 0) for payload in all_payloads] + [0])
     if repair_attempts >= 2 or "ACCEPTANCE_FAILED" in failures:
-        emitted.append(waste_record(case_id, "failed_repair_loop", "error", ["validation_acceptance"], "Stop repair loops and return to task packet scope or acceptance criteria.", None))
+        evidence_refs = [
+            str(record.get("id"))
+            for record in records
+            if int(record.get("payload", {}).get("repair_attempts", 0) or 0) >= 2
+            or "ACCEPTANCE_FAILED" in list_value(record.get("payload", {}).get("failure_codes"))
+        ]
+        emitted.append(waste_record(case_id, "failed_repair_loop", "error", evidence_refs, "Stop repair loops and return to task packet scope or acceptance criteria.", None))
 
     review_iterations = max([int(payload.get("review_iterations", 0) or 0) for payload in all_payloads] + [0])
     if review_iterations >= 2:
-        emitted.append(waste_record(case_id, "review_loop_without_progress", "warning", ["review_iterations"], "Require a new evidence item or decision before another review pass.", None))
+        evidence_refs = [
+            str(record.get("id"))
+            for record in records
+            if int(record.get("payload", {}).get("review_iterations", 0) or 0) >= 2
+        ]
+        emitted.append(waste_record(case_id, "review_loop_without_progress", "warning", evidence_refs, "Require a new evidence item or decision before another review pass.", None))
     return emitted
 
 
@@ -85,7 +112,7 @@ def main() -> int:
         return 2
     output = [stable_json(record) for record in detect(records)]
     if args.out:
-        Path(args.out).write_text("\n".join(output) + ("\n" if output else ""), encoding="utf-8", newline="\n")
+        write_text_lf(Path(args.out), "\n".join(output) + ("\n" if output else ""))
     else:
         for line in output:
             print(line)

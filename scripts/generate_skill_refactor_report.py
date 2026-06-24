@@ -128,7 +128,8 @@ def main() -> int:
             if record.get("risk_flags")
         ] if any(record.get("risk_flags") for record in records) else []),
     ]
-    out.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    with out.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write("\n".join(lines))
     print(f"wrote report for {len(records)} skill records to {out}")
     return 0
 

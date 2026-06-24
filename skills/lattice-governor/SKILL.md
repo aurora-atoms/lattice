@@ -34,7 +34,7 @@ Expected outputs include public-safe skill designs, optimized SKILL.md control p
 ## Workflow
 
 1. Confirm the task is public Lattice skill/context governance.
-2. Query_ConPort_MCP_before_loading_or_searching_full_skill_text when ConPort is available; otherwise read targeted repo files before broad search.
+2. Query ConPort MCP before loading or searching full skill text when ConPort is available; otherwise read targeted repo files before broad search.
 3. Identify the context layer: instruction, skill, reference, schema, eval, script, registry, event log, or report.
 4. Inventory the target package with existing Lattice scripts when practical.
 5. Classify each artifact as control plane, long reference, deterministic script, schema, eval, asset, runtime log, or report.
@@ -48,22 +48,19 @@ Expected outputs include public-safe skill designs, optimized SKILL.md control p
 
 ## Rules
 
-LATGOV.001 | MUST  | boundary | keep_lattice_public_generic_and_free_of_private_project_context | block
-LATGOV.002 | MUST  | trigger  | keep_description_as_primary_trigger_and_boundary_surface | enforce
-LATGOV.003 | MUST  | skill    | keep_SKILL_md_as_compact_control_plane_not_knowledge_dump | enforce
-LATGOV.004 | MUST  | quality  | preserve_behavior_safety_rejection_and_failure_rules_before_token_reduction | enforce
-LATGOV.005 | MUST  | token    | optimize_for_quality_adjusted_output_per_token_cost | enforce
-LATGOV.006 | SHOULD | prompt   | use_stable_prefix_for_batch_refactor_and_eval_runs | prefer
-LATGOV.007 | SHOULD | refs     | use_topic_scoped_references_for_long_background_and_examples | prefer
-LATGOV.008 | SHOULD | scripts  | move_repeatable_fragile_operations_to_tested_scripts | prefer
-LATGOV.009 | MUST  | eval     | require_positive_and_negative_trigger_cases_for_reusable_skills | enforce
-LATGOV.010 | MUST  | eval     | compare_output_against_baseline_or_previous_version_before_active_promotion | enforce
-LATGOV.011 | NEVER | privacy  | copy_private_downstream_skill_content_or_context_into_lattice | block
-LATGOV.012 | NEVER | logs     | store_runtime_logs_raw_transcripts_or_bulk_telemetry_as_markdown_context | block
-LATGOV.013 | MUST  | registry | mark_ambiguous_or_unsafe_skill_changes_as_review_needed | enforce
-
-Stable prefix: public Lattice identity, non-goals, frontmatter policy, description trigger rules, registry/eval contracts, token ROI rule, and validation gates. Dynamic suffix: target skill path, inventory row, validator output, source excerpts, and requested patch.
-
+LATGOV.001 | MUST  | boundary | keep Lattice public, generic, free of private project context
+LATGOV.002 | MUST  | trigger  | description is primary trigger + boundary
+LATGOV.003 | MUST  | skill    | keep SKILL.md compact control plane, not knowledge dump
+LATGOV.004 | MUST  | quality  | preserve behavior, safety, rejection, failure rules before token reduction
+LATGOV.005 | MUST  | token    | optimize quality-adjusted output per token cost
+LATGOV.006 | SHOULD | prompt   | use stable prefix for batch refactor + eval runs
+LATGOV.007 | SHOULD | refs     | use topic-scoped references for long background + examples
+LATGOV.008 | SHOULD | scripts  | move repeatable fragile operations to tested scripts
+LATGOV.009 | MUST  | eval     | require positive + negative trigger cases for reusable skills
+LATGOV.010 | MUST  | eval     | compare output to baseline or previous version before active promotion
+LATGOV.011 | NEVER | privacy  | copy private downstream skill content or context into Lattice
+LATGOV.012 | NEVER | logs     | store unprojected runtime telemetry, conversation dumps, or bulk traces as Markdown context
+LATGOV.013 | MUST  | registry | mark ambiguous or unsafe skill changes as review_needed
 ## Reference Routing
 
 Consult only the smallest relevant file first.
@@ -84,10 +81,10 @@ References carry detail for these surfaced hard-rule groups: lifecycle/registry 
 Run relevant public Lattice checks when practical:
 
 ```bash
-python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
-python scripts/validate_skill_package.py --root skills
-python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
-python scripts/estimate_skill_tokens.py --root skills
+python3.14 scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+python3.14 scripts/validate_skill_package.py --root skills
+python3.14 scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
+python3.14 scripts/estimate_skill_tokens.py --root skills
 ```
 
 For a changed reusable skill, also verify:

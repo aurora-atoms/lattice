@@ -48,15 +48,15 @@ validation report
 
 ## Rules
 
-FRONT.001 | MUST  | skill | preserve_existing_frontmatter_schema | enforce
-FRONT.008 | MUST  | skill | put_when_to_use_and_when_not_to_use_guidance_inside_description | enforce
-CONPORT.001 | MUST | retrieval | query_ConPort_MCP_before_loading_or_searching_full_skill_text | enforce
-READ.001 | MUST  | skill | prioritize_machine_readability_over_human_readability_in_control_planes | enforce
-TOK.001 | MUST  | quality | preserve_quality_and_behavior_before_token_reduction | enforce
-TOK.002 | MUST  | metric | define_token_efficiency_as_quality_adjusted_output_per_token_cost | enforce
-CACHE.001 | MUST | prompt | keep_system_prompt_prefix_stable_across_batch_skill_rewrite_runs | enforce
-DATA.001 | MUST  | validation | preserve_required_column_rejection_behavior | enforce
-DATA.002 | NEVER | cleanup | delete_rows_unless_source_rules_explicitly_allow_it | block
+FRONT.001 | MUST  | skill | preserve existing frontmatter schema
+FRONT.008 | MUST  | skill | put use + do-not-use guidance inside description
+CONPORT.001 | MUST | retrieval | query ConPort MCP before loading or searching full skill text
+READ.001 | MUST  | skill | prioritize machine readability over human readability in control planes
+TOK.001 | MUST  | quality | preserve quality + behavior before token reduction
+TOK.002 | MUST  | metric | define token efficiency as quality-adjusted output per token cost
+CACHE.001 | MUST | prompt | keep system prompt prefix stable across batch skill rewrite runs
+DATA.001 | MUST  | validation | preserve required column rejection behavior
+DATA.002 | NEVER | cleanup | delete rows unless source rules explicitly allow it
 
 ## References
 

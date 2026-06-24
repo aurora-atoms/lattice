@@ -38,11 +38,11 @@ hardening_rules:
 Passing acceptance commands:
 
 ```text
-python feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
-python feature-delivery-harness-mvp\scripts\run_mvp_evals.py
-python feature-delivery-harness-mvp\scripts\build_context_pack.py feature-delivery-harness-mvp\evals\good_feature_case_001\input.jsonl --out feature-delivery-harness-mvp\reports\generated\good_feature_case_001.context_pack.jsonl
-python feature-delivery-harness-mvp\scripts\validate_jsonl.py feature-delivery-harness-mvp\reports\generated\good_feature_case_001.context_pack.jsonl
-python scripts\validate_skill_package.py --root skills
+python3.14 feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
+python3.14 feature-delivery-harness-mvp\scripts\run_mvp_evals.py
+python3.14 feature-delivery-harness-mvp\scripts\build_context_pack.py feature-delivery-harness-mvp\evals\good_feature_case_001\input.jsonl --out feature-delivery-harness-mvp\reports\generated\good_feature_case_001.context_pack.jsonl
+python3.14 feature-delivery-harness-mvp\scripts\validate_jsonl.py feature-delivery-harness-mvp\reports\generated\good_feature_case_001.context_pack.jsonl
+python3.14 scripts\validate_skill_package.py --root skills
 ```
 
 Expected-failure spot checks:
