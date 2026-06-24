@@ -60,13 +60,13 @@ claim ledger with evidence_refs or unknown status
 ## Rules
 
 ```text
-TED.001 | MUST  | role   | deliveryyield_is_economics_only | enforce
-TED.002 | MUST  | claims | every_material_claim_has_evidence_refs_or_unknown | enforce
-TED.003 | MUST  | status | preserve_unknown_estimated_provider_reported_known | enforce
-TED.004 | NEVER | role   | approve_delivery_override_verifier_execute_coding_route_models | block
-TED.005 | NEVER | input  | ingest_raw_OTel_logs_PR_traces_or_GraphDB_internals | block
-TED.006 | MUST  | tokens | optimize_quality_adjusted_token_ROI_not_blind_minimization | enforce
-TED.007 | MUST  | prompt | keep stable prefix and put variable records in suffix | enforce
+TED.001 | MUST  | role   | DeliveryYield is economics only
+TED.002 | MUST  | claims | material claims cite evidence_refs or unknown
+TED.003 | MUST  | status | preserve unknown/estimated/provider_reported/known
+TED.004 | NEVER | role   | approve delivery, override verifier, code, route models
+TED.005 | NEVER | input  | ingest raw OTel logs, PR traces, GraphDB internals
+TED.006 | MUST  | tokens | optimize quality-adjusted token ROI, not blind minimization
+TED.007 | MUST  | prompt | keep stable prefix and put variable records in suffix
 ```
 
 ## Verification

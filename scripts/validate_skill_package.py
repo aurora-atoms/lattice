@@ -33,6 +33,31 @@ DISALLOWED_NEW_FRONTMATTER_KEYS = {
     "x-lattice",
 }
 
+RULE_LINE_RE = re.compile(r"(?m)^[A-Z][A-Z0-9_.-]+\.[0-9A-Z.]+\s*\|\s*(?:MUST|NEVER|SHOULD|MAY)\s*\|")
+
+ALLOWED_UNDERSCORE_TERMS = {
+    # Contract fields, frontmatter keys, enum values, and schema vocabulary.
+    "aggregation_semantics",
+    "allowed_tools",
+    "conport_unavailable",
+    "DISCARD_DUP",
+    "do_not_use_when",
+    "evidence_refs",
+    "expected_outputs",
+    "feature_delivery_case",
+    "insufficient_evidence",
+    "not_user_usable",
+    "provider_reported",
+    "required_inputs",
+    "retrieval_policy",
+    "review_needed",
+    "source_refs",
+    "source_verification_needed",
+    "time_behavior",
+    "token_policy",
+    "use_when",
+}
+
 
 def parse_frontmatter(text: str) -> dict[str, str]:
     if not text.startswith("---"):
@@ -103,6 +128,22 @@ def has_heading(text: str, heading: str) -> bool:
         if found == wanted or wanted in found:
             return True
     return False
+
+
+def rule_line_underscore_errors(text: str) -> list[str]:
+    errors: list[str] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if not RULE_LINE_RE.match(line):
+            continue
+        parts = [part.strip() for part in line.split("|")]
+        if len(parts) < 4:
+            continue
+        rule_text = parts[3]
+        for token in re.findall(r"\b[A-Za-z][A-Za-z0-9_]*_[A-Za-z0-9_]*\b", rule_text):
+            if token in ALLOWED_UNDERSCORE_TERMS or token.isupper():
+                continue
+            errors.append(f"rule line {line_number} uses non-contract underscore token: {token}")
+    return errors
 
 
 def find_skill_files(root: Path) -> list[Path]:
@@ -179,6 +220,7 @@ def validate_file(path: Path, baseline_frontmatter_keys: set[str] | None = None)
         warnings.append("deeply nested heading structure")
     if len(re.findall(r"(?m)^\s*[-*]\s+", text)) > 100:
         warnings.append("excessive repeated bullets")
+    errors.extend(rule_line_underscore_errors(text))
     if references_contain_hidden_rules(path, text):
         warnings.append("references may contain hard rules not surfaced in SKILL.md")
     if not has_conport_first_policy(text):

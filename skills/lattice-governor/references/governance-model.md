@@ -13,14 +13,11 @@ idea -> draft -> candidate -> experimental -> active -> deprecated -> archived
 
 ## Status Rules
 
-GOVPUB.001 | MUST  | lifecycle | generated_or_imported_skills_start_as_candidate_or_quarantine_not_active | enforce
-GOVPUB.002 | MUST  | active    | active_skills_pass_validator_trigger_eval_output_eval_and_boundary_review | enforce
-GOVPUB.003 | SHOULD | draft    | draft_skills_keep_examples_and_open_questions_in_references_not_SKILL_md | prefer
-GOVPUB.004 | MUST  | archive   | archived_skills_preserve_registry_history_and_last_known_reason | enforce
-GOVPUB.005 | NEVER | public    | publish_private_downstream_context_in_lattice | block
-
-## Registry Record
-
+GOVPUB.001 | MUST  | lifecycle | generated or imported skills start as candidate or quarantine, not active
+GOVPUB.002 | MUST  | active    | active skills pass validator, trigger eval, output eval, boundary review
+GOVPUB.003 | SHOULD | draft    | draft skills keep examples + open questions in references, not SKILL.md
+GOVPUB.004 | MUST  | archive   | archived skills preserve registry history + last known reason
+GOVPUB.005 | NEVER | public    | publish private downstream context in Lattice
 Each reusable skill SHOULD have a JSONL registry record with:
 
 ```text

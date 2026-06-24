@@ -57,12 +57,12 @@ evidence_needed
 ## Rules
 
 ```text
-FSA.001 | MUST  | output | feature_delivery_case_is_primary_value_unit | enforce
-FSA.002 | MUST  | quality | preserve_behavior_constraints_and_source_refs | enforce
-FSA.003 | MUST  | tokens | optimize_quality_adjusted_token_ROI_not_blind_minimization | enforce
-FSA.004 | NEVER | input  | include_raw_repo_jira_log_trace_pr_or_ci_dump | block
-FSA.005 | NEVER | role   | write_code_or_approve_delivery | block
-FSA.006 | MUST  | prompt | keep stable prefix and put variable requirement in suffix | enforce
+FSA.001 | MUST  | output | feature_delivery_case is primary value unit
+FSA.002 | MUST  | quality | preserve behavior constraints + source refs
+FSA.003 | MUST  | tokens | optimize quality-adjusted token ROI, not blind minimization
+FSA.004 | NEVER | input  | include raw repo/Jira/log/trace/PR/CI dump
+FSA.005 | NEVER | role   | write code or approve delivery
+FSA.006 | MUST  | prompt | keep stable prefix and put variable requirement in suffix
 ```
 
 ## Verification

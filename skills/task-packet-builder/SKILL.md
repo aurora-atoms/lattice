@@ -59,13 +59,13 @@ risk controls
 ## Rules
 
 ```text
-TPB.001 | MUST  | scope  | task_packet_has_bounded_target_files_or_areas | enforce
-TPB.002 | MUST  | safety | include_forbidden_changes_and_risk_controls | enforce
-TPB.003 | MUST  | verify | include_automated_and_user_usability_validation_when_code_changes | enforce
-TPB.004 | MUST  | evidence | include_evidence_requirements | enforce
-TPB.005 | NEVER | input  | include_raw_repo_jira_log_trace_pr_or_ci_dump | block
-TPB.006 | MUST  | tokens | optimize_quality_adjusted_token_ROI_not_blind_minimization | enforce
-TPB.007 | MUST  | prompt | keep stable prefix and put variable spec context in suffix | enforce
+TPB.001 | MUST  | scope  | task.packet has bounded target files or areas
+TPB.002 | MUST  | safety | include forbidden changes + risk controls
+TPB.003 | MUST  | verify | include automated + user usability validation when code changes
+TPB.004 | MUST  | evidence | include evidence requirements
+TPB.005 | NEVER | input  | include raw repo/Jira/log/trace/PR/CI dump
+TPB.006 | MUST  | tokens | optimize quality-adjusted token ROI, not blind minimization
+TPB.007 | MUST  | prompt | keep stable prefix and put variable spec context in suffix
 ```
 
 ## Verification

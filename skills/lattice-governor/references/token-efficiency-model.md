@@ -12,15 +12,12 @@ metadata description -> SKILL.md control plane -> targeted reference/schema/eval
 
 ## Context Placement
 
-TOKEN.001 | MUST  | skill      | keep_SKILL_md_as_control_plane_not_knowledge_dump | enforce
-TOKEN.002 | SHOULD | reference | move_background_examples_variants_and_rationale_to_topic_scoped_references | prefer
-TOKEN.003 | SHOULD | schema    | use_json_schema_or_structured_outputs_for_machine_boundaries | prefer
-TOKEN.004 | SHOULD | eval      | keep_eval_cases_machine_readable_and_small | prefer
-TOKEN.005 | NEVER | prompt    | dump_entire_skill_library_when_inventory_or_targeted_lookup_suffices | block
-TOKEN.006 | NEVER | rewrite   | reduce_tokens_by_deleting_safety_or_failure_behavior | block
-
-## Stable Prefix Pattern
-
+TOKEN.001 | MUST  | skill      | keep SKILL.md as control plane, not knowledge dump
+TOKEN.002 | SHOULD | reference | move background, examples, variants, rationale to topic-scoped references
+TOKEN.003 | SHOULD | schema    | use JSON Schema or Structured Outputs for machine boundaries
+TOKEN.004 | SHOULD | eval      | keep eval cases machine-readable + small
+TOKEN.005 | NEVER | prompt    | dump entire skill library when inventory or targeted lookup suffices
+TOKEN.006 | NEVER | rewrite   | reduce tokens by deleting safety or failure behavior
 Use stable prefix content for repeated batch work:
 
 ```text

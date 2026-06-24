@@ -16,5 +16,42 @@ jobs:
         run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
       - name: Validate skills
         run: python scripts/validate_skill_package.py --root skills
+      - name: Validate underscore prose rule
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmpdir="$(mktemp -d)"
+          mkdir -p "$tmpdir/bad"
+          cat > "$tmpdir/bad/SKILL.md" <<'EOF'
+          ---
+          name: bad-skill
+          description: "Use for markdown input to output package while preserving behavior and validation. Do not use for coding."
+          ---
+          # Bad Skill
+          ## Goal
+          Validate bad rule.
+          ## Use When
+          Markdown input.
+          ## Do Not Use When
+          Coding.
+          ## Inputs
+          markdown input
+          ## Outputs
+          package output
+          ## Workflow
+          1. Preserve behavior.
+          ## Rules
+          BAD.001 | MUST | test | preserve_behavior_constraints_and_source_refs
+          ## Verification
+          Run validator.
+          ## Failure Modes
+          review_needed
+          EOF
+          if python scripts/validate_skill_package.py --root "$tmpdir/bad" > "$tmpdir/out" 2>&1; then
+            cat "$tmpdir/out"
+            echo "Expected underscore prose slug validation to fail."
+            exit 1
+          fi
+          grep -q "uses non-contract underscore token" "$tmpdir/out"
       - name: Generate report
         run: python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
