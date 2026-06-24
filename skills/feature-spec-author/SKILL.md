@@ -68,7 +68,7 @@ FSA.006 | MUST  | prompt | keep stable prefix and put variable requirement in su
 ## Verification
 
 ```text
-python ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <feature-case.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <feature-case.jsonl>
 ```
 
 ## Failure Modes

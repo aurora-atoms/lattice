@@ -30,9 +30,9 @@ dependency_light_validation:
 Verified gates:
 
 ```text
-python feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
-python feature-delivery-harness-mvp\scripts\run_mvp_evals.py
-python scripts\validate_skill_package.py --root skills
+python3.14 feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
+python3.14 feature-delivery-harness-mvp\scripts\run_mvp_evals.py
+python3.14 scripts\validate_skill_package.py --root skills
 temporary malformed FDH JSONL smoke test -> INVALID_SCHEMA_VALUE
 temporary Power BI semantic specs smoke test -> OK: semantic specs are valid
 ```

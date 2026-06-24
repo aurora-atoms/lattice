@@ -84,10 +84,10 @@ References carry detail for these surfaced hard-rule groups: lifecycle/registry 
 Run relevant public Lattice checks when practical:
 
 ```bash
-python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
-python scripts/validate_skill_package.py --root skills
-python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
-python scripts/estimate_skill_tokens.py --root skills
+python3.14 scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+python3.14 scripts/validate_skill_package.py --root skills
+python3.14 scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
+python3.14 scripts/estimate_skill_tokens.py --root skills
 ```
 
 For a changed reusable skill, also verify:

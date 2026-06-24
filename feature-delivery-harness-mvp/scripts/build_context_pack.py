@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fdh_lib import read_jsonl, stable_json, validate_records
+from fdh_lib import read_jsonl, stable_json, validate_records, write_text_lf
 
 
 def estimate_tokens(text: str) -> int:
@@ -88,8 +88,7 @@ def main() -> int:
     context_pack = build_context_pack(records, args.purpose, args.token_budget)
     output = stable_json(context_pack) + "\n"
     if args.out:
-        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.out).write_text(output, encoding="utf-8", newline="\n")
+        write_text_lf(Path(args.out), output)
     else:
         print(output, end="")
     return 0

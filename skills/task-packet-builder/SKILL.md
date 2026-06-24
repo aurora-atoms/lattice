@@ -71,8 +71,8 @@ TPB.007 | MUST  | prompt | keep stable prefix and put variable spec context in s
 ## Verification
 
 ```text
-python ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <task-packet.jsonl>
-python ../../feature-delivery-harness-mvp/scripts/validate_task_packet.py <task-packet.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <task-packet.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_task_packet.py <task-packet.jsonl>
 ```
 
 ## Failure Modes

@@ -52,9 +52,9 @@ contract_clarification:
 Passing acceptance commands:
 
 ```text
-python feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
-python feature-delivery-harness-mvp\scripts\run_mvp_evals.py
-python feature-delivery-harness-mvp\scripts\author_delivery_verdict.py feature-delivery-harness-mvp\evals\failed_delivery_case_001\input.jsonl --out feature-delivery-harness-mvp\reports\generated\failed_delivery_case_001.delivery_verdict.jsonl
-python feature-delivery-harness-mvp\scripts\validate_jsonl.py feature-delivery-harness-mvp\reports\generated\failed_delivery_case_001.delivery_verdict.jsonl
-python scripts\validate_skill_package.py --root skills
+python3.14 feature-delivery-harness-mvp\scripts\validate_contract_alignment.py
+python3.14 feature-delivery-harness-mvp\scripts\run_mvp_evals.py
+python3.14 feature-delivery-harness-mvp\scripts\author_delivery_verdict.py feature-delivery-harness-mvp\evals\failed_delivery_case_001\input.jsonl --out feature-delivery-harness-mvp\reports\generated\failed_delivery_case_001.delivery_verdict.jsonl
+python3.14 feature-delivery-harness-mvp\scripts\validate_jsonl.py feature-delivery-harness-mvp\reports\generated\failed_delivery_case_001.delivery_verdict.jsonl
+python3.14 scripts\validate_skill_package.py --root skills
 ```

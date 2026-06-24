@@ -41,6 +41,47 @@ def collect_waste_patterns(text: str) -> set[str]:
     return patterns
 
 
+def parse_jsonl_text(text: str) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        if not isinstance(record, dict):
+            raise ValueError("generated JSONL record is not an object")
+        records.append(record)
+    return records
+
+
+def declared_external_refs(records: list[dict[str, object]]) -> set[str]:
+    refs: set[str] = set()
+    for record in records:
+        constraints = record.get("constraints", {})
+        if isinstance(constraints, dict):
+            refs.update(str(ref) for ref in constraints.get("declared_external_refs", []))
+    return refs
+
+
+def unresolved_evidence_refs(generated: list[dict[str, object]], source_records: list[dict[str, object]]) -> set[str]:
+    known_refs = {str(record.get("id")) for record in source_records}
+    known_refs.update(declared_external_refs(source_records))
+    unresolved: set[str] = set()
+    for record in generated:
+        payload = record.get("payload", {})
+        if not isinstance(payload, dict):
+            continue
+        for ref in payload.get("evidence_refs", []):
+            if str(ref) not in known_refs:
+                unresolved.add(str(ref))
+    return unresolved
+
+
+def write_temp_jsonl(text: str) -> Path:
+    with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8", newline="\n", suffix=".jsonl") as temp:
+        temp.write(text)
+        return Path(temp.name)
+
+
 def read_single_jsonl(path: Path) -> dict[str, object]:
     lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     if len(lines) != 1:
@@ -121,6 +162,26 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
     if waste_result.returncode != 0:
         ok = False
         notes.append(f"detect_waste_patterns exit {waste_result.returncode}: {waste_result.stderr.strip()}")
+    if waste_result.stdout.strip():
+        temp_waste: Path | None = None
+        try:
+            waste_records = parse_jsonl_text(waste_result.stdout)
+            source_records = parse_jsonl_text(input_path.read_text(encoding="utf-8"))
+            unresolved_refs = unresolved_evidence_refs(waste_records, source_records)
+            if unresolved_refs:
+                ok = False
+                notes.append("unresolved waste evidence refs: " + ", ".join(sorted(unresolved_refs)))
+            temp_waste = write_temp_jsonl(waste_result.stdout)
+            validate_waste = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(temp_waste)])
+            if validate_waste.returncode != 0:
+                ok = False
+                notes.append(f"waste JSONL validation exit {validate_waste.returncode}: {validate_waste.stderr.strip()}")
+        except Exception as exc:
+            ok = False
+            notes.append(f"waste JSONL readback failed: {exc}")
+        finally:
+            if temp_waste is not None:
+                temp_waste.unlink(missing_ok=True)
     missing_waste = waste_expected - actual_waste
     if missing_waste:
         ok = False

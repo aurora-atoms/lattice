@@ -72,8 +72,8 @@ TED.007 | MUST  | prompt | keep stable prefix and put variable records in suffix
 ## Verification
 
 ```text
-python ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <input.jsonl>
-python ../../feature-delivery-harness-mvp/scripts/generate_token_economics_dossier.py <input.jsonl> --out-md <dossier.md> --out-jsonl <dossier.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <input.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/generate_token_economics_dossier.py <input.jsonl> --out-md <dossier.md> --out-jsonl <dossier.jsonl>
 ```
 
 ## Failure Modes

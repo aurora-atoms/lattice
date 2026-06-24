@@ -107,7 +107,7 @@ Useful commands:
 ```powershell
 Get-Content <workspace.code-workspace> | ConvertFrom-Json | Out-Null
 git diff --check
-python scripts\validate_skill_package.py --root skills
+python3.14 scripts\validate_skill_package.py --root skills
 ```
 
 ## Failure Modes

@@ -457,6 +457,12 @@ def stable_json(record: dict[str, Any]) -> str:
     return json.dumps(record, sort_keys=True, separators=(",", ":"))
 
 
+def write_text_lf(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
 def records_by_type(records: list[dict[str, Any]], record_type: str) -> list[dict[str, Any]]:
     return [record for record in records if record.get("type") == record_type]
 

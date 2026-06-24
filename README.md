@@ -76,16 +76,18 @@ Local scripts remain dependency-light and work without ConPort.
 
 ## Quickstart
 
+Recommended interpreter: Python 3.14.6.
+
 ```bash
-python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
-python scripts/validate_skill_package.py --root skills
-python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
+python3.14 scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+python3.14 scripts/validate_skill_package.py --root skills
+python3.14 scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
 ```
 
 Optional token estimate:
 
 ```bash
-python scripts/estimate_skill_tokens.py --root skills
+python3.14 scripts/estimate_skill_tokens.py --root skills
 ```
 
 ## Registry

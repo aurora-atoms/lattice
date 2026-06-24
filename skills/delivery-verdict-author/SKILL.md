@@ -75,9 +75,9 @@ DVA.009 | MUST  | blocked  | blocked_dependency_means_blocked | enforce
 ## Verification
 
 ```text
-python ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <delivery-evidence.jsonl>
-python ../../feature-delivery-harness-mvp/scripts/author_delivery_verdict.py <input.jsonl> --out <delivery-verdict.jsonl>
-python ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <delivery-verdict.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <delivery-evidence.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/author_delivery_verdict.py <input.jsonl> --out <delivery-verdict.jsonl>
+python3.14 ../../feature-delivery-harness-mvp/scripts/validate_jsonl.py <delivery-verdict.jsonl>
 ```
 
 ## Failure Modes
