@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/knowledge-pack.record.v1.schema.json",
+  "title": "Lattice Knowledge Pack Record v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "pack_id",
+    "name",
+    "status",
+    "description",
+    "paths",
+    "data_classification",
+    "load"
+  ],
+  "properties": {
+    "pack_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "paths": {
+      "type": "array"
+    },
+    "data_classification": {
+      "type": "string"
+    },
+    "load": {
+      "type": "string",
+      "enum": [
+        "eager",
+        "on_demand"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"release_id":"capability-control-plane-mvp-seed","status":"draft","summary":"Seed public capability-control-plane registries, generic agents, schemas, and validators.","records":["agents.index.jsonl","capabilities.index.jsonl","mcp_servers.index.jsonl","knowledge_packs.index.jsonl","workspace_templates.index.jsonl"]}

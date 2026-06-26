@@ -1,0 +1,76 @@
+{
+  "id": "pr-reviewer@1.0.0",
+  "name": "pr-reviewer",
+  "description": "Review pull requests for correctness, security, missing tests, regression risk, and maintainability.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "pr-reviewer",
+  "scope": {
+    "allowed": [
+      "user",
+      "project"
+    ]
+  },
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {
+    "path": "agents/pr-reviewer/pr-reviewer.agent.md",
+    "format": "markdown",
+    "hash_required": true
+  },
+  "skills": [
+    {
+      "skill_id": "lattice-governor",
+      "required": false,
+      "implicit": false
+    }
+  ],
+  "mcp": [
+    {
+      "mcp_id": "github-readonly@1.0.0",
+      "toolsets": [
+        "pull_requests",
+        "repository_read",
+        "code_scanning"
+      ],
+      "approval": {
+        "read": "auto",
+        "write": "prompt",
+        "destructive": "deny"
+      }
+    }
+  ],
+  "knowledge": [],
+  "token_budget": {
+    "max_instruction_chars": 6000,
+    "max_skill_catalog_chars": 8000,
+    "max_active_mcp_tools": 25,
+    "max_knowledge_index_items": 20
+  },
+  "cache": {
+    "deterministic_order": true,
+    "no_timestamps": true,
+    "no_random_ids": true,
+    "no_absolute_local_paths": true,
+    "agent_hash_required": true
+  },
+  "install": {
+    "targets": [
+      "codex",
+      "github-copilot"
+    ],
+    "scopes": [
+      "user",
+      "project"
+    ],
+    "project_install_preferred": true
+  },
+  "telemetry": {
+    "record_agent_hash": true,
+    "record_selected_skills": true,
+    "record_selected_mcp_tools": true,
+    "record_selected_knowledge_packs": true,
+    "record_prompt_tokens_when_available": true,
+    "record_cached_tokens_when_available": true
+  }
+}

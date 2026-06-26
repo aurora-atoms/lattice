@@ -1,0 +1,1 @@
+{"mcp_id":"github-readonly@1.0.0","name":"github-readonly","status":"experimental","runtime_targets":["codex","github-copilot"],"toolsets":["pull_requests","repository_read","code_scanning"],"approval":{"read":"auto","write":"prompt","destructive":"deny"},"risk_level":"medium","notes":"Generic GitHub MCP profile for read-oriented pull request and repository review workflows."}

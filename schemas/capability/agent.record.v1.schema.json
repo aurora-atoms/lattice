@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/agent.record.v1.schema.json",
+  "title": "Lattice Agent Record v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "id",
+    "name",
+    "description",
+    "owner",
+    "status",
+    "role",
+    "scope",
+    "risk_level",
+    "data_classification",
+    "instruction_source",
+    "skills",
+    "mcp",
+    "knowledge",
+    "token_budget",
+    "cache",
+    "install",
+    "telemetry"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 30
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "experimental",
+        "active",
+        "deprecated",
+        "archived"
+      ]
+    },
+    "role": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "allowed"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "global",
+              "user",
+              "project"
+            ]
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "restricted"
+      ]
+    },
+    "instruction_source": {
+      "type": "object",
+      "required": [
+        "path",
+        "format",
+        "hash_required"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "markdown"
+          ]
+        },
+        "hash_required": {
+          "const": true
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "skill_id",
+          "required"
+        ],
+        "properties": {
+          "skill_id": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "implicit": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "mcp_id",
+          "toolsets",
+          "approval"
+        ],
+        "properties": {
+          "mcp_id": {
+            "type": "string"
+          },
+          "toolsets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "approval": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "knowledge": {
+      "type": "array"
+    },
+    "token_budget": {
+      "type": "object"
+    },
+    "cache": {
+      "type": "object",
+      "required": [
+        "deterministic_order",
+        "no_timestamps",
+        "no_random_ids",
+        "no_absolute_local_paths",
+        "agent_hash_required"
+      ]
+    },
+    "install": {
+      "type": "object",
+      "required": [
+        "targets",
+        "scopes"
+      ]
+    },
+    "telemetry": {
+      "type": "object"
+    }
+  }
+}

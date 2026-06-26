@@ -1,0 +1,36 @@
+{
+  "id": "pr-review-template@1.0.0",
+  "task_type": "pull_request_review",
+  "repo_scope": {
+    "folders": [
+      "."
+    ],
+    "private_context_allowed": false
+  },
+  "agents": [
+    "pr-reviewer@1.0.0"
+  ],
+  "skills": [
+    "lattice-governor"
+  ],
+  "mcp": [
+    "github-readonly@1.0.0"
+  ],
+  "knowledge": [
+    "lattice-public-standards@1.0.0"
+  ],
+  "instructions": [],
+  "source_control": {
+    "git.autoRepositoryDetection": "subFolders",
+    "git.openRepositoryInParentFolders": "never"
+  },
+  "excludes": [
+    ".git",
+    "reports/generated"
+  ],
+  "validation": [
+    "python scripts/validate_agent.py --root .",
+    "python scripts/validate_workspace_manifest.py workspaces/templates/pr-review-template.json --root .",
+    "python scripts/validate_mcp_registry.py --root ."
+  ]
+}
