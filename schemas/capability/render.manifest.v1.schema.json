@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/render.manifest.v1.schema.json",
+  "title": "Lattice Render Manifest v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "target_runtime",
+    "install_scope",
+    "generated_files",
+    "render_hash",
+    "warnings"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "agent_hash": {
+      "type": "string"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "workspace_hash": {
+      "type": "string"
+    },
+    "target_runtime": {
+      "type": "string"
+    },
+    "install_scope": {
+      "type": "string"
+    },
+    "generated_files": {
+      "type": "array"
+    },
+    "render_hash": {
+      "type": "string"
+    },
+    "selected_skills": {
+      "type": "array"
+    },
+    "selected_mcp": {
+      "type": "array"
+    },
+    "selected_knowledge": {
+      "type": "array"
+    },
+    "warnings": {
+      "type": "array"
+    }
+  }
+}

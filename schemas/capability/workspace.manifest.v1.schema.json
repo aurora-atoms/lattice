@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/workspace.manifest.v1.schema.json",
+  "title": "Lattice Workspace Manifest v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "id",
+    "task_type",
+    "repo_scope",
+    "agents",
+    "skills",
+    "mcp",
+    "knowledge",
+    "instructions",
+    "source_control",
+    "excludes",
+    "validation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string"
+    },
+    "repo_scope": {
+      "type": "object"
+    },
+    "agents": {
+      "type": "array"
+    },
+    "skills": {
+      "type": "array"
+    },
+    "mcp": {
+      "type": "array"
+    },
+    "knowledge": {
+      "type": "array"
+    },
+    "instructions": {
+      "type": "array"
+    },
+    "source_control": {
+      "type": "object"
+    },
+    "excludes": {
+      "type": "array"
+    },
+    "validation": {
+      "type": "array"
+    }
+  }
+}

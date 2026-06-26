@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/mcp.record.v1.schema.json",
+  "title": "Lattice MCP Record v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "mcp_id",
+    "name",
+    "status",
+    "runtime_targets",
+    "toolsets",
+    "approval",
+    "risk_level"
+  ],
+  "properties": {
+    "mcp_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "runtime_targets": {
+      "type": "array"
+    },
+    "toolsets": {
+      "type": "array",
+      "minItems": 1
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "read",
+        "write",
+        "destructive"
+      ]
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    }
+  }
+}

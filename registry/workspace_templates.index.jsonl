@@ -1,0 +1,1 @@
+{"workspace_id":"pr-review-template@1.0.0","path":"workspaces/templates/pr-review-template.json","status":"experimental","task_type":"pull_request_review","agents":["pr-reviewer@1.0.0"],"skills":["lattice-governor"],"runtime_targets":["codex","github-copilot","vscode"],"install_scopes":["project"],"public_export_allowed":true}

@@ -1,0 +1,1 @@
+{"pack_id":"lattice-public-standards@1.0.0","name":"lattice-public-standards","status":"experimental","description":"Public Lattice standards and schemas for capability control-plane work.","paths":["docs/skill_format_policy.md","schemas/capability"],"data_classification":"public","load":"on_demand","runtime_targets":["codex","github-copilot"]}

@@ -1,0 +1,62 @@
+{
+  "id": "python-expert@1.0.0",
+  "name": "python-expert",
+  "description": "Implement, review, and refactor Python code with focused tests and repository-local conventions.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "python-expert",
+  "scope": {
+    "allowed": [
+      "user",
+      "project"
+    ]
+  },
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {
+    "path": "agents/python-expert/python-expert.agent.md",
+    "format": "markdown",
+    "hash_required": true
+  },
+  "skills": [
+    {
+      "skill_id": "skill-token-refactor",
+      "required": false,
+      "implicit": false
+    }
+  ],
+  "mcp": [],
+  "knowledge": [],
+  "token_budget": {
+    "max_instruction_chars": 6000,
+    "max_skill_catalog_chars": 8000,
+    "max_active_mcp_tools": 15,
+    "max_knowledge_index_items": 20
+  },
+  "cache": {
+    "deterministic_order": true,
+    "no_timestamps": true,
+    "no_random_ids": true,
+    "no_absolute_local_paths": true,
+    "agent_hash_required": true
+  },
+  "install": {
+    "targets": [
+      "codex",
+      "github-copilot"
+    ],
+    "scopes": [
+      "user",
+      "project"
+    ],
+    "project_install_preferred": true
+  },
+  "telemetry": {
+    "record_agent_hash": true,
+    "record_selected_skills": true,
+    "record_selected_mcp_tools": true,
+    "record_selected_knowledge_packs": true,
+    "record_prompt_tokens_when_available": true,
+    "record_cached_tokens_when_available": true
+  }
+}
