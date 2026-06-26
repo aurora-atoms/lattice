@@ -18,6 +18,7 @@ from capability_utils import (
     is_relative_repo_path,
     knowledge_ids,
     load_json,
+    load_jsonl,
     mcp_ids,
     skill_ids,
     stable_text_issues,
@@ -110,6 +111,58 @@ def validate_record(path: Path, root: Path) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
+def validate_agent_index(root: Path, records_by_id: dict[str, dict[str, object]]) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    seen: set[str] = set()
+    index_path = root / "registry" / "agents.index.jsonl"
+    for row_number, row in enumerate(load_jsonl(index_path), start=1):
+        row_label = f"registry/agents.index.jsonl:{row_number}"
+        agent_id = str(row.get("id", ""))
+        if not agent_id:
+            errors.append(f"{row_label}: missing id")
+            continue
+        if agent_id in seen:
+            errors.append(f"{row_label}: duplicate agent id: {agent_id}")
+        seen.add(agent_id)
+
+        for field in ["id", "name", "path", "instruction_path", "status", "owner", "role", "risk_level", "runtime_targets", "install_scopes"]:
+            if field not in row:
+                errors.append(f"{row_label}: missing required field: {field}")
+
+        record_path_value = str(row.get("path", ""))
+        instruction_path_value = str(row.get("instruction_path", ""))
+        if not is_relative_repo_path(record_path_value):
+            errors.append(f"{row_label}: path must be a relative repo path")
+        if not is_relative_repo_path(instruction_path_value):
+            errors.append(f"{row_label}: instruction_path must be a relative repo path")
+
+        record_path = root / record_path_value
+        instruction_path = root / instruction_path_value
+        if not record_path.exists():
+            errors.append(f"{row_label}: agent record path missing: {record_path_value}")
+            continue
+        if not instruction_path.exists():
+            errors.append(f"{row_label}: instruction_path missing: {instruction_path_value}")
+
+        record = load_json(record_path)
+        if record.get("id") != agent_id:
+            errors.append(f"{row_label}: id does not match {record_path_value}")
+        if record.get("name") != row.get("name"):
+            errors.append(f"{row_label}: name does not match {record_path_value}")
+        source = record.get("instruction_source", {})
+        if isinstance(source, dict) and source.get("path") != instruction_path_value:
+            errors.append(f"{row_label}: instruction_path does not match instruction_source.path")
+        if agent_id not in records_by_id:
+            warnings.append(f"{row_label}: index row was not discovered from agents/**/agent.json")
+
+    for agent_id, record in records_by_id.items():
+        if agent_id not in seen:
+            warnings.append(f"{record.get('_path')}: agent record is not present in registry/agents.index.jsonl")
+
+    return errors, warnings
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=".", help="Lattice repo root.")
@@ -117,13 +170,22 @@ def main() -> int:
 
     root = Path(args.root).resolve()
     records = find_agent_records(root)
+    records_by_id: dict[str, dict[str, object]] = {}
     all_errors: list[str] = []
     all_warnings: list[str] = []
     for path in records:
+        record = load_json(path)
+        agent_id = str(record.get("id", ""))
+        if agent_id:
+            record["_path"] = str(path.relative_to(root))
+            records_by_id[agent_id] = record
         errors, warnings = validate_record(path, root)
         rel = path.relative_to(root)
         all_errors.extend(f"{rel}: {message}" for message in errors)
         all_warnings.extend(f"{rel}: {message}" for message in warnings)
+    errors, warnings = validate_agent_index(root, records_by_id)
+    all_errors.extend(errors)
+    all_warnings.extend(warnings)
 
     if all_warnings:
         print("Warnings:")

@@ -19,12 +19,7 @@
   "knowledge": [
     "lattice-public-standards@1.0.0"
   ],
-  "instructions": [
-    {
-      "path": ".github/instructions/pr-review.instructions.md",
-      "required": false
-    }
-  ],
+  "instructions": [],
   "source_control": {
     "git.autoRepositoryDetection": "subFolders",
     "git.openRepositoryInParentFolders": "never"
