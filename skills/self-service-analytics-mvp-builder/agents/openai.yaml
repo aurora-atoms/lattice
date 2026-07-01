@@ -1,0 +1,6 @@
+interface:
+  display_name: "Self-Service Analytics MVP Builder"
+  short_description: "Build scenario-specific analytics MVP plans, scaffolds, metrics, tenant security, and action loops."
+  default_prompt: "Build a practical self-service analytics MVP for this customer scenario. Keep scope narrow, define the metric contract, tenant model, embedded BI path, action loop, and first repo changes."
+  icon: "chart-line"
+  brand_color: "#2563eb"
