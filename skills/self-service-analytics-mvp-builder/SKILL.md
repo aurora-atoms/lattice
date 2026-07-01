@@ -1,142 +1,96 @@
 ---
 name: self-service-analytics-mvp-builder
-description: build or extend a code repository for a commercial, scenario-specific self-service analytics mvp. use when the user wants to turn a known customer/use case into a fast implementation plan, repo scaffold, fabric/power bi architecture, semantic model, embedded analytics design, multi-tenant security model, gold layer contract, action queue, insight feed, or mvp delivery checklist. optimized for microsoft fabric, power bi embedded, react/next.js, semantic models, rls, and productized analytics workflows.
+description: Build or extend a commercial, scenario-specific self-service analytics MVP. Use when a customer/use case is known and the user wants a practical plan, repo scaffold, Fabric/Power BI architecture, semantic model, embedded analytics design, tenant security model, Gold layer contract, action loop, or delivery checklist.
 ---
 
 # Self-service analytics MVP builder
 
-Use this skill to help create or extend a repo for a productized analytics MVP after the customer, paid scenario, and first use case are already known.
+Use after the customer segment, paid scenario, or first use case is known. Build a narrow decision product:
 
-## Core principle
-
-Do not design a generic BI platform. Build a narrow decision product:
-
-`business scenario -> metric contract -> gold layer -> semantic model -> embedded BI -> workflow/action loop -> telemetry`
-
-Optimize for speed, correctness, tenant safety, and commercial validation.
-
-## Default architecture
-
-Use this default unless the user gives a different stack:
-
-- Frontend: React or Next.js product shell.
-- Product database: PostgreSQL or Azure SQL for tenants, users, roles, configuration, notes, actions, audit logs, and metric metadata.
-- Data platform: Microsoft Fabric Lakehouse or Warehouse.
-- Transformation: Dataflow Gen2 and Fabric Pipeline first; Notebook/Spark only for complex logic.
-- BI: Power BI semantic model plus report pages; Direct Lake when using Fabric tables and performance needs justify it, Import for earliest prototypes, DirectQuery only when required.
-- Embedding: Power BI Embedded app-owns-data for SaaS/external customers; user-owns-data for internal enterprise scenarios.
-- Security: tenant_id/customer_id in every product-facing fact table, RLS by default, OLS only for sensitive columns/tables, workspace isolation for large or regulated customers.
-- AI: add after semantic model is stable; start with chart explanation, metric-change explanation, curated insight summaries, and rule-based recommendations.
-
-## First-response workflow
-
-When asked to implement, extend, or design a repo:
-
-1. Identify the scenario boundary:
-   - target user role
-   - first decision/job-to-be-done
-   - first 3-5 questions the product must answer
-   - first 5-10 metrics
-   - first 2-4 dimensions
-   - first action loop
-2. If the user has not provided these, make a best-effort placeholder instead of blocking unless the missing detail would make implementation impossible.
-3. Recommend an MVP scope that fits one vertical scenario, not a generic dashboard builder.
-4. Produce a repo-level implementation plan and file/module changes.
-5. Use `scripts/create_mvp_repo.py` when the user wants a scaffold or wants files added to an existing repo.
-
-## Repo creation workflow
-
-For a new or existing repo, follow this sequence:
-
-1. Create or update documentation first:
-   - product scope
-   - metric contract
-   - semantic model plan
-   - security/multi-tenancy plan
-   - delivery checklist
-2. Create product metadata and workflow storage:
-   - tenants
-   - users
-   - roles
-   - metric definitions
-   - saved views
-   - insights
-   - actions
-   - notes
-   - audit events
-3. Create analytics contracts:
-   - gold table contract
-   - metric definitions
-   - semantic model naming conventions
-   - RLS requirements
-4. Create app shell placeholders:
-   - dashboard route
-   - entity detail route
-   - action queue route
-   - admin/config route
-5. Add Power BI Embedded guidance:
-   - app-owns-data flow
-   - service principal/embed token boundary
-   - tenant filters/RLS mapping
-6. Add deployment and observability checklist:
-   - dev/test/prod environments
-   - refresh logs
-   - usage telemetry
-   - metric versioning
-   - semantic model versioning
-
-## Using the scaffold script
-
-Run the bundled script when the user wants starter files:
-
-```bash
-python scripts/create_mvp_repo.py --target /path/to/repo --scenario "usage intelligence" --mode extend
+```text
+scenario -> metric contract -> Gold layer -> semantic model -> embedded BI -> action loop -> telemetry
 ```
 
-Options:
+Optimize for validation, metric trust, tenant safety, and speed.
 
-- `--target`: repo root or target directory.
-- `--scenario`: short use case name.
-- `--mode new|extend`: use `extend` for existing repos.
-- `--force`: overwrite files created by the scaffold.
+## Priority Order
 
-After running it, inspect the generated files and explain what to customize next.
+1. Narrow the first decision loop.
+2. Make metrics explicit and versioned.
+3. Enforce tenant isolation from the first data contract.
+4. Store workflow state in the product app/database, not only Power BI.
+5. Ship a useful embedded experience before adding broad self-service or AI.
+6. Track refresh, usage, actions, and metric changes.
 
-## Critical design rules
+## First pass
 
-- Start from the business questions, not from available data tables.
+For any implementation or design request:
+
+1. Identify or assume: target role, one recurring decision, 3-5 business questions, 5-10 metrics, 2-4 dimensions, and one action loop.
+2. If details are missing, make plausible placeholders and mark them `TODO` unless the missing fact blocks implementation.
+3. Recommend the smallest feasible scope for one vertical scenario.
+4. Produce concrete repo/file changes or run the scaffold script when files are requested.
+
+Avoid long platform surveys. Explain alternatives only when they affect the immediate MVP decision.
+
+## Defaults
+
+Use unless the user specifies otherwise:
+
+- App: React or Next.js.
+- Product DB: PostgreSQL or Azure SQL for tenants, users, roles, configuration, workflow, audit, embed/usage events, and metric metadata.
+- Platform: Microsoft Fabric Lakehouse or Warehouse; Dataflow Gen2 and Pipelines first; Spark only for complex logic.
+- BI: Power BI semantic model and reports. Start Import; move to Direct Lake for Fabric scale; use DirectQuery only when required.
+- Embed: app-owns-data for SaaS/external customers; user-owns-data for internal enterprise.
+- Security: tenant key on every product-facing fact/snapshot, RLS by default, OLS only for sensitive objects, workspace isolation only when needed.
+- AI: defer until the semantic model is stable.
+
+## Build Sequence
+
+When creating or extending a repo, work in this order:
+
+1. Docs/contracts: product scope, metric contract, Gold layer contract, semantic model plan, security plan, delivery checklist.
+2. Product storage: tenants, users, roles, metric definitions, saved views, insights, actions, notes, audit, embed/usage events.
+3. Analytics contracts: Gold grain/columns, metrics, allowed dimensions, RLS fields, model naming, report page inventory.
+4. App shell: overview/dashboard, entity detail, action queue or insight feed, admin/configuration.
+5. Embed: backend token generation, app user -> tenant/role -> RLS mapping, report/page/filter boundaries.
+6. Validate: RLS test matrix, refresh/usage telemetry, metric/model versioning, demo path.
+
+## Scaffold script
+
+Use for starter files or a repo scaffold:
+
+```bash
+python3 scripts/create_mvp_repo.py --target /path/to/repo --scenario "usage intelligence" --mode extend
+```
+
+Options: `--target`, `--scenario`, `--mode new|extend`, `--force`. After running it, inspect generated files and summarize the next customization points.
+
+## Hard rules
+
+- Start from business questions, not available source tables.
 - Do not expose raw tables to business users.
-- Treat the semantic model as the product API for analytics.
-- Keep Gold tables page-oriented and decision-oriented.
-- Make every metric explicit: name, definition, grain, owner, source, refresh cadence, allowed dimensions, RLS impact, version.
-- Put `tenant_id` or equivalent isolation key into every product-facing fact table.
-- Separate product workflow data from analytics source data.
-- Do not put notes, tasks, comments, subscriptions, or audit logs only inside Power BI; store them in the product database.
-- Avoid unrestricted custom BI in v1. Offer filters, drill-through, configurable views, and certified model exploration first.
-- Add AI only on top of curated data and metric definitions.
-- Track product usage from day one.
+- Treat the semantic model as the analytics API; keep Gold tables decision-oriented and report/action-loop friendly.
+- Every metric needs name, definition, grain, owner, source, refresh cadence, allowed dimensions, RLS impact, and version.
+- Every product-facing fact/snapshot table needs a tenant/customer isolation key.
+- Store notes, tasks, comments, subscriptions, configuration, and audit logs in the product database.
+- Keep v1 self-service constrained: filters, drill-through, configurable views, and certified model exploration before custom BI.
+- Add AI only over curated metrics and governed semantic model metadata; track product usage from day one.
 
-## MVP output template
+## Response template
 
-When producing a plan, use this structure unless the user asks for another format:
+Use for plans unless a shorter answer or code edit is better:
 
-1. MVP boundary
-2. Architecture choice
-3. Repo changes
-4. Data model and Gold layer
-5. Semantic model and metrics
-6. Power BI/Embedded design
-7. Security and multi-tenancy
-8. Action loop and product workflow
-9. Observability and CI/CD
-10. Next implementation steps
+MVP boundary; architecture choice; repo changes; data and Gold layer; semantic model and metrics; embedded BI; security and multi-tenancy; action loop; observability; next steps.
 
-## References
+Keep sections brief and actionable.
 
-Load these only when relevant:
+## Reference routing
 
-- `references/mvp-workflow.md`: end-to-end build sequence and MVP scope control.
-- `references/repo-blueprint.md`: recommended repo structure and generated file purposes.
-- `references/semantic-model.md`: metric contract, semantic model, DAX and naming conventions.
-- `references/security-embedded.md`: Power BI Embedded, RLS, tenant isolation and workspace strategy.
-- `references/platform-decisions.md`: Fabric/Power BI implementation tradeoffs.
+Load only the reference needed for the current request:
+
+- `references/mvp-workflow.md`: scope control, build sequence, definition of done.
+- `references/repo-blueprint.md`: repo structure and generated file purposes.
+- `references/semantic-model.md`: metric contract, Gold tables, DAX/model naming, AI-ready metadata.
+- `references/security-embedded.md`: Power BI Embedded, RLS, tenant isolation, workspace strategy.
+- `references/platform-decisions.md`: Fabric, storage mode, transformation, environment, and cost tradeoffs.

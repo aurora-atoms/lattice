@@ -1,4 +1,6 @@
-# Platform decisions
+# Platform Decisions
+
+Use this reference only when the stack choice is still open or a Fabric/Power BI tradeoff affects the MVP.
 
 ## Fabric Lakehouse vs Warehouse
 
@@ -15,7 +17,7 @@ Use Warehouse when:
 - team is more comfortable with T-SQL
 - BI serving and relational modeling dominate
 
-Many MVPs can start with one serving pattern and evolve later. Avoid duplicating every table into both unless needed.
+Most MVPs should start with one serving pattern and evolve later. Avoid duplicating every table into both unless needed.
 
 ## Direct Lake vs Import vs DirectQuery
 
@@ -37,7 +39,7 @@ Use DirectQuery when:
 - freshness requirements are strict
 - source system can handle query load
 
-Do not default to DirectQuery for dashboards unless necessary.
+Do not default to DirectQuery for dashboards.
 
 ## Transformation defaults
 
@@ -68,4 +70,4 @@ Track:
 - report queries
 - data volume growth
 
-Capacity surprises can destroy SaaS margins. Do basic cost telemetry early.
+Capacity surprises can break SaaS margins. Add basic cost telemetry early.

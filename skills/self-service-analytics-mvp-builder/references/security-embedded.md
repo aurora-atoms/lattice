@@ -1,8 +1,8 @@
-# Security and embedded analytics
+# Security and Embedded Analytics
 
 ## Embedding modes
 
-Use `app owns data` for SaaS/customer-facing products. The app uses a service principal or embedding identity to generate embed tokens and passes the tenant/user context through RLS.
+Use `app owns data` for SaaS/customer-facing products. The backend generates embed tokens and passes tenant/user context through RLS.
 
 Use `user owns data` when users are employees who already have Power BI access and licensing.
 
@@ -14,7 +14,7 @@ Start with the simplest safe model:
 2. Dedicated workspace or semantic model for large customers with performance, customization, or security needs.
 3. Dedicated data store or tenant for regulated/high-compliance customers.
 
-Do not defer the isolation key. Put `tenant_id` or equivalent into every product-facing fact/snapshot table from v1.
+Do not defer the isolation key. Put `tenant_id` or equivalent into every product-facing fact/snapshot table in v1.
 
 ## RLS requirements
 
@@ -46,3 +46,4 @@ Keep token generation on the backend. Do not expose secrets or service principal
 - saved views cannot bypass RLS
 - embed token lifetime and refresh behavior are understood
 - audit logs capture user/report/action events
+- sample customer demo data is partitioned the same way as production data

@@ -1,8 +1,8 @@
-# Semantic model guidance
+# Semantic Model Guidance
 
 ## Model intent
 
-The semantic model is the analytics API. Business users, reports, embedded analytics, and AI assistants should consume the semantic model rather than raw source tables.
+The semantic model is the analytics API for business users, embedded reports, and AI summaries. Do not expose raw source tables.
 
 ## Metric contract
 
@@ -22,12 +22,14 @@ Each metric must include:
 - quality_notes
 - rls_impact
 
+Minimum v1 metrics should fit one decision loop. Prefer five trusted metrics over twenty ambiguous ones.
+
 ## Naming rules
 
 - Use business names in the model: `Account`, `Product`, `Usage`, `Revenue`, `Risk`, `Opportunity`, `Action`.
 - Hide technical keys unless needed for drill-through or RLS.
-- Prefix raw/staging artifacts outside the model, not inside the user-facing semantic layer.
-- Use measure names that read like business concepts, such as `active accounts`, `usage rate`, `risk accounts`, `expansion opportunity value`.
+- Keep raw/staging prefixes outside the user-facing semantic layer.
+- Use measure names that read like business concepts: `active accounts`, `usage rate`, `risk accounts`, `expansion opportunity value`.
 
 ## Dimensional model defaults
 
@@ -36,7 +38,7 @@ Prefer a star schema:
 - facts: event counts, daily snapshots, balances, opportunities, action outcomes
 - dimensions: date, tenant, account, product, segment, owner, region, plan, channel
 
-Do not let many-to-many relationships or ambiguous filter paths leak into the MVP unless they are essential and documented.
+Avoid many-to-many relationships and ambiguous filter paths unless essential and documented.
 
 ## Gold table defaults
 
@@ -69,4 +71,4 @@ If AI insights are needed, add:
 - calculation caveats
 - safe response patterns
 
-Start with explanation and summarization over curated metrics before supporting open-ended text-to-SQL.
+Start with explanations and summaries over curated metrics before open-ended text-to-SQL.

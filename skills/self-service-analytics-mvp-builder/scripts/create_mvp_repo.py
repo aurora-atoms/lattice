@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Create a repo scaffold for a scenario-specific self-service analytics MVP.
-
-The scaffold is intentionally lightweight. It creates contracts, docs, and
-placeholders that help teams build Fabric/Power BI/React analytics products
-without starting from an ad hoc dashboard.
-"""
+"""Create a lightweight scaffold for a scenario-specific analytics MVP."""
 
 from __future__ import annotations
 
@@ -83,15 +78,16 @@ Describe the recurring business decision this MVP improves.
 
 Use this file as the source of truth for MVP metrics.
 
-| metric_id | display_name | business_definition | grain | source_gold_table | allowed_dimensions | refresh_cadence | owner | version |
-|---|---|---|---|---|---|---|---|---|
-| metric_001 | TODO | TODO | daily/entity | gold_{slug.replace('-', '_')}_daily_snapshot | date, segment, owner | daily | TODO | 0.1 |
+| metric_id | display_name | business_definition | grain | source_gold_table | allowed_dimensions | refresh_cadence | owner | rls_impact | version |
+|---|---|---|---|---|---|---|---|---|---|
+| metric_001 | TODO | TODO | daily/entity | gold_{slug.replace('-', '_')}_daily_snapshot | date, segment, owner | daily | TODO | filtered by tenant_id | 0.1 |
 
 ## Metric rules
 
 - Every metric must have one business owner.
 - Every metric must identify its grain.
 - Every metric must identify allowed dimensions.
+- Every metric must state tenant/RLS impact.
 - Every metric must be versioned when the definition changes.
 - Measures in Power BI must map back to this contract.
 """,
@@ -129,6 +125,12 @@ Use this file as the source of truth for MVP metrics.
 - TODO: risk count
 - TODO: opportunity value
 - TODO: action completion rate
+
+## RLS role
+
+- Role name: tenant_reader
+- Filter: `tenant_id` in the user's allowed tenant list
+- Test with at least two sample tenants before demo.
 
 ## User-facing model rules
 
@@ -199,6 +201,33 @@ Backend responsibilities:
 - Show overview -> drill-down -> action loop.
 - Collect feedback on metric trust, workflow fit, and willingness to pay.
 """,
+        "docs/050-validation-checklist.md": f"""
+# MVP validation checklist
+
+## Scope
+
+- Target role and first decision loop are explicit.
+- First 3-5 business questions are answered by the report/app.
+- Out-of-scope self-service features are deferred.
+
+## Metric trust
+
+- Each measure maps to `docs/010-metric-contract.md`.
+- Each metric has owner, grain, source table, refresh cadence, RLS impact, and version.
+- Sample values reconcile against source or customer-provided examples.
+
+## Tenant safety
+
+- Tenant A cannot see Tenant B in reports, drill-through, exports, saved views, or actions.
+- Embed token generation happens only on the backend.
+- Admin, tenant_admin, manager, and viewer roles have test users.
+
+## Product loop
+
+- User can move from overview to entity detail to action creation.
+- Notes, actions, and audit events are stored outside Power BI.
+- Usage and action completion events are logged.
+""",
         "packages/analytics-contracts/gold_layer_contract.yml": f"""
 scenario: {slug}
 gold_tables:
@@ -225,6 +254,10 @@ gold_tables:
       - recommended_action
     rls_key: tenant_id
     refresh_cadence: daily
+quality_rules:
+  - tenant_id must be non-null on all product-facing rows
+  - snapshot dates must be within expected refresh window
+  - metric values must reconcile to metric contract examples before demo
 """,
         "db/migrations/001_product_core.sql": """
 create table if not exists tenants (
@@ -315,6 +348,28 @@ create table if not exists audit_events (
   event_payload jsonb not null default '{}',
   created_at timestamptz not null default now()
 );
+
+create table if not exists embed_sessions (
+  embed_session_id text primary key,
+  tenant_id text not null references tenants(tenant_id),
+  user_id text not null references users(user_id),
+  workspace_id text,
+  report_id text,
+  dataset_id text,
+  started_at timestamptz not null default now(),
+  expires_at timestamptz
+);
+
+create table if not exists usage_events (
+  usage_event_id text primary key,
+  tenant_id text,
+  user_id text,
+  event_type text not null,
+  surface text,
+  entity_id text,
+  event_payload jsonb not null default '{}',
+  created_at timestamptz not null default now()
+);
 """,
         "powerbi/semantic-model/README.md": f"""
 # Power BI semantic model for {title}
@@ -363,6 +418,14 @@ create table if not exists audit_events (
 - audit logs
 - subscriptions and entitlements
 - usage telemetry
+
+## First vertical slice
+
+1. Authenticate user and resolve tenant.
+2. Render embedded overview report.
+3. Open entity detail.
+4. Create action item from an insight.
+5. Log usage and audit events.
 """,
         ".env.example": """
 DATABASE_URL=
@@ -373,6 +436,7 @@ POWERBI_WORKSPACE_ID=
 POWERBI_REPORT_ID=
 POWERBI_DATASET_ID=
 POWERBI_EMBED_URL=
+POWERBI_RLS_ROLE=tenant_reader
 """,
         "README.md": f"""
 # {title} analytics MVP
@@ -392,6 +456,7 @@ Start by editing:
 3. `packages/analytics-contracts/gold_layer_contract.yml`
 4. `powerbi/semantic-model/README.md`
 5. `docs/030-security-multitenancy.md`
+6. `docs/050-validation-checklist.md`
 
 Do not expose raw source tables directly to customers. Build the MVP around certified metrics and a tenant-safe semantic model.
 """,
@@ -419,7 +484,7 @@ def main() -> int:
 
     print("\n".join(messages))
     print(f"\nscaffold complete: {target}")
-    print("next: customize docs/000-product-scope.md and docs/010-metric-contract.md")
+    print("next: customize docs/000-product-scope.md, docs/010-metric-contract.md, and docs/050-validation-checklist.md")
     return 0
 
 

@@ -1,4 +1,4 @@
-# Repo blueprint
+# Repo Blueprint
 
 ## Recommended structure
 
@@ -11,10 +11,7 @@ repo/
     shared/                       # shared types and utilities
   db/
     migrations/                   # product database schema
-  fabric/
-    pipelines/                    # fabric pipeline notes/exports/placeholders
-    lakehouse/                    # lakehouse table contracts
-    warehouse/                    # warehouse/sql endpoint contracts
+  fabric/                         # pipeline/lakehouse/warehouse contracts
   powerbi/
     reports/                      # report inventory, not binary pbix unless desired
     semantic-model/               # semantic model documentation and measure inventory
@@ -24,6 +21,7 @@ repo/
     020-semantic-model.md
     030-security-multitenancy.md
     040-delivery-plan.md
+    050-validation-checklist.md
 ```
 
 ## Product database tables
@@ -41,14 +39,15 @@ Use a product DB for app state and workflow, separate from analytics facts:
 - notes
 - audit_events
 - embed_sessions
+- usage_events
 
 ## Analytics contract files
 
 Keep analytics contracts in repo even when Fabric assets are managed in the Fabric workspace:
 
-- Gold table grain and columns
+- Gold table grain, columns, and tenant key
 - RLS fields
-- metric definitions
+- metric definitions and versions
 - allowed dimensions
 - semantic model naming conventions
 - report page inventory
@@ -57,4 +56,4 @@ Keep analytics contracts in repo even when Fabric assets are managed in the Fabr
 
 ## Generated scaffold intent
 
-The scaffold should not pretend to be a complete app. It creates a stable repo shape and product contracts so implementation work starts from business semantics, tenant safety, and action loops instead of ad hoc dashboards.
+The scaffold should not pretend to be a complete app. It creates repo shape and product contracts so implementation starts from business semantics, tenant safety, and action loops instead of ad hoc dashboards.

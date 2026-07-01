@@ -1,10 +1,10 @@
-# MVP workflow
+# MVP Workflow
 
 ## Scope rule
 
-Keep the first release narrow enough that one user role can use it to make one recurring decision.
+Keep v1 narrow enough that one user role can make one recurring decision.
 
-A good MVP has:
+A feasible MVP has:
 
 - one target role
 - one high-value decision loop
@@ -24,6 +24,17 @@ Avoid:
 - AI chat before the metric contract exists
 - building every connector before validating the product loop
 
+## Decision filter
+
+Before adding a feature, ask:
+
+- Does it help the target role decide or act?
+- Does it rely on certified metrics instead of raw tables?
+- Can it be secured by tenant/role in v1?
+- Can usage or outcome be measured?
+
+If not, defer it.
+
 ## Build sequence
 
 1. Business scenario contract
@@ -35,7 +46,7 @@ Avoid:
 
 2. Metric contract
    - define each metric in business language
-   - specify source, grain, filters, allowed dimensions, owner, refresh cadence, and version
+   - specify source, grain, filters, dimensions, owner, refresh cadence, and version
    - separate raw events from product-facing metrics
 
 3. Gold layer
@@ -45,7 +56,7 @@ Avoid:
    - design tables around report pages and action queues
 
 4. Semantic model
-   - expose business entities, metrics, and dimensions
+   - expose business entities, metrics, and approved dimensions
    - hide technical columns
    - apply friendly names and descriptions
    - implement RLS mapping
@@ -74,3 +85,4 @@ Avoid:
 - The product stores action history, notes, and audit events.
 - Metrics are named, defined, versioned, and safe for self-service.
 - Tenant data cannot leak across users or customers.
+- Demo path is repeatable with realistic sample data.
