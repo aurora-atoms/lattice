@@ -1,0 +1,5 @@
+interface:
+  display_name: "Self-Service Analytics MVP Builder"
+  short_description: "Build repo-ready MVP plans for Fabric, Power BI Embedded, semantic models, and action-driven analytics products."
+  icon: "chart-line"
+  brand_color: "#2563eb"
