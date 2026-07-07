@@ -1,0 +1,6 @@
+interface:
+  display_name: "Excalidraw Local Canvas"
+  short_description: "Create public-safe local Excalidraw story canvases, Docker Desktop workflows, source files, and exports."
+  default_prompt: "Use $excalidraw-local-canvas to create a local-first zoomable Excalidraw story canvas. Classify the content boundary, produce or repair the .excalidraw source, provide Docker Desktop or local setup when needed, keep exports separate, and include security notes."
+  icon: "pen-tool"
+  brand_color: "#6b4eff"
