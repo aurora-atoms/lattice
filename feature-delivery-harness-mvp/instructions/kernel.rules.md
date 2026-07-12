@@ -21,4 +21,10 @@ FDH.KER.017 | MUST  | ip-boundary | Review personal/generalized artifacts; use s
 FDH.KER.018 | NEVER | ip-boundary | Do not store or reuse raw company code, Jira, PRs, architecture, traces, logs, screenshots, customer data, or metrics.
 FDH.KER.019 | MUST  | mvp | MVP acceptance requires a runnable feature_delivery_case loop, not a documentation pack.
 FDH.KER.020 | SHOULD | sequencing | Implement validators and fixtures before polishing skills, references, dashboards, or orchestration.
+FDH.KER.021 | NEVER | completion | Treat agent-reported done as a final delivery status.
+FDH.KER.022 | MUST  | completion | Represent completion as a structured claim referencing artifacts, acceptance contract, evidence, limitations, and next action.
+FDH.KER.023 | MUST  | verification | Distinguish claim submission, independent verification, and user-usable delivery verdicts.
+FDH.KER.024 | MUST  | verification | Verification records preserve passed, failed, unknown, not_checked, and conditional outcomes explicitly.
+FDH.KER.025 | NEVER | verification | Builder self-assertion satisfies independent verification.
+FDH.KER.026 | MUST  | deliveryyield | DeliveryYield may measure false completion claims, verification cost, and rework cost but must not approve delivery.
 ```
