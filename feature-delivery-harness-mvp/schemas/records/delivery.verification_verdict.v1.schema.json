@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/delivery.verification_verdict.v1.schema.json",
+  "title": "Delivery Verification Verdict",
+  "type": "object",
+  "required": [
+    "feature_delivery_case_id",
+    "completion_claim_id",
+    "verifier",
+    "status",
+    "acceptance_checks",
+    "evidence_refs",
+    "unresolved_risks",
+    "permitted_transition"
+  ],
+  "properties": {
+    "feature_delivery_case_id": {"type": "string", "minLength": 1},
+    "completion_claim_id": {"type": "string", "minLength": 1},
+    "verifier": {"type": "string", "minLength": 1},
+    "status": {
+      "type": "string",
+      "enum": ["verified", "verified_with_conditions", "verification_failed", "insufficient_evidence"]
+    },
+    "acceptance_checks": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["passed", "failed", "unknown", "not_applicable", "not_checked"]
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "unresolved_risks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "permitted_transition": {
+      "type": "string",
+      "enum": ["ready_for_human_approval", "ready_for_delivery_verdict", "rework_required", "blocked"]
+    }
+  },
+  "additionalProperties": false
+}
