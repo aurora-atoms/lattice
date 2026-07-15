@@ -7,7 +7,23 @@
   "properties": {
     "title": {"type": "string"},
     "user_usable_outcome": {"type": "string"},
-    "status": {"type": "string", "enum": ["draft", "ready", "in_progress", "delivered", "failed", "blocked"]},
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "ready",
+        "executing",
+        "claim_submitted",
+        "verification_pending",
+        "verified",
+        "user_usable",
+        "accepted_with_risk",
+        "verification_failed",
+        "blocked",
+        "superseded",
+        "abandoned"
+      ]
+    },
     "scope_summary": {"type": "string"},
     "in_scope": {"type": "array", "items": {"type": "string"}},
     "non_goals": {"type": "array", "items": {"type": "string"}},
