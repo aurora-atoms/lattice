@@ -1,0 +1,9 @@
+[
+  {"id":"kpev-trigger-001","query":"Create a read-only onboarding knowledge profile and a 25-question evaluation set.","should_trigger":true,"category":"positive_direct","reason":"Direct task profile and eval request."},
+  {"id":"kpev-trigger-002","query":"Measure citation coverage, ACL isolation, stale-source handling, latency, and task success before release.","should_trigger":true,"category":"positive_implicit","reason":"Knowledge-agent release evaluation."},
+  {"id":"kpev-trigger-003","query":"Decide whether our multi-hop failures justify GraphRAG and whether delegation needs A2A.","should_trigger":true,"category":"positive_alias","reason":"Evidence-gated expansion decision."},
+  {"id":"kpev-trigger-004","query":"Implement chunking and reciprocal rank fusion.","should_trigger":false,"category":"negative_adjacent","reason":"Retrieval implementation belongs to the retrieval builder."},
+  {"id":"kpev-trigger-005","query":"Approve this source as canonical knowledge.","should_trigger":false,"category":"negative_adjacent","reason":"Authority approval belongs to the governor."},
+  {"id":"kpev-trigger-006","query":"Use production customer secrets as the public golden dataset.","should_trigger":false,"category":"negative_private","reason":"Private production data must not enter public evals."},
+  {"id":"kpev-trigger-007","query":"Give every MCP server wildcard write access to simplify the demo.","should_trigger":false,"category":"negative_unsafe","reason":"Wildcard writes violate least privilege."}
+]

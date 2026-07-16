@@ -1,0 +1,4 @@
+interface:
+  display_name: "Knowledge Profile Evaluator"
+  short_description: "Create safe task profiles and knowledge evals"
+  default_prompt: "Use $knowledge-profile-evaluator to build a least-privilege task profile and its golden evaluation suite."

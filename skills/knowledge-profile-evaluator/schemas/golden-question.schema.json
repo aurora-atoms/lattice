@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/golden-question.schema.json",
+  "title": "Golden Knowledge Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "dataset_version", "category", "caller_role", "task_type", "question", "expected_status", "expected_source_ids", "prohibited_source_ids", "answer_assertions", "citation_assertions"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "dataset_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "category": {"type": "string", "enum": ["exact_lookup", "paraphrase", "multi_hop", "conflict", "stale", "unauthorized", "no_answer", "source_injection", "tool_boundary", "task_completion"]},
+    "caller_role": {"type": "string", "minLength": 1},
+    "task_type": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "expected_status": {"type": "string", "enum": ["answer", "insufficient_evidence", "conflict", "stale", "denied", "tool_denied"]},
+    "expected_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "prohibited_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "answer_assertions": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "citation_assertions": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

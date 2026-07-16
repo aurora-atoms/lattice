@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/task-knowledge-profile.schema.json",
+  "title": "Task Knowledge Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile_id", "version", "task_types", "caller_roles", "knowledge_contract", "knowledge_scopes", "projection_ids", "skills", "tools", "access_policy", "context_budget_tokens", "citation_policy", "output_schema_ref", "eval_dataset_ref", "baseline_ref"],
+  "properties": {
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "task_types": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "caller_roles": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "knowledge_contract": {"type": "string", "minLength": 1},
+    "knowledge_scopes": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "projection_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "skills": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["server", "tool", "mode", "approval"],
+        "properties": {
+          "server": {"type": "string"},
+          "tool": {"type": "string"},
+          "mode": {"type": "string", "enum": ["read", "write", "deploy", "secret", "shell", "destructive"]},
+          "approval": {"type": "string", "enum": ["auto", "prompt", "deny"]}
+        }
+      }
+    },
+    "access_policy": {"type": "string", "minLength": 1},
+    "context_budget_tokens": {"type": "integer", "minimum": 1},
+    "citation_policy": {"type": "string", "enum": ["required_for_material_claims", "required_for_all_external_claims"]},
+    "output_schema_ref": {"type": "string", "minLength": 1},
+    "eval_dataset_ref": {"type": "string", "minLength": 1},
+    "baseline_ref": {"type": "string", "minLength": 1},
+    "telemetry_content_capture": {"type": "boolean", "default": false}
+  }
+}

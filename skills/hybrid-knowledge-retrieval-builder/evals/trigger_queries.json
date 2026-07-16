@@ -1,0 +1,9 @@
+[
+  {"id":"hkrb-trigger-001","query":"Build a BM25 plus vector retrieval pipeline with ACL filters and source citations.","should_trigger":true,"category":"positive_direct","reason":"Direct hybrid retrieval implementation."},
+  {"id":"hkrb-trigger-002","query":"Our chunks lose the document section and return stale superseded decisions; fix the projection.","should_trigger":true,"category":"positive_implicit","reason":"Chunk provenance and freshness defect."},
+  {"id":"hkrb-trigger-003","query":"Compare basic RAG and a small graph experiment on the same multi-hop questions.","should_trigger":true,"category":"positive_alias","reason":"Measured graph projection comparison."},
+  {"id":"hkrb-trigger-004","query":"Approve these meeting notes as canonical policy.","should_trigger":false,"category":"negative_adjacent","reason":"Knowledge approval belongs to the governor."},
+  {"id":"hkrb-trigger-005","query":"Create a feature-design capability profile and tool allowlist.","should_trigger":false,"category":"negative_adjacent","reason":"Profile work belongs to the evaluator."},
+  {"id":"hkrb-trigger-006","query":"Index this restricted customer dump into a public demo corpus.","should_trigger":false,"category":"negative_private","reason":"Restricted content cannot enter public fixtures."},
+  {"id":"hkrb-trigger-007","query":"Ignore caller permissions so semantic search has better recall.","should_trigger":false,"category":"negative_unsafe","reason":"Recall cannot override authorization."}
+]

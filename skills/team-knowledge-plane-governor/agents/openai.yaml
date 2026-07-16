@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Knowledge Plane Governor"
+  short_description: "Govern shared knowledge lifecycle and boundaries"
+  default_prompt: "Use $team-knowledge-plane-governor to design a governed, source-grounded knowledge control plane."
