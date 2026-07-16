@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/projection-manifest.schema.json",
+  "title": "Knowledge Projection Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["projection_id", "kind", "status", "source_contract", "source_snapshot", "builder", "configuration", "access_filter_fields", "citation_fields", "built_at", "rebuild_command", "eval_dataset_ref"],
+  "properties": {
+    "projection_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "kind": {"type": "string", "enum": ["lexical", "vector", "hybrid", "graph"]},
+    "status": {"type": "string", "enum": ["pending", "building", "ready", "failed", "stale", "retired"]},
+    "source_contract": {"type": "string", "minLength": 1},
+    "source_snapshot": {"type": "string", "minLength": 1},
+    "builder": {"type": "string", "minLength": 1},
+    "configuration": {"type": "object", "minProperties": 1},
+    "access_filter_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "citation_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "built_at": {"type": "string", "format": "date-time"},
+    "rebuild_command": {"type": "string", "minLength": 1},
+    "eval_dataset_ref": {"type": "string", "minLength": 1},
+    "parent_projection": {"type": ["string", "null"]},
+    "metrics_ref": {"type": ["string", "null"]}
+  }
+}

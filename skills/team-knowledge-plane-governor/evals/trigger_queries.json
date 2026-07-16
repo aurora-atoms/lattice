@@ -1,0 +1,9 @@
+[
+  {"id":"tkpg-trigger-001","query":"Define the source-of-truth and lifecycle contract for our shared team knowledge plane.","should_trigger":true,"category":"positive_direct","reason":"Direct knowledge governance and authority request."},
+  {"id":"tkpg-trigger-002","query":"Should this chat summary become approved organizational memory, and what review metadata is missing?","should_trigger":true,"category":"positive_implicit","reason":"Memory promotion and provenance decision."},
+  {"id":"tkpg-trigger-003","query":"Scope a lightweight knowledge control-plane POC without moving our source systems.","should_trigger":true,"category":"positive_alias","reason":"POC architecture and boundary design."},
+  {"id":"tkpg-trigger-004","query":"Tune BM25 and vector weights for this corpus.","should_trigger":false,"category":"negative_adjacent","reason":"Retrieval tuning belongs to the retrieval builder."},
+  {"id":"tkpg-trigger-005","query":"Create the onboarding task profile and its MCP allowlist.","should_trigger":false,"category":"negative_adjacent","reason":"Task profile work belongs to the profile evaluator."},
+  {"id":"tkpg-trigger-006","query":"Publish these private customer notes as public Lattice examples.","should_trigger":false,"category":"negative_private","reason":"Private content cannot enter the public skill."},
+  {"id":"tkpg-trigger-007","query":"Let the agent approve its own memories and deploy changes automatically.","should_trigger":false,"category":"negative_unsafe","reason":"Self-approval and ungoverned writes are prohibited."}
+]

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/knowledge-object.schema.json",
+  "title": "Governed Knowledge Object",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "status", "owner", "source", "scope", "classification", "acl", "valid_from", "review_by", "provenance", "evidence_refs", "projection"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "kind": {"type": "string", "enum": ["fact", "decision", "policy", "procedure", "definition", "evidence", "claim", "question", "exception"]},
+    "status": {"type": "string", "enum": ["candidate", "verified", "active", "superseded", "expired", "revoked", "rejected"]},
+    "owner": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "uri", "source_version", "content_hash"],
+      "properties": {
+        "system": {"type": "string", "minLength": 1},
+        "uri": {"type": "string", "minLength": 1},
+        "source_version": {"type": "string", "minLength": 1},
+        "content_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+      }
+    },
+    "scope": {"type": "object", "minProperties": 1, "additionalProperties": {"type": ["string", "array"]}},
+    "classification": {"type": "string", "enum": ["public", "internal", "confidential", "restricted"]},
+    "acl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["groups"],
+      "properties": {
+        "groups": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "policy_ref": {"type": "string"}
+      }
+    },
+    "valid_from": {"type": "string", "format": "date-time"},
+    "review_by": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activity", "agent", "generated_at", "derived_from"],
+      "properties": {
+        "activity": {"type": "string", "minLength": 1},
+        "agent": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "derived_from": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "supersedes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "conflict_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lexical_status", "vector_status", "graph_status"],
+      "properties": {
+        "lexical_status": {"type": "string", "enum": ["not_required", "pending", "indexed", "failed", "stale"]},
+        "vector_status": {"type": "string", "enum": ["not_required", "pending", "indexed", "failed", "stale"]},
+        "graph_status": {"type": "string", "enum": ["not_required", "pending", "indexed", "failed", "stale"]}
+      }
+    }
+  }
+}
