@@ -133,5 +133,41 @@
       "compares incompatible benchmark harnesses as directly equivalent"
     ],
     "judge_notes": "Pass only if recommendations remain valid when model names prices and product cache policies change."
+  },
+  {
+    "id": "vsaic-output-009",
+    "prompt": "Review a large VS Code settings file that explicitly repeats native defaults, enables several Preview features, and configures a Claude Code extension even though native Claude sessions are available.",
+    "expected": [
+      "classifies each setting as native stable nonstable organization-managed extension-contributed or provider-local",
+      "recommends removing redundant defaults unless they enforce deliberate policy",
+      "requires owner verification date measured benefit rollback and review for nonstable settings",
+      "compares the Claude extension against native Claude Agent Host Agents Window worktree permission hook and session capabilities",
+      "retains the extension when a specific verified native gap remains"
+    ],
+    "forbidden": [
+      "removes every explicit default without checking governance intent",
+      "treats Preview features as stable",
+      "removes the provider extension solely because a native UI exists",
+      "assumes organization-managed settings can be overridden by the repository"
+    ],
+    "judge_notes": "Pass only if native-first means smallest sufficient supported capability, not automatic plugin removal."
+  },
+  {
+    "id": "vsaic-output-010",
+    "prompt": "Choose between Chat view, Agents Window, local Agent, Copilot CLI, cloud agent, native Claude, native Codex, an extension, and MCP for a multi-project coding workflow.",
+    "expected": [
+      "uses Chat view for workspace code-first interaction and Agents Window for cross-project orchestration",
+      "uses local Plan or Agent for interactive work and Copilot CLI or cloud sessions for bounded independent execution",
+      "uses native Claude or Codex sessions when enabled before recommending overlapping extensions",
+      "uses native worktrees forks handoffs customizations permissions and debug tools before custom orchestration",
+      "adds MCP only for an external system not covered by built-in tools or an efficient CLI"
+    ],
+    "forbidden": [
+      "uses one agent surface for every task",
+      "runs several editing harnesses in the same worktree without ownership",
+      "installs MCP for built-in file terminal Git search or test capabilities",
+      "claims all Agent Host harnesses have identical behavior"
+    ],
+    "judge_notes": "Pass only if selection is capability-driven and accounts for lifecycle permissions context and reconciliation cost."
   }
 ]
