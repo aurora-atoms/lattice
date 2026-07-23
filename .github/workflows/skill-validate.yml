@@ -21,7 +21,7 @@ jobs:
       - name: Validate pre-compact checkpoint schema
         run: python -m json.tool skills/vscode-workspace-ai-context/schemas/pre-compact-checkpoint.v1.schema.json >/dev/null
       - name: Audit repository AI configuration
-        run: python skills/vscode-workspace-ai-context/scripts/audit_ai_workspace_config.py --root . --format json --strict
+        run: python skills/vscode-workspace-ai-context/scripts/audit_native_vscode_config.py --root . --format json --strict
       - name: Validate underscore prose rule
         shell: bash
         run: |
