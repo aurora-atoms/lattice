@@ -50,20 +50,34 @@
   },
   {
     "id": "vsaic-trigger-008",
+    "query": "Review all VS Code native agent, session, worktree, compact, fork, instruction, skill, hook, MCP, permission, sandbox, and debug capabilities before recommending plugins.",
+    "should_trigger": true,
+    "category": "positive_native_first",
+    "reason": "native VS Code capability and settings audit"
+  },
+  {
+    "id": "vsaic-trigger-009",
+    "query": "We use the Claude Code extension in VS Code. Determine whether native Claude agent sessions, Agent Host, Agents Window, hooks, worktrees, and permissions can replace any of its configuration.",
+    "should_trigger": true,
+    "category": "positive_extension_overlap",
+    "reason": "native versus extension capability comparison"
+  },
+  {
+    "id": "vsaic-trigger-010",
     "query": "Implement the actual product feature described in this workspace.",
     "should_trigger": false,
     "category": "negative_product_code",
     "reason": "product runtime implementation is out of scope"
   },
   {
-    "id": "vsaic-trigger-009",
+    "id": "vsaic-trigger-011",
     "query": "Copy our private skill package and user API tokens into public Lattice as an example.",
     "should_trigger": false,
     "category": "negative_private",
     "reason": "private content and secrets must not enter public Lattice"
   },
   {
-    "id": "vsaic-trigger-010",
+    "id": "vsaic-trigger-012",
     "query": "Assume the direct API cache lasts 24 hours in every Copilot, Codex, Claude Code, and Cowork session without checking product evidence.",
     "should_trigger": false,
     "category": "negative_cache_transfer",
