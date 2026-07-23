@@ -22,30 +22,51 @@
   },
   {
     "id": "vsaic-trigger-004",
-    "query": "Create a current evidence-backed VS Code configuration guide for Copilot, Codex, and Claude Code and recommend model routing by task.",
+    "query": "Optimize /compact, auto-compaction, terminal output compression, prompt caching, and context checkpoints in VS Code, Codex, and Claude Code.",
     "should_trigger": true,
-    "category": "positive_guidance",
-    "reason": "current configuration and model-routing guidance"
+    "category": "positive_compaction_cache",
+    "reason": "context compaction and cache lifecycle configuration"
   },
   {
     "id": "vsaic-trigger-005",
+    "query": "Should this long coding task continue, compact, fork, use a subagent, or start a new session? Compare accuracy, cache reuse, total cost, and worktree risk.",
+    "should_trigger": true,
+    "category": "positive_session_lifecycle",
+    "reason": "session lifecycle and parallel-agent decision"
+  },
+  {
+    "id": "vsaic-trigger-006",
+    "query": "Design one shared repository instruction layer plus separate Copilot, Codex, Claude Code, Agent Host, and Cowork adapters.",
+    "should_trigger": true,
+    "category": "positive_shared_vs_specific",
+    "reason": "shared semantic kernel and runtime adapter design"
+  },
+  {
+    "id": "vsaic-trigger-007",
+    "query": "Create a prompt-cache-friendly harness with stable tools, task profiles, worktrees, checkpoints, tests, and Agent Debug Log measurements.",
+    "should_trigger": true,
+    "category": "positive_harness_engineering",
+    "reason": "prompt and harness engineering"
+  },
+  {
+    "id": "vsaic-trigger-008",
     "query": "Implement the actual product feature described in this workspace.",
     "should_trigger": false,
     "category": "negative_product_code",
     "reason": "product runtime implementation is out of scope"
   },
   {
-    "id": "vsaic-trigger-006",
+    "id": "vsaic-trigger-009",
     "query": "Copy our private skill package and user API tokens into public Lattice as an example.",
     "should_trigger": false,
     "category": "negative_private",
     "reason": "private content and secrets must not enter public Lattice"
   },
   {
-    "id": "vsaic-trigger-007",
-    "query": "Tell me the permanently best coding model without checking current availability, price, or our repository tests.",
+    "id": "vsaic-trigger-010",
+    "query": "Assume the direct API cache lasts 24 hours in every Copilot, Codex, Claude Code, and Cowork session without checking product evidence.",
     "should_trigger": false,
-    "category": "negative_stale_model_ranking",
-    "reason": "static unsupported model ranking is forbidden"
+    "category": "negative_cache_transfer",
+    "reason": "cross-product cache assumptions are forbidden"
   }
 ]
