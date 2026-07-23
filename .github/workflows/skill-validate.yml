@@ -18,6 +18,8 @@ jobs:
         run: python scripts/validate_skill_package.py --root skills
       - name: Test VS Code AI configuration auditor
         run: python -m unittest discover -s skills/vscode-workspace-ai-context/evals -p 'test_*.py' -v
+      - name: Audit repository AI configuration
+        run: python skills/vscode-workspace-ai-context/scripts/audit_ai_workspace_config.py --root . --format json --strict
       - name: Validate underscore prose rule
         shell: bash
         run: |
