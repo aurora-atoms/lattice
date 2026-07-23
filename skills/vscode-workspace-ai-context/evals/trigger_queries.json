@@ -11,27 +11,76 @@
     "query": "Update VS Code workspace settings so agent skills are discovered from the skills folder and instructions from .github/instructions.",
     "should_trigger": true,
     "category": "positive_discovery",
-    "reason": "chat.agentSkillsLocations and chat.instructionsFilesLocations configuration"
+    "reason": "agent skill and instruction discovery configuration"
   },
   {
     "id": "vsaic-trigger-003",
-    "query": "Create a registry-first progressive disclosure policy for AI context in a multi-root workspace.",
+    "query": "Audit AGENTS.md, CLAUDE.md, Codex config.toml, Claude settings, MCP tools, and model defaults for duplicate context, unsafe permissions, and token waste.",
     "should_trigger": true,
-    "category": "positive_context_policy",
-    "reason": "progressive-disclosure workspace context setup"
+    "category": "positive_cross_runtime_audit",
+    "reason": "cross-runtime AI configuration audit"
   },
   {
     "id": "vsaic-trigger-004",
+    "query": "Optimize /compact, auto-compaction, terminal output compression, prompt caching, and context checkpoints in VS Code, Codex, and Claude Code.",
+    "should_trigger": true,
+    "category": "positive_compaction_cache",
+    "reason": "context compaction and cache lifecycle configuration"
+  },
+  {
+    "id": "vsaic-trigger-005",
+    "query": "Should this long coding task continue, compact, fork, use a subagent, or start a new session? Compare accuracy, cache reuse, total cost, and worktree risk.",
+    "should_trigger": true,
+    "category": "positive_session_lifecycle",
+    "reason": "session lifecycle and parallel-agent decision"
+  },
+  {
+    "id": "vsaic-trigger-006",
+    "query": "Design one shared repository instruction layer plus separate Copilot, Codex, Claude Code, Agent Host, and Cowork adapters.",
+    "should_trigger": true,
+    "category": "positive_shared_vs_specific",
+    "reason": "shared semantic kernel and runtime adapter design"
+  },
+  {
+    "id": "vsaic-trigger-007",
+    "query": "Create a prompt-cache-friendly harness with stable tools, task profiles, worktrees, checkpoints, tests, and Agent Debug Log measurements.",
+    "should_trigger": true,
+    "category": "positive_harness_engineering",
+    "reason": "prompt and harness engineering"
+  },
+  {
+    "id": "vsaic-trigger-008",
+    "query": "Review all VS Code native agent, session, worktree, compact, fork, instruction, skill, hook, MCP, permission, sandbox, and debug capabilities before recommending plugins.",
+    "should_trigger": true,
+    "category": "positive_native_first",
+    "reason": "native VS Code capability and settings audit"
+  },
+  {
+    "id": "vsaic-trigger-009",
+    "query": "We use the Claude Code extension in VS Code. Determine whether native Claude agent sessions, Agent Host, Agents Window, hooks, worktrees, and permissions can replace any of its configuration.",
+    "should_trigger": true,
+    "category": "positive_extension_overlap",
+    "reason": "native versus extension capability comparison"
+  },
+  {
+    "id": "vsaic-trigger-010",
     "query": "Implement the actual product feature described in this workspace.",
     "should_trigger": false,
     "category": "negative_product_code",
     "reason": "product runtime implementation is out of scope"
   },
   {
-    "id": "vsaic-trigger-005",
-    "query": "Copy our private skill package into public lattice as an example.",
+    "id": "vsaic-trigger-011",
+    "query": "Copy our private skill package and user API tokens into public Lattice as an example.",
     "should_trigger": false,
     "category": "negative_private",
-    "reason": "private downstream content must not enter public Lattice"
+    "reason": "private content and secrets must not enter public Lattice"
+  },
+  {
+    "id": "vsaic-trigger-012",
+    "query": "Assume the direct API cache lasts 24 hours in every Copilot, Codex, Claude Code, and Cowork session without checking product evidence.",
+    "should_trigger": false,
+    "category": "negative_cache_transfer",
+    "reason": "cross-product cache assumptions are forbidden"
   }
 ]
