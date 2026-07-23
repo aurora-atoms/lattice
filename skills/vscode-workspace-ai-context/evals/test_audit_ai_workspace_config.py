@@ -61,6 +61,79 @@ class AuditWorkspaceConfigTests(unittest.TestCase):
             self.assertIn("VSAI.CLAUDE.BROAD_ALLOW", ids)
             self.assertIn("VSAI.CLAUDE.SECRET_LITERAL", ids)
 
+    def test_detects_compaction_and_cache_instability(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / ".vscode").mkdir()
+            (root / "AGENTS.md").write_text(
+                "# Rules\nUse /Users/alice/project and refresh this status on 2026-07-23.\n" * 40,
+                encoding="utf-8",
+            )
+            (root / ".vscode" / "settings.json").write_text(
+                json.dumps(
+                    {
+                        "github.copilot.chat.summarizeAgentConversationHistory.enabled": False,
+                        "chat.tools.compressOutput.enabled": False,
+                        "github.copilot.chat.editor.temporalContext.enabled": True,
+                        "chat.useCustomizationsInParentRepositories": True,
+                        "chat.agent.maxRequests": 30,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            ids = self.finding_ids(root)
+            self.assertIn("VSAI.COMPACT.AUTO_DISABLED", ids)
+            self.assertIn("VSAI.COMPACT.TOOL_OUTPUT", ids)
+            self.assertIn("VSAI.CACHE.TEMPORAL_CONTEXT", ids)
+            self.assertIn("VSAI.CACHE.PARENT_CUSTOMIZATIONS", ids)
+            self.assertIn("VSAI.COMPACT.CHECKPOINT_GAP", ids)
+            self.assertIn("VSAI.CACHE.MACHINE_PATH", ids)
+            self.assertIn("VSAI.CACHE.VOLATILE_DATE", ids)
+
+    def test_detects_model_pins_mcp_sprawl_and_subagent_fanout(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / ".codex").mkdir()
+            (root / ".claude").mkdir()
+            mcp_entries = "\n".join(f'[mcp_servers.server{i}]\ncommand = "tool{i}"' for i in range(9))
+            (root / ".codex" / "config.toml").write_text(
+                'model = "example-model"\nsandbox_mode = "workspace-write"\n'
+                '[agents]\nmax_concurrent_threads_per_session = 8\n' + mcp_entries + "\n",
+                encoding="utf-8",
+            )
+            (root / ".claude" / "settings.json").write_text(
+                json.dumps({"model": "example-claude", "enabledMcpjsonServers": [f"s{i}" for i in range(9)]}),
+                encoding="utf-8",
+            )
+            (root / ".mcp.json").write_text(
+                json.dumps({"mcpServers": {f"s{i}": {"command": "x"} for i in range(9)}}),
+                encoding="utf-8",
+            )
+            ids = self.finding_ids(root)
+            self.assertIn("VSAI.CODEX.PROJECT_MODEL_PIN", ids)
+            self.assertIn("VSAI.CODEX.SUBAGENT_FANOUT", ids)
+            self.assertIn("VSAI.CODEX.MCP_SPRAWL", ids)
+            self.assertIn("VSAI.CLAUDE.PROJECT_MODEL_PIN", ids)
+            self.assertIn("VSAI.CLAUDE.MCP_SPRAWL", ids)
+            self.assertIn("VSAI.TOOLS.MCP_FILE_SPRAWL", ids)
+
+    def test_detects_substantially_duplicated_runtime_adapters(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            shared = "\n".join(
+                [
+                    "- Inspect the smallest relevant file set before editing.",
+                    "- Preserve public APIs unless explicitly asked to change them.",
+                    "- Run the narrowest relevant validation command first.",
+                    "- Require confirmation before external writes or deployment.",
+                    "- Report changed files, validation, and unresolved risks.",
+                ]
+            )
+            (root / "AGENTS.md").write_text("# Shared\n" + shared, encoding="utf-8")
+            (root / "CLAUDE.md").write_text("# Claude\n" + shared, encoding="utf-8")
+            ids = self.finding_ids(root)
+            self.assertIn("VSAI.CONTEXT.DUPLICATE_CONTENT", ids)
+
     def test_bounded_configuration_has_no_errors(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -77,6 +150,8 @@ class AuditWorkspaceConfigTests(unittest.TestCase):
                         "chat.useClaudeMdFile": False,
                         "chat.agentSkillsLocations": {"skills": True},
                         "chat.mcp.discovery.enabled": False,
+                        "github.copilot.chat.summarizeAgentConversationHistory.enabled": True,
+                        "chat.tools.compressOutput.enabled": True,
                     }
                 ),
                 encoding="utf-8",
