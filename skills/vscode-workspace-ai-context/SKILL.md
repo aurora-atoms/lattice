@@ -1,31 +1,30 @@
 ---
 name: vscode-workspace-ai-context
-description: "Guide, audit, and improve VS Code, Copilot, Codex, Claude Code, Agent Host, and Cowork configuration from current official evidence. Use for configuration file input, AGENTS.md, CLAUDE.md, runtime config, skills, hooks, MCP/tools, context compaction, output compression, prompt caching, resume/fork/subagents, worktrees, prompt or harness engineering, model defaults, shared versus tool-specific configuration, token cost, and Unknown Configuration Setting diagnostics; output AI_CONFIG_AUDIT_V1 findings, PRE_COMPACT_CHECKPOINT_V1 guidance, bounded patches, and validation that preserves behavior, security, exact task state, public/private boundaries, and quality-adjusted token ROI. Do not use for product code, private content in public Lattice, unsupported settings without extension evidence, assumed cross-product cache semantics, stale model rankings, or unapproved user-home edits."
+description: "Guide, audit, and improve VS Code AI configuration with a native-first policy. Use for VS Code settings, Chat and Agents Window sessions, Agent Host, local/background/cloud or Claude/Codex agents, AGENTS.md, CLAUDE.md, instructions, prompts, custom agents, skills, hooks, MCP/tools, worktrees, permissions, sandboxing, context compaction, output compression, prompt caching, fork/subagent/session lifecycle, and shared versus runtime-specific configuration; output AI_CONFIG_AUDIT_V1 findings, PRE_COMPACT_CHECKPOINT_V1 guidance, bounded patches, and validation that preserves behavior, security, exact task state, public/private boundaries, and quality-adjusted token ROI. Do not use for product code, private content in public Lattice, unsupported settings without extension evidence, automatic replacement of stable native behavior with plugins, assumed cross-product cache semantics, stale model rankings, or unapproved user-home edits."
 ---
 
 # VS Code Workspace AI Context
 
 ## Goal
 
-Configure and audit repository AI surfaces so each coding harness receives the smallest correct stable prefix, relevant dynamic context, bounded tools, safe permissions, and a deliberate session lifecycle.
+Configure and audit AI-assisted development by using the smallest sufficient VS Code-native capability first, then an official provider integration, then an extension, and only then custom scripts or bespoke infrastructure.
 
-Optimize accepted work per total model cost and human correction time. Do not optimize cache hits or token count by sacrificing exact state, validation evidence, safety, or task correctness.
+Optimize accepted work per total tokens, credits, latency, reconciliation, security exposure, and human correction. Do not maximize cache hits or reduce tokens by weakening validation, exact task state, or safety.
 
-Keep this skill public and generic. Do not include private downstream policy, credentials, personal machine paths, or product-specific content beyond user-supplied examples.
+Keep this skill public and generic. Never include credentials, private downstream policy, personal machine paths, or proprietary repository content.
 
 ## Use When
 
 ```text
-VS Code workspace and Copilot configuration
-Codex config AGENTS sandbox approvals tools or thread lifecycle
-Claude Code settings CLAUDE rules permissions hooks compact or resume
-Agent Host session ownership client tools worktrees or parallel agents
-Cowork workspace mounts permissions and boundary with Claude Code
-prompt caching lifetime prefix divergence or cache measurement
-manual or automatic context compaction and tool-output compression
-continue versus compact versus fork versus subagent versus new session
-shared project rules versus runtime-specific adapter configuration
-prompt and harness engineering for repository-native coding agents
+VS Code workspace settings and native AI feature review
+Chat view versus Agents Window selection
+local Agent Plan Ask background Copilot CLI cloud Claude or Codex session choice
+Agent Host worktree handoff fork subagent compact or session lifecycle
+instructions prompts agents skills hooks MCP and tool routing
+Codex and Claude provider-specific configuration after native capability review
+prompt caching context management output compression and token cost
+shared project rules versus runtime-specific adapters
+Unknown Configuration Setting and extension-contributed setting diagnostics
 ```
 
 ## Do Not Use When
@@ -34,27 +33,26 @@ prompt and harness engineering for repository-native coding agents
 product runtime implementation is requested
 private downstream content would enter public Lattice
 exact user-home edits are claimed without reading the source
-an extension-contributed setting is rejected without extension evidence
-direct API cache lifetime is assumed to equal IDE or subscription behavior
+an extension setting is rejected without checking its manifest
+a native Preview feature is treated as stable without verification
+a provider API cache lifetime is assumed to equal a VS Code product surface
 session persistence is treated as proof that prompt cache still exists
-a visual compact chat layout is confused with context compaction
-a public benchmark is treated as repository-specific model proof
-search watcher or context excludes are treated as access control
+search excludes compact settings or worktrees are treated as authorization
 ```
 
 ## Inputs
 
 ```text
+VS Code version channel and organization policy
 *.code-workspace and .vscode/settings.json
-AGENTS.md AGENTS.override.md CLAUDE.md and runtime-scoped instruction files
-.github instructions prompts agents skills and hooks
-.codex/config.toml plus supplied user-level excerpts
-.claude/settings.json settings.local.json rules hooks and commands
-.mcp.json .vscode/mcp.json tool and skill registries
-Agent Debug Logs Cache Explorer context meters and usage reports
-session resume fork subagent worktree and Agent Host metadata
-Cowork selected folders mount permissions and task artifacts
-representative tasks validation results tokens credits latency and correction time
+installed extension list and extension configuration manifests
+AGENTS.md CLAUDE.md and scoped instruction files
+.github prompts agents skills hooks and workflow files
+.codex/config.toml and .claude/settings files when provider harnesses are used
+.mcp.json .vscode/mcp.json and active tool picker state
+Agent Debug Logs Cache Explorer usage and context-window reports
+session type model permission worktree fork and handoff metadata
+representative tasks tests tokens credits latency and correction time
 current official VS Code GitHub OpenAI and Anthropic documentation
 ```
 
@@ -62,14 +60,14 @@ current official VS Code GitHub OpenAI and Anthropic documentation
 
 ```text
 AI_CONFIG_AUDIT_V1 report
-PRE_COMPACT_CHECKPOINT_V1 artifact or generation guidance
+native-capability replacement or retention decision
+minimal settings patch with defaults omitted where possible
+PRE_COMPACT_CHECKPOINT_V1 artifact or guidance
+continue compact fork subagent handoff or new-session recommendation
 shared-kernel versus runtime-adapter decision
-continue compact fork subagent or new-session recommendation
-cache lifecycle and first-divergence analysis
-configuration and instruction patches
-permission sandbox worktree and tool-scope report
-model and reasoning routing recommendation with current-source caveat
-validation commands unresolved assumptions and evidence gaps
+cache first-divergence and context-lifecycle analysis
+permission sandbox tool MCP worktree and extension-risk report
+validation commands and unresolved evidence gaps
 ```
 
 `AI_CONFIG_AUDIT_V1`:
@@ -80,169 +78,197 @@ finding = id severity surface path message evidence recommendation confidence
 severity = error | warning | info
 ```
 
-`PRE_COMPACT_CHECKPOINT_V1` must preserve exact task state outside conversational history. Use `schemas/pre-compact-checkpoint.v1.schema.json`.
+Use `schemas/pre-compact-checkpoint.v1.schema.json` before intentional lossy compaction in long-running work.
+
+## Native-First Decision Order
+
+Apply this order for every requested capability:
+
+```text
+N0 existing stable VS Code default or built-in feature
+N1 stable VS Code setting or built-in customization
+N2 VS Code-native Preview or Experimental feature after explicit validation
+N3 first-party provider integration exposed through VS Code
+N4 official provider extension or CLI for a capability missing from VS Code
+N5 third-party extension or MCP server
+N6 repository script hook or external service
+```
+
+Do not move down the list merely because a lower-level option has more settings. Move down only when the higher level cannot meet a documented requirement.
+
+Prefer omission over restating a native default. Commit a setting when it enforces a deliberate team policy, changes a default, fixes discovery, or provides reproducibility. Keep user preferences, credentials, provider accounts, and personal model choices out of shared workspace configuration.
+
+## Native Capability Map
+
+Use VS Code-native features before recreating them:
+
+```text
+interactive coding             -> Chat view with Agent Plan or Ask
+multi-project orchestration     -> Agents Window
+background local execution      -> Copilot CLI session
+team or PR collaboration        -> cloud agent session
+provider-specific harness       -> native Claude or Codex session when available
+parallel edit isolation         -> New Worktree and Git worktree controls
+alternative continuation        -> /fork or checkpoint fork
+context reduction               -> automatic compaction or /compact
+large terminal output reduction -> chat.tools.compressOutput.enabled after validation
+cache diagnosis                 -> Agent Debug Logs and Cache Explorer
+specialized workflow            -> Agent Skill
+project-wide rules              -> one concise instruction source
+file or folder rules            -> scoped .instructions.md or runtime-native rules
+repeatable user command         -> prompt file
+bounded role and tool set       -> custom agent
+lifecycle enforcement           -> native hooks then CI for authoritative enforcement
+external systems                -> MCP only when built-in tools or CLI are insufficient
+security                         -> Workspace Trust permissions sandbox trusted domains and MCP trust
+code understanding              -> language services IntelliSense tests debugger tasks SCM and search
+```
+
+Do not install a separate extension to obtain functionality already provided by the active VS Code version unless the extension supplies a verified missing capability or materially better repository results.
 
 ## Context Model
 
-Use four layers:
-
 ```text
-L0 stable kernel    = security privacy project identity authority routing
-L1 workspace profile = architecture map commands constraints capability catalog
-L2 task profile     = selected tools skills MCP model effort scope and acceptance tests
-L3 dynamic suffix   = request files diffs logs tool results failures and current decisions
+L0 stable kernel      = security privacy project identity authority and output contract
+L1 workspace profile = architecture map canonical commands and capability catalog
+L2 task profile       = selected session type model tools skills MCP scope and tests
+L3 dynamic suffix     = request files diffs logs failures decisions and current evidence
 ```
 
-Keep L0 and the stable part of L1 deterministic. Load L2 only for the task. Keep volatile evidence in L3 or external artifacts.
+Keep L0 and stable L1 deterministic. Load L2 only for the task. Keep volatile information in L3 or durable task artifacts.
 
-Distinguish five mechanisms:
+Distinguish:
 
 ```text
-visual compact layout       = UI only
-context compaction          = lossy replacement of older conversation history
-output compression          = reduction of large tool results
-prompt caching              = provider reuse of an unchanged request prefix
-external checkpoint         = durable exact state used to survive compact fork or restart
+visual compact layout = UI only
+context compaction    = lossy replacement of older conversation history
+output compression    = filtering of large tool results
+prompt caching        = provider reuse of an unchanged request prefix
+checkpoint            = durable exact state outside chat history
 ```
 
 ## Workflow
 
-1. Query_ConPort_MCP_before_loading_or_searching_full_skill_text when available; otherwise inspect only targeted configuration and instruction files before broad repository search.
-2. Inventory each harness separately: VS Code/Copilot, Codex, Claude Code, Agent Host, and Cowork when used. Record user, workspace, project, organization, and managed-policy precedence.
-3. Run `scripts/audit_ai_workspace_config.py`. Treat findings as deterministic first-pass evidence, not a complete schema or runtime validator.
-4. Verify fast-moving keys, defaults, release status, model availability, billing, cache behavior, compact behavior, fork semantics, and permission rules against current official sources. Record the date and product surface.
-5. Map the effective prompt in order: platform prefix, organization rules, repository rules, runtime adapter, selected tools and schemas, conversation history, dynamic task evidence. Use Agent Debug Logs or equivalent when available.
-6. Identify the first unstable prefix segment. Audit duplicate rules, imports, absolute paths, dates, changing tool catalogs, MCP sprawl, model changes, effort changes, temporal context, parent customizations, and client-contributed Agent Host tools.
-7. Evaluate cache lifecycle separately from session lifecycle. Do not infer cache validity from an open, resumed, or remotely hosted session.
-8. Choose session action mechanically:
-   - continue when task and evidence remain coherent and cache is useful;
-   - compact at a verified phase boundary after external checkpointing;
-   - fork for a bounded alternative that genuinely needs shared history;
-   - use a subagent for isolated research or verification whose full trace is not needed by the parent;
-   - start new for unrelated work, polluted history, stale cache, or a different tool/model profile.
-9. Before lossy compaction, create or update `PRE_COMPACT_CHECKPOINT_V1` with objective, scope, constraints, decisions, worktree and branch, changed files, validation, failures, open items, next actions, approvals, and source references.
-10. Compare one shared semantic kernel with separate runtime adapters. Share project facts and validation contracts; keep settings, permissions, hooks, models, compact commands, tool profiles, and session mechanics runtime-specific.
-11. Audit parallelism. Count total active contexts, future fork cost, subagent fanout, duplicated tool prefixes, shared-worktree conflicts, and merge/reconciliation cost. Wall-clock reduction alone is not efficiency.
-12. Apply the smallest supported patch. Preserve user intent, behavior, organization policy, security, worktree isolation, public/private boundaries, and exact task evidence.
-13. Validate syntax, effective settings, skill discovery, hook behavior, runtime diagnostics, checkpoint schema, targeted repository tasks, cache metrics, and total quality-adjusted cost.
+1. Query_ConPort_MCP_before_loading_or_searching_full_skill_text when available; otherwise inspect targeted files before broad search.
+2. Record VS Code version, Stable or Insiders channel, enabled organization policies, Workspace Trust, and installed extensions.
+3. Inventory the requested capability and check `references/vscode-native-first.md` before recommending any plugin, provider-specific setting, or custom script.
+4. Run `scripts/audit_ai_workspace_config.py`. Treat its results as deterministic first-pass evidence, not complete runtime validation.
+5. Classify every active configuration item as native stable, native Preview, native Experimental, organization-managed, first-party provider integration, extension-contributed, provider-local, or custom.
+6. Remove settings that only repeat defaults unless they intentionally enforce a team policy. Never remove required discovery paths or security controls merely to reduce file size.
+7. Prefer built-in session types and handoffs over running multiple overlapping extensions against one worktree.
+8. Prefer built-in instructions, prompts, custom agents, skills, hooks, MCP management, worktrees, permissions, sandboxing, Agent Debug Logs, and Cache Explorer over parallel custom mechanisms.
+9. Audit the effective prompt order and locate the first cache divergence. Keep model, reasoning, instructions, tool profile, and MCP set stable within one task session.
+10. Choose continue, compact, fork, subagent, handoff, background/cloud session, or new session from task boundaries and measured context quality.
+11. Before lossy compaction, write `PRE_COMPACT_CHECKPOINT_V1` with objective, scope, decisions, worktree, changed files, validation, failures, approvals, sources, and next actions.
+12. Share stable repository semantics across tools. Keep permissions, hooks, models, provider credentials, session mechanics, sandbox, and tool profiles runtime-specific.
+13. Add an extension, provider CLI, custom MCP, or script only when the native gap is explicit. Record the gap, lifecycle cost, permissions, update owner, and removal condition.
+14. Validate in VS Code Settings UI, effective instruction menus, Agent Debug Logs, Cache Explorer, extension manifests, targeted tests, and CI.
 
-## Compact Policy
+## Settings Policy
 
-Compact deliberately, not on a fixed message count.
+Recommended shared workspace settings should be minimal.
 
-Good triggers:
+Set only when needed:
 
 ```text
-accepted phase complete and exact checkpoint exists
-context window is near automatic compaction
-large obsolete exploration or tool output dominates context
-provider cache is already cold or the prefix must change
-switch from investigation to implementation after decisions are frozen
-resume after a long inactivity period with verified task state
+chat.agentSkillsLocations for nondefault skill folders
+chat.instructionsFilesLocations for nondefault instruction folders
+chat.promptFilesLocations and chat.agentFilesLocations for nondefault paths
+chat.hookFilesLocations for nondefault hook paths
+search.exclude or files.exclude for reviewed noisy content
+chat.useAgentsMdFile or chat.useClaudeMdFile to avoid duplicate loading
+chat.useCustomizationsInParentRepositories for intentional monorepo inheritance
+chat.tools.compressOutput.enabled after evidence-preservation testing
+chat.agent.maxRequests when the repository needs a bounded loop budget
+chat.sessionSync.excludeRepositories for sensitive repositories
 ```
 
-Delay compact when:
+Usually keep native defaults rather than committing them:
 
 ```text
-cache hit remains high and history is relevant
-unresolved evidence is distributed across prior messages
-exact commands diffs test failures or approvals are not checkpointed
-summary quality cannot be verified against repository state
-a fork or subagent would isolate the branch more safely
+chat.agent.enabled
+chat.mcp.discovery.enabled=false
+chat.permissions.default=default
+github.copilot.chat.summarizeAgentConversationHistory.enabled=true
+chat.useAgentSkills=true
+chat.includeReferencedInstructions=false
+chat.agent.sandbox.enabled=true where supported and managed
+chat.tools.global.autoApprove=false
+chat.tools.terminal.ignoreDefaultAutoApproveRules=false
 ```
 
-After compact, re-anchor from the checkpoint and repository state. Do not trust the summary as the sole source of truth.
+Do not commit organization-managed Agent Host, Claude, Codex, network-filter, or entitlement settings unless the repository is explicitly the policy source and the setting scope supports it.
 
-## Fork and Parallel Session Policy
+Use Preview or Experimental settings only with a verification date, owner, measured benefit, rollback path, and expected removal or stabilization review.
 
-A fork can reuse history and may preserve a warm prefix for the next request, but it duplicates future context and tool cost when both branches continue.
+## Session and Compact Policy
 
-Prefer a checkpointed fork at the decision boundary instead of forking an entire noisy session. Assign one hypothesis or deliverable per branch. Verify whether branches share a worktree; use isolated worktrees for concurrent edits. Reconcile through explicit artifacts, tests, and diffs rather than copying full transcripts.
+Continue when one goal, one worktree, and one tool/model profile remain coherent.
 
-Use subagents instead of forks when the parent needs only a bounded result. Limit concurrency unless independent workstreams produce measurable net gain after reconciliation cost.
+Compact when the task continues but obsolete exploration dominates context, automatic compaction is near, the cache is already cold, or an accepted phase is complete and checkpointed. Use native `/compact` or the context control before inventing a summarization script.
 
-## Shared Versus Runtime-Specific Configuration
+Fork when a bounded alternative genuinely needs shared history. A fork copies history and can preserve cache on the next request, but both branches accumulate future context and may share the same worktree. Prefer checkpoint forks and isolated worktrees for divergent edits.
+
+Use subagents or `context: fork` skills for investigations whose intermediate trace should not enter the parent context. Use background or cloud agents for well-defined independent work. Start a new session for unrelated work or a materially different tool/model/security profile.
+
+## Shared Versus Tool-Specific Configuration
 
 Share:
 
 ```text
-project identity and architecture map
-source-of-truth locations and authority order
-security privacy and IP constraints
+project identity architecture and authority
+security privacy IP and compatibility constraints
 canonical build test lint and validation commands
-public API and compatibility rules
-output and completion contract
-stable capability catalog metadata
+public API rules and completion contract
+stable capability and source-of-truth metadata
 ```
 
 Keep separate:
 
 ```text
-VS Code discovery settings Agent Host toggles UI and debug settings
-Copilot path instructions prompts custom agents hooks and model routing
-Codex sandbox approvals MCP profiles model effort and AGENTS overrides
-Claude permissions hooks rules commands model effort compact and resume behavior
-Cowork folder mounts write/delete permissions and knowledge-work artifacts
-provider credentials entitlements pricing and personal preferences
+VS Code session type Agent Host Agents Window and discovery settings
+Copilot model routing prompts custom agents hooks and native tool profile
+Codex sandbox approvals AGENTS overrides MCP provider and reasoning settings
+Claude permissions hooks rules commands compact and provider settings
+Cowork mounts write delete and knowledge-work boundaries
+credentials entitlements pricing and personal preferences
 ```
 
-AGENTS.md may be the canonical shared semantic map. CLAUDE.md may import it and add Claude-only deltas, but disable redundant VS Code loading when that would inject the same rules twice. Copilot path instructions, Codex nested AGENTS.md, and Claude path rules should express scoped deltas, not full copies.
-
-## Prompt and Harness Engineering
-
-Prefer repository legibility over increasingly long prompts:
-
-```text
-short architecture map and source-of-truth pointers
-deterministic commands and narrow acceptance tests
-progressive disclosure through skills and routed references
-structured task plans and checkpoints committed or stored outside chat
-small stable tool profiles instead of global MCP exposure
-worktree isolation for parallel edits
-machine-readable logs and evals rather than transcript memory
-```
-
-Prompt engineering defines the request and constraints. Harness engineering defines what context, tools, permissions, execution loop, state, validation, and recovery the model receives. Audit both.
+Use one canonical shared semantic source where practical. Runtime adapters contain only deltas. Prevent VS Code from loading the same `AGENTS.md` rules directly and again through `CLAUDE.md`.
 
 ## Rules
 
 ```text
-VSAI.001 | MUST   | settings | use supported settings or identify the extension that contributes them
-VSAI.002 | MUST   | verify   | verify fast-moving settings models compact cache and fork claims from current official sources
-VSAI.003 | MUST   | runtime  | audit each harness as a separate configuration and session surface
-VSAI.004 | MUST   | evidence | attach file evidence confidence product surface and verification status to each finding
+VSAI.001 | MUST   | native   | check current VS Code native capability before adding a plugin or custom mechanism
+VSAI.002 | MUST   | settings | use supported settings or identify the extension that contributes them
+VSAI.003 | MUST   | verify   | verify lifecycle status defaults compact cache fork and agent claims from current official sources
+VSAI.004 | MUST   | evidence | attach file evidence confidence surface and verification status to each finding
 VSAI.005 | MUST   | compact  | checkpoint exact task state before intentional lossy compaction
-VSAI.006 | MUST   | cache    | distinguish prompt cache lifetime from chat session persistence
-VSAI.007 | MUST   | fork     | account for duplicated future cost and worktree isolation before recommending a fork
-VSAI.008 | MUST   | skills   | configure nondefault skill folders through documented discovery settings
-VSAI.009 | MUST   | boundary | keep private context credentials personal paths and user preferences out of public Lattice
-VSAI.010 | MUST   | safety   | flag unrestricted sandbox permissions network tools destructive actions and literal secrets
-VSAI.011 | SHOULD | context  | keep one shared stable semantic kernel plus small runtime-specific adapters
-VSAI.012 | SHOULD | routing  | use path task and capability scoped instructions skills prompts hooks and agents
-VSAI.013 | SHOULD | cache    | keep stable prefix order tool profile model and effort fixed within one task session
-VSAI.014 | SHOULD | compact  | compact at verified phase boundaries rather than by arbitrary message count
-VSAI.015 | SHOULD | output   | compress large tool output only when required evidence remains recoverable
-VSAI.016 | SHOULD | agent    | use subagents for isolated evidence and forks for bounded alternative continuations
-VSAI.017 | SHOULD | host     | verify Agent Host ownership client tool availability persistence and worktree semantics
-VSAI.018 | SHOULD | cowork   | treat Cowork as a separate workspace and permission harness from Claude Code
-VSAI.019 | SHOULD | model    | select models and reasoning from current availability price and frozen repository evals
-VSAI.020 | SHOULD | metric   | optimize accepted delivery per total tokens credits latency reconciliation and human correction
-VSAI.021 | NEVER  | cache    | transfer direct API cache lifetime or pricing assumptions to another product without evidence
-VSAI.022 | NEVER  | compact  | treat a compact summary as the sole source of exact repository state
-VSAI.023 | NEVER  | host     | assume Agent Host makes Copilot Codex and Claude behavior identical
-VSAI.024 | NEVER  | custom   | claim arbitrary custom settings are enforced without extension evidence
-VSAI.025 | NEVER  | security | treat search watcher context or compact controls as authorization boundaries
-VSAI.026 | NEVER  | model    | publish a permanent best-model ranking from stale names prices or benchmarks
-VSAI.027 | NEVER  | write    | overwrite user-home configuration without explicit source and approval
+VSAI.006 | MUST   | cache    | distinguish prompt cache lifetime from chat and Agent Host session persistence
+VSAI.007 | MUST   | safety   | flag unrestricted approvals sandbox network tools extensions and literal secrets
+VSAI.008 | MUST   | boundary | keep private context credentials personal paths and user preferences out of public Lattice
+VSAI.009 | SHOULD | defaults | omit settings that only repeat native defaults unless enforcing policy
+VSAI.010 | SHOULD | context  | keep one stable semantic kernel plus small runtime-specific adapters
+VSAI.011 | SHOULD | routing  | use native scoped instructions prompts agents skills hooks and tool selection
+VSAI.012 | SHOULD | session  | use native worktrees forks handoffs background and cloud sessions before custom orchestration
+VSAI.013 | SHOULD | cache    | keep prefix order model effort tools and MCP stable within one task session
+VSAI.014 | SHOULD | output   | use native output compression only after required evidence remains recoverable
+VSAI.015 | SHOULD | metric   | optimize accepted delivery per total cost and human correction rather than raw cache rate
+VSAI.016 | NEVER  | plugin   | install or retain an overlapping extension without a documented native gap
+VSAI.017 | NEVER  | cache    | transfer direct API cache lifetime or pricing assumptions to a VS Code surface without evidence
+VSAI.018 | NEVER  | host     | assume Agent Host makes Copilot Codex and Claude behavior identical
+VSAI.019 | NEVER  | security | treat excludes compaction worktrees or sandbox alone as authorization
+VSAI.020 | NEVER  | model    | publish a permanent best-model ranking from stale names prices or benchmarks
+VSAI.021 | NEVER  | write    | overwrite user-home configuration without explicit source and approval
 ```
 
 ## References
 
-- Read `references/context-cache-session-lifecycle.md` for compaction, cache lifetime, fork, Agent Host, Cowork, checkpoint, and harness decisions.
-- Read `references/shared-vs-runtime-config.md` before choosing canonical shared rules and tool-specific adapters.
-- Read `references/vendor-config-surfaces.md` before auditing exact keys, precedence, models, billing, or product behavior.
-- Use `schemas/pre-compact-checkpoint.v1.schema.json` for durable pre-compaction state.
-- Consult current official VS Code, GitHub, OpenAI, and Anthropic sources whenever fast-moving facts matter.
+- Read `references/vscode-native-first.md` first for the native capability and settings matrix.
+- Read `references/context-cache-session-lifecycle.md` for compaction, cache, fork, Agent Host, Cowork, and checkpoint decisions.
+- Read `references/shared-vs-runtime-config.md` for canonical shared rules and provider-specific adapters.
+- Read `references/vendor-config-surfaces.md` only when exact provider keys, billing, or behavior matters.
+- Use `schemas/pre-compact-checkpoint.v1.schema.json` for durable state.
 
 ## Scripts
 
@@ -251,7 +277,7 @@ python3 skills/vscode-workspace-ai-context/scripts/audit_ai_workspace_config.py 
 python3 skills/vscode-workspace-ai-context/scripts/audit_ai_workspace_config.py --root . --format json --strict
 ```
 
-The auditor checks high-confidence syntax, paths, instruction duplication, unstable prefix content, compaction support, checkpoint gaps, permissions, sandbox, secrets, discovery, MCP fanout, model pinning, and token-risk patterns. It does not observe live cache hits, validate every extension key, prove compact summary quality, or replace organization policy and current vendor documentation.
+The auditor detects high-confidence syntax, path, duplication, native-default overrides, overlapping extension configuration, compaction, checkpoint, permissions, sandbox, secrets, discovery, MCP fanout, model pinning, and token-risk patterns. It does not replace VS Code Settings validation, organization policy, extension manifests, live runtime telemetry, or vendor documentation.
 
 ## Verification
 
@@ -268,43 +294,36 @@ git diff --check
 Also verify:
 
 ```text
-no unintended Unknown Configuration Setting diagnostics
-effective instructions match the intended shared and adapter design
-first prompt-cache divergence is understood or measured
-checkpoint rehydrates objective decisions changes tests failures and approvals
-compact summary agrees with repository state and checkpoint
-forks and concurrent agents use intended worktree isolation
-project-local Codex keys are active rather than silently ignored
-Claude permission and hook precedence matches the effective settings view
-Cowork mounts and delete/write boundaries match the task
-skills prompts agents hooks and MCP paths resolve
-recommendations distinguish verified fact local inference and engineering choice
+native capability was considered before every extension or custom recommendation
+workspace settings contain only intentional overrides and discovery paths
+effective instructions match the shared-kernel and adapter design
+Agent Host and Agents Window support is organization-enabled before relying on it
+first cache divergence is measured when Cache Explorer is available
+checkpoint rehydrates decisions changes tests failures approvals and next actions
+forks and parallel agents use intended worktree isolation
+provider-specific configuration remains active and does not duplicate native behavior
+no private content secret or personal preference enters shared configuration
 ```
 
 ## Failure Modes
 
 ```text
-ui-compact-confusion: compact chat layout is mistaken for context compaction
-premature-compaction: useful warm coherent history is summarized before a checkpoint
-summary-loss: decisions failures commands approvals or file state disappear after compaction
-compact-cargo-cult: compaction is triggered by message count without lifecycle evidence
-session-cache-conflation: an open resumed or hosted session is assumed to retain provider cache
-cache-lifecycle-transfer: direct API TTL or pricing is copied to an IDE harness without proof
-prefix-churn: models effort tools instructions or volatile data change inside one task session
-fork-fanout: multiple branches duplicate future context with no bounded independent outcome
-shared-worktree-divergence: parallel sessions edit one worktree and corrupt attribution
-subagent-sprawl: isolated contexts cost more to reconcile than the work they save
-agent-host-equivalence: shared hosting is treated as identical runtime semantics
-client-tool-drift: Agent Host prompt changes as connected clients contribute or remove tools
-cowork-cross-surface: Cowork mounts or permissions are treated as Claude Code settings
+native-bypass: plugin or script is recommended before reviewing built-in capability
+settings-cargo-cult: shared settings restate defaults without policy value
+preview-as-stable: Preview or Experimental behavior is treated as a durable contract
+overlapping-agent-extensions: multiple harnesses edit the same worktree for one task
 instruction-double-load: shared rules enter context directly and through an adapter import
-runtime-copy-sprawl: complete shared rules are copied into every tool-specific file
+premature-compaction: coherent warm context is summarized before exact checkpointing
+summary-loss: decisions failures commands approvals or file state disappear after compact
+session-cache-conflation: a resumed or hosted session is assumed to retain provider cache
+fork-fanout: branches duplicate future context without independent bounded outcomes
+shared-worktree-divergence: parallel sessions edit one worktree and corrupt attribution
+client-tool-drift: Agent Host prompt changes as connected clients add or remove extension tools
 unknown-setting: native support or extension contribution is unverified
-ignored-project-key: a runtime silently ignores a project-local key
-permission-bypass: sandbox approvals or tool rules exceed task need
-secret-literal: committed configuration contains token key credential or password values
+ignored-project-key: a provider runtime silently ignores a project-local key
+permission-bypass: approvals sandbox or tool rules exceed task need
+secret-literal: committed configuration contains credentials
 model-staleness: renamed unavailable preview or repriced model is recommended as current
-benchmark-transfer: public benchmark is treated as repository-specific proof
-false-security: context reduction settings are presented as authorization controls
-script-overclaim: deterministic heuristic output is presented as full runtime validation
+false-security: context or isolation controls are presented as authorization
+script-overclaim: deterministic audit is presented as full runtime validation
 ```
