@@ -1,4 +1,4 @@
 interface:
-  display_name: "VS Code AI Context Lifecycle Auditor"
-  short_description: "Audit compact, cache, sessions, and cross-runtime AI configuration."
-  default_prompt: "Audit this workspace's VS Code, Copilot, Codex, Claude Code, Agent Host, and Cowork configuration. Evaluate context compaction, output compression, prompt-cache stability and lifetime, continue/fork/subagent/new-session choices, worktree isolation, shared versus runtime-specific configuration, permissions, tools, and total quality-adjusted cost; cite current evidence and propose the smallest supported patch."
+  display_name: "VS Code Native-First AI Auditor"
+  short_description: "Prefer native VS Code capabilities before extensions and custom harnesses."
+  default_prompt: "Audit this workspace with a native-first policy. Review current VS Code settings, Chat and Agents Window sessions, Agent Host, local/background/cloud and Claude/Codex agents, instructions, prompts, custom agents, skills, hooks, MCP, worktrees, permissions, sandboxing, compaction, caching, forks, and provider-specific configuration. Remove redundant defaults only when they do not enforce policy; retain extensions only for documented native gaps; cite current evidence and propose the smallest supported patch."
