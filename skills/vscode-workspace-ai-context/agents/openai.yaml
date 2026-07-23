@@ -1,4 +1,4 @@
 interface:
-  display_name: "VS Code AI Configuration Auditor"
-  short_description: "Guide and audit VS Code, Codex, Claude Code, and Copilot configuration."
-  default_prompt: "Audit this workspace's VS Code, Copilot, Codex, and Claude Code configuration; cite current official evidence, identify risks and token waste, and propose the smallest supported patch."
+  display_name: "VS Code AI Context Lifecycle Auditor"
+  short_description: "Audit compact, cache, sessions, and cross-runtime AI configuration."
+  default_prompt: "Audit this workspace's VS Code, Copilot, Codex, Claude Code, Agent Host, and Cowork configuration. Evaluate context compaction, output compression, prompt-cache stability and lifetime, continue/fork/subagent/new-session choices, worktree isolation, shared versus runtime-specific configuration, permissions, tools, and total quality-adjusted cost; cite current evidence and propose the smallest supported patch."
