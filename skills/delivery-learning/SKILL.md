@@ -43,7 +43,7 @@ FCAT.004 | MUST | promotion | keep a candidate separate from approved memory, ru
 FCAT.005 | MUST | metrics | preserve multi-metric product judgment | enforce
 FCAT.006 | MUST | token | optimize quality-adjusted token ROI | enforce
 FCAT.007 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
-FCAT.008 | NEVER | memory | store raw transcripts as memory | block
+FCAT.008 | NEVER | memory | store unfiltered conversation history as memory | block
 FCAT.009 | NEVER | promotion | auto-promote single-case learning | block
 
 ## Verification
@@ -52,6 +52,6 @@ FCAT.009 | NEVER | promotion | auto-promote single-case learning | block
 - Review and expiry conditions exist.
 
 ## Failure Modes
-- Storing raw transcripts as memory.
+- Storing unfiltered conversation history as memory.
 - Auto-promoting candidates into beliefs or rules.
 - Equating delivery completion with product success.
