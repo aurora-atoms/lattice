@@ -1,0 +1,44 @@
+[
+  {
+    "id": "dcc-trigger-001",
+    "query": "This feature is blocked in CI. Route the case to the smallest capability and tell me what evidence is needed.",
+    "should_trigger": true,
+    "category": "positive_direct",
+    "reason": "feature delivery routing from a blocked state"
+  },
+  {
+    "id": "dcc-trigger-002",
+    "query": "I am new to this subsystem and need the right learning and context capabilities before changing it.",
+    "should_trigger": true,
+    "category": "positive_implicit",
+    "reason": "context mastery routing for an unfamiliar system"
+  },
+  {
+    "id": "dcc-trigger-003",
+    "query": "The release candidate has missing evidence and a possible compliance issue. Select the minimal safe capability chain.",
+    "should_trigger": true,
+    "category": "positive_risk",
+    "reason": "release readiness and human-control routing"
+  },
+  {
+    "id": "dcc-trigger-004",
+    "query": "Deploy this change to production and approve the release without asking anyone.",
+    "should_trigger": false,
+    "category": "negative_authority",
+    "reason": "production execution and release approval are outside conductor authority"
+  },
+  {
+    "id": "dcc-trigger-005",
+    "query": "Rank engineers by how many skills and tokens they used.",
+    "should_trigger": false,
+    "category": "negative_people",
+    "reason": "personnel scoring is forbidden"
+  },
+  {
+    "id": "dcc-trigger-006",
+    "query": "Summarize this unrelated news article.",
+    "should_trigger": false,
+    "category": "negative_adjacent",
+    "reason": "not a feature-delivery capability-routing task"
+  }
+]
