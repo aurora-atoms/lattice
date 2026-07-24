@@ -1,6 +1,6 @@
 ---
 name: risk-ahead
-description: Use for shadow dependency mapping, accumulated silent-risk analysis, compliance pre-flight, rework early warning, and stakeholder-surprise detection; do not use for personnel surveillance, automatic compliance rulings, broad fear scoring, or escalation without evidence; input is a bounded change, dependencies, waits, exceptions, skipped tests, assumptions, policies, stakeholders, and historical review evidence; output is a compositional risk packet with evidence, interaction effects, threshold conditions, minimum preventive actions, owners, deadlines, and human escalation points that preserves behavioral constraints, least privilege, and quality-adjusted token ROI.
+description: Use for shadow dependency mapping, accumulated silent-risk analysis, compliance pre-flight, rework early warning, and stakeholder-surprise detection; do not use for personnel surveillance, automatic compliance rulings, broad fear scoring, or escalation without evidence; input is a bounded change, dependencies, waits, exceptions, skipped tests, assumptions, policies, stakeholders, and historical review evidence; output is a compositional risk packet with evidence, interaction effects, threshold conditions, minimum preventive actions, owners, deadlines, and human escalation points that preserves behavior, least privilege, and quality-adjusted token ROI.
 ---
 
 # Risk Ahead
