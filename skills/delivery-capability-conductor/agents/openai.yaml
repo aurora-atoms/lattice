@@ -1,0 +1,3 @@
+interface:
+  display_name: "Delivery Capability Conductor"
+  short_description: "Route delivery work to the smallest necessary capability set."

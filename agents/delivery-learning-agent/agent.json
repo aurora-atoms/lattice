@@ -1,0 +1,16 @@
+{
+  "id": "delivery-learning-agent@1.0.0",
+  "name": "delivery-learning-agent",
+  "description": "Route category F delivery-learning work to the smallest sufficient capability.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "delivery-learning-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/delivery-learning-agent/delivery-learning-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "delivery-learning", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}

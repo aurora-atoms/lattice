@@ -1,0 +1,16 @@
+{
+  "id": "human-judgment-agent@1.0.0",
+  "name": "human-judgment-agent",
+  "description": "Route category G expert-attention, mentorship, and invisible-work tasks.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "human-judgment-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/human-judgment-agent/human-judgment-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "human-judgment-amplifier", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}

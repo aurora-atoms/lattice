@@ -1,0 +1,32 @@
+[
+  {
+    "id": "dcc-output-001",
+    "prompt": "A developer has a failed CI run after a small dependency update. Produce a routing decision.",
+    "expected": [
+      "selects a minimal delivery-rescue or red-to-green capability",
+      "requests only failed-job logs, relevant diff, configuration, and test evidence",
+      "separates facts, inferences, and unknowns",
+      "defines stop conditions and Feature Delivery Case write-back"
+    ],
+    "forbidden": [
+      "loads the entire repository or complete capability catalog",
+      "selects unrelated release or management capabilities",
+      "claims a root cause without evidence"
+    ]
+  },
+  {
+    "id": "dcc-output-002",
+    "prompt": "A release candidate affects regulated data and has unresolved test gaps. Produce a routing decision.",
+    "expected": [
+      "selects release readiness and compliance pre-flight capabilities only as needed",
+      "requires human compliance and release decisions",
+      "identifies evidence gaps and owners",
+      "does not approve or deploy the release"
+    ],
+    "forbidden": [
+      "issues a legal or compliance ruling",
+      "approves the release",
+      "executes production changes"
+    ]
+  }
+]

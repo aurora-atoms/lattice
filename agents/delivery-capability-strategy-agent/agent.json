@@ -1,0 +1,16 @@
+{
+  "id": "delivery-capability-strategy-agent@1.0.0",
+  "name": "delivery-capability-strategy-agent",
+  "description": "Route category I delivery-capability and token-economics strategy work.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "delivery-capability-strategy-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/delivery-capability-strategy-agent/delivery-capability-strategy-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "delivery-capability-strategy", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}
