@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/pre-compact-checkpoint.v1.schema.json",
+  "title": "PRE_COMPACT_CHECKPOINT_V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "objective",
+    "scope",
+    "constraints",
+    "decisions",
+    "repository_state",
+    "validation",
+    "failures",
+    "open_items",
+    "next_actions",
+    "approvals",
+    "source_refs"
+  ],
+  "properties": {
+    "schema": {"const": "PRE_COMPACT_CHECKPOINT_V1"},
+    "objective": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["included", "excluded"],
+      "properties": {
+        "included": {"type": "array", "items": {"type": "string"}},
+        "excluded": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision", "reason", "status"],
+        "properties": {
+          "decision": {"type": "string"},
+          "reason": {"type": "string"},
+          "status": {"enum": ["accepted", "provisional", "rejected"]}
+        }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "worktree", "base_commit", "changed_files"],
+      "properties": {
+        "branch": {"type": "string"},
+        "worktree": {"type": "string"},
+        "base_commit": {"type": "string"},
+        "changed_files": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "result"],
+        "properties": {
+          "command": {"type": "string"},
+          "result": {"enum": ["passed", "failed", "not_run"]},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "failures": {"type": "array", "items": {"type": "string"}},
+    "open_items": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {"type": "array", "items": {"type": "string"}},
+    "approvals": {"type": "array", "items": {"type": "string"}},
+    "source_refs": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,4 +1,4 @@
 interface:
-  display_name: "VS Code Workspace AI Context"
-  short_description: "Maintain VS Code workspace AI customization and skill discovery."
-  default_prompt: "Review or update VS Code workspace AI settings, instructions, and skill discovery without adding unsupported settings."
+  display_name: "VS Code Native-First AI Auditor"
+  short_description: "Prefer native VS Code capabilities before extensions and custom harnesses."
+  default_prompt: "Audit this workspace with a native-first policy. Review current VS Code settings, Chat and Agents Window sessions, Agent Host, local/background/cloud and Claude/Codex agents, instructions, prompts, custom agents, skills, hooks, MCP, worktrees, permissions, sandboxing, compaction, caching, forks, and provider-specific configuration. Remove redundant defaults only when they do not enforce policy; retain extensions only for documented native gaps; cite current evidence and propose the smallest supported patch."
