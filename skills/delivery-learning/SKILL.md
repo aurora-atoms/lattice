@@ -28,22 +28,23 @@ Return versioned Delivery Case updates, reusable candidates with limits, immune-
 
 ## Workflow
 1. Identify the lifecycle event and target learning object.
-2. Select one atomic capability first.
-3. Link evidence to the Feature Delivery Case.
-4. Separate reusable candidate from approved reusable asset.
-5. Add applicability, review, and expiry conditions.
-6. Require owner review before promotion.
+2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
+3. Select one atomic capability first.
+4. Link evidence to the Feature Delivery Case.
+5. Separate reusable candidate from approved reusable asset.
+6. Add applicability, review, and expiry conditions.
+7. Require owner review before promotion.
 
 ## Rules
-FCAT.001 | MUST | object | use_feature_delivery_case_as_primary_learning_unit | enforce
-FCAT.002 | MUST | routing | select_one_atomic_capability_before_composing | enforce
-FCAT.003 | MUST | evidence | attach_source_scope_and_result_evidence | enforce
-FCAT.004 | MUST | promotion | keep_candidate_separate_from_approved_memory_rule_or_skill | enforce
-FCAT.005 | MUST | metrics | preserve_multi_metric_product_judgment | enforce
-FCAT.006 | MUST | token | optimize_quality_adjusted_output_per_token_cost | enforce
-FCAT.007 | SHOULD | prompt | keep_rules_and_output_contract_in_stable_prefix | prefer
-FCAT.008 | NEVER | memory | store_raw_transcripts_as_memory | block
-FCAT.009 | NEVER | promotion | auto_promote_single_case_learning | block
+FCAT.001 | MUST | object | use the Feature Delivery Case as the primary learning unit | enforce
+FCAT.002 | MUST | routing | select one atomic capability before composing | enforce
+FCAT.003 | MUST | evidence | attach source, scope, and result evidence | enforce
+FCAT.004 | MUST | promotion | keep a candidate separate from approved memory, rule, or skill | enforce
+FCAT.005 | MUST | metrics | preserve multi-metric product judgment | enforce
+FCAT.006 | MUST | token | optimize quality-adjusted token ROI | enforce
+FCAT.007 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
+FCAT.008 | NEVER | memory | store raw transcripts as memory | block
+FCAT.009 | NEVER | promotion | auto-promote single-case learning | block
 
 ## Verification
 - Learning is linked to a Feature Delivery Case.
