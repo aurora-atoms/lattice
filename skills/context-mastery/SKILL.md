@@ -1,6 +1,6 @@
 ---
 name: context-mastery
-description: Use for codebase understanding, controlled learning, task-specific domain context, negative knowledge, similar delivery work, expert-question preparation, and missing-question discovery; do not use as a raw repository dump, generic summarizer, or substitute for human understanding of critical control points; input is a bounded task, repository map, internal rules, decisions, incidents, historical Delivery Cases, and user experience level; output is a compact context pack, system map, learning path, known traps, analogous cases, verification questions, and teach-back checkpoints that preserve provenance and quality-adjusted token ROI.
+description: Use for codebase understanding, controlled learning, task-specific domain context, negative knowledge, similar delivery work, expert-question preparation, and missing-question discovery; do not use as a raw repository dump, generic summarizer, or substitute for human understanding of critical control points; input is a bounded task, repository map, internal rules, decisions, incidents, historical Delivery Cases, and user experience level; output is a compact context pack, system map, learning path, known traps, analogous cases, verification questions, and teach-back checkpoints that preserve behavioral constraints, provenance, and quality-adjusted token ROI.
 ---
 
 # Context Mastery
@@ -29,21 +29,22 @@ Return a system map, must-know control points, task context pack, known traps, a
 
 ## Workflow
 1. Bound the task and user role.
-2. Select one atomic capability first.
-3. Build map before detail.
-4. Load only necessary sources and cite provenance.
-5. Separate critical control points from optional branches.
-6. Require teach-back for high-risk understanding.
+2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
+3. Select one atomic capability first.
+4. Build the map before detail.
+5. Load only necessary sources and cite provenance.
+6. Separate critical control points from optional branches.
+7. Require teach-back for high-risk understanding.
 
 ## Rules
-BCAT.001 | MUST | scope | bind_context_to_current_feature_delivery_case | enforce
-BCAT.002 | MUST | routing | select_one_atomic_capability_before_composing | enforce
-BCAT.003 | MUST | context | output_context_pack_not_raw_dump | enforce
-BCAT.004 | MUST | evidence | preserve_source_provenance_conflicts_and_unknowns | enforce
-BCAT.005 | MUST | learning | require_teach_back_for_critical_control_points | enforce
-BCAT.006 | MUST | token | optimize_quality_adjusted_output_per_token_cost | enforce
-BCAT.007 | SHOULD | prompt | keep_rules_and_output_contract_in_stable_prefix | prefer
-BCAT.008 | NEVER | context | dump_full_repo_logs_or_knowledge_base | block
+BCAT.001 | MUST | scope | bind context to the current Feature Delivery Case | enforce
+BCAT.002 | MUST | routing | select one atomic capability before composing | enforce
+BCAT.003 | MUST | context | output a context pack instead of a raw dump | enforce
+BCAT.004 | MUST | evidence | preserve source provenance, conflicts, and unknowns | enforce
+BCAT.005 | MUST | learning | require teach-back for critical control points | enforce
+BCAT.006 | MUST | token | optimize quality-adjusted token ROI | enforce
+BCAT.007 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
+BCAT.008 | NEVER | context | dump the full repository, logs, or knowledge base | block
 
 ## Verification
 - Context is task-scoped and source-linked.
