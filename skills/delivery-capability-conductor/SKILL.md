@@ -1,6 +1,6 @@
 ---
 name: delivery-capability-conductor
-description: use for routing a Feature Delivery Case to the smallest necessary public Lattice delivery skill or agent based on role, lifecycle stage, state change, evidence, permissions, and desired visible outcome; do not use to execute production changes, approve releases, make business or compliance decisions, evaluate personnel, or invoke the entire capability catalog by default; input is a Feature Delivery Case, task request, role, stage, event, available evidence, capability registry, and permission boundary; output is a bounded routing decision, selected capability chain, required context, stop conditions, human confirmations, evidence expectations, and write-back plan that preserves behavioral constraints, least privilege, explicit uncertainty, delivery value, and quality-adjusted token ROI.
+description: use for routing a Feature Delivery Case to the smallest necessary public Lattice delivery skill or agent based on role, lifecycle stage, state change, evidence, permissions, and desired visible outcome; do not use to execute production changes, approve releases, make business or compliance decisions, evaluate personnel, or invoke the entire capability catalog by default; input is a Feature Delivery Case, task request, role, stage, event, available evidence, capability registry, and permission boundary; output is a bounded routing decision, selected capability chain, required context, stop conditions, human confirmations, evidence expectations, and write-back plan that preserves behavior, least privilege, explicit uncertainty, delivery value, and quality-adjusted token ROI.
 ---
 
 # Delivery Capability Conductor
@@ -62,7 +62,7 @@ DCC.012 | NEVER | authority | approve delivery, merge, release, or production ch
 DCC.013 | NEVER | people | use routing telemetry for personnel ranking | block
 DCC.014 | NEVER | certainty | convert unverified inference into fact | block
 
-## Reference Routing
+## References
 The hard routing, evidence, authority, and stop rules are defined above. Read `references/routing-map.md` only for detailed role-stage-condition examples. Read `references/output-contract.md` only when producing a machine-checkable routing record.
 
 ## Verification
