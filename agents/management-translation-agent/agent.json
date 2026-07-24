@@ -1,0 +1,16 @@
+{
+  "id": "management-translation-agent@1.0.0",
+  "name": "management-translation-agent",
+  "description": "Route category H management communication work to the smallest sufficient capability.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "management-translation-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/management-translation-agent/management-translation-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "management-translation", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}
