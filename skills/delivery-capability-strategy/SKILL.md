@@ -1,6 +1,6 @@
 ---
 name: delivery-capability-strategy
-description: Use to reframe AI-adoption requests into delivery-capability design and to connect AI token or cost evidence to visible user-usable feature delivery; do not use as a generic AI adoption campaign, activity dashboard, model competition, cost-minimization exercise, or runtime coding orchestrator; input is delivery goals, team pain points, available capabilities, Feature Delivery Cases, token or cost records with known, estimated, or provider-reported status, and outcome evidence; output is a capability strategy, Token-to-Delivery view, waste hypothesis, next optimization signal, and manager-facing recommendation that preserves behavioral constraints, active module boundaries, and DeliveryYield measurement-only scope.
+description: Use to reframe AI-adoption requests into delivery-capability design and to connect AI token or cost evidence to visible user-usable feature delivery; do not use as a generic AI adoption campaign, activity dashboard, model competition, cost-minimization exercise, or runtime coding orchestrator; input is delivery goals, team pain points, available capabilities, Feature Delivery Cases, token or cost records with known, estimated, or provider-reported status, and outcome evidence; output is a capability strategy, Token-to-Delivery view, waste hypothesis, next optimization signal, and manager-facing recommendation that preserves behavior, active module boundaries, and DeliveryYield measurement-only scope.
 ---
 
 # Delivery Capability Strategy
