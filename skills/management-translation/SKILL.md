@@ -1,6 +1,6 @@
 ---
 name: management-translation
-description: Use to translate Feature Delivery Case evidence into executive feature briefs, risk escalation packets, and audience-specific management updates; do not use to hide uncertainty, beautify status by dropping risks, make commitments, or expose unnecessary technical or sensitive detail; input is a bounded readiness card, outcome evidence, risks, options, deadlines, resource requests, and audience level; output is a traceable one-page brief, decision request, oral-update outline, or escalation packet focused on purpose, delivered state, evidence, risk, next milestone, and required decision while preserving behavioral constraints, factual accuracy, and human approval.
+description: Use to translate Feature Delivery Case evidence into executive feature briefs, risk escalation packets, and audience-specific management updates; do not use to hide uncertainty, beautify status by dropping risks, make commitments, or expose unnecessary technical or sensitive detail; input is a bounded readiness card, outcome evidence, risks, options, deadlines, resource requests, and audience level; output is a traceable one-page brief, decision request, oral-update outline, or escalation packet focused on purpose, delivered state, evidence, risk, next milestone, and required decision while preserving behavior, factual accuracy, and human approval.
 ---
 
 # Management Translation
