@@ -1,6 +1,6 @@
 ---
 name: risk-ahead
-description: Use for shadow dependency mapping, accumulated silent-risk analysis, compliance pre-flight, rework early warning, and stakeholder-surprise detection; do not use for personnel surveillance, automatic compliance rulings, broad fear scoring, or escalation without evidence; input is a bounded change, dependencies, waits, exceptions, skipped tests, assumptions, policies, stakeholders, and historical review evidence; output is a compositional risk packet with evidence, interaction effects, threshold conditions, minimum preventive actions, owners, deadlines, and human escalation points that preserves least privilege and quality-adjusted token ROI.
+description: Use for shadow dependency mapping, accumulated silent-risk analysis, compliance pre-flight, rework early warning, and stakeholder-surprise detection; do not use for personnel surveillance, automatic compliance rulings, broad fear scoring, or escalation without evidence; input is a bounded change, dependencies, waits, exceptions, skipped tests, assumptions, policies, stakeholders, and historical review evidence; output is a compositional risk packet with evidence, interaction effects, threshold conditions, minimum preventive actions, owners, deadlines, and human escalation points that preserves behavioral constraints, least privilege, and quality-adjusted token ROI.
 ---
 
 # Risk Ahead
@@ -27,21 +27,22 @@ Return hidden dependencies, interacting risks, pre-flight evidence requirements,
 
 ## Workflow
 1. Bound the change and affected Delivery Case.
-2. Select one atomic capability first.
-3. Gather evidence for dependencies, exceptions, and exposure.
-4. Model interaction effects without hiding composition.
-5. Recommend the smallest preventive action.
-6. Escalate only evidence-backed risk requiring human authority.
+2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
+3. Select one atomic capability first.
+4. Gather evidence for dependencies, exceptions, and exposure.
+5. Model interaction effects without hiding composition.
+6. Recommend the smallest preventive action.
+7. Escalate only evidence-backed risk requiring human authority.
 
 ## Rules
-DCAT.001 | MUST | routing | select_one_atomic_capability_before_composing | enforce
-DCAT.002 | MUST | evidence | expose_risk_components_and_interactions | enforce
-DCAT.003 | MUST | scope | focus_on_system_bottlenecks_not_personnel_blame | enforce
-DCAT.004 | MUST | human | reserve_compliance_legal_and_business_judgment_for_owners | enforce
-DCAT.005 | MUST | token | optimize_quality_adjusted_output_per_token_cost | enforce
-DCAT.006 | SHOULD | prompt | keep_rules_and_output_contract_in_stable_prefix | prefer
-DCAT.007 | NEVER | scoring | use_black_box_risk_score_without_composition | block
-DCAT.008 | NEVER | surveillance | rank_or_monitor_people | block
+DCAT.001 | MUST | routing | select one atomic capability before composing | enforce
+DCAT.002 | MUST | evidence | expose risk components and interactions | enforce
+DCAT.003 | MUST | scope | focus on system bottlenecks instead of personnel blame | enforce
+DCAT.004 | MUST | human | reserve compliance, legal, and business judgment for owners | enforce
+DCAT.005 | MUST | token | optimize quality-adjusted token ROI | enforce
+DCAT.006 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
+DCAT.007 | NEVER | scoring | use a black-box risk score without composition | block
+DCAT.008 | NEVER | surveillance | rank or monitor people | block
 
 ## Verification
 - Each risk has evidence, scope, interaction, and owner.
