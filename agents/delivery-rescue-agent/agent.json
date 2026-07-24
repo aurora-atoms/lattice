@@ -1,0 +1,16 @@
+{
+  "id": "delivery-rescue-agent@1.0.0",
+  "name": "delivery-rescue-agent",
+  "description": "Route delivery blockers to the smallest sufficient category A capability.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "delivery-rescue-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/delivery-rescue-agent/delivery-rescue-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "delivery-rescue", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}
