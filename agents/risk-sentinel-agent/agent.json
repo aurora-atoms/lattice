@@ -1,0 +1,16 @@
+{
+  "id": "risk-sentinel-agent@1.0.0",
+  "name": "risk-sentinel-agent",
+  "description": "Route category D hidden-risk work to the smallest sufficient capability.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "risk-sentinel-agent",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {"path": "agents/risk-sentinel-agent/risk-sentinel-agent.agent.md", "format": "markdown", "hash_required": true},
+  "skills": [{"skill_id": "risk-ahead", "required": true, "implicit": true}],
+  "mcp": [],
+  "knowledge": [],
+  "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+}
