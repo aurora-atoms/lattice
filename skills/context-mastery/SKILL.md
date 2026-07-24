@@ -1,6 +1,6 @@
 ---
 name: context-mastery
-description: Use for codebase understanding, controlled learning, task-specific domain context, negative knowledge, similar delivery work, expert-question preparation, and missing-question discovery; do not use as a raw repository dump, generic summarizer, or substitute for human understanding of critical control points; input is a bounded task, repository map, internal rules, decisions, incidents, historical Delivery Cases, and user experience level; output is a compact context pack, system map, learning path, known traps, analogous cases, verification questions, and teach-back checkpoints that preserve behavioral constraints, provenance, and quality-adjusted token ROI.
+description: Use for codebase understanding, controlled learning, task-specific domain context, negative knowledge, similar delivery work, expert-question preparation, and missing-question discovery; do not use as a raw repository dump, generic summarizer, or substitute for human understanding of critical control points; input is a bounded task, repository map, internal rules, decisions, incidents, historical Delivery Cases, and user experience level; output is a compact context pack, system map, learning path, known traps, analogous cases, verification questions, and teach-back checkpoints that preserve behavior, provenance, and quality-adjusted token ROI.
 ---
 
 # Context Mastery
