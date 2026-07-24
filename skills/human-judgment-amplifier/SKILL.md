@@ -1,6 +1,6 @@
 ---
 name: human-judgment-amplifier
-description: Use for scarce-expert decision queues, real-case mentorship, and evidence-backed invisible-work receipts; do not use to automate final expert judgment, rank personnel, infer performance from activity, or expose sensitive collaboration data; input is a bounded question, evidence, options, risks, review history, learning goal, and participant-confirmed contribution evidence; output is a prioritized decision packet, teach-back case, mentorship exercise, or impact receipt with human confirmation, privacy controls, uncertainty boundaries, and quality-adjusted token ROI.
+description: Use for scarce-expert decision queues, real-case mentorship, and evidence-backed invisible-work receipts; do not use to automate final expert judgment, rank personnel, infer performance from activity, or expose sensitive collaboration data; input is a bounded question, evidence, options, risks, review history, learning goal, and participant-confirmed contribution evidence; output is a prioritized decision packet, teach-back case, mentorship exercise, or impact receipt with human confirmation, privacy controls, uncertainty boundaries, behavior preservation, and quality-adjusted token ROI.
 ---
 
 # Human Judgment Amplifier
@@ -25,20 +25,21 @@ Return a prioritized expert decision packet, minimum context, teach-back case, m
 
 ## Workflow
 1. Identify whether the need is expert routing, mentorship, or impact visibility.
-2. Select one atomic capability first.
-3. Compress context without hiding uncertainty.
-4. Preserve final expert and participant authority.
-5. Produce a confirmable artifact, not an activity score.
+2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
+3. Select one atomic capability first.
+4. Compress context without hiding uncertainty.
+5. Preserve final expert and participant authority.
+6. Produce a confirmable artifact, not an activity score.
 
 ## Rules
-GCAT.001 | MUST | routing | select_one_atomic_capability_before_composing | enforce
-GCAT.002 | MUST | evidence | link_claims_to_delivery_outcome_and_participant_confirmation | enforce
-GCAT.003 | MUST | human | preserve_final_expert_judgment | enforce
-GCAT.004 | MUST | privacy | minimize_sensitive_collaboration_data | enforce
-GCAT.005 | MUST | token | optimize_quality_adjusted_output_per_token_cost | enforce
-GCAT.006 | SHOULD | prompt | keep_rules_and_output_contract_in_stable_prefix | prefer
-GCAT.007 | NEVER | personnel | rank_score_or_monitor_people | block
-GCAT.008 | NEVER | authority | automate_final_expert_decision | block
+GCAT.001 | MUST | routing | select one atomic capability before composing | enforce
+GCAT.002 | MUST | evidence | link claims to delivery outcome and participant confirmation | enforce
+GCAT.003 | MUST | human | preserve final expert judgment | enforce
+GCAT.004 | MUST | privacy | minimize sensitive collaboration data | enforce
+GCAT.005 | MUST | token | optimize quality-adjusted token ROI | enforce
+GCAT.006 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
+GCAT.007 | NEVER | personnel | rank, score, or monitor people | block
+GCAT.008 | NEVER | authority | automate the final expert decision | block
 
 ## Verification
 - The artifact helps a real decision, learning task, or recognized delivery outcome.
