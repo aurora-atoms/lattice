@@ -1,6 +1,6 @@
 ---
 name: knowledge-integrity
-description: Use for alignment receipts, contradiction detection, assumption-expiry review, knowledge trust scoring, decision half-life review, architecture drift analysis, and future-maintainer notes; do not use to make unilateral business, architecture, compliance, or ownership decisions; input is bounded requirements, designs, code, tests, documents, decisions, assumptions, owners, dates, and evidence references; output is a traceable integrity report containing conflicts, trust factors, expired assumptions, decisions needing review, architecture drift, concise maintenance intent, and required human adjudication while preserving behavioral constraints, uncertainty, and quality-adjusted token ROI.
+description: Use for alignment receipts, contradiction detection, assumption-expiry review, knowledge trust scoring, decision half-life review, architecture drift analysis, and future-maintainer notes; do not use to make unilateral business, architecture, compliance, or ownership decisions; input is bounded requirements, designs, code, tests, documents, decisions, assumptions, owners, dates, and evidence references; output is a traceable integrity report containing conflicts, trust factors, expired assumptions, decisions needing review, architecture drift, concise maintenance intent, and required human adjudication while preserving behavior, uncertainty, and quality-adjusted token ROI.
 ---
 
 # Knowledge Integrity
