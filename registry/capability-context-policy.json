@@ -1,0 +1,56 @@
+{
+  "contract":"lat.capability-context.v1",
+  "contract_version":"1.0.0",
+  "skill_versions":{
+    "lattice-governor":"1.0.0",
+    "delivery-verdict-author":"1.0.0",
+    "feature-spec-author":"1.0.0",
+    "powerbi-semantic-accelerator":"1.0.0",
+    "skill-token-refactor":"1.0.0",
+    "task-packet-builder":"1.0.0",
+    "token-economics-dossier-generator":"1.0.0",
+    "vscode-workspace-ai-context":"1.0.0",
+    "excalidraw-local-canvas":"1.0.0",
+    "team-knowledge-plane-governor":"1.0.0",
+    "hybrid-knowledge-retrieval-builder":"1.0.0",
+    "knowledge-profile-evaluator":"1.0.0",
+    "delivery-capability-conductor":"1.0.0",
+    "delivery-rescue":"1.0.0",
+    "context-mastery":"1.0.0",
+    "knowledge-integrity":"1.0.0",
+    "risk-ahead":"1.0.0",
+    "delivery-artifact-builder":"1.0.0",
+    "delivery-learning":"1.0.0",
+    "human-judgment-amplifier":"1.0.0",
+    "management-translation":"1.0.0",
+    "delivery-capability-strategy":"1.0.0",
+    "capability-harness-engineer":"1.0.0",
+    "self-service-analytics-mvp-builder":"1.0.0",
+    "feature-delivery-case":"1.0.0"
+  },
+  "agent_versions":{
+    "pr-reviewer":"1.0.0",
+    "python-expert":"1.0.0",
+    "delivery-capability-conductor":"1.0.0",
+    "delivery-rescue-agent":"1.0.0",
+    "context-mastery-agent":"1.0.0",
+    "knowledge-integrity-agent":"1.0.0",
+    "risk-sentinel-agent":"1.0.0",
+    "delivery-artifact-agent":"1.0.0",
+    "delivery-learning-agent":"1.0.0",
+    "human-judgment-agent":"1.0.0",
+    "management-translation-agent":"1.0.0",
+    "delivery-capability-strategy-agent":"1.0.0",
+    "capability-harness-engineer":"1.0.0"
+  },
+  "required_permissions_policy":[
+    "Catalog metadata grants no permissions.",
+    "Read, write, network, external-action, approval, and production permissions come from the selected Skill or Agent contract, active runtime policy, and current user authorization.",
+    "Repository writes, network calls, external actions, merge, release, deployment, and production changes require explicit applicable authority."
+  ],
+  "tool_policy":[
+    "Activate only task-critical native or declared tools after capability selection.",
+    "Tool availability does not imply permission to use it.",
+    "Discover additional tools only for a named output-quality or evidence gap."
+  ]
+}
