@@ -6,17 +6,28 @@ This file is a small cross-runtime map, not a replacement for the native GitHub 
 
 1. Use the active runtime's built-in agent loop, Skill discovery, context management, permissions, sandbox, and tool selection first.
 2. Let the runtime match task intent against Skill `name` and `description`; do not run a repository router before every normal task.
-3. Load progressively:
+3. When compact capability metadata is useful, consult `registry/skill-context.catalog.json` or `registry/agent-context.catalog.json` before loading a Skill or Agent body. Use its stable ID/version, intended change, users, trigger, minimum inputs, permissions, tools, outputs, and optional-context guidance.
+4. Load progressively:
 
 ```text
-Skill metadata -> selected SKILL.md -> named references or scripts -> bounded task evidence
+native name + description
+-> compact capability context
+-> selected SKILL.md or Agent instruction
+-> named references or scripts
+-> bounded task evidence
+-> optional related capability or source only for a named quality gap
 ```
 
-4. Use native custom agents, subagents or forked Skill contexts, handoffs, worktrees, and hooks when the runtime supports them and the task justifies them.
-5. Select the smallest sufficient capability. Add another capability only for a required dependency, independent check, or lifecycle gate.
-6. Keep context packs bounded to scope, files and line ranges, symbols, tests, risks, decisions, validation commands, evidence refs, and permission boundaries.
-7. Preserve human authority for scope, security, compliance, architecture, merge, release, deployment, and production decisions.
-8. Stop when the requested visible result is reached.
+5. Use native custom agents, subagents or forked Skill contexts, handoffs, worktrees, and hooks when the runtime supports them and the task justifies them.
+6. Select the smallest sufficient capability. Add another capability only for a required dependency, independent check, lifecycle gate, or explicit optional-context gap.
+7. Keep context packs bounded to scope, files and line ranges, symbols, tests, risks, decisions, validation commands, evidence refs, and permission boundaries.
+8. Optional context is advisory discovery guidance. It does not grant tools, permissions, network access, repository writes, or approval authority.
+9. Preserve human authority for scope, security, compliance, architecture, merge, release, deployment, and production decisions.
+10. Stop when the requested visible result is reached.
+
+## Compatibility
+
+Capability identity uses `skill:<name>@<semver>` or `agent:<name>@<semver>`. Treat changes to required inputs, permissions, outputs, authority boundaries, or behavior semantics as compatibility decisions under `docs/capability-context-contract.md`.
 
 ## Fallback and Evaluation
 
