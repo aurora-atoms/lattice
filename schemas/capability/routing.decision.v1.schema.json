@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.dev/schemas/capability/routing.decision.v1.schema.json",
+  "title": "Capability Routing Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "mode",
+    "request_summary",
+    "selected",
+    "candidates",
+    "load_plan",
+    "human_confirmation",
+    "stop_conditions",
+    "warnings"
+  ],
+  "properties": {
+    "schema": {"const": "capability.routing_decision.v1"},
+    "status": {"enum": ["auto_invoke", "recommend", "ask", "no_match"]},
+    "mode": {"enum": ["manual", "assist", "auto"]},
+    "request_summary": {"type": "string"},
+    "selected": {"type": "array", "maxItems": 1, "items": {"$ref": "#/$defs/candidate"}},
+    "candidates": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/candidate"}},
+    "load_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metadata", "skill_bodies", "resources", "task_context"],
+      "properties": {
+        "metadata": {"type": "array", "items": {"type": "string"}},
+        "skill_bodies": {"type": "array", "items": {"type": "string"}},
+        "resources": {"type": "array", "items": {"type": "string"}},
+        "task_context": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "human_confirmation": {"type": "array", "items": {"type": "string"}},
+    "stop_conditions": {"type": "array", "items": {"type": "string"}},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill_id", "score", "matched_signals"],
+      "properties": {
+        "skill_id": {"type": "string"},
+        "score": {"type": "integer"},
+        "matched_signals": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

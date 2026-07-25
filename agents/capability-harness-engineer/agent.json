@@ -1,0 +1,50 @@
+{
+  "id": "capability-harness-engineer@1.0.0",
+  "name": "capability-harness-engineer",
+  "description": "Govern and evaluate native capability discovery, progressive context loading, runtime adapters, and deterministic fallback routing without replacing maintained agent hosts.",
+  "owner": "aurora-atoms",
+  "status": "experimental",
+  "role": "capability-harness-engineer",
+  "scope": {"allowed": ["project"]},
+  "risk_level": "medium",
+  "data_classification": "public",
+  "instruction_source": {
+    "path": "agents/capability-harness-engineer/capability-harness-engineer.agent.md",
+    "format": "markdown",
+    "hash_required": true
+  },
+  "skills": [
+    {"skill_id": "capability-harness-engineer", "required": true, "implicit": true},
+    {"skill_id": "delivery-capability-conductor", "required": false, "implicit": false},
+    {"skill_id": "vscode-workspace-ai-context", "required": false, "implicit": false},
+    {"skill_id": "lattice-governor", "required": false, "implicit": false}
+  ],
+  "mcp": [],
+  "knowledge": [],
+  "token_budget": {
+    "max_instruction_chars": 8000,
+    "max_skill_catalog_chars": 12000,
+    "max_active_mcp_tools": 10,
+    "max_knowledge_index_items": 20
+  },
+  "cache": {
+    "deterministic_order": true,
+    "no_timestamps": true,
+    "no_random_ids": true,
+    "no_absolute_local_paths": true,
+    "agent_hash_required": true
+  },
+  "install": {
+    "targets": ["codex", "github-copilot"],
+    "scopes": ["project"],
+    "project_install_preferred": true
+  },
+  "telemetry": {
+    "record_agent_hash": true,
+    "record_selected_skills": true,
+    "record_selected_mcp_tools": true,
+    "record_selected_knowledge_packs": true,
+    "record_prompt_tokens_when_available": true,
+    "record_cached_tokens_when_available": true
+  }
+}
