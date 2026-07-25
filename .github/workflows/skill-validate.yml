@@ -22,6 +22,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_route_capabilities.py' -v
       - name: Validate capability routing schema
         run: python -m json.tool schemas/capability/routing.decision.v1.schema.json >/dev/null
+      - name: Test Feature Delivery Case lifecycle
+        run: python -m unittest discover -s tests -p 'test_feature_delivery_case.py' -v
+      - name: Validate Feature Delivery Case lifecycle schema
+        run: python -m json.tool skills/feature-delivery-case/schemas/feature-delivery-case.lifecycle.v1.schema.json >/dev/null
       - name: Test VS Code AI configuration auditor
         run: python -m unittest discover -s skills/vscode-workspace-ai-context/evals -p 'test_*.py' -v
       - name: Validate pre-compact checkpoint schema
