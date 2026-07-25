@@ -11,6 +11,8 @@ from typing import Any
 SEMVER_RE=re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 NAME_RE=re.compile(r"^[a-z0-9][a-z0-9-]*$")
 ENTRY_FIELDS={"name","changes","primary_user","secondary_audience","trigger","minimum","outputs","runtime_targets"}
+REQUIRED_EVIDENCE={"facts","inference_summary","citations","uncertainty","unknowns","assumptions"}
+REQUIRED_STOP_REASONS={"goal_reached","stage_gate_reached","retry_budget_exhausted","missing_permission","missing_required_input","source_unavailable","insufficient_evidence","high_risk_boundary","human_decision_required","explicit_user_stop","failed_validation"}
 
 
 def load_json(path: Path) -> dict[str,Any]:
@@ -36,6 +38,66 @@ def nonempty_strings(value: Any) -> bool:
     return isinstance(value,list) and bool(value) and all(isinstance(item,str) and item.strip() for item in value)
 
 
+def validate_run_contracts(catalog: dict[str,Any],path: Path,root: Path) -> list[str]:
+    errors=[]
+    run=catalog.get("run_result_contract")
+    if not isinstance(run,dict):
+        errors.append(f"{path}: run_result_contract is required")
+    else:
+        schema=run.get("schema")
+        if not isinstance(schema,str) or not schema.strip():
+            errors.append(f"{path}: run_result_contract.schema is required")
+        elif not (root/schema).exists():
+            errors.append(f"{path}: run result schema does not exist: {schema}")
+        if run.get("record_type")!="lat.capability.run_result.v1":
+            errors.append(f"{path}: run_result_contract.record_type must be lat.capability.run_result.v1")
+        pattern=run.get("writeback_pattern")
+        if not isinstance(pattern,str) or "<capability-name>" not in pattern or "<run-id>" not in pattern:
+            errors.append(f"{path}: writeback_pattern must contain <capability-name> and <run-id>")
+        if run.get("visible_artifact_required") is not True:
+            errors.append(f"{path}: visible_artifact_required must be true")
+        if not isinstance(run.get("inline_fallback"),str) or not run["inline_fallback"].strip():
+            errors.append(f"{path}: inline_fallback is required")
+
+    evidence=catalog.get("evidence_contract")
+    if not isinstance(evidence,dict):
+        errors.append(f"{path}: evidence_contract is required")
+    else:
+        sections=evidence.get("required_sections")
+        if not isinstance(sections,list) or set(sections)!=REQUIRED_EVIDENCE:
+            errors.append(f"{path}: evidence required_sections must equal {', '.join(sorted(REQUIRED_EVIDENCE))}")
+        if not isinstance(evidence.get("policy"),str) or not evidence["policy"].strip():
+            errors.append(f"{path}: evidence_contract.policy is required")
+
+    success=catalog.get("success_contract")
+    if not isinstance(success,dict):
+        errors.append(f"{path}: success_contract is required")
+    else:
+        if success.get("required") is not True:
+            errors.append(f"{path}: success_contract.required must be true")
+        if set(success.get("result_enum",[]))!={"met","not_met","not_evaluated"}:
+            errors.append(f"{path}: success_contract.result_enum is invalid")
+        if not isinstance(success.get("policy"),str) or not success["policy"].strip():
+            errors.append(f"{path}: success_contract.policy is required")
+
+    stop=catalog.get("stop_contract")
+    if not isinstance(stop,dict):
+        errors.append(f"{path}: stop_contract is required")
+    else:
+        budget=stop.get("default_retry_budget")
+        if not isinstance(budget,int) or budget<0:
+            errors.append(f"{path}: default_retry_budget must be a non-negative integer")
+        if stop.get("stage_gate_by_default") is not True:
+            errors.append(f"{path}: stage_gate_by_default must be true")
+        if stop.get("continue_to_final_goal_only_when_explicitly_requested") is not True:
+            errors.append(f"{path}: explicit continuation policy must be true")
+        if set(stop.get("reasons",[]))!=REQUIRED_STOP_REASONS:
+            errors.append(f"{path}: stop reasons do not match the required set")
+        if not isinstance(stop.get("policy"),str) or not stop["policy"].strip():
+            errors.append(f"{path}: stop_contract.policy is required")
+    return errors
+
+
 def validate_catalog(path: Path,root: Path,kind: str) -> tuple[list[str],list[dict[str,Any]]]:
     errors=[]
     catalog=load_json(path)
@@ -50,6 +112,7 @@ def validate_catalog(path: Path,root: Path,kind: str) -> tuple[list[str],list[di
         errors.append(f"{path}: breaking_change_policy must be semantic_versioning")
     if not isinstance(catalog.get("optional_context_discovery"),str) or not catalog["optional_context_discovery"].strip():
         errors.append(f"{path}: optional_context_discovery is required")
+    errors.extend(validate_run_contracts(catalog,path,root))
     entries=catalog.get(collection)
     if not isinstance(entries,list):
         return errors+[f"{path}: {collection} must be an array"],[]
@@ -154,6 +217,7 @@ def main() -> int:
         return 1
     print(f"validated {len(skills)} Skill and {len(agents)} Agent context contract(s)")
     return 0
+
 
 if __name__=="__main__":
     raise SystemExit(main())
