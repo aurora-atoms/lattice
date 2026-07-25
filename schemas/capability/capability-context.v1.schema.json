@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/capability-context.v1.schema.json",
+  "title": "Capability Context Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "name", "version", "path", "status", "compatibility", "changes", "primary_user", "secondary_audience", "triggers", "required_inputs", "optional_context", "outputs"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^(skill|agent):[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"},
+    "kind": {"type": "string", "enum": ["skill", "agent"]},
+    "name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"},
+    "path": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["draft", "candidate", "experimental", "active", "deprecated", "archived", "quarantine"]},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "contract_version", "runtime_targets", "breaking_change_policy"],
+      "properties": {
+        "contract": {"const": "lat.capability-context.v1"},
+        "contract_version": {"type": "string"},
+        "runtime_targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "breaking_change_policy": {"const": "semantic_versioning"}
+      }
+    },
+    "changes": {"type": "string", "minLength": 1},
+    "primary_user": {"type": "string", "minLength": 1},
+    "secondary_audience": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "triggers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "states", "requests", "exclusions"],
+      "properties": {
+        "events": {"type": "array", "items": {"type": "string"}},
+        "states": {"type": "array", "items": {"type": "string"}},
+        "requests": {"type": "array", "items": {"type": "string"}},
+        "exclusions": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "required_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "permissions", "tools"],
+      "properties": {
+        "minimum": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "permissions": {"type": "array", "items": {"type": "string"}},
+        "tools": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "optional_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["when", "discover", "suggested_capabilities", "external_sources"],
+      "properties": {
+        "when": {"type": "array", "items": {"type": "string"}},
+        "discover": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "suggested_capabilities": {"type": "array", "items": {"type": "string"}},
+        "external_sources": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "outputs": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}
