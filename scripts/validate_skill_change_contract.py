@@ -142,9 +142,14 @@ def main() -> int:
                 )
 
             stop = section_body(text, "Stop Conditions") or ""
-            for token in ("permission", "evidence", "risk", "goal"):
-                if token not in stop.lower():
+            stop_lower = stop.lower()
+            for token in ("permission", "evidence", "risk"):
+                if token not in stop_lower:
                     errors.append(f"skills/{name}/SKILL.md: Stop Conditions must address {token}")
+            if not any(token in stop_lower for token in ("goal", "target", "stage")):
+                errors.append(
+                    f"skills/{name}/SKILL.md: Stop Conditions must address goal, target, or stage completion"
+                )
 
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         errors.append(str(exc))
