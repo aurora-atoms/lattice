@@ -9,161 +9,125 @@ from pathlib import Path
 from typing import Any
 
 SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
-ID_RE = re.compile(r"^(skill|agent):([a-z0-9][a-z0-9-]*)@(.+)$")
-REQUIRED_FIELDS = {"id","kind","name","version","path","status","compatibility","changes","primary_user","secondary_audience","triggers","required_inputs","optional_context","outputs"}
+NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+ENTRY_FIELDS = {"name","changes","primary_user","secondary_audience","trigger","minimum","outputs","runtime_targets"}
 
 
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
+def load_json(path: Path) -> dict[str, Any]:
+    value=json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value,dict):
+        raise ValueError(f"{path}: catalog must be an object")
+    return value
+
+
+def load_jsonl(path: Path) -> list[dict[str, Any]]:
     records=[]
     for line_no,line in enumerate(path.read_text(encoding="utf-8").splitlines(),1):
         if not line.strip():
             continue
-        try:
-            value=json.loads(line)
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"{path}:{line_no}: invalid JSON: {exc.msg}") from exc
+        value=json.loads(line)
         if not isinstance(value,dict):
             raise ValueError(f"{path}:{line_no}: record must be an object")
-        value["_line"]=line_no
         records.append(value)
     return records
 
 
-def nonempty_list(value: Any) -> bool:
-    return isinstance(value,list) and bool(value) and all(isinstance(x,str) and x.strip() for x in value)
+def nonempty_strings(value: Any) -> bool:
+    return isinstance(value,list) and bool(value) and all(isinstance(item,str) and item.strip() for item in value)
 
 
-def validate_record(record: dict[str, Any], source: Path, root: Path) -> list[str]:
+def validate_catalog(path: Path, root: Path, kind: str) -> tuple[list[str],list[dict[str,Any]]]:
     errors=[]
-    line=record.get("_line","?")
-    public={k:v for k,v in record.items() if k!="_line"}
-    missing=sorted(REQUIRED_FIELDS-set(public))
-    if missing:
-        return [f"{source}:{line}: missing fields: {', '.join(missing)}"]
-    kind,name,version=record.get("kind"),record.get("name"),record.get("version")
-    if kind not in {"skill","agent"}:
-        errors.append(f"{source}:{line}: kind must be skill or agent")
-    if not isinstance(name,str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]*",name):
-        errors.append(f"{source}:{line}: invalid name")
-    if not isinstance(version,str) or not SEMVER_RE.fullmatch(version):
-        errors.append(f"{source}:{line}: version must be semantic version")
-    match=ID_RE.fullmatch(str(record.get("id")))
-    if not match or match.group(1)!=kind or match.group(2)!=name or match.group(3)!=version:
-        errors.append(f"{source}:{line}: id must equal {kind}:{name}@{version}")
-    if not (root/str(record.get("path",""))).exists():
-        errors.append(f"{source}:{line}: path does not exist: {record.get('path')}")
-    compatibility=record.get("compatibility")
-    if not isinstance(compatibility,dict):
-        errors.append(f"{source}:{line}: compatibility must be an object")
-    else:
-        if compatibility.get("contract")!="lat.capability-context.v1":
-            errors.append(f"{source}:{line}: compatibility.contract must be lat.capability-context.v1")
-        if not SEMVER_RE.fullmatch(str(compatibility.get("contract_version",""))):
-            errors.append(f"{source}:{line}: compatibility.contract_version must be semantic version")
-        if compatibility.get("breaking_change_policy")!="semantic_versioning":
-            errors.append(f"{source}:{line}: breaking_change_policy must be semantic_versioning")
-        if not nonempty_list(compatibility.get("runtime_targets")):
-            errors.append(f"{source}:{line}: runtime_targets must be non-empty")
-    for key in ("changes","primary_user"):
-        if not isinstance(record.get(key),str) or not record[key].strip():
-            errors.append(f"{source}:{line}: {key} must be non-empty")
-    if not nonempty_list(record.get("secondary_audience")):
-        errors.append(f"{source}:{line}: secondary_audience must be non-empty")
-    triggers=record.get("triggers")
-    if not isinstance(triggers,dict):
-        errors.append(f"{source}:{line}: triggers must be an object")
-    else:
-        discovery=[]
-        for key in ("events","states","requests"):
-            value=triggers.get(key,[])
-            if not isinstance(value,list) or not all(isinstance(x,str) for x in value):
-                errors.append(f"{source}:{line}: triggers.{key} must be a string list")
-            else:
-                discovery.extend(x for x in value if x.strip())
-        if not discovery:
-            errors.append(f"{source}:{line}: at least one event, state, or request trigger is required")
-        if not isinstance(triggers.get("exclusions",[]),list):
-            errors.append(f"{source}:{line}: triggers.exclusions must be a string list")
-    required_inputs=record.get("required_inputs")
-    if not isinstance(required_inputs,dict):
-        errors.append(f"{source}:{line}: required_inputs must be an object")
-    else:
-        if not nonempty_list(required_inputs.get("minimum")):
-            errors.append(f"{source}:{line}: required_inputs.minimum must be non-empty")
-        for key in ("permissions","tools"):
-            value=required_inputs.get(key,[])
-            if not isinstance(value,list) or not all(isinstance(x,str) for x in value):
-                errors.append(f"{source}:{line}: required_inputs.{key} must be a string list")
-    optional_context=record.get("optional_context")
-    if not isinstance(optional_context,dict):
-        errors.append(f"{source}:{line}: optional_context must be an object")
-    else:
-        for key in ("when","discover","suggested_capabilities","external_sources"):
-            value=optional_context.get(key,[])
-            if not isinstance(value,list) or not all(isinstance(x,str) for x in value):
-                errors.append(f"{source}:{line}: optional_context.{key} must be a string list")
-        if not optional_context.get("discover"):
-            errors.append(f"{source}:{line}: optional_context.discover must guide progressive discovery")
-    if not nonempty_list(record.get("outputs")):
-        errors.append(f"{source}:{line}: outputs must be non-empty")
-    return errors
+    catalog=load_json(path)
+    collection="skills" if kind=="skill" else "agents"
+    if catalog.get("contract")!="lat.capability-context.v1":
+        errors.append(f"{path}: contract must be lat.capability-context.v1")
+    version=str(catalog.get("contract_version",""))
+    default_version=str(catalog.get("default_version",""))
+    if not SEMVER_RE.fullmatch(version):
+        errors.append(f"{path}: contract_version must be semantic version")
+    if not SEMVER_RE.fullmatch(default_version):
+        errors.append(f"{path}: default_version must be semantic version")
+    if catalog.get("breaking_change_policy")!="semantic_versioning":
+        errors.append(f"{path}: breaking_change_policy must be semantic_versioning")
+    discovery=catalog.get("optional_context_discovery")
+    if not isinstance(discovery,str) or not discovery.strip():
+        errors.append(f"{path}: optional_context_discovery is required")
+    entries=catalog.get(collection)
+    if not isinstance(entries,list):
+        return errors+[f"{path}: {collection} must be an array"],[]
+    names=set()
+    for index,entry in enumerate(entries):
+        where=f"{path}:{collection}[{index}]"
+        if not isinstance(entry,dict):
+            errors.append(f"{where}: entry must be an object")
+            continue
+        required=set(ENTRY_FIELDS)
+        if kind=="agent":
+            required.add("path")
+        missing=sorted(required-set(entry))
+        if missing:
+            errors.append(f"{where}: missing fields: {', '.join(missing)}")
+            continue
+        name=entry.get("name")
+        if not isinstance(name,str) or not NAME_RE.fullmatch(name):
+            errors.append(f"{where}: invalid name")
+        if name in names:
+            errors.append(f"{where}: duplicate name {name}")
+        names.add(name)
+        for key in ("changes","primary_user","trigger"):
+            if not isinstance(entry.get(key),str) or not entry[key].strip():
+                errors.append(f"{where}: {key} must be non-empty")
+        for key in ("secondary_audience","minimum","outputs","runtime_targets"):
+            if not nonempty_strings(entry.get(key)):
+                errors.append(f"{where}: {key} must be a non-empty string list")
+        capability_id=f"{kind}:{name}@{default_version}"
+        if not re.fullmatch(r"(?:skill|agent):[a-z0-9][a-z0-9-]*@[0-9]+\.[0-9]+\.[0-9]+",capability_id):
+            errors.append(f"{where}: derived stable ID is invalid")
+        target=root/(f"skills/{name}/SKILL.md" if kind=="skill" else str(entry.get("path","")))
+        if not target.exists():
+            errors.append(f"{where}: target does not exist: {target.relative_to(root) if target.is_absolute() else target}")
+    return errors,entries
 
 
-def skill_dirs(root: Path) -> set[str]:
-    return {str(path.parent.relative_to(root)) for path in (root/"skills").rglob("SKILL.md")}
+def actual_skill_names(root: Path) -> set[str]:
+    return {path.parent.name for path in (root/"skills").rglob("SKILL.md")}
 
 
-def agent_registry_paths(root: Path) -> set[str]:
+def registered_agent_paths(root: Path) -> set[str]:
     path=root/"registry/agents.index.jsonl"
-    return {str(r.get("instruction_path")) for r in read_jsonl(path) if r.get("instruction_path")} if path.exists() else set()
-
-
-def validate_registry(path: Path, root: Path, expected_kind: str):
-    errors=[]
-    records=read_jsonl(path)
-    ids=set(); names=set()
-    for record in records:
-        errors.extend(validate_record(record,path,root))
-        if record.get("kind")!=expected_kind:
-            errors.append(f"{path}:{record.get('_line')}: expected kind {expected_kind}")
-        if record.get("id") in ids:
-            errors.append(f"{path}:{record.get('_line')}: duplicate id {record.get('id')}")
-        ids.add(record.get("id"))
-        if record.get("name") in names:
-            errors.append(f"{path}:{record.get('_line')}: duplicate name {record.get('name')}")
-        names.add(record.get("name"))
-    return errors,records
+    return {str(record.get("instruction_path")) for record in load_jsonl(path) if record.get("instruction_path")}
 
 
 def main() -> int:
-    parser=argparse.ArgumentParser(description="Validate unified Skill and Agent context contracts.")
+    parser=argparse.ArgumentParser(description="Validate unified Skill and Agent context catalogs.")
     parser.add_argument("--root",default=".")
     args=parser.parse_args()
     root=Path(args.root).resolve()
     errors=[]
     try:
-        skill_errors,skills=validate_registry(root/"registry/skill-context.index.jsonl",root,"skill")
-        agent_errors,agents=validate_registry(root/"registry/agent-context.index.jsonl",root,"agent")
+        skill_errors,skills=validate_catalog(root/"registry/skill-context.catalog.json",root,"skill")
+        agent_errors,agents=validate_catalog(root/"registry/agent-context.catalog.json",root,"agent")
         errors.extend(skill_errors+agent_errors)
-        registered_skill_paths={str(r.get("path")) for r in skills}
-        actual_skills=skill_dirs(root)
-        if actual_skills-registered_skill_paths:
-            errors.append("unregistered Skill packages: "+", ".join(sorted(actual_skills-registered_skill_paths)))
-        if registered_skill_paths-actual_skills:
-            errors.append("context records without Skill packages: "+", ".join(sorted(registered_skill_paths-actual_skills)))
-        registered_agent_paths={str(r.get("path")) for r in agents}
-        expected_agents=agent_registry_paths(root)
-        if expected_agents-registered_agent_paths:
-            errors.append("unregistered Agent instructions: "+", ".join(sorted(expected_agents-registered_agent_paths)))
-        if registered_agent_paths-expected_agents:
-            errors.append("context records without Agent registry entries: "+", ".join(sorted(registered_agent_paths-expected_agents)))
-    except (OSError,ValueError) as exc:
+        skill_names={str(entry.get("name")) for entry in skills}
+        actual=actual_skill_names(root)
+        if actual-skill_names:
+            errors.append("unregistered Skill packages: "+", ".join(sorted(actual-skill_names)))
+        if skill_names-actual:
+            errors.append("catalog entries without Skill packages: "+", ".join(sorted(skill_names-actual)))
+        agent_paths={str(entry.get("path")) for entry in agents}
+        expected=registered_agent_paths(root)
+        if expected-agent_paths:
+            errors.append("unregistered Agent instructions: "+", ".join(sorted(expected-agent_paths)))
+        if agent_paths-expected:
+            errors.append("catalog entries without Agent registry records: "+", ".join(sorted(agent_paths-expected)))
+    except (OSError,ValueError,json.JSONDecodeError) as exc:
         errors.append(str(exc))
     if errors:
         for error in errors:
             print(f"error: {error}",file=sys.stderr)
         return 1
-    print(f"validated {len(skills)} Skill and {len(agents)} Agent context record(s)")
+    print(f"validated {len(skills)} Skill and {len(agents)} Agent context contract(s)")
     return 0
 
 if __name__=="__main__":
