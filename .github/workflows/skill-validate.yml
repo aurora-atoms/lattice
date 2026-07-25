@@ -16,6 +16,12 @@ jobs:
         run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
       - name: Validate skills
         run: python scripts/validate_skill_package.py --root skills
+      - name: Validate capability routing
+        run: python scripts/validate_capability_routing.py --root .
+      - name: Test capability routing
+        run: python -m unittest discover -s tests -p 'test_route_capabilities.py' -v
+      - name: Validate capability routing schema
+        run: python -m json.tool schemas/capability/routing.decision.v1.schema.json >/dev/null
       - name: Test VS Code AI configuration auditor
         run: python -m unittest discover -s skills/vscode-workspace-ai-context/evals -p 'test_*.py' -v
       - name: Validate pre-compact checkpoint schema
