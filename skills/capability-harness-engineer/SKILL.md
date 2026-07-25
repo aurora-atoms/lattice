@@ -89,6 +89,10 @@ CHE.014 | NEVER | vendor | copy unstable vendor internals into the shared kernel
 CHE.015 | NEVER | modules | supersede Helixion AegisFlow Memexa FlowGuard OpenClaw DeliveryYield or another active module
 CHE.016 | NEVER | telemetry | rank or monitor people from routing token or agent-activity data
 
+## References
+
+The hard native-first, authority, context, fallback, and evaluation rules are defined above. Read current official runtime documentation at execution time before making claims about changing built-in behavior. Use `registry/capability-routing.index.jsonl` only for expected-route policy and `scripts/route_capabilities.py` only for regression, diagnosis, compatibility, or fallback routing.
+
 ## Verification
 
 Run:
