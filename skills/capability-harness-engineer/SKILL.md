@@ -1,6 +1,6 @@
 ---
 name: capability-harness-engineer
-description: Use for designing, auditing, or evolving a native-first capability harness across VS Code GitHub Copilot Codex and other agent runtimes while preserving behavior, progressive disclosure, permissions, evidence, and quality-adjusted token ROI. Prefer built-in Skill discovery, custom agents, subagents or forked contexts, handoffs, hooks, worktrees, sandboxing, and runtime context management before repository scripts. Use the deterministic route registry and scripts only as evaluation oracles, compatibility fallbacks, and regression tools. Do not use to perform the routed domain task, approve high-impact actions, replace accountable owners, force a repository router before every prompt, or copy changing vendor internals into static instructions.
+description: Use for designing, auditing, or evolving a native-first capability harness across VS Code, GitHub Copilot, Codex, and other agent runtimes. Input is current runtime documentation, Skill and Agent metadata, task examples, observed selections, permissions, context evidence, and routing eval cases; output is a validated harness architecture and audit report with metadata improvements, thin runtime adapters, progressive-disclosure rules, regression cases, fallback policy, and rollout guidance that preserves behavior, security, human authority, and quality-adjusted token ROI. Prefer built-in Skill discovery, custom agents, delegation, handoffs, hooks, worktrees, sandboxing, and native context management. Do not use to perform the routed domain task, approve high-impact actions, force repository pre-routing before every prompt, or freeze changing vendor internals into static instructions.
 ---
 
 # Capability Harness Engineer
@@ -57,18 +57,20 @@ Move down only when the higher level cannot meet a documented requirement.
 
 ## Workflow
 
-1. Verify current runtime capabilities from official sources before changing shared policy.
-2. Inventory the active runtime's Skill discovery, custom agents, subagents or forked contexts, handoffs, hooks, permissions, sandbox, worktrees, context compaction, and debugging surfaces.
-3. Treat the native runtime as the execution plane and Lattice registries, evals, validators, and evidence as the governance plane.
-4. Keep `AGENTS.md` or equivalent shared guidance short and invariant; do not put the complete route table or vendor state machine there.
-5. Improve Skill names and descriptions first so native discovery can select the smallest sufficient capability.
-6. Use native custom agents for bounded roles, native delegation for multi-role work, handoffs for human-reviewed stage transitions, and hooks or CI for deterministic enforcement.
-7. Apply progressive disclosure: metadata, selected `SKILL.md`, named resources, then bounded task evidence.
-8. Keep provider-specific permissions, models, tools, hooks, and session behavior in thin runtime adapters rather than the shared kernel.
-9. Use `registry/capability-routing.index.jsonl` and `scripts/route_capabilities.py` as an expected-route oracle, regression evaluator, debugging aid, or fallback for runtimes without native Skill discovery.
-10. Compare expected and actual native selections; classify correct, false positive, false negative, ambiguous, unnecessary composition, and context-overload outcomes.
-11. Add deterministic validation and representative regression cases before broadening automation.
-12. Remove custom machinery when a stable native capability replaces it without weakening governance or evidence.
+1. Query_ConPort_MCP_before_loading_or_searching_full_skill_text when available; otherwise inspect targeted metadata and files before broad search.
+2. Verify current runtime capabilities from official sources before changing shared policy.
+3. Inventory the active runtime's Skill discovery, custom agents, subagents or forked contexts, handoffs, hooks, permissions, sandbox, worktrees, context compaction, and debugging surfaces.
+4. Treat the native runtime as the execution plane and Lattice registries, evals, validators, and evidence as the governance plane.
+5. Keep `../../AGENTS.md` or equivalent shared guidance short and invariant; do not put the complete route table or vendor state machine there.
+6. Improve Skill names and descriptions first so native discovery can select the smallest sufficient capability.
+7. Use native custom agents for bounded roles, native delegation for multi-role work, handoffs for human-reviewed stage transitions, and hooks or CI for deterministic enforcement.
+8. Apply progressive disclosure: metadata, selected `SKILL.md`, named resources, then bounded task evidence.
+9. Keep stable policy and deterministic ordering in a stable prefix; keep volatile task evidence in a dynamic suffix so prompt-cache reuse does not weaken correctness.
+10. Keep provider-specific permissions, models, tools, hooks, and session behavior in thin runtime adapters rather than the shared kernel.
+11. Use `../../registry/capability-routing.index.jsonl` and `../../scripts/route_capabilities.py` as an expected-route oracle, regression evaluator, debugging aid, or fallback for runtimes without native Skill discovery.
+12. Compare expected and actual native selections; classify correct, false positive, false negative, ambiguous, unnecessary composition, and context-overload outcomes.
+13. Add deterministic validation and representative regression cases before broadening automation.
+14. Remove custom machinery when a stable native capability replaces it without weakening governance or evidence.
 
 ## Rules
 
@@ -80,7 +82,7 @@ CHE.005 | MUST | control | preserve human authority for scope security complianc
 CHE.006 | MUST | evidence | compare expected and actual selection with observable evidence
 CHE.007 | MUST | fallback | keep deterministic routing as an oracle fallback or compatibility layer rather than mandatory preflight
 CHE.008 | MUST | token | optimize quality-adjusted output per token cost
-CHE.009 | SHOULD | prompt | keep invariant policy stable and task material dynamic
+CHE.009 | SHOULD | prompt | keep invariant policy in a stable prefix and task material in a dynamic suffix
 CHE.010 | SHOULD | runtime | use native custom agents delegation handoffs hooks permissions worktrees and debugging surfaces
 CHE.011 | SHOULD | eval | test positive negative ambiguous multilingual and high-risk cases
 CHE.012 | NEVER | catalog | load all Skill bodies or references by default
@@ -91,7 +93,7 @@ CHE.016 | NEVER | telemetry | rank or monitor people from routing token or agent
 
 ## References
 
-The hard native-first, authority, context, fallback, and evaluation rules are defined above. Read current official runtime documentation at execution time before making claims about changing built-in behavior. Use `registry/capability-routing.index.jsonl` only for expected-route policy and `scripts/route_capabilities.py` only for regression, diagnosis, compatibility, or fallback routing.
+The hard native-first, authority, context, fallback, and evaluation rules are defined above. Read current official runtime documentation at execution time before making claims about changing built-in behavior. Use `../../registry/capability-routing.index.jsonl` only for expected-route policy and `../../scripts/route_capabilities.py` only for regression, diagnosis, compatibility, or fallback routing. The cross-runtime map is `../../AGENTS.md`.
 
 ## Verification
 
