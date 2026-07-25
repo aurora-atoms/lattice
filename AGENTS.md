@@ -1,39 +1,39 @@
-# Repository Capability Harness
+# Repository AI Guidance
 
-Use this file as the small always-on routing kernel. Do not copy full Skill bodies, reference documents, tool catalogs, or repository context into this file.
+This file is a small cross-runtime map, not a replacement for the native GitHub Copilot, VS Code, Codex, Claude, or other agent harnesses.
 
-## Before Substantive Work
+## Native-First Operation
 
-1. Identify the requested visible outcome, lifecycle stage, role, evidence state, permission boundary, and action risk.
-2. Run or consume the deterministic route:
-
-```bash
-python scripts/route_capabilities.py --root . --request "<task request>" --stage "<stage>" --role "<role>" --desired-output "<outcome>" --mode assist
-```
-
-3. Handle the result:
-   - `auto_invoke`: load only the selected `SKILL.md`; continue only within its permissions.
-   - `recommend`: tell the user which Skill is recommended and why; continue after scope is clear.
-   - `ask`: stop for the named human decision, permission, or ambiguity.
-   - `no_match`: do not load the catalog; clarify the outcome or use the conductor manually.
-4. Apply progressive disclosure:
+1. Use the active runtime's built-in agent loop, Skill discovery, context management, permissions, sandbox, and tool selection first.
+2. Let the runtime match task intent against Skill `name` and `description`; do not run a repository router before every normal task.
+3. Load progressively:
 
 ```text
-routing metadata -> selected SKILL.md -> named references/scripts on demand -> bounded task context
+Skill metadata -> selected SKILL.md -> named references or scripts -> bounded task evidence
 ```
 
-5. Build a context pack containing only scope, files and line ranges, symbols, tests, risks, decisions, validation commands, and evidence refs needed for this task.
-6. Re-route only after a meaningful state change, failed gate, or completed capability output.
-7. Stop when the visible result is reached.
+4. Use native custom agents, subagents or forked Skill contexts, handoffs, worktrees, and hooks when the runtime supports them and the task justifies them.
+5. Select the smallest sufficient capability. Add another capability only for a required dependency, independent check, or lifecycle gate.
+6. Keep context packs bounded to scope, files and line ranges, symbols, tests, risks, decisions, validation commands, evidence refs, and permission boundaries.
+7. Preserve human authority for scope, security, compliance, architecture, merge, release, deployment, and production decisions.
+8. Stop when the requested visible result is reached.
 
-## Control Rules
+## Fallback and Evaluation
 
-HARNESS.001 | MUST | selection | choose one smallest sufficient capability before composing a chain
-HARNESS.002 | MUST | context | keep stable policy separate from dynamic task evidence
-HARNESS.003 | MUST | evidence | distinguish facts, inferences, conflicts, and unknowns
-HARNESS.004 | MUST | control | preserve human authority for scope, security, compliance, architecture, merge, release, and production
-HARNESS.005 | NEVER | catalog | load all Skills, Agents, tools, knowledge, logs, or repository files by default
-HARNESS.006 | NEVER | modules | supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module
-HARNESS.007 | NEVER | metric | use routing, token, or agent activity for personnel ranking
+Use `scripts/route_capabilities.py` only when:
 
-Canonical routing policy lives in `registry/capability-routing.index.jsonl`; validation and decisions live in `scripts/validate_capability_routing.py` and `scripts/route_capabilities.py`.
+- the runtime lacks native Skill discovery;
+- native selection is ambiguous or appears wrong;
+- an expected route is needed for CI or regression evaluation;
+- comparing actual native selection against repository policy;
+- explicitly debugging routing behavior.
+
+The fallback routing policy lives in `registry/capability-routing.index.jsonl`. It is an evaluation oracle and compatibility layer, not a mandatory preflight for every prompt.
+
+## Stable Boundaries
+
+- Feature Delivery Case is the primary user-value and evidence boundary.
+- Distinguish facts, inferences, conflicts, and unknowns.
+- Do not load the full Skill, Agent, tool, knowledge, log, or repository catalog by default.
+- Do not use routing, token, or agent activity for personnel ranking.
+- Do not supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module without explicit instruction.
