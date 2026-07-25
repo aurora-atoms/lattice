@@ -1,7 +1,7 @@
 {
   "id": "capability-harness-engineer@1.0.0",
   "name": "capability-harness-engineer",
-  "description": "Design, validate, and evolve deterministic capability routing, progressive context disclosure, runtime adapters, and bounded automation policies.",
+  "description": "Govern and evaluate native capability discovery, progressive context loading, runtime adapters, and deterministic fallback routing without replacing maintained agent hosts.",
   "owner": "aurora-atoms",
   "status": "experimental",
   "role": "capability-harness-engineer",
@@ -15,7 +15,8 @@
   },
   "skills": [
     {"skill_id": "capability-harness-engineer", "required": true, "implicit": true},
-    {"skill_id": "delivery-capability-conductor", "required": false, "implicit": true},
+    {"skill_id": "delivery-capability-conductor", "required": false, "implicit": false},
+    {"skill_id": "vscode-workspace-ai-context", "required": false, "implicit": false},
     {"skill_id": "lattice-governor", "required": false, "implicit": false}
   ],
   "mcp": [],
