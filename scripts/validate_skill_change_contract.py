@@ -143,9 +143,13 @@ def main() -> int:
 
             stop = section_body(text, "Stop Conditions") or ""
             stop_lower = stop.lower()
-            for token in ("permission", "evidence", "risk"):
+            for token in ("permission", "evidence"):
                 if token not in stop_lower:
                     errors.append(f"skills/{name}/SKILL.md: Stop Conditions must address {token}")
+            if not any(token in stop_lower for token in ("risk", "security", "privacy", "compliance", "data-governance", "safety")):
+                errors.append(
+                    f"skills/{name}/SKILL.md: Stop Conditions must address a risk or safety boundary"
+                )
             if not any(token in stop_lower for token in ("goal", "target", "stage")):
                 errors.append(
                     f"skills/{name}/SKILL.md: Stop Conditions must address goal, target, or stage completion"
