@@ -1,6 +1,6 @@
 ---
 name: vscode-workspace-ai-context
-description: "Guide, audit, and improve VS Code AI configuration with a native-first policy. Use for VS Code settings, Chat and Agents Window sessions, Agent Host, local/background/cloud or Claude/Codex agents, AGENTS.md, CLAUDE.md, instructions, prompts, custom agents, skills, hooks, MCP/tools, worktrees, permissions, sandboxing, context compaction, output compression, prompt caching, fork/subagent/session lifecycle, and shared versus runtime-specific configuration; output AI_CONFIG_AUDIT_V1 findings, PRE_COMPACT_CHECKPOINT_V1 guidance, bounded patches, and validation that preserves behavior, security, exact task state, public/private boundaries, and quality-adjusted token ROI. Do not use for product code, private content in public Lattice, unsupported settings without extension evidence, automatic replacement of stable native behavior with plugins, assumed cross-product cache semantics, stale model rankings, or unapproved user-home edits."
+description: Use for auditing or improving VS Code AI configuration, Agent Host sessions, GitHub Copilot, Codex or Claude integrations, workspace settings, instructions, prompts, custom agents, Skills, hooks, MCP, worktrees, permissions, sandboxing, compaction, caching, and session lifecycle. Input is the current workspace configuration, installed extensions, runtime policy, relevant instruction files, task evidence, and current official documentation; output is an AI_CONFIG_AUDIT_V1 report, PRE_COMPACT_CHECKPOINT_V1 guidance, a bounded settings or instruction patch, and validation that preserves behavior, security, exact task state, public/private boundaries, and quality-adjusted token ROI. Do not use for product code, private content in public Lattice, unsupported settings without extension evidence, stale model rankings, assumed cross-product cache semantics, or unapproved user-home edits.
 ---
 
 # VS Code Workspace AI Context
@@ -46,7 +46,7 @@ search excludes compact settings or worktrees are treated as authorization
 VS Code version channel and organization policy
 *.code-workspace and .vscode/settings.json
 installed extension list and extension configuration manifests
-AGENTS.md CLAUDE.md and scoped instruction files
+project instruction files such as ../../AGENTS.md or provider-specific equivalents
 .github prompts agents skills hooks and workflow files
 .codex/config.toml and .claude/settings files when provider harnesses are used
 .mcp.json .vscode/mcp.json and active tool picker state
@@ -135,7 +135,7 @@ L2 task profile       = selected session type model tools skills MCP scope and t
 L3 dynamic suffix     = request files diffs logs failures decisions and current evidence
 ```
 
-Keep L0 and stable L1 deterministic. Load L2 only for the task. Keep volatile information in L3 or durable task artifacts.
+Keep L0 and stable L1 deterministic in a stable prefix. Load L2 only for the task. Keep volatile information in L3 or durable task artifacts. Preserve stable prefix order, model effort, tool profile, and MCP set when prompt-cache reuse matters; never preserve a cache at the expense of current evidence or correctness.
 
 Distinguish:
 
@@ -234,7 +234,7 @@ Cowork mounts write delete and knowledge-work boundaries
 credentials entitlements pricing and personal preferences
 ```
 
-Use one canonical shared semantic source where practical. Runtime adapters contain only deltas. Prevent VS Code from loading the same `AGENTS.md` rules directly and again through `CLAUDE.md`.
+Use one canonical shared semantic source where practical. Runtime adapters contain only deltas. Prevent VS Code from loading the same shared rules directly and again through a provider-specific adapter.
 
 ## Rules
 
@@ -251,7 +251,7 @@ VSAI.009 | SHOULD | defaults | omit settings that only repeat native defaults un
 VSAI.010 | SHOULD | context  | keep one stable semantic kernel plus small runtime-specific adapters
 VSAI.011 | SHOULD | routing  | use native scoped instructions prompts agents skills hooks and tool selection
 VSAI.012 | SHOULD | session  | use native worktrees forks handoffs background and cloud sessions before custom orchestration
-VSAI.013 | SHOULD | cache    | keep prefix order model effort tools and MCP stable within one task session
+VSAI.013 | SHOULD | cache    | keep stable prefix order model effort tools and MCP stable within one task session
 VSAI.014 | SHOULD | output   | use native output compression only after required evidence remains recoverable
 VSAI.015 | SHOULD | metric   | optimize accepted delivery per total cost and human correction rather than raw cache rate
 VSAI.016 | NEVER  | plugin   | install or retain an overlapping extension without a documented native gap
