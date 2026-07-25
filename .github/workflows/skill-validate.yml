@@ -16,6 +16,16 @@ jobs:
         run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
       - name: Validate skills
         run: python scripts/validate_skill_package.py --root skills
+      - name: Validate capability context catalogs
+        run: python scripts/validate_capability_context.py --root .
+      - name: Test capability context catalogs
+        run: python -m unittest discover -s tests -p 'test_capability_context.py' -v
+      - name: Validate capability context schema
+        run: python -m json.tool schemas/capability/capability-context.v1.schema.json >/dev/null
+      - name: Validate capability context JSON catalogs
+        run: |
+          python -m json.tool registry/skill-context.catalog.json >/dev/null
+          python -m json.tool registry/agent-context.catalog.json >/dev/null
       - name: Validate capability routing
         run: python scripts/validate_capability_routing.py --root .
       - name: Test capability routing
