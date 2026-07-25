@@ -91,7 +91,7 @@ FDC.005 | MUST | dependency | record technical shadow data operational external 
 FDC.006 | MUST | evidence | link tests logs reviews metrics validations and fact sources to supported or contradicted claims
 FDC.007 | MUST | risk | distinguish direct compound uncertainty and unresolved exposure
 FDC.008 | MUST | vigilance | flag blocking questions stale readiness and expired unsupported or invalidated assumptions
-FDC.009 | MUST | readiness | emit ready not_ready blocked insufficient_evidence or human_decision_required only
+FDC.009 | MUST | readiness | emit only the defined readiness result enum
 FDC.010 | MUST | artifact | make every output shareable traceable revisioned and evidence-linked
 FDC.011 | MUST | authority | state that readiness is evidence-backed assessment not merge release deployment or scope approval
 FDC.012 | MUST | token | optimize quality-adjusted output per token cost through bounded retrieval and progressive disclosure
