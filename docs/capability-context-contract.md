@@ -4,14 +4,16 @@
 
 The capability context contract gives every reusable Skill and Agent a stable, versioned, machine-readable identity and a compact discovery profile without expanding runtime YAML frontmatter or copying full instructions into an always-on prompt.
 
-The native runtime still discovers a Skill primarily from its `name` and `description`. The context registry is a governance, compatibility, evaluation, and progressive-discovery layer.
+The native runtime still discovers a Skill primarily from its `name` and `description`. The context catalogs are a governance, compatibility, evaluation, and progressive-discovery layer.
 
 ## Contract Location
 
-- `registry/skill-context.index.jsonl`: one record for every `skills/**/SKILL.md` package.
-- `registry/agent-context.index.jsonl`: one record for every Agent instruction registered in `registry/agents.index.jsonl`.
-- `schemas/capability/capability-context.v1.schema.json`: shared record schema.
+- `registry/skill-context.catalog.json`: one compact context entry for every `skills/**/SKILL.md` package.
+- `registry/agent-context.catalog.json`: one compact context entry for every Agent instruction registered in `registry/agents.index.jsonl`.
+- `schemas/capability/capability-context.v1.schema.json`: expanded context-record contract used by adapters and projections.
 - `scripts/validate_capability_context.py`: semantic and inventory-drift validator.
+
+Catalog defaults provide the contract name, contract version, default capability version, semantic-version policy, and shared optional-context discovery instruction. A runtime adapter may expand each compact entry into the full schema without changing its meaning.
 
 ## Identity and Versioning
 
@@ -32,30 +34,26 @@ A new version does not silently delete the prior contract. Deprecation must be e
 
 ## Discovery Fields
 
-Each record states:
+Each entry states:
 
 - `changes`: the state, process, artifact, or delivery result the capability attempts to change.
 - `primary_user`: the principal invoking role, usually an Agent or accountable practitioner.
 - `secondary_audience`: reviewers, operators, managers, downstream agents, or other consumers.
-- `triggers`: events, states, and request forms that support accurate native discovery, plus exclusions that reduce false positives.
+- `trigger`: the event, state, or request condition that should make native discovery consider the capability.
 
-The Skill `description` remains the primary runtime trigger. The registry must agree with it and may add structured trigger evidence for validators, routing evals, and runtime adapters.
+The Skill `description` remains the primary runtime trigger. The catalog must agree with it and adds structured evidence for validators, routing evals, and runtime adapters.
 
 ## Required Inputs and Permissions
 
-`required_inputs` identifies the smallest safe starting set:
+`minimum` identifies the smallest safe facts, artifacts, or decisions required to begin. Permission and tool authority still come from the Skill body, Agent manifest, active runtime, and current user approval; the catalog never grants access.
 
-- `minimum`: facts, artifacts, or decisions required to begin;
-- `permissions`: required read, write, network, external-action, or approval boundaries;
-- `tools`: critical tool classes, not an exhaustive catalog.
-
-An empty permission or tool list means the capability requires no special permission or tool beyond the active runtime's normal safe context. It never grants permission.
+Runtime adapters may project explicit `permissions` and `tools` arrays when the target runtime needs them. Empty arrays mean no additional grant, not unrestricted access.
 
 ## Optional Context
 
-`optional_context` is progressive discovery guidance, not an eager dependency list.
+`optional_context_discovery` is progressive discovery guidance, not an eager dependency list.
 
-Use it when the current evidence cannot meet the requested quality, confidence, or scope. It may direct the runtime to:
+Use it only when current evidence cannot meet the requested quality, confidence, or scope. It may direct the runtime to:
 
 - discover a related Skill or Agent through native capability discovery;
 - inspect a bounded neighboring codebase or project surface;
@@ -63,11 +61,11 @@ Use it when the current evidence cannot meet the requested quality, confidence, 
 - perform deeper official-source research;
 - request a human decision or domain review.
 
-Optional context must remain bounded, source-aware, and permission-aware. Do not load every suggested capability or source by default.
+Optional context must remain bounded, source-aware, and permission-aware. Do not load every possible capability or source by default.
 
 ## Agent Alignment
 
-Agent context records use the same fields so orchestration can compare a Skill and its task-role Agent without duplicating full instructions. The Agent record must identify what state it changes, its primary user, secondary audience, triggers, minimum inputs, permission boundaries, optional discovery paths, and outputs.
+Agent entries use the same semantic fields so orchestration can compare a Skill and its task-role Agent without duplicating full instructions. Agent entries additionally name their canonical instruction path.
 
 ## Compatibility and Authority
 
@@ -76,5 +74,5 @@ The contract standardizes discovery and handoff metadata. It does not:
 - replace native runtime orchestration;
 - authorize tool use, repository writes, merge, release, deployment, or production actions;
 - turn optional context into automatic broad retrieval;
-- supersede active Lattice modules;
+- supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module;
 - make a registry score an approval decision.
