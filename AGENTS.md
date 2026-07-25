@@ -24,6 +24,35 @@ native name + description
 8. Optional context is advisory discovery guidance. It does not grant tools, permissions, network access, repository writes, or approval authority.
 9. Preserve human authority for scope, security, compliance, architecture, merge, release, deployment, and production decisions.
 
+## Mandatory Skill Authoring Gate
+
+Any task that creates, copies, renames, restructures, or modifies `skills/<name>/` must follow `docs/skill-authoring-gate.md` before finalizing the change.
+
+Use this discovery order:
+
+```text
+root AGENTS.md
+-> skills/lattice-governor/SKILL.md
+-> docs/skill-authoring-gate.md
+-> docs/capability-context-contract.md
+-> registry/skill-context.catalog.json
+-> registry/capability-context-policy.json
+-> target SKILL.md and bounded supporting files
+```
+
+Use `skill-token-refactor` in addition when rewriting, compressing, splitting, or migrating an existing Skill package.
+
+For every changed Skill package:
+
+- increase its semantic version in `registry/capability-context-policy.json`;
+- preserve or update its catalog entry;
+- require non-empty `Outputs`, `Evidence`, `Success Signals`, and `Stop Conditions` sections;
+- define visible structured output and writeback behavior;
+- run `scripts/validate_skill_change_contract.py` against the PR base and head refs;
+- stop for review when compatibility impact, source behavior, permission, evidence, or authority cannot be established.
+
+Do not create a parallel governance Skill or rely on README guidance alone. Extend `lattice-governor`, the authoring gate, templates, schemas, and validators within their existing boundaries.
+
 ## Required Run Result
 
 Every selected Skill or Agent must produce a visible structured result conforming to `schemas/capability/capability-run-result.v1.schema.json`.
