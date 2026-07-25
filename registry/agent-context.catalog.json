@@ -1,9 +1,13 @@
 {
   "contract":"lat.capability-context.v1",
-  "contract_version":"1.0.0",
+  "contract_version":"1.1.0",
   "default_version":"1.0.0",
   "breaking_change_policy":"semantic_versioning",
   "optional_context_discovery":"Use native discovery to find the smallest related Skill, Agent, bounded codebase, governed knowledge source, official research source, or human review needed for the named quality gap.",
+  "run_result_contract":{"schema":"schemas/capability/capability-run-result.v1.schema.json","record_type":"lat.capability.run_result.v1","writeback_pattern":"artifacts/capability-runs/<capability-name>/<run-id>/run-result.json","visible_artifact_required":true,"inline_fallback":"When repository or local write permission is unavailable, return the complete structured result inline and mark write_status=returned_inline."},
+  "evidence_contract":{"required_sections":["facts","inference_summary","citations","uncertainty","unknowns","assumptions"],"policy":"Separate source-supported facts from inference. Cite addressable sources. State uncertainty, unknowns, assumptions, and guesses explicitly. Do not continue analysis beyond the evidence boundary."},
+  "success_contract":{"required":true,"result_enum":["met","not_met","not_evaluated"],"policy":"Evaluate each declared success signal against evidence before reporting completion."},
+  "stop_contract":{"default_retry_budget":1,"stage_gate_by_default":true,"continue_to_final_goal_only_when_explicitly_requested":true,"reasons":["goal_reached","stage_gate_reached","retry_budget_exhausted","missing_permission","missing_required_input","source_unavailable","insufficient_evidence","high_risk_boundary","human_decision_required","explicit_user_stop","failed_validation"],"policy":"Stop at the requested result or next reviewable stage. Do not repeatedly probe missing permissions, unavailable sources, absent facts, insufficient evidence, or high-risk boundaries. State what is missing, who can provide or approve it, and the exact next step."},
   "agents":[
     {"name":"pr-reviewer","path":"agents/pr-reviewer/pr-reviewer.agent.md","changes":"a pull request into prioritized review findings","primary_user":"PR review agent","secondary_audience":["authors and maintainers"],"trigger":"a pull request opens or changes","minimum":["PR intent, diff, tests, and constraints"],"outputs":["review findings and readiness recommendation"],"runtime_targets":["codex","github-copilot"]},
     {"name":"python-expert","path":"agents/python-expert/python-expert.agent.md","changes":"a bounded Python task into validated implementation","primary_user":"Python implementation agent","secondary_audience":["reviewers and maintainers"],"trigger":"a Python task is assigned","minimum":["objective, target files, constraints, and validation"],"outputs":["Python changes and validation evidence"],"runtime_targets":["codex","github-copilot"]},
