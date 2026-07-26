@@ -23,13 +23,15 @@ Require the decision, original rationale, alternatives, effective date, scope, o
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/decision-review/<decision-id>/<run-id>/decision-review.v1.json
 artifacts/decision-review/<decision-id>/<run-id>/review.md
 artifacts/capability-runs/decision-half-life-review/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete review inline with `write_status=returned_inline`.
 
 Return:
 
@@ -44,7 +46,7 @@ Return:
 
 ## Evidence
 
-Age is a trigger for review, not proof of invalidity. Separate changed facts from interpretation. Preserve original rationale and alternatives so the review does not judge the past using only current knowledge.
+Separate source-supported facts and material change evidence from inference and interpretation. Preserve uncertainty, unknowns, assumptions, conflicts, original rationale, alternatives, source dates, and applicability scope so the review does not judge the past using only current knowledge. Age is a trigger for review, not proof of invalidity.
 
 ## Success Signals
 
@@ -59,7 +61,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a review packet. Do not overturn or continue the decision on behalf of the owner. Stop when the original record, current evidence, owner, or scope is missing; when authority conflicts require adjudication; or when one bounded retry fails.
+Stop when the requested review packet or adjudication stage is complete. Stop earlier when required permission, the original record, current evidence, owner, or scope is missing; when a security, privacy, compliance, safety, or other high-risk boundary requires human review; when authority conflicts require adjudication; or when validation fails after one bounded retry. Do not overturn, continue, supersede, or proceed beyond the target stage on behalf of the owner.
 
 ## Workflow
 
