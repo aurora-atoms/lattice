@@ -1,0 +1,3 @@
+interface:
+  display_name: "Decision Question Builder"
+  short_description: "Build evidence-backed option questions for scarce experts"
