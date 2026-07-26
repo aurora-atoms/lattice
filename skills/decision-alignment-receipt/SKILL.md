@@ -41,13 +41,15 @@ Require:
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/decision-alignment/<decision-id>/<run-id>/alignment-receipt.v1.json
 artifacts/decision-alignment/<decision-id>/<run-id>/receipt.md
 artifacts/capability-runs/decision-alignment-receipt/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete receipt inline with `write_status=returned_inline`.
 
 A complete receipt includes:
 
@@ -64,9 +66,7 @@ A complete receipt includes:
 
 ## Evidence
 
-Separate source-supported facts, participant-confirmed decisions, inference, assumptions, unresolved questions, and conflicts.
-
-A receipt may state `not_confirmed` when participant or authority confirmation is unavailable. Do not promote meeting notes, model summaries, or repeated statements into confirmed decisions without evidence of authority.
+Separate source-supported facts, participant-confirmed decisions, inference, assumptions, unresolved questions and unknowns, uncertainty, and conflicts. Preserve source, observation date, authority, applicability scope, and confirmation status. A receipt may state `not_confirmed` when participant or authority confirmation is unavailable. Do not promote meeting notes, model summaries, or repeated statements into confirmed decisions without evidence of authority.
 
 ## Success Signals
 
@@ -82,9 +82,7 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable receipt. Do not publish, approve, or execute the decision unless explicitly authorized.
-
-Stop when authority, evidence, scope, participant confirmation, privacy permission, or the next review point is missing; when conflicting evidence requires adjudication; when a high-risk approval boundary is reached; or when validation fails after one bounded corrective retry.
+Stop when the requested receipt or confirmation stage is complete. Stop earlier when required permission, authority, evidence, scope, participant confirmation, privacy permission, or the next review point is missing; when conflicting evidence requires adjudication; when a security, privacy, compliance, safety, or other high-risk boundary is reached; or when validation fails after one bounded corrective retry. Do not publish, approve, execute, or continue beyond the target stage without explicit authorization.
 
 State the missing item, accountable role, reason, and smallest resumable next step.
 
