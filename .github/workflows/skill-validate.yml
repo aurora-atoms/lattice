@@ -53,6 +53,12 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_feature_delivery_case.py' -v
       - name: Validate Feature Delivery Case lifecycle schema
         run: python -m json.tool skills/feature-delivery-case/schemas/feature-delivery-case.lifecycle.v1.schema.json >/dev/null
+      - name: Test decision question builder
+        run: |
+          python skills/decision-question-builder/scripts/validate_decision_question_packet.py skills/decision-question-builder/evals/fixtures/valid-decision-question.json
+          python -m unittest discover -s skills/decision-question-builder/evals -p 'test_*.py' -v
+      - name: Validate decision question packet schema
+        run: python -m json.tool skills/decision-question-builder/schemas/decision-question-packet.v1.schema.json >/dev/null
       - name: Test VS Code AI configuration auditor
         run: python -m unittest discover -s skills/vscode-workspace-ai-context/evals -p 'test_*.py' -v
       - name: Validate pre-compact checkpoint schema
