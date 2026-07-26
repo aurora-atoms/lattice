@@ -4,6 +4,13 @@ on:
   pull_request:
   push:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   skill-validate:
     runs-on: ubuntu-latest
@@ -14,13 +21,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Inventory skills
-        run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
-      - name: Validate skills
-        run: python scripts/validate_skill_package.py --root skills
-      - name: Validate capability context catalogs
-        run: python scripts/validate_capability_context.py --root .
-      - name: Validate changed Skill authoring contracts
+      - name: Resolve comparison base
+        id: comparison
         shell: bash
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -31,7 +33,25 @@ jobs:
           if [ -z "$base_sha" ] || [ "$base_sha" = "0000000000000000000000000000000000000000" ]; then
             base_sha="HEAD^"
           fi
-          python scripts/validate_skill_change_contract.py --base-ref "$base_sha" --head-ref HEAD
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
+      - name: Inventory skills
+        run: python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+      - name: Validate skills
+        run: python scripts/validate_skill_package.py --root skills
+      - name: Validate capability context catalogs
+        run: python scripts/validate_capability_context.py --root .
+      - name: Validate changed Skill authoring contracts
+        run: python scripts/validate_skill_change_contract.py --base-ref "${{ steps.comparison.outputs.base_sha }}" --head-ref HEAD
+      - name: Validate incremental Skill CI contracts
+        run: |
+          python scripts/validate_skill_ci_contracts.py \
+            --base-ref "${{ steps.comparison.outputs.base_sha }}" \
+            --head-ref HEAD \
+            --report-out skill_ci_contract_report.json
+      - name: Test incremental Skill CI contracts
+        run: python -m unittest discover -s tests -p 'test_skill_ci_contracts.py' -v
+      - name: Compile Python validation scripts
+        run: python -m compileall -q scripts tests
       - name: Test capability context catalogs
         run: python -m unittest discover -s tests -p 'test_capability_context.py' -v
       - name: Validate capability context schema
@@ -110,3 +130,14 @@ jobs:
           grep -q "uses non-contract underscore token" "$tmpdir/out"
       - name: Generate report
         run: python scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-validation-evidence
+          path: |
+            skill_inventory.jsonl
+            skill_quality_report.md
+            skill_ci_contract_report.json
+          if-no-files-found: warn
+          retention-days: 14
