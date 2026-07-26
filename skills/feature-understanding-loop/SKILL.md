@@ -73,7 +73,11 @@ The Understanding Delta must state which claims were added, confirmed, invalidat
 
 ## Evidence
 
-Separate `observed`, `derived`, `judged`, and `unknown` content. Every material claim must have a resolvable evidence reference or remain `hypothesis` or `unknown`.
+Classify every material statement as a source-supported fact, an inference, an assumption, or an unknown, and record its uncertainty explicitly. Preserve resolvable evidence references, source scope, version or observation time, owner, validation action, and known blind spots.
+
+Map directly observed content to facts; map derived or judged content to inference unless an accountable source confirms it. An assumption must remain visible and must not be promoted to fact through repetition. Unknown content remains unknown until evidence or accountable human confirmation resolves it.
+
+Every material claim must have a resolvable evidence reference or remain `hypothesis` or `unknown`.
 
 Use these claim states:
 
@@ -105,7 +109,7 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at the next reviewable delivery state. Stop without repeated probing when:
+Stop when the named goal is reached at the target reviewable stage. Stop without repeated probing when:
 
 - the decision to support is missing or keeps changing;
 - required authority, source access, permission, or accountable owner is unavailable;
