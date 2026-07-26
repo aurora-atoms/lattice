@@ -1,0 +1,5 @@
+interface:
+  display_name: "Shadow Dependency Map"
+  short_description: "Expose hidden waits, bottlenecks, and substitute paths"
+  default_prompt: "Map the hidden technical, approval, expertise, data, environment, and coordination dependencies for this bounded delivery. Show evidence, single points of delay, substitute paths, latest-safe engagement times, and the smallest coordination actions without assigning blame."
+  brand_color: "#D97706"
