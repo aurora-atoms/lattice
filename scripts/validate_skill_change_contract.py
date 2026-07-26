@@ -64,11 +64,21 @@ def section_body(text: str, heading: str) -> str | None:
 def catalog_names(root: Path) -> set[str]:
     path = root / "registry/skill-context.catalog.json"
     value = json.loads(path.read_text(encoding="utf-8"))
-    return {
+    names = {
         str(entry.get("name"))
         for entry in value.get("skills", [])
         if isinstance(entry, dict) and entry.get("name")
     }
+    extension_dir = root / "registry/skill-context.extensions"
+    if extension_dir.exists():
+        for extension_path in sorted(extension_dir.glob("*.json")):
+            extension = json.loads(extension_path.read_text(encoding="utf-8"))
+            names.update(
+                str(entry.get("name"))
+                for entry in extension.get("skills", [])
+                if isinstance(entry, dict) and entry.get("name")
+            )
+    return names
 
 
 def main() -> int:
@@ -103,7 +113,7 @@ def main() -> int:
                 errors.append(f"skills/{name}: changed package has no SKILL.md")
                 continue
             if name not in registered:
-                errors.append(f"skills/{name}: missing registry/skill-context.catalog.json entry")
+                errors.append(f"skills/{name}: missing Skill context registry entry")
 
             version = head_versions.get(name)
             if not isinstance(version, str) or not SEMVER_RE.fullmatch(version):
@@ -162,7 +172,6 @@ def main() -> int:
         for error in errors:
             print(f"error: {error}", file=sys.stderr)
         return 1
-
     print(f"validated authoring contract for {len(changed)} changed Skill package(s)")
     return 0
 
