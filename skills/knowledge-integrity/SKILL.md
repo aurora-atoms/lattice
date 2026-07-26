@@ -1,56 +1,108 @@
 ---
 name: knowledge-integrity
-description: Use for alignment receipts, contradiction detection, assumption-expiry review, knowledge trust scoring, decision half-life review, architecture drift analysis, and future-maintainer notes; do not use to make unilateral business, architecture, compliance, or ownership decisions; input is bounded requirements, designs, code, tests, documents, decisions, assumptions, owners, dates, and evidence references; output is a traceable integrity report containing conflicts, trust factors, expired assumptions, decisions needing review, architecture drift, concise maintenance intent, and required human adjudication while preserving behavior, uncertainty, and quality-adjusted token ROI.
+description: Use to select the smallest sufficient capability for decision alignment, contradiction adjudication, assumption expiry, knowledge trust, decision half-life, architecture drift, or future-maintainer intent. Input is a bounded requirement, design, code surface, decision, assumption, knowledge claim, owners, dates, scope, and evidence references; output is a routing decision plus one evidence-linked specialist artifact. Do not use to make unilateral business, architecture, compliance, risk, or ownership decisions; preserve behavior, provenance, uncertainty, review triggers, least privilege, and human authority.
 ---
 
 # Knowledge Integrity
 
 ## Goal
-Make internal knowledge and decisions current, explainable, traceable, and explicitly bounded.
+
+Route a knowledge, decision, or consistency problem to the smallest sufficient specialist so the team knows what to trust, why, within which scope, and when to review it again.
 
 ## Use When
-Select the smallest sufficient atomic capability:
-- C01 Alignment Receipt
-- C02 Contradiction Finder
-- C03 Assumption Expiry Radar
-- C04 Knowledge Trust Score
-- C05 Decision Half-Life Tracker
-- C06 Architecture Drift Radar
-- C07 Future Maintainer Note
+
+Select one primary capability first:
+
+- C01 `decision-alignment-receipt`: decided, not decided, assumed, owner, rationale, and next confirmation point;
+- C02 `contradiction-adjudication`: conflicting claims, impact, evidence, adjudicator, and single-source-of-truth recommendation;
+- C03 `assumption-expiry-radar`: assumptions at risk from changed evidence, affected areas, and validation;
+- C04 `knowledge-trust-assessor`: transparent trust factors, applicability, conflicts, and recommended validation;
+- C05 `decision-half-life-review`: continue, revalidate, reopen, or supersede an existing decision;
+- C06 `architecture-drift-radar`: compare design intent with current structure and assess cumulative drift;
+- C07 `future-maintainer-note`: preserve why a non-obvious choice exists and when it should change.
 
 ## Do Not Use When
-Do not use to unilaterally replace a decision, resolve business ownership, or issue final architecture or compliance rulings.
+
+Do not use for generic summaries, bulk knowledge ingestion, retrieval implementation, automatic source promotion, or unilateral business, architecture, compliance, risk, or ownership rulings.
 
 ## Inputs
-Use bounded requirements, designs, code, tests, documents, decisions, assumptions, owners, dates, and evidence references.
+
+Require a bounded target object, intended use, source and owner metadata, dates and versions, applicability scope, current evidence, authority boundary, and expected review artifact.
 
 ## Outputs
-Return conflicts, trust factors, expired assumptions, decisions needing review, architecture drift, maintenance intent, owners, and human adjudication requests.
+
+Default writeback paths:
+
+```text
+artifacts/knowledge-integrity/<scope-id>/<run-id>/knowledge-integrity-selection.json
+artifacts/knowledge-integrity/<scope-id>/<run-id>/summary.md
+artifacts/capability-runs/knowledge-integrity/<run-id>/run-result.json
+```
+
+When write permission is unavailable, return the complete selection inline with `write_status=returned_inline`.
+
+The selection records the chosen capability, trigger evidence, required inputs, gaps, expected artifact, exclusions, optional dependencies, and stop boundary.
+
+## Evidence
+
+Separate source-supported facts from inference. Preserve uncertainty, conflicts, unknowns, assumptions, source versions, observation dates, owner, applicability scope, validation state, and superseding evidence. Do not treat document location, recency, code state, or seniority as truth by itself.
+
+## Success Signals
+
+Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
+
+- one smallest sufficient specialist is selected before composition;
+- the target object, intended use, scope, and authority are explicit;
+- the specialist output is evidence-linked and reviewable;
+- decisions, non-decisions, assumptions, conflicts, and unknowns remain distinguishable;
+- owner, validation, review, expiry, or reopening conditions are visible;
+- human authority is preserved.
+
+## Stop Conditions
+
+Stop when the requested specialist artifact, goal, or review stage is complete. Stop earlier when required permission, source access, scope, owner, authority, critical evidence, or validation is unavailable; when a security, privacy, compliance, safety, or other high-risk boundary requires human adjudication; when validation fails after one bounded corrective retry; or when the user stop condition is reached. Do not continue beyond the target stage or make the underlying decision without explicit authorization.
 
 ## Workflow
-1. Identify the target knowledge or decision object.
-2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
-3. Select one atomic capability first.
-4. Compare sources, dates, owners, code state, and validation evidence.
-5. Separate fact, inference, conflict, and unknown.
-6. Request human adjudication where authority is required.
+
+1. Bound the target object, intended use, scope, evidence cutoff, and authority.
+2. Query ConPort before loading or searching full Skill text when available; otherwise use targeted authorized sources.
+3. Compare the task against C01 through C07 and select one primary capability.
+4. Invoke the dedicated specialist.
+5. Add another specialist only for a named dependency, conflict, or independent validation gap.
+6. Record plausible capabilities and sources intentionally excluded.
+7. Stop at the specialist artifact for human review.
 
 ## Rules
-CCAT.001 | MUST | scope | bind analysis to a versioned source and scope | enforce
-CCAT.002 | MUST | routing | select one atomic capability before composing | enforce
-CCAT.003 | MUST | evidence | expose source, owner, date, scope, and validation | enforce
-CCAT.004 | MUST | uncertainty | separate fact, inference, conflict, and unknown | enforce
-CCAT.005 | MUST | human | preserve owner or governance decision authority | enforce
-CCAT.006 | MUST | token | optimize quality-adjusted token ROI | enforce
-CCAT.007 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
-CCAT.008 | NEVER | authority | silently replace a decision or architecture intent | block
+
+CCAT.001 | MUST | routing | select one primary capability before composition
+CCAT.002 | MUST | specialist | use dedicated C01 through C07 Skills when available
+CCAT.003 | MUST | scope | bind analysis to a versioned source intended use and applicability
+CCAT.004 | MUST | evidence | expose source owner date scope validation conflicts and uncertainty
+CCAT.005 | MUST | lifecycle | preserve review expiry reopening and supersession conditions
+CCAT.006 | MUST | human | preserve accountable owner and governance authority
+CCAT.007 | SHOULD | token | optimize quality-adjusted token ROI after integrity quality passes
+CCAT.008 | SHOULD | prompt | keep routing rules stable and evidence dynamic
+CCAT.009 | NEVER | authority | silently replace a decision source of truth or architecture intent
+CCAT.010 | NEVER | composition | activate several specialists because selection evidence is weak
+
+## References
+
+- Use `../decision-alignment-receipt/SKILL.md`, `../contradiction-adjudication/SKILL.md`, `../assumption-expiry-radar/SKILL.md`, `../knowledge-trust-assessor/SKILL.md`, `../decision-half-life-review/SKILL.md`, `../architecture-drift-radar/SKILL.md`, or `../future-maintainer-note/SKILL.md`.
+- Route knowledge-source governance to `../team-knowledge-plane-governor/SKILL.md` and retrieval implementation to `../hybrid-knowledge-retrieval-builder/SKILL.md`.
 
 ## Verification
-- Every conclusion has source, scope, status, and version context.
-- Conflicts are identified rather than silently resolved.
-- Review or expiry conditions are explicit.
+
+```bash
+python scripts/validate_skill_package.py --root skills/knowledge-integrity
+python scripts/validate_capability_context.py --root .
+```
 
 ## Failure Modes
-- Using a black-box trust score.
-- Treating historical decisions as permanent truth.
-- Equating architecture drift with automatic failure.
+
+- category monolith;
+- routing by keyword alone;
+- black-box trust scoring;
+- treating historical decisions as permanent truth;
+- resolving contradictions without authority;
+- equating architecture drift with automatic failure;
+- leaving rationale without review or expiry conditions.
