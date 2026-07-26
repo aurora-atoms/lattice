@@ -23,13 +23,15 @@ Require a bounded claim or asset, source and owner metadata, creation and update
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/knowledge-trust/<asset-id>/<run-id>/trust-assessment.v1.json
 artifacts/knowledge-trust/<asset-id>/<run-id>/assessment.md
 artifacts/capability-runs/knowledge-trust-assessor/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete assessment inline with `write_status=returned_inline`.
 
 Assess these factors separately:
 
@@ -45,7 +47,7 @@ Return status as `trusted_for_scope`, `conditionally_trusted`, `needs_validation
 
 ## Evidence
 
-Every factor must cite evidence or explicitly state `not_evaluated`. Modified time alone does not prove freshness. Code consistency does not prove business correctness. Expert confirmation does not override contradictory runtime evidence without adjudication.
+Separate source-supported facts from inference about trust and applicability. Preserve uncertainty, unknowns, assumptions, conflicts, source versions, validation dates, scope, and disconfirming evidence. Every factor must cite evidence or explicitly state `not_evaluated`. Modified time alone does not prove freshness; code consistency does not prove business correctness; expert confirmation does not override contradictory runtime evidence without adjudication.
 
 ## Success Signals
 
@@ -60,7 +62,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable trust assessment. Stop when source identity, intended use, scope, or essential evidence is unavailable; when authority conflicts require adjudication; or when one corrective retry fails.
+Stop when the requested assessment or owner-review stage is complete. Stop earlier when required permission, source identity, intended use, scope, or essential evidence is unavailable; when a security, privacy, compliance, safety, or other high-risk boundary requires human authority; when authority conflicts require adjudication; or when validation fails after one corrective retry. Do not promote the claim or continue beyond the target stage without explicit authorization.
 
 ## Workflow
 
