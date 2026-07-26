@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Check FDH runtime payload fields match published record schemas."""
+"""Check FDH runtime payload fields and enums match published record schemas."""
 
 from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 
-from fdh_lib import BASE_DIR, PAYLOAD_FIELDS, REQUIRED_PAYLOAD_FIELDS
+from fdh_lib import BASE_DIR, ENUMS, PAYLOAD_FIELDS, REQUIRED_PAYLOAD_FIELDS
 
 
 SCHEMA_FILES = {
@@ -48,11 +47,19 @@ def main() -> int:
             )
         if schema.get("additionalProperties") is not False:
             failures.append(f"{record_type}: additionalProperties must be false")
+        for (enum_type, field), runtime_values in ENUMS.items():
+            if enum_type != record_type or field not in schema.get("properties", {}):
+                continue
+            schema_values = set(schema["properties"][field].get("enum", []))
+            if schema_values != runtime_values:
+                failures.append(
+                    f"{record_type}.{field}: enum drift schema_only={sorted(schema_values - runtime_values)} runtime_only={sorted(runtime_values - schema_values)}"
+                )
     if failures:
         for failure in failures:
             print(failure)
         return 1
-    print(f"validated {len(SCHEMA_FILES)} schema/runtime contract(s)")
+    print(f"validated {len(SCHEMA_FILES)} schema/runtime contract(s), including enums")
     return 0
 
 

@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/lat/feature_delivery_case.v1.schema.json",
-  "title": "FDH Feature Delivery Case",
+  "title": "FDH Feature Delivery Case Compatibility Projection",
+  "description": "Compatibility projection of the canonical feature-delivery-case lifecycle contract. Rich lifecycle state remains in feature-delivery-case.lifecycle.v1; this record is a bounded FDH handoff.",
   "type": "object",
   "required": ["title", "user_usable_outcome", "status", "scope_summary", "in_scope", "non_goals", "acceptance_criteria", "risks", "evidence_refs", "unresolved_questions"],
   "properties": {
@@ -9,20 +10,7 @@
     "user_usable_outcome": {"type": "string"},
     "status": {
       "type": "string",
-      "enum": [
-        "draft",
-        "ready",
-        "executing",
-        "claim_submitted",
-        "verification_pending",
-        "verified",
-        "user_usable",
-        "accepted_with_risk",
-        "verification_failed",
-        "blocked",
-        "superseded",
-        "abandoned"
-      ]
+      "enum": ["draft", "ready", "in_progress", "delivered", "failed", "blocked"]
     },
     "scope_summary": {"type": "string"},
     "in_scope": {"type": "array", "items": {"type": "string"}},
