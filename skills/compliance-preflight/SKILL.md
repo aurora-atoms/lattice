@@ -1,6 +1,6 @@
 ---
 name: compliance-preflight
-description: Use to identify likely security, privacy, legal, regulatory, audit, data-governance, regional, payment, access-control, or customer-commitment review points while a design is still cheap to change. Input is a bounded requirement or design, data flows, permissions, regions, policies, prior review findings, affected users, owners, deadlines, and available evidence; output is an evidence-linked preflight packet with potential review points, required evidence, optional design adjustments, responsible reviewers, timing, and unresolved questions. Do not issue final legal or compliance rulings, invent policy, or automatically block delivery; preserve uncertainty and human authority.
+description: Use to identify likely security, privacy, legal, regulatory, audit, data-governance, regional, payment, access-control, or customer-commitment review points while a design is still cheap to change. Input is a bounded requirement or design, data flows, permissions, regions, policies, prior review findings, affected users, owners, deadlines, and available evidence; output is an evidence-linked preflight packet with potential review points, required evidence, optional design adjustments, responsible reviewers, timing, and unresolved questions. Do not use to issue final legal or compliance rulings, invent policy, or automatically block delivery; preserve behavior, validation boundaries, uncertainty, and human authority.
 ---
 
 # Compliance Preflight
