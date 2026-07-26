@@ -22,7 +22,7 @@ Select one primary capability:
 
 ## Do Not Use When
 
-Do not use to store raw transcripts, generalize from one case, auto-promote candidates, approve delivery or policy, or reduce product value to one metric.
+Do not use to store verbatim conversation history, generalize from one case, auto-promote candidates, approve delivery or policy, or reduce product value to one metric.
 
 ## Inputs
 
