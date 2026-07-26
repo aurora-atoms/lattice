@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reusable Delivery Pattern"
+  short_description: "Extract scoped, transferable delivery patterns"
+  brand_color: "#5B6F52"

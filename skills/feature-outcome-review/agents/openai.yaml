@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Outcome Review"
+  short_description: "Compare intended outcomes with observed results"
+  brand_color: "#3C6E71"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delivery Immune Conversion"
+  short_description: "Turn delivery lessons into bounded controls"
+  brand_color: "#7A4D4D"
