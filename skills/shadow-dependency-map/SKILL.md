@@ -1,6 +1,6 @@
 ---
 name: shadow-dependency-map
-description: Use to expose hidden delivery dependencies that are absent from architecture diagrams or formal plans, including approvals, scarce experts, data access, environments, operational handoffs, and cross-team waits. Input is a bounded Delivery Case, workflow events, wait evidence, review history, ownership boundaries, dependencies, deadlines, and available alternatives; output is an evidence-linked dependency map with bottlenecks, single points of delay, substitute paths, coordination actions, and owners. Do not use for personnel scoring, surveillance, blame, or unsupported escalation; preserve privacy, least privilege, uncertainty, and human authority.
+description: Use to expose hidden delivery dependencies that are absent from architecture diagrams or formal plans, including approvals, scarce experts, data access, environments, operational handoffs, and cross-team waits. Input is a bounded Delivery Case, workflow events, wait evidence, review history, ownership boundaries, dependencies, deadlines, and available alternatives; output is an evidence-linked dependency map with bottlenecks, single points of delay, substitute paths, coordination actions, and owners. Do not use for personnel scoring, surveillance, blame, or unsupported escalation; preserve behavior, privacy, least privilege, uncertainty, and human authority.
 ---
 
 # Shadow Dependency Map
