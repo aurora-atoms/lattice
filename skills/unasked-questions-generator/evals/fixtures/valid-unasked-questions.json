@@ -1,0 +1,75 @@
+{
+  "record_type": "lat.unasked_questions.v1",
+  "review_id": "checkout-release-review",
+  "stage": "release_readiness",
+  "next_gate": "production_release",
+  "scope": ["checkout API", "order events"],
+  "non_scope": ["payment processor internals"],
+  "evidence_cutoff": "2026-07-25T18:00:00Z",
+  "coverage": [
+    {"domain": "rollback", "status": "missing", "rationale": "The release plan defines rollout but no rollback compatibility check."},
+    {"domain": "privacy", "status": "covered", "rationale": "The approved data review covers the changed fields."}
+  ],
+  "questions": [
+    {
+      "id": "UQ-001",
+      "question": "Can the prior checkout version safely consume events emitted by the new version during rollback?",
+      "domain": "migration_rollout_rollback",
+      "omission_reason": "The plan validates forward rollout only.",
+      "importance": "An incompatible rollback could duplicate or lose orders.",
+      "ranking": "critical",
+      "ranking_rationale": "High blast radius, low reversibility after mixed-version events, and the release gate is imminent.",
+      "evidence": ["release-plan.md#rollout", "schemas/order-event-v3.json", "incident-2025-11-order-replay.md"],
+      "affected_boundaries": ["checkout API", "order event consumers", "customer order state"],
+      "consequence": "Rollback may corrupt order state or require manual reconciliation.",
+      "answer_role": "checkout architect",
+      "latest_safe_answer_time": "before production release approval",
+      "gate": "production_release",
+      "disposition": "must_answer_before_release",
+      "blocking_rationale": "Release approval depends on a demonstrated compatible rollback or a different rollout strategy.",
+      "expected_answer_form": "compatible with evidence, incompatible with mitigation, or rollout must change",
+      "next_action": "Run mixed-version contract tests and update the rollback plan.",
+      "assumptions": ["Both versions may run concurrently during rollback."],
+      "conflicts": [],
+      "unknowns": ["Whether all consumers ignore the new optional field."],
+      "monitoring": "Track event rejection and order reconciliation metrics during rollout.",
+      "reopen_trigger": "Any consumer schema or deployment-order change.",
+      "confidence": "high",
+      "disconfirming_evidence": ["A proven atomic cutover would reduce mixed-version risk."]
+    },
+    {
+      "id": "UQ-002",
+      "question": "Which order-reconciliation threshold should trigger automatic rollback?",
+      "domain": "observability_operations",
+      "omission_reason": "Metrics are listed, but no decision threshold is assigned.",
+      "importance": "Without a threshold, operators may react inconsistently during a fast-moving release.",
+      "ranking": "high",
+      "ranking_rationale": "Material operational impact and high time sensitivity, but recovery remains possible.",
+      "evidence": ["release-plan.md#monitoring", "runbook.md#order-reconciliation"],
+      "affected_boundaries": ["release control", "on-call operations"],
+      "consequence": "Delayed rollback could expand customer impact.",
+      "answer_role": "service owner",
+      "latest_safe_answer_time": "before release runbook sign-off",
+      "gate": "runbook_signoff",
+      "disposition": "accepted_uncertainty",
+      "blocking_rationale": "The team may proceed with a temporary conservative threshold if the owner accepts it.",
+      "expected_answer_form": "numeric threshold and observation window",
+      "next_action": "Record the threshold in the runbook and alert configuration.",
+      "assumptions": ["The reconciliation metric is available within five minutes."],
+      "conflicts": [],
+      "unknowns": ["Normal peak variance after the schema change."],
+      "monitoring": "Compare reconciliation variance to the temporary threshold every five minutes.",
+      "reopen_trigger": "Observed variance exceeds the temporary threshold or monitoring latency changes.",
+      "confidence": "medium",
+      "disconfirming_evidence": []
+    }
+  ],
+  "control_summary": {
+    "proposed_blockers": ["UQ-001"],
+    "accepted_uncertainty": ["UQ-002"],
+    "human_authorities": ["checkout architect", "service owner", "release manager"]
+  },
+  "handoff_candidates": [
+    {"question_id": "UQ-001", "target_capability": "decision-question-builder"}
+  ]
+}
