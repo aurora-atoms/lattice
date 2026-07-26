@@ -1,0 +1,3 @@
+interface:
+  display_name: "Domain Context Pack"
+  short_description: "Assemble minimal task-specific governed context"
