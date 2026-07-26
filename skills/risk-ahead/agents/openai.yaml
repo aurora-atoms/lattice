@@ -1,2 +1,5 @@
 interface:
   display_name: "Risk Ahead"
+  short_description: "Route latent exposure to the smallest preventive specialist"
+  default_prompt: "Review this bounded delivery exposure, select exactly one primary D01-D05 specialist, produce the evidence-linked preventive artifact, and preserve human authority over escalation, compliance, release, and risk acceptance."
+  brand_color: "#EA580C"
