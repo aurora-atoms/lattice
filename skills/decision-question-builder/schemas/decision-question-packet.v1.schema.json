@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/skills/decision-question-builder/schemas/decision-question-packet.v1.schema.json",
+  "title": "Decision Question Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type", "decision_id", "title", "decision_needed", "execution_unlocked", "recipient", "why_now", "scope", "known_facts", "material_unknowns", "assumptions", "options", "recommendation", "primary_question", "minimum_response", "fallback_behavior", "follow_ups", "evidence_summary"
+  ],
+  "properties": {
+    "record_type": {"const": "lat.decision_question.v1"},
+    "decision_id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "decision_needed": {"type": "string", "minLength": 1},
+    "execution_unlocked": {"type": "string", "minLength": 1},
+    "recipient": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "authority_reason"],
+      "properties": {
+        "role": {"type": "string", "minLength": 1},
+        "authority_reason": {"type": "string", "minLength": 1},
+        "named_contact": {"type": "string"}
+      }
+    },
+    "why_now": {
+      "type": "object", "additionalProperties": false,
+      "required": ["deadline", "blocking_impact", "delay_consequence"],
+      "properties": {
+        "deadline": {"type": "string", "minLength": 1},
+        "blocking_impact": {"type": "string", "minLength": 1},
+        "delay_consequence": {"type": "string", "minLength": 1}
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["included", "excluded"],
+      "properties": {
+        "included": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "excluded": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "known_facts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["fact_id", "claim", "source_refs", "confidence"],
+        "properties": {
+          "fact_id": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1},
+          "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "confidence": {"type": "string", "enum": ["high", "medium", "low"]}
+        }
+      }
+    },
+    "material_unknowns": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "assumptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "options": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["option_id", "label", "action", "why_viable", "evidence_refs", "benefits", "tradeoffs", "risks", "assumptions", "exceptions", "reversibility", "execution_after_selection", "validation_after_selection"],
+        "properties": {
+          "option_id": {"type": "string", "pattern": "^[A-D]$"},
+          "label": {"type": "string", "minLength": 1},
+          "action": {"type": "string", "minLength": 1},
+          "why_viable": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "benefits": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "tradeoffs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "risks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "assumptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "exceptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "reversibility": {"type": "string", "minLength": 1},
+          "execution_after_selection": {"type": "string", "minLength": 1},
+          "validation_after_selection": {"type": "string", "minLength": 1},
+          "support_status": {"type": "string", "enum": ["supported", "insufficiently_supported"]}
+        }
+      }
+    },
+    "recommendation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "rationale", "confidence", "disconfirming_evidence"],
+      "properties": {
+        "status": {"type": "string", "pattern": "^(A|B|C|D|no_recommendation)$"},
+        "rationale": {"type": "string"},
+        "confidence": {"type": "string", "enum": ["high", "medium", "low", "not_evaluated"]},
+        "disconfirming_evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "primary_question": {"type": "string", "minLength": 1},
+    "minimum_response": {"type": "string", "minLength": 1},
+    "fallback_behavior": {"type": "string", "minLength": 1},
+    "follow_ups": {"type": "array", "maxItems": 2, "items": {"type": "string", "minLength": 1}},
+    "evidence_summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inference", "uncertainty", "conflicts", "guesses"],
+      "properties": {
+        "inference": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "uncertainty": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "conflicts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "guesses": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
