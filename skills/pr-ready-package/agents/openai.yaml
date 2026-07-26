@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Ready Package"
+  short_description: "Package intent, impact, evidence, risk, and rollback for review."
+  brand_color: "#3B6B91"
