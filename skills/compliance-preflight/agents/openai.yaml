@@ -1,0 +1,5 @@
+interface:
+  display_name: "Compliance Preflight"
+  short_description: "Surface review points, evidence needs, and design options early"
+  default_prompt: "Review this bounded requirement or design for likely security, privacy, legal, regulatory, audit, data-governance, regional, payment, access-control, and customer-commitment review points. Identify required evidence, optional design adjustments, accountable reviewers, and latest-safe consultation times without issuing a final ruling."
+  brand_color: "#92400E"
