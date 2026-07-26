@@ -1,0 +1,5 @@
+interface:
+  display_name: "Silent Risk Accumulator"
+  short_description: "Find interacting risks and the smallest pressure relief"
+  default_prompt: "Review this bounded delivery for individually tolerable exceptions, test gaps, delays, assumptions, and drift that may combine into material exposure. Show interaction paths, thresholds, the highest-leverage few actions, owners, and residual risk without using a black-box score."
+  brand_color: "#B45309"
