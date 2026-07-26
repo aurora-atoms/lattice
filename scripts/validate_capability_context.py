@@ -98,24 +98,12 @@ def validate_run_contracts(catalog: dict[str,Any],path: Path,root: Path) -> list
     return errors
 
 
-def validate_catalog(path: Path,root: Path,kind: str) -> tuple[list[str],list[dict[str,Any]]]:
-    errors=[]
-    catalog=load_json(path)
+def validate_entries(entries: Any,path: Path,root: Path,kind: str) -> tuple[list[str],list[dict[str,Any]]]:
     collection="skills" if kind=="skill" else "agents"
-    if catalog.get("contract")!="lat.capability-context.v1":
-        errors.append(f"{path}: contract must be lat.capability-context.v1")
-    if not SEMVER_RE.fullmatch(str(catalog.get("contract_version",""))):
-        errors.append(f"{path}: contract_version must be semantic version")
-    if not SEMVER_RE.fullmatch(str(catalog.get("default_version",""))):
-        errors.append(f"{path}: default_version must be semantic version")
-    if catalog.get("breaking_change_policy")!="semantic_versioning":
-        errors.append(f"{path}: breaking_change_policy must be semantic_versioning")
-    if not isinstance(catalog.get("optional_context_discovery"),str) or not catalog["optional_context_discovery"].strip():
-        errors.append(f"{path}: optional_context_discovery is required")
-    errors.extend(validate_run_contracts(catalog,path,root))
-    entries=catalog.get(collection)
     if not isinstance(entries,list):
-        return errors+[f"{path}: {collection} must be an array"],[]
+        return [f"{path}: {collection} must be an array"],[]
+    errors=[]
+    valid=[]
     names=set()
     for index,entry in enumerate(entries):
         where=f"{path}:{collection}[{index}]"
@@ -144,7 +132,56 @@ def validate_catalog(path: Path,root: Path,kind: str) -> tuple[list[str],list[di
         target=root/(f"skills/{name}/SKILL.md" if kind=="skill" else str(entry.get("path","")))
         if not target.exists():
             errors.append(f"{where}: target does not exist: {target}")
+        valid.append(entry)
+    return errors,valid
+
+
+def validate_catalog(path: Path,root: Path,kind: str) -> tuple[list[str],list[dict[str,Any]]]:
+    errors=[]
+    catalog=load_json(path)
+    collection="skills" if kind=="skill" else "agents"
+    if catalog.get("contract")!="lat.capability-context.v1":
+        errors.append(f"{path}: contract must be lat.capability-context.v1")
+    if not SEMVER_RE.fullmatch(str(catalog.get("contract_version",""))):
+        errors.append(f"{path}: contract_version must be semantic version")
+    if not SEMVER_RE.fullmatch(str(catalog.get("default_version",""))):
+        errors.append(f"{path}: default_version must be semantic version")
+    if catalog.get("breaking_change_policy")!="semantic_versioning":
+        errors.append(f"{path}: breaking_change_policy must be semantic_versioning")
+    if not isinstance(catalog.get("optional_context_discovery"),str) or not catalog["optional_context_discovery"].strip():
+        errors.append(f"{path}: optional_context_discovery is required")
+    errors.extend(validate_run_contracts(catalog,path,root))
+    entry_errors,entries=validate_entries(catalog.get(collection),path,root,kind)
+    return errors+entry_errors,entries
+
+
+def load_skill_extensions(root: Path) -> tuple[list[str],list[dict[str,Any]]]:
+    directory=root/"registry/skill-context.extensions"
+    if not directory.exists():
+        return [],[]
+    errors=[]
+    entries=[]
+    seen=set()
+    for path in sorted(directory.glob("*.json")):
+        value=load_json(path)
+        if value.get("contract")!="lat.capability-context-extension.v1":
+            errors.append(f"{path}: contract must be lat.capability-context-extension.v1")
+        entry_errors,current=validate_entries(value.get("skills"),path,root,"skill")
+        errors.extend(entry_errors)
+        for entry in current:
+            name=str(entry.get("name"))
+            if name in seen:
+                errors.append(f"{path}: duplicate extension Skill {name}")
+            seen.add(name)
+            entries.append(entry)
     return errors,entries
+
+
+def merge_skill_entries(base: list[dict[str,Any]],extensions: list[dict[str,Any]]) -> list[dict[str,Any]]:
+    merged={str(entry.get("name")):entry for entry in base}
+    for entry in extensions:
+        merged[str(entry.get("name"))]=entry
+    return list(merged.values())
 
 
 def validate_policy(path: Path,skill_names: set[str],agent_names: set[str]) -> list[str]:
@@ -192,9 +229,11 @@ def main() -> int:
     root=Path(args.root).resolve()
     errors=[]
     try:
-        skill_errors,skills=validate_catalog(root/"registry/skill-context.catalog.json",root,"skill")
+        skill_errors,base_skills=validate_catalog(root/"registry/skill-context.catalog.json",root,"skill")
+        extension_errors,extension_skills=load_skill_extensions(root)
         agent_errors,agents=validate_catalog(root/"registry/agent-context.catalog.json",root,"agent")
-        errors.extend(skill_errors+agent_errors)
+        errors.extend(skill_errors+extension_errors+agent_errors)
+        skills=merge_skill_entries(base_skills,extension_skills)
         skill_names={str(entry.get("name")) for entry in skills}
         agent_names={str(entry.get("name")) for entry in agents}
         errors.extend(validate_policy(root/"registry/capability-context-policy.json",skill_names,agent_names))
