@@ -1,0 +1,5 @@
+interface:
+  display_name: "Stakeholder Surprise Detector"
+  short_description: "Find who needs early involvement and the smallest useful brief"
+  default_prompt: "Review this bounded change and identify only the accountable roles likely to be materially surprised if they learn too late. Explain why, what involvement is needed, the earliest useful and latest-safe timing, the smallest briefing material, and which plausible roles should remain excluded."
+  brand_color: "#9A3412"
