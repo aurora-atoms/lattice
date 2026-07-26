@@ -1,0 +1,37 @@
+{
+  "contract": "lat.capability-context-extension.v1",
+  "skills": [
+    {
+      "name": "feature-understanding-loop",
+      "changes": "fragmented Feature Delivery Case context into an evidence-linked sufficient-understanding state and reviewable Work Ready or PR Ready projection",
+      "primary_user": "feature delivery understanding agent",
+      "secondary_audience": [
+        "developers",
+        "reviewers",
+        "product owners",
+        "engineering leads",
+        "capability maintainers"
+      ],
+      "trigger": "a bounded Feature Delivery Case needs enough shared understanding to support a work-ready or review-ready decision",
+      "minimum": [
+        "Feature Delivery Case or bounded feature requirement",
+        "decision to support and next delivery gate",
+        "authorized task-scoped sources",
+        "critical questions and known unknowns",
+        "permission and human-authority boundary"
+      ],
+      "outputs": [
+        "understanding contract",
+        "evidence-linked understanding state",
+        "sufficient-understanding gate result",
+        "Work Ready or PR Ready projection",
+        "append-only Understanding Delta"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    }
+  ]
+}
