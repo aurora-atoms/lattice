@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delivery Judgment Playbook"
+  short_description: "Capture scoped, evidence-backed delivery judgment"
+  brand_color: "#4F6478"
