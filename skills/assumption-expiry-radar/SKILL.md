@@ -23,13 +23,15 @@ Require bounded assumptions, original rationale, source and date, applicability 
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/assumption-expiry/<scope-id>/<run-id>/assumption-expiry.v1.json
 artifacts/assumption-expiry/<scope-id>/<run-id>/review.md
 artifacts/capability-runs/assumption-expiry-radar/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete result inline with `write_status=returned_inline`.
 
 Each record contains:
 
@@ -45,7 +47,7 @@ Each record contains:
 
 ## Evidence
 
-Separate observed change evidence from inference that the assumption may have expired. Age alone is not proof. A recently edited document is not proof of current validity. Preserve uncertainty and disconfirming evidence.
+Separate source-supported facts and observed change evidence from inference that an assumption may have expired. Preserve uncertainty, unknowns, assumptions, conflicts, disconfirming evidence, source dates, and applicability scope. Age alone is not proof, and a recently edited document is not proof of current validity.
 
 ## Success Signals
 
@@ -61,7 +63,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable expiry report. Stop when original assumption evidence, scope, owner, or relevant change signals are unavailable; when risk acceptance requires human authority; or when validation fails after one retry.
+Stop when the requested expiry report or review stage is complete. Stop earlier when required permission, original assumption evidence, scope, owner, or relevant change evidence is unavailable; when a security, privacy, compliance, safety, or other high-risk boundary requires human authority; when risk acceptance requires an accountable decision; or when validation fails after one bounded retry. Do not continue beyond the target stage or automatically block delivery.
 
 ## Workflow
 
