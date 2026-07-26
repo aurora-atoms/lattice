@@ -37,7 +37,7 @@ Include the contribution, delivery state before and after, affected user or team
 
 ## Evidence
 
-Separate observed events from derived outcome links and judged attribution. Record uncertainty, unknowns, assumptions, conflicting accounts, source dates, and applicability scope. Message volume, meeting count, commit count, seniority, and model inference are not sufficient evidence of impact. Preserve participant corrections and disputed attribution.
+Separate observed facts from derived outcome links and judged attribution. Record uncertainty, unknowns, assumptions, conflicting accounts, source dates, and applicability scope. Message volume, meeting count, commit count, seniority, and model inference are not sufficient evidence of impact. Preserve participant corrections and disputed attribution.
 
 ## Success Signals
 
