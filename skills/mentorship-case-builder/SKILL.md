@@ -37,7 +37,7 @@ Include the scenario, learning objective, evidence available to the learner, hid
 
 ## Evidence
 
-Separate observed case facts from derived teaching structure and judged interpretation. Record uncertainty, unknowns, assumptions, conflicts, source dates, outcome quality, and expert annotations. A single successful review or individual style preference is not universal policy.
+Separate observed case facts from derived teaching structure and judged inference or interpretation. Record uncertainty, unknowns, assumptions, conflicts, source dates, outcome quality, and expert annotations. A single successful review or individual style preference is not universal policy.
 
 ## Success Signals
 
