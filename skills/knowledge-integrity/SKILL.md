@@ -31,7 +31,7 @@ Require a bounded target object, intended use, source and owner metadata, dates 
 
 ## Outputs
 
-Produce `knowledge-integrity-selection.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
+Default writeback paths:
 
 ```text
 artifacts/knowledge-integrity/<scope-id>/<run-id>/knowledge-integrity-selection.json
@@ -39,11 +39,13 @@ artifacts/knowledge-integrity/<scope-id>/<run-id>/summary.md
 artifacts/capability-runs/knowledge-integrity/<run-id>/run-result.json
 ```
 
+When write permission is unavailable, return the complete selection inline with `write_status=returned_inline`.
+
 The selection records the chosen capability, trigger evidence, required inputs, gaps, expected artifact, exclusions, optional dependencies, and stop boundary.
 
 ## Evidence
 
-Separate facts, inference, conflicts, unknowns, assumptions, and authority. Preserve source, version, observation date, owner, scope, validation state, and superseding evidence. Do not treat document location, recency, code state, or seniority as truth by itself.
+Separate source-supported facts from inference. Preserve uncertainty, conflicts, unknowns, assumptions, source versions, observation dates, owner, applicability scope, validation state, and superseding evidence. Do not treat document location, recency, code state, or seniority as truth by itself.
 
 ## Success Signals
 
@@ -58,7 +60,7 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at the requested specialist artifact or next reviewable stage. Stop when source access, scope, owner, authority, critical evidence, or validation is unavailable; when high-risk adjudication is required; when one bounded corrective retry fails; or when the goal, stage gate, or user stop condition is reached.
+Stop when the requested specialist artifact, goal, or review stage is complete. Stop earlier when required permission, source access, scope, owner, authority, critical evidence, or validation is unavailable; when a security, privacy, compliance, safety, or other high-risk boundary requires human adjudication; when validation fails after one bounded corrective retry; or when the user stop condition is reached. Do not continue beyond the target stage or make the underlying decision without explicit authorization.
 
 ## Workflow
 
