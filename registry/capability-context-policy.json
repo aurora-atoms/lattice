@@ -19,7 +19,7 @@
     "context-mastery": "1.3.0",
     "knowledge-integrity": "1.1.1",
     "risk-ahead": "1.1.0",
-    "delivery-artifact-builder": "1.0.0",
+    "delivery-artifact-builder": "1.1.0",
     "delivery-learning": "1.0.0",
     "human-judgment-amplifier": "1.0.0",
     "management-translation": "1.0.0",
@@ -44,7 +44,14 @@
     "silent-risk-accumulator": "1.0.0",
     "compliance-preflight": "1.0.0",
     "rework-early-warning": "1.0.0",
-    "stakeholder-surprise-detector": "1.0.0"
+    "stakeholder-surprise-detector": "1.0.0",
+    "ticket-ready-package": "1.0.0",
+    "implementation-plan": "1.0.0",
+    "reviewer-rehearsal": "1.0.0",
+    "pr-ready-package": "1.0.0",
+    "test-asset-package": "1.0.0",
+    "delivery-readiness-card": "1.0.0",
+    "pr-to-release-summary": "1.0.0"
   },
   "agent_versions": {
     "pr-reviewer": "1.0.0",
