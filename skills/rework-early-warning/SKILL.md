@@ -1,6 +1,6 @@
 ---
 name: rework-early-warning
-description: Use to detect when a bounded delivery is entering a high-rework zone because requirements, acceptance criteria, decisions, assumptions, dependencies, or implementation keep changing without convergence. Input is a Delivery Case, requirement and decision history, PR and test changes, unresolved questions, owners, deadlines, and evidence; output is an evidence-linked warning with rework drivers, convergence gaps, the single highest-leverage clarification, and options to pause, narrow, sequence, or continue with accepted risk. Do not treat change itself as failure, score people, or automatically halt delivery; preserve uncertainty and human authority.
+description: Use to detect when a bounded delivery is entering a high-rework zone because requirements, acceptance criteria, decisions, assumptions, dependencies, or implementation keep changing without convergence. Input is a Delivery Case, requirement and decision history, PR and test changes, unresolved questions, owners, deadlines, and evidence; output is an evidence-linked warning with rework drivers, convergence gaps, the single highest-leverage clarification, and options to pause, narrow, sequence, or continue with accepted risk. Do not use to treat change itself as failure, score people, or automatically halt delivery; preserve behavior, validation boundaries, uncertainty, and human authority.
 ---
 
 # Rework Early Warning
@@ -57,7 +57,7 @@ Stop when the warning or next reviewable stage is complete. Stop for missing per
 ## Workflow
 
 1. Bound the case, stage, gate, evidence window, and authority.
-2. Query ConPort first when available; otherwise use targeted authorized sources.
+2. Query ConPort before loading or searching full Skill text when available; otherwise use targeted authorized sources.
 3. Compare requirement, decision, implementation, and test changes over time.
 4. Distinguish healthy learning from unresolved convergence failure.
 5. Identify the highest-leverage clarification and bounded intervention options.
