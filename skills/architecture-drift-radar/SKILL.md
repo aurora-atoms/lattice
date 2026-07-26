@@ -23,13 +23,15 @@ Require bounded architecture intent, current code and configuration evidence, ru
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/architecture-drift/<scope-id>/<run-id>/architecture-drift.v1.json
 artifacts/architecture-drift/<scope-id>/<run-id>/review.md
 artifacts/capability-runs/architecture-drift-radar/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete result inline with `write_status=returned_inline`.
 
 Each drift record states:
 
@@ -46,7 +48,7 @@ Each drift record states:
 
 ## Evidence
 
-Documented intent is not automatically current. Current code is not automatically correct. Compare versioned intent with implementation, tests, configuration, runtime evidence, and approved decisions. Separate observed divergence from inferred cause and projected impact.
+Separate source-supported facts from inference about cause or projected impact. Preserve uncertainty, unknowns, assumptions, conflicts, source versions, observation dates, and applicability scope. Documented intent is not automatically current, and current code is not automatically correct. Compare versioned intent with implementation, tests, configuration, runtime evidence, and approved decisions.
 
 ## Success Signals
 
@@ -61,7 +63,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable drift report. Do not refactor, redefine architecture, or approve exceptions without explicit authority. Stop when intent, implementation evidence, scope, or owner is missing; when source conflicts require adjudication; or when one bounded retry fails.
+Stop when the requested report or review stage is complete. Stop earlier when required permission, intent, implementation evidence, scope, or owner is missing; when evidence is insufficient or conflicting; when a security, privacy, compliance, safety, or other high-risk boundary requires human authority; or when validation fails after one bounded retry. Do not refactor, redefine architecture, approve exceptions, or continue beyond the target stage without explicit authorization.
 
 ## Workflow
 
