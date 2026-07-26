@@ -1,0 +1,4 @@
+interface:
+  display_name: "Measurement Plan Pack"
+  short_description: "Define success, telemetry, guardrails, and decision rules"
+  brand_color: "#43658B"
