@@ -31,7 +31,7 @@
     "learning-navigator": "1.0.0",
     "domain-context-pack": "1.0.0",
     "negative-knowledge-pack": "1.0.0",
-    "decision-question-builder": "1.0.0"
+    "decision-question-builder": "1.0.1"
   },
   "agent_versions": {
     "pr-reviewer": "1.0.0",
