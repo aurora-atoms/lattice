@@ -1,6 +1,6 @@
 ---
 name: stakeholder-surprise-detector
-description: Use to identify accountable roles likely to encounter a material change too late and object because user behavior, data, operations, support, compliance, architecture, contracts, or cross-team responsibilities are affected. Input is a bounded change, affected behaviors and systems, dependencies, historical reviewers, ownership boundaries, customer commitments, rollout timing, and evidence; output is an evidence-linked minimal-engagement plan naming potentially surprised roles, why, when to involve them, what decision or feedback is needed, and the smallest notification material. Do not invite everyone, infer personal reactions, rank people, or automatically escalate; preserve privacy and human authority.
+description: Use to identify accountable roles likely to encounter a material change too late and object because user behavior, data, operations, support, compliance, architecture, contracts, or cross-team responsibilities are affected. Input is a bounded change, affected behaviors and systems, dependencies, historical reviewers, ownership boundaries, customer commitments, rollout timing, and evidence; output is an evidence-linked minimal-engagement plan naming potentially surprised roles, why, when to involve them, what decision or feedback is needed, and the smallest notification material. Do not use to invite everyone, infer personal reactions, rank people, or automatically escalate; preserve behavior, privacy, validation boundaries, and human authority.
 ---
 
 # Stakeholder Surprise Detector
@@ -66,7 +66,7 @@ Stop when the engagement plan or next reviewable stage is complete. Stop for mis
 ## Workflow
 
 1. Bound the change, affected outcomes, stage, gate, and disclosure boundary.
-2. Query ConPort first when available; otherwise use targeted authorized sources.
+2. Query ConPort before loading or searching full Skill text when available; otherwise use targeted authorized sources.
 3. Map affected responsibilities, commitments, operations, and service boundaries.
 4. Test each candidate role for material impact and required involvement type.
 5. Minimize the participant set and prepare the smallest briefing material.
