@@ -21,8 +21,8 @@
     "risk-ahead": "1.1.0",
     "delivery-artifact-builder": "1.1.0",
     "delivery-learning": "1.1.1",
-    "human-judgment-amplifier": "1.0.0",
-    "management-translation": "1.0.0",
+    "human-judgment-amplifier": "1.1.0",
+    "management-translation": "1.1.0",
     "delivery-capability-strategy": "1.0.0",
     "capability-harness-engineer": "1.0.0",
     "self-service-analytics-mvp-builder": "1.0.0",
@@ -56,7 +56,13 @@
     "reusable-delivery-pattern": "1.0.0",
     "delivery-immune-conversion": "1.0.0",
     "feature-outcome-review": "1.0.0",
-    "measurement-plan-pack": "1.0.0"
+    "measurement-plan-pack": "1.0.0",
+    "senior-attention-queue": "1.0.0",
+    "mentorship-case-builder": "1.0.0",
+    "collaboration-impact-receipt": "1.0.0",
+    "executive-feature-brief": "1.0.0",
+    "risk-escalation-packet": "1.0.0",
+    "audience-adapted-management-update": "1.0.0"
   },
   "agent_versions": {
     "pr-reviewer": "1.0.0",

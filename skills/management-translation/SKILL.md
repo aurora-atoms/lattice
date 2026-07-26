@@ -1,52 +1,94 @@
 ---
 name: management-translation
-description: Use to translate Feature Delivery Case evidence into executive feature briefs, risk escalation packets, and audience-specific management updates; do not use to hide uncertainty, beautify status by dropping risks, make commitments, or expose unnecessary technical or sensitive detail; input is a bounded readiness card, outcome evidence, risks, options, deadlines, resource requests, and audience level; output is a traceable one-page brief, decision request, oral-update outline, or escalation packet focused on purpose, delivered state, evidence, risk, next milestone, and required decision while preserving behavior, factual accuracy, and human approval.
+description: Use to select the smallest evidence-backed management communication capability for a Feature Delivery Case: an executive feature brief, a decision-ready risk escalation, or an audience-adapted update. Input is bounded delivery state, business purpose, outcome and readiness evidence, risks, options, milestones, deadlines, resource or decision requests, source references, and audience level; output is one traceable management artifact focused on purpose, delivered state, next milestone, material risk, quantified evidence, and required decision. Do not use to hide uncertainty, beautify status, invent commitments, or expose unnecessary technical or sensitive detail; preserve factual accuracy, behavior, validation boundaries, human approval, and quality-adjusted token ROI.
 ---
 
 # Management Translation
 
 ## Goal
-Turn engineering evidence into concise, accurate, actionable management communication without losing uncertainty or decision context.
+
+Turn technical delivery evidence into concise, accurate, actionable management material without losing uncertainty, risk, or decision ownership.
 
 ## Use When
-Select the smallest sufficient atomic capability:
-- H01 Executive Feature Brief
-- H02 Risk Escalation Packet
-- H03 Management Translation Output
+
+Select one primary capability:
+
+- H01 `executive-feature-brief`: create a one-page feature brief covering business purpose, evidence-backed delivery state, next milestone, material risks, required decisions, and quantified evidence.
+- H02 `risk-escalation-packet`: turn an unresolved blocker, cross-team conflict, or material risk into a decision-ready request with impact, options, tradeoffs, recommendation, latest-safe decision time, and no-decision consequence.
+- H03 `audience-adapted-management-update`: project validated source material into an audience- and channel-specific one-page brief, oral update, decision record, or status narrative without changing the underlying facts or risk.
 
 ## Do Not Use When
-Do not use to hide risk, create unauthorized commitments, or expose unnecessary sensitive detail.
+
+Do not use to hide risk, create unauthorized commitments, replace source evidence, publish without owner approval, or expose unnecessary sensitive detail.
 
 ## Inputs
-Use a bounded readiness card, outcome evidence, risks, options, deadlines, resource requests, audience level, and source references.
+
+Require a bounded Feature Delivery Case or management question, business purpose, current lifecycle state, evidence and source references, next milestone, material risks and unknowns, decisions or resource requests, audience and channel, sensitivity classification, accountable owner, and permission boundary.
 
 ## Outputs
-Return a one-page brief, decision request, oral-update outline, or escalation packet focused on purpose, current delivery state, evidence, risk, milestone, and required decision.
+
+Write the selector record to:
+
+```text
+artifacts/management-translation/<run-id>/capability-selection.v1.json
+artifacts/capability-runs/management-translation/<run-id>/run-result.json
+```
+
+When write permission is unavailable, return the selector decision and selected artifact inline with `write_status=returned_inline`.
+
+The selector record must include the selected capability, excluded capabilities, audience, decision need, source scope, expected artifact, owner review point, sensitivity boundary, and authority boundary.
+
+## Evidence
+
+Separate facts from inference. Record uncertainty, unknowns, assumptions, conflicts, source dates, metric definitions, and lifecycle state. Distinguish merged, deployed, released, enabled, exposed, and outcome-observed states. Commits, PR count, token count, and agent activity are engineering evidence or operating signals, not the primary value statement.
+
+## Success Signals
+
+Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
+
+- one primary H01-H03 specialist matches the audience and decision need;
+- business purpose, delivery state, next milestone, material risk, evidence, and decision request remain visible;
+- the material can be used with light owner editing rather than source reconstruction;
+- recommendation strength matches evidence quality;
+- no risk, uncertainty, or sensitive boundary is silently removed.
+
+## Stop Conditions
+
+Stop when the requested artifact or next reviewable stage is complete. Stop for missing permission, insufficient evidence, unresolved metric or lifecycle state, privacy or compliance boundaries, conflicting sources, absent owner, or a commitment, escalation, publication, or executive decision requiring accountable human authority.
 
 ## Workflow
-1. Identify audience and decision need.
-2. Query ConPort before loading or searching the full skill text when ConPort is available; otherwise use targeted source reads.
-3. Select one atomic capability first.
-4. Project only necessary evidence for that audience.
-5. Preserve facts, uncertainty, risks, and decision ownership.
-6. Produce a concise artifact suitable for owner review.
+
+1. Bound the Feature Delivery Case, audience, communication channel, decision need, sensitivity, and authority.
+2. Query ConPort before loading or searching full Skill text when available; otherwise use targeted authorized sources.
+3. Select one primary H01-H03 specialist and record why the others are excluded.
+4. Project only the evidence needed by that audience.
+5. Preserve lifecycle state, uncertainty, material risks, options, and decision ownership.
+6. Add another specialist only for a named dependency or independent validation gap.
+7. Stop before publication, commitment, escalation, or final management decision.
 
 ## Rules
-HCAT.001 | MUST | routing | select one atomic capability before composing | enforce
-HCAT.002 | MUST | evidence | preserve source traceability and uncertainty | enforce
-HCAT.003 | MUST | audience | minimize detail without losing decision context | enforce
-HCAT.004 | MUST | human | require owner confirmation for a recommendation or commitment | enforce
-HCAT.005 | MUST | token | optimize quality-adjusted token ROI | enforce
-HCAT.006 | SHOULD | prompt | keep rules and the output contract in a stable prefix | prefer
-HCAT.007 | NEVER | narrative | hide risk or unknowns for presentation quality | block
-HCAT.008 | NEVER | metric | lead with commits, PR count, tokens, or agent activity | block
+
+HCAT.001 | MUST | routing | select one primary H01 through H03 specialist before composing
+HCAT.002 | MUST | evidence | preserve source traceability lifecycle state and uncertainty
+HCAT.003 | MUST | audience | minimize detail without removing decision context
+HCAT.004 | MUST | human | require owner confirmation for recommendations commitments and publication
+HCAT.005 | SHOULD | composition | add another specialist only for a named dependency or validation gap
+HCAT.006 | SHOULD | token | optimize quality-adjusted token ROI after factual fidelity passes
+HCAT.007 | SHOULD | prompt | keep selector rules and output contract in a stable prefix
+HCAT.008 | NEVER | narrative | hide material risk or unknowns for presentation quality
+HCAT.009 | NEVER | metric | lead with commits PR count tokens or agent activity as final value
 
 ## Verification
-- The artifact states purpose, delivery state, evidence, risk, and decision need.
-- Claims remain traceable.
-- Recommendations and commitments are owner-confirmed.
+
+- The selected specialist matches the audience, format, and decision need.
+- Purpose, lifecycle state, evidence, risk, milestone, and decision request remain traceable.
+- Sensitive details are minimized rather than concealed inconsistently.
+- Owner review and publication authority are explicit.
 
 ## Failure Modes
-- Leading with engineering activity rather than delivery state.
-- Removing risk to make status look better.
-- Presenting generated language as an approved commitment.
+
+- leading with engineering activity instead of user or business delivery state;
+- removing risk to make status look better;
+- presenting generated wording as an approved commitment;
+- mixing source facts with inferred narrative;
+- using one format for every audience.
