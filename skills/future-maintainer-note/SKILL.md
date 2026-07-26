@@ -23,13 +23,15 @@ Require the bounded system or code surface, current behavior, decision or incide
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/maintainer-intent/<surface-id>/<run-id>/maintainer-note.v1.json
 artifacts/maintainer-intent/<surface-id>/<run-id>/note.md
 artifacts/capability-runs/future-maintainer-note/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete note inline with `write_status=returned_inline`.
 
 A complete note contains:
 
@@ -46,7 +48,7 @@ A complete note contains:
 
 ## Evidence
 
-Rationale must be supported by a decision, incident, test, runtime observation, business rule, or constraint. Do not invent historical intent from code shape. Mark reconstructed explanations as inference until confirmed.
+Separate source-supported facts from inference about historical intent. Preserve uncertainty, unknowns, assumptions, conflicts, source dates, applicability scope, and disconfirming evidence. Rationale must be supported by a decision, incident, test, runtime observation, business rule, or constraint. Do not invent historical intent from code shape; mark reconstructed explanations as inference until confirmed.
 
 ## Success Signals
 
@@ -61,7 +63,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable note. Do not insert it into code, documentation, or a system of record without explicit authority. Stop when rationale evidence, scope, owner, or validation is unavailable; when conflicting history needs adjudication; or when one bounded retry fails.
+Stop when the requested note or owner-confirmation stage is complete. Stop earlier when required permission, rationale evidence, scope, owner, or validation evidence is unavailable; when a security, privacy, compliance, safety, or other high-risk boundary requires human authority; when conflicting history requires adjudication; or when validation fails after one bounded retry. Do not insert the note into code, documentation, or a system of record or continue beyond the target stage without explicit authorization.
 
 ## Workflow
 
