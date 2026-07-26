@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delivery Readiness Card"
+  short_description: "Show delivery state, gaps, risks, evidence, actions, and owners."
+  brand_color: "#C8831A"
