@@ -23,13 +23,15 @@ Require the bounded claim, conflicting sources, source types, versions or observ
 
 ## Outputs
 
-Produce:
+Default writeback paths:
 
 ```text
 artifacts/contradictions/<conflict-id>/<run-id>/contradiction-set.v1.json
 artifacts/contradictions/<conflict-id>/<run-id>/review.md
 artifacts/capability-runs/contradiction-adjudication/<run-id>/run-result.json
 ```
+
+When write permission is unavailable, return the complete result inline with `write_status=returned_inline`.
 
 Each contradiction record states:
 
@@ -46,7 +48,7 @@ Each contradiction record states:
 
 ## Evidence
 
-Preserve both sides fairly. Separate source facts, interpretation, conflict, uncertainty, and unknowns. Runtime behavior may disprove documentation but does not automatically define intended behavior. Formal policy may define intent but does not prove implementation compliance.
+Preserve source-supported facts for both sides fairly. Separate facts from inference, interpretation, conflicts, uncertainty, unknowns, and assumptions. Preserve source version, observation date, authority, and applicability scope. Runtime behavior may disprove documentation but does not automatically define intended behavior; formal policy may define intent but does not prove implementation compliance.
 
 ## Success Signals
 
@@ -61,7 +63,7 @@ Evaluate as `met`, `not_met`, or `not_evaluated`:
 
 ## Stop Conditions
 
-Stop at a reviewable contradiction set. Do not resolve the conflict or modify sources without explicit authority. Stop when source access, scope, authority, or evidence is insufficient, or when one bounded retry fails.
+Stop when the requested contradiction set or adjudication stage is complete. Stop earlier when required permission, source access, scope, authority, or evidence is insufficient; when a security, privacy, compliance, safety, or other high-risk boundary requires human review; when source conflicts require accountable adjudication; or when validation fails after one bounded retry. Do not resolve the conflict, modify sources, or continue beyond the target stage without explicit authority.
 
 ## Workflow
 
