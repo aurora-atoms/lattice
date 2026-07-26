@@ -1,0 +1,80 @@
+{
+  "record_type": "lat.decision_question.v1",
+  "decision_id": "dq-001",
+  "title": "Select the authorization boundary for the first read-only release",
+  "decision_needed": "Choose whether caller identity must be enforced at the application gateway or at both the gateway and retrieval projection.",
+  "execution_unlocked": "The implementation owner can finalize the authentication design and test plan.",
+  "recipient": {
+    "role": "security architect",
+    "authority_reason": "Owns the authentication boundary and exception policy."
+  },
+  "why_now": {
+    "deadline": "before implementation starts",
+    "blocking_impact": "Authentication interfaces cannot be finalized.",
+    "delay_consequence": "Implementation and threat-model review remain blocked."
+  },
+  "scope": {
+    "included": ["read-only retrieval requests"],
+    "excluded": ["write-capable tools", "production deployment approval"]
+  },
+  "known_facts": [
+    {
+      "fact_id": "F1",
+      "claim": "The first release is read-only.",
+      "source_refs": ["feature-case:scope/read-only"],
+      "confidence": "high"
+    }
+  ],
+  "material_unknowns": ["Whether defense-in-depth identity enforcement is mandatory for this data class."],
+  "assumptions": ["The gateway and retrieval projection can both receive caller identity."],
+  "options": [
+    {
+      "option_id": "A",
+      "label": "Gateway enforcement only",
+      "action": "Enforce caller identity at the application gateway.",
+      "why_viable": "The gateway is already the authenticated request boundary.",
+      "evidence_refs": ["F1", "design:gateway-auth"],
+      "benefits": ["Lower implementation complexity"],
+      "tradeoffs": ["Less defense in depth"],
+      "risks": ["A projection-path defect could bypass intended filtering"],
+      "assumptions": ["All retrieval traffic passes through the gateway"],
+      "exceptions": ["Not suitable for direct projection access"],
+      "reversibility": "Can add projection enforcement later with interface changes.",
+      "execution_after_selection": "Implementation owner finalizes gateway checks.",
+      "validation_after_selection": "Run unauthorized-caller and bypass-path tests.",
+      "support_status": "supported"
+    },
+    {
+      "option_id": "B",
+      "label": "Gateway and projection enforcement",
+      "action": "Enforce caller identity at both boundaries.",
+      "why_viable": "Both components can receive caller identity.",
+      "evidence_refs": ["F1", "design:projection-filter"],
+      "benefits": ["Defense in depth"],
+      "tradeoffs": ["More implementation and test complexity"],
+      "risks": ["Policy divergence between enforcement points"],
+      "assumptions": ["A shared policy contract can be maintained"],
+      "exceptions": ["May be unnecessary for public-only sources"],
+      "reversibility": "One enforcement point can be removed after review.",
+      "execution_after_selection": "Implementation owner defines the shared policy contract.",
+      "validation_after_selection": "Run policy-consistency and unauthorized-caller tests.",
+      "support_status": "supported"
+    }
+  ],
+  "recommendation": {
+    "status": "B",
+    "rationale": "The protected data boundary benefits from defense in depth.",
+    "confidence": "medium",
+    "disconfirming_evidence": ["The first release is read-only and all traffic is expected through the gateway."]
+  },
+  "primary_question": "Should the first release use option A or option B?",
+  "minimum_response": "Reply A or B; reply defer until <fact> only if the missing policy fact changes the choice.",
+  "fallback_behavior": "Do not implement either boundary by silence; escalate the missing policy decision at the stage gate.",
+  "follow_ups": ["If B, must both boundaries use one shared policy artifact?"],
+  "evidence_summary": {
+    "inference": ["Defense in depth likely lowers bypass risk."],
+    "uncertainty": ["Mandatory policy for this data class is not yet confirmed."],
+    "conflicts": [],
+    "guesses": []
+  }
+}
