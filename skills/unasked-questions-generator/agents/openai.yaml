@@ -1,0 +1,3 @@
+interface:
+  display_name: "Unasked Questions Generator"
+  short_description: "Find consequential questions missing from a review frame"
