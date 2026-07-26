@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reviewer Rehearsal"
+  short_description: "Rehearse material review challenges and missing evidence."
+  brand_color: "#6F5C45"
