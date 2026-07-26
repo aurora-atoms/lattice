@@ -1,0 +1,5 @@
+interface:
+  display_name: "Rework Early Warning"
+  short_description: "Detect convergence gaps before more work is invalidated"
+  default_prompt: "Review this bounded delivery for evidence that requirements, decisions, assumptions, dependencies, implementation, or tests are changing without convergence. Identify the single highest-leverage clarification, affected work, latest-safe time, and options to pause, narrow, sequence, or continue with accepted risk."
+  brand_color: "#C2410C"
