@@ -1,6 +1,6 @@
 ---
 name: silent-risk-accumulator
-description: Use to detect when individually tolerable exceptions, skipped tests, deferred decisions, expired assumptions, architecture drift, manual workarounds, and unresolved risks combine into a materially larger delivery exposure. Input is a bounded Delivery Case, risk and exception records, test gaps, assumptions, drift evidence, deadlines, owners, mitigations, and change history; output is an evidence-linked risk-combination map with interaction paths, threshold conditions, leverage ranking, and minimum pressure-relief actions. Do not use black-box scoring, fear language, personnel blame, or automatic blocking; preserve uncertainty and human risk authority.
+description: Use to detect when individually tolerable exceptions, skipped tests, deferred decisions, expired assumptions, architecture drift, manual workarounds, and unresolved risks combine into a materially larger delivery exposure. Input is a bounded Delivery Case, risk and exception records, test gaps, assumptions, drift evidence, deadlines, owners, mitigations, and change history; output is an evidence-linked risk-combination map with interaction paths, threshold conditions, leverage ranking, and minimum pressure-relief actions. Do not use black-box scoring, fear language, personnel blame, or automatic blocking; preserve behavior, validation boundaries, uncertainty, and human risk authority.
 ---
 
 # Silent Risk Accumulator
