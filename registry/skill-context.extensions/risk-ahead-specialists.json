@@ -1,0 +1,65 @@
+{
+  "contract": "lat.capability-context-extension.v1",
+  "skills": [
+    {
+      "name": "risk-ahead",
+      "changes": "a bounded latent delivery exposure into the smallest evidence-linked preventive specialist artifact",
+      "primary_user": "risk-sentinel agent",
+      "secondary_audience": ["delivery owners", "architects", "security reviewers", "compliance reviewers", "cross-team owners"],
+      "trigger": "a delivery approaches a commitment gate or hidden dependency risk compliance rework or stakeholder signals appear",
+      "minimum": ["bounded case or change", "stage and next gate", "dependencies and ownership", "exceptions assumptions and policies", "affected roles", "deadlines and evidence"],
+      "outputs": ["specialist selection and evidence-linked preventive artifact"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    },
+    {
+      "name": "shadow-dependency-map",
+      "changes": "workflow wait and ownership evidence into a map of hidden dependencies bottlenecks substitute paths and coordination actions",
+      "primary_user": "dependency mapping agent",
+      "secondary_audience": ["delivery owners", "project leads", "architects", "cross-team coordinators"],
+      "trigger": "a plan repeatedly waits or a change crosses approval expertise data environment operational or team boundaries",
+      "minimum": ["bounded case", "stage and gate", "wait and workflow evidence", "ownership boundaries", "deadlines", "known alternatives"],
+      "outputs": ["shadow dependency map and minimum coordination plan"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    },
+    {
+      "name": "silent-risk-accumulator",
+      "changes": "exceptions test gaps assumptions drift and deferrals into an evidence-linked interaction map and minimum pressure-relief actions",
+      "primary_user": "risk composition agent",
+      "secondary_audience": ["delivery owners", "architects", "quality reviewers", "risk reviewers"],
+      "trigger": "individually tolerable risks may combine into material delivery exposure",
+      "minimum": ["bounded case", "active risks and exceptions", "test gaps", "assumptions and drift", "owners", "deadlines", "evidence"],
+      "outputs": ["risk combination map and leverage-ranked pressure-relief actions"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    },
+    {
+      "name": "compliance-preflight",
+      "changes": "requirements designs data flows policies and review history into early review points evidence needs design options and accountable consultations",
+      "primary_user": "compliance preflight agent",
+      "secondary_audience": ["delivery owners", "security reviewers", "privacy reviewers", "legal and compliance owners"],
+      "trigger": "a change affects data identity permissions regions payments audit regulated workflows or customer commitments",
+      "minimum": ["bounded requirement or design", "data and control flows", "regions and policies", "historical findings", "owners", "deadlines"],
+      "outputs": ["compliance preflight packet and evidence preparation plan"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    },
+    {
+      "name": "rework-early-warning",
+      "changes": "requirement decision implementation and test change evidence into a bounded rework warning and highest-leverage clarification",
+      "primary_user": "rework warning agent",
+      "secondary_audience": ["delivery owners", "product owners", "architects", "engineering leads"],
+      "trigger": "requirements acceptance decisions assumptions dependencies implementation or tests change repeatedly without convergence",
+      "minimum": ["bounded case", "stage and gate", "version and decision history", "PR and test changes", "unresolved questions", "owners", "deadlines"],
+      "outputs": ["rework warning and bounded intervention options"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    },
+    {
+      "name": "stakeholder-surprise-detector",
+      "changes": "change impact ownership history and commitments into a minimal evidence-linked stakeholder engagement plan",
+      "primary_user": "stakeholder engagement agent",
+      "secondary_audience": ["delivery owners", "product owners", "operations", "support", "compliance and cross-team owners"],
+      "trigger": "a change may materially affect roles that have not been involved before the low-cost decision point",
+      "minimum": ["bounded change", "affected behaviors and systems", "ownership boundaries", "historical review evidence", "commitments", "rollout timing"],
+      "outputs": ["minimal stakeholder engagement plan and briefing material"],
+      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+    }
+  ]
+}
