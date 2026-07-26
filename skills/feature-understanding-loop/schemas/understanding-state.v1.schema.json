@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/lat/understanding-state.v1.schema.json",
+  "title": "Feature Understanding State",
+  "description": "Task-scoped, evidence-linked understanding projection for one feature delivery decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "case_ref",
+    "decision_to_support",
+    "contract",
+    "dimensions",
+    "claims",
+    "unknowns",
+    "conflicts",
+    "excluded_context",
+    "gate",
+    "teach_back",
+    "next_artifact",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema": {"const": "lat.understanding.state.v1"},
+    "case_ref": {"type": "string", "minLength": 1},
+    "decision_to_support": {"type": "string", "minLength": 1},
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roles", "scope", "non_goals", "required_dimensions", "critical_questions", "stop_gate"],
+      "properties": {
+        "roles": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "non_goals": {"type": "array", "items": {"type": "string"}},
+        "required_dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dimensionName"}
+        },
+        "critical_questions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "stop_gate": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "status", "summary", "claim_refs"],
+        "properties": {
+          "name": {"$ref": "#/$defs/dimensionName"},
+          "status": {"enum": ["unknown", "partial", "sufficient", "conflicted", "stale"]},
+          "summary": {"type": "string"},
+          "claim_refs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "dimension", "statement", "state", "priority", "evidence_class", "owner", "evidence_refs", "validation_action"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "dimension": {"$ref": "#/$defs/dimensionName"},
+          "statement": {"type": "string", "minLength": 1},
+          "state": {"enum": ["unknown", "hypothesis", "evidenced", "confirmed", "conflicted", "stale", "invalidated"]},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "evidence_class": {"enum": ["observed", "derived", "judged", "unknown"]},
+          "owner": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "validation_action": {"type": "string"},
+          "known_blind_spots": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "priority", "owner", "latest_safe_answer_time", "disposition"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "question": {"type": "string", "minLength": 1},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "owner": {"type": "string", "minLength": 1},
+          "latest_safe_answer_time": {"type": "string"},
+          "disposition": {"enum": ["must_answer", "accepted_risk", "deferred", "owner_needed"]}
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "claim_refs", "impact", "resolver"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "claim_refs": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+          "impact": {"type": "string", "minLength": 1},
+          "resolver": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "excluded_context": {"type": "array", "items": {"type": "string"}},
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason", "blocking_claim_refs", "blocking_unknown_refs", "human_confirmation_required"],
+      "properties": {
+        "status": {"enum": ["pass", "fail", "needs_human", "not_evaluated"]},
+        "reason": {"type": "string"},
+        "blocking_claim_refs": {"type": "array", "items": {"type": "string"}},
+        "blocking_unknown_refs": {"type": "array", "items": {"type": "string"}},
+        "human_confirmation_required": {"type": "boolean"}
+      }
+    },
+    "teach_back": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "prompts", "evaluator"],
+      "properties": {
+        "status": {"enum": ["met", "not_met", "not_evaluated"]},
+        "prompts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "evaluator": {"type": "string", "minLength": 1},
+        "evidence_ref": {"type": "string"}
+      }
+    },
+    "next_artifact": {"enum": ["work_ready", "implementation_plan", "pr_ready", "understanding_only", "stopped"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "stop_reason": {"type": "string"}
+  },
+  "$defs": {
+    "dimensionName": {
+      "enum": ["intent", "scope", "domain", "system_slice", "change_model", "impact", "evidence", "operations"]
+    }
+  }
+}
