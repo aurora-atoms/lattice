@@ -1,0 +1,3 @@
+interface:
+  display_name: "System Mental Model"
+  short_description: "Build a verifiable runtime system map"
