@@ -16,7 +16,7 @@
     "knowledge-profile-evaluator": "1.0.0",
     "delivery-capability-conductor": "1.0.0",
     "delivery-rescue": "1.0.0",
-    "context-mastery": "1.2.0",
+    "context-mastery": "1.3.0",
     "knowledge-integrity": "1.0.0",
     "risk-ahead": "1.0.0",
     "delivery-artifact-builder": "1.0.0",
@@ -31,7 +31,8 @@
     "learning-navigator": "1.0.0",
     "domain-context-pack": "1.0.0",
     "negative-knowledge-pack": "1.0.0",
-    "decision-question-builder": "1.0.1"
+    "decision-question-builder": "1.0.1",
+    "unasked-questions-generator": "1.0.0"
   },
   "agent_versions": {
     "pr-reviewer": "1.0.0",
