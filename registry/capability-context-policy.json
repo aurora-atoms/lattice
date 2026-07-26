@@ -17,7 +17,7 @@
     "delivery-capability-conductor": "1.0.0",
     "delivery-rescue": "1.0.0",
     "context-mastery": "1.3.0",
-    "knowledge-integrity": "1.0.0",
+    "knowledge-integrity": "1.1.0",
     "risk-ahead": "1.0.0",
     "delivery-artifact-builder": "1.0.0",
     "delivery-learning": "1.0.0",
@@ -32,7 +32,14 @@
     "domain-context-pack": "1.0.0",
     "negative-knowledge-pack": "1.0.0",
     "decision-question-builder": "1.0.1",
-    "unasked-questions-generator": "1.0.0"
+    "unasked-questions-generator": "1.0.0",
+    "decision-alignment-receipt": "1.0.0",
+    "contradiction-adjudication": "1.0.0",
+    "assumption-expiry-radar": "1.0.0",
+    "knowledge-trust-assessor": "1.0.0",
+    "decision-half-life-review": "1.0.0",
+    "architecture-drift-radar": "1.0.0",
+    "future-maintainer-note": "1.0.0"
   },
   "agent_versions": {
     "pr-reviewer": "1.0.0",
