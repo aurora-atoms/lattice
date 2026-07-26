@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Ready Package"
+  short_description: "Turn requirements into an evidence-linked ready-to-start ticket."
+  brand_color: "#3157D5"

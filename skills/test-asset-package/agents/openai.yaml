@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Asset Package"
+  short_description: "Create focused executable validation assets and coverage gaps."
+  brand_color: "#B44A3C"

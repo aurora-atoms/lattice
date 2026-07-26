@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR-to-Release Summary"
+  short_description: "Translate merged changes into usable release and support information."
+  brand_color: "#5B4BC4"
