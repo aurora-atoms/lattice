@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implementation Plan"
+  short_description: "Externalize work, critical path, validation, and expert decisions."
+  brand_color: "#2F7A64"
