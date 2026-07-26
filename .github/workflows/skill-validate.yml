@@ -59,6 +59,12 @@ jobs:
           python -m unittest discover -s skills/decision-question-builder/evals -p 'test_*.py' -v
       - name: Validate decision question packet schema
         run: python -m json.tool skills/decision-question-builder/schemas/decision-question-packet.v1.schema.json >/dev/null
+      - name: Test unasked questions generator
+        run: |
+          python skills/unasked-questions-generator/scripts/validate_unasked_questions.py skills/unasked-questions-generator/evals/fixtures/valid-unasked-questions.json
+          python -m unittest discover -s skills/unasked-questions-generator/evals -p 'test_*.py' -v
+      - name: Validate unasked questions schema
+        run: python -m json.tool skills/unasked-questions-generator/schemas/unasked-questions.v1.schema.json >/dev/null
       - name: Test VS Code AI configuration auditor
         run: python -m unittest discover -s skills/vscode-workspace-ai-context/evals -p 'test_*.py' -v
       - name: Validate pre-compact checkpoint schema
