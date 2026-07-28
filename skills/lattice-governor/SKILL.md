@@ -1,31 +1,31 @@
 ---
 name: lattice-governor
-description: use for public lattice skill governance, skill creation or modification gates, skill-package refactor, versioned capability-context contracts, registry schema design, trigger/output eval design, token-efficiency review, validator workflows, and repo-native context standards; do not use for private product plans, private context packs, company data, runtime product code, automated trading, or non-skill coding; input is public lattice repo files, SKILL.md packages, Agent instructions, context catalogs, registry records, eval cases, schemas, and validator outputs; output is public-safe skill designs, versioned context contracts, authoring-gate decisions, registry/eval artifacts, validation commands, and concise patches preserving behavior, safety, compatibility, public/private boundaries, and quality-adjusted token ROI.
+description: use for public Lattice delivery-capability reference and governance work, including Skill authoring gates, public/downstream contracts, capability identity and versioning, registry and schema design, evals, validators, compatibility, and token-efficient refactor; do not use for private business conclusions, private evidence or extensions, company data, runtime product code, automated trading, or unrelated coding; input is public Lattice files, capability packages, contracts, registries, schemas, evals, and validator evidence; output is public-safe governed contracts, packages, compatibility decisions, validation evidence, and concise patches preserving behavior, safety, human authority, public/private boundaries, and quality-adjusted token ROI.
 ---
 
 # Lattice Governor
 
 ## Goal
 
-Govern, optimize, create, and refactor public Lattice Skill, Agent, and context artifacts as reusable, runtime-portable capability packages.
+Govern, optimize, create, and refactor public Lattice delivery-capability contracts and packages as reusable, runtime-portable downstream dependencies.
 
-Keep Lattice public, generic, validator-oriented, and free of private project context. Treat Lattice as the standards and tooling layer for downstream private capability portfolios.
+Keep Lattice public, evidence-grounded, validator-oriented, and free of private project context. Treat it as the public reference and governance layer that private repositories pin to collect their own evidence, evolve private assets, and generate manager-ready deliverables locally.
 
 ## Use When
 
-Use this Skill for public Lattice work involving Skill creation or modification, Skill package standards, SKILL.md refactor, Agent context alignment, stable capability identity and versioning, registry schema design, trigger/output eval design, token-efficiency review, validator workflows, format routing, public examples, or repo-native context governance.
+Use this Skill for public Lattice work involving Skill creation or modification, Skill package standards, SKILL.md refactor, Agent context alignment, stable capability identity and versioning, public/downstream operating contracts, capability taxonomy, registry schema design, trigger/output eval design, token-efficiency review, validator workflows, format routing, public examples, or repo-native context governance.
 
 Use this Skill before changing any file under `../../skills/` and before changing public capability standards that private repositories may depend on.
 
 ## Do Not Use When
 
-Do not use this Skill for private product planning, private context packs, private Skill portfolio decisions, company data, product runtime code, automated trading advice, or unrelated coding tasks.
+Do not use this Skill for private product planning, private context packs, private Skill portfolio or adoption decisions, real delivery evidence, manager business conclusions, company data, product runtime code, automated trading advice, or unrelated coding tasks.
 
-If private downstream context is needed, stop and require the private repository's governance Skill to handle it separately.
+If private downstream context is needed, stop and require the private repository's governance extension and accountable owners to handle it separately. Public conformance does not prove private use or business value.
 
 ## Inputs
 
-Expected inputs include public Lattice repo files, SKILL.md packages, Agent instructions, Markdown instructions, capability-context catalogs, JSON/JSONL registry records, schema files, eval cases, validator outputs, inventory reports, token estimates, source behavior, compatibility baseline, and public-safe refactor notes.
+Expected inputs include public Lattice repo files, SKILL.md packages, Agent instructions, public/downstream contracts, capability-context catalogs, JSON/JSONL registry records, schema files, eval cases, validator outputs, inventory reports, token estimates, source behavior, compatibility baseline, and public-safe refactor notes.
 
 ## Outputs
 
@@ -34,16 +34,17 @@ Produce visible, structured governance artifacts:
 ```text
 authoring or compatibility decision
 changed Skill or Agent package
+public/downstream operating or credibility contract
 updated catalog and semantic version policy
 validation and regression evidence
 review-needed or blocked items
 lat.capability.run_result.v1
 ```
 
-Default writeback for the structured run result:
+Default repository-root writeback for the structured run result:
 
 ```text
-../../artifacts/capability-runs/lattice-governor/<run-id>/run-result.json
+artifacts/capability-runs/lattice-governor/<run-id>/run-result.json
 ```
 
 When write permission is unavailable, return the complete result inline and set `write_status=returned_inline`.
@@ -70,6 +71,7 @@ requested governance change is represented in the owned contract -> met | not_me
 changed Skill packages have increased semantic versions -> met | not_met | not_evaluated
 catalog, schema, validator, and CI checks pass -> met | not_met | not_evaluated
 behavior, safety, evidence, stop, and authority boundaries are preserved -> met | not_met | not_evaluated
+public conformance claims remain separate from private adoption and business value -> met | not_met | not_evaluated
 ```
 
 File creation alone is not success. A capability cannot be promoted when any required signal is not met or cannot be evaluated without accountable review.
@@ -91,10 +93,10 @@ For a permission stop, name the exact permission, accountable owner, reason, and
 
 ## Workflow
 
-1. Confirm the task is public Lattice Skill, Agent, or context governance.
+1. Confirm the task is public Lattice delivery-capability reference or governance work and classify every requested artifact as public contract, public synthetic fixture, or private downstream content.
 2. Query ConPort MCP before loading or searching full Skill text when ConPort is available; otherwise read targeted repo files before broad search.
 3. For any `skills/<name>/` change, read `../../docs/skill-authoring-gate.md`, `../../docs/capability-context-contract.md`, the target catalog entry, and the current semantic version before editing.
-4. Identify the context layer: instruction, Skill, Agent, reference, schema, eval, script, registry, event log, or report.
+4. Identify the context layer: instruction, Skill, Agent, reference workflow, capability profile, schema, eval, script, registry, validator, template, event log, or projection.
 5. Inventory the target package with existing Lattice scripts when practical.
 6. Classify each artifact as control plane, compact context metadata, long reference, deterministic script, schema, eval, asset, runtime log, or report.
 7. Preserve runtime-native frontmatter. Keep stable ID, semantic version, intended change, primary user, secondary audience, trigger, minimum inputs, outputs, and optional-context discovery in `../../registry/skill-context.catalog.json` or `../../registry/agent-context.catalog.json`.
@@ -107,7 +109,8 @@ For a permission stop, name the exact permission, accountable owner, reason, and
 14. Use optional context only for a named confidence, scope, or output-quality gap. Do not eagerly load related capabilities or broad sources.
 15. Add or update registry and eval artifacts when the capability is intended for reuse.
 16. Verify with package validation, capability-context validation, the Skill change contract gate, token estimates, trigger evals, and output evals before recommending promotion.
-17. Emit a structured visible run result and a compact release recommendation: promote, revise, quarantine, deprecate, or reject.
+17. For downstream contracts, require immutable version pins, local-only private evidence, explicit private-extension identity, manager-claim evidence, and compatibility checks without public data return.
+18. Emit a structured visible run result and a compact release recommendation: promote, revise, quarantine, deprecate, or reject.
 
 ## Rules
 
@@ -133,6 +136,12 @@ LATGOV.019 | MUST | eval | compare output to a baseline or previous version befo
 LATGOV.020 | NEVER | privacy | copy private downstream capability content or context into Lattice
 LATGOV.021 | NEVER | logs | store unprojected runtime telemetry conversation dumps or bulk traces as Markdown context
 LATGOV.022 | MUST | registry | mark ambiguous unsafe or incompatible capability changes as review needed
+LATGOV.023 | MUST | purpose | govern public evidence-grounded delivery capability references and contracts
+LATGOV.024 | MUST | downstream | require private repositories to own real evidence extensions adoption and manager assets
+LATGOV.025 | NEVER | claims | infer private use reuse team adoption manager acceptance ROI or business value from public conformance
+LATGOV.026 | MUST | synthetic | mark public fixtures synthetic reference and downstream adoption not observed
+LATGOV.027 | NEVER | authority | let DeliveryYield selectors validators registries or success signals approve delivery promotion or adoption
+LATGOV.028 | MUST | extension | require private governance extensions for private business conclusions and capability overrides
 
 ## Reference Routing
 
@@ -141,6 +150,11 @@ Consult only the smallest relevant file first.
 - `../../docs/skill-authoring-gate.md`: mandatory creation and modification workflow.
 - `../../templates/skill-contract-sections.template.md`: required output, evidence, success, and stop sections.
 - `../../docs/capability-context-contract.md`: stable identity, semantic versioning, users, triggers, inputs, optional context, output, evidence, success, stop, and authority.
+- `../../docs/public-private-operating-model.md`: public/private ownership, prohibited data, lifecycle, and claim boundary.
+- `../../docs/downstream-private-repository-contract.md`: immutable pins, private extensions, local evidence, and upgrade contract.
+- `../../docs/manager-credibility-contract.md`: evidence-backed claim strength and manager wording.
+- `../../docs/capability-taxonomy.md`: atomic, selector, workflow, profile, projection, validator, template, and governance roles.
+- `../../docs/release-and-compatibility-policy.md`: public package release, private adoption separation, and migration policy.
 - `references/governance-model.md`: lifecycle, registry, dependency, and release-channel model.
 - `references/token-efficiency-model.md`: quality-adjusted token ROI, progressive loading, stable-prefix design, and context projection rules.
 - `references/eval-and-release-gates.md`: trigger eval, output eval, validation gates, and promotion criteria.
@@ -199,3 +213,5 @@ For a changed reusable capability, also verify:
 - Producing registry or eval artifacts that are human-readable but not machine-checkable.
 - Promoting a capability without trigger and output evaluation evidence.
 - Letting private repositories depend on undocumented public behavior.
+- Treating public conformance, synthetic review, or green CI as evidence of private adoption or manager value.
+- Governing private business conclusions without a private repository governance extension.

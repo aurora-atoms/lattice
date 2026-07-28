@@ -2,7 +2,7 @@
   "contract": "lat.capability-context.v1",
   "contract_version": "1.1.0",
   "skill_versions": {
-    "lattice-governor": "1.1.0",
+    "lattice-governor": "1.2.0",
     "delivery-verdict-author": "1.0.0",
     "feature-spec-author": "1.0.0",
     "powerbi-semantic-accelerator": "1.0.0",

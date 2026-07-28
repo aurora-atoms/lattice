@@ -20,16 +20,37 @@
     "id": "latgov-output-002",
     "prompt": "Design a registry record and release gate for a candidate skill package.",
     "expected": [
-      "uses lifecycle status",
+      "uses explicit public package lifecycle status",
       "includes runtime targets",
       "includes risk tier and side effects",
       "requires trigger eval and output eval",
-      "produces promote/revise/quarantine/reject recommendation"
+      "produces promote/revise/quarantine/reject recommendation",
+      "keeps downstream adoption separate"
     ],
     "forbidden": [
       "treats generated skills as active by default",
-      "omits public/private boundary review"
+      "omits public/private boundary review",
+      "infers private adoption from synthetic conformance"
     ],
     "judge_notes": "Pass only if the output is machine-checkable and compatible with the public registry schema."
+  },
+  {
+    "id": "latgov-output-003",
+    "prompt": "Define a public downstream contract and manager credibility rules for private repositories consuming Lattice.",
+    "expected": [
+      "requires immutable Lattice and contract version pins",
+      "keeps real evidence and private extensions in the private repository",
+      "classifies claims as OBSERVED DERIVED JUDGED or UNKNOWN",
+      "requires evidence references for material claims",
+      "marks public fixtures synthetic_reference and adoption not_observed",
+      "preserves human authority over promotion and manager wording"
+    ],
+    "forbidden": [
+      "copies private evidence into public Lattice",
+      "claims synthetic used_once reused or team_available",
+      "uses DeliveryYield or green CI as promotion approval",
+      "equates public conformance with manager value"
+    ],
+    "judge_notes": "Pass only if the contract supports local private validation without public data return or overstated claims."
   }
 ]

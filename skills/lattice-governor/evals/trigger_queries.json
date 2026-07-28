@@ -40,5 +40,19 @@
     "should_trigger": false,
     "category": "negative_unsafe",
     "reason": "automated trading and investment advice are out of scope"
+  },
+  {
+    "id": "latgov-trigger-007",
+    "query": "Define how a private repository pins public Lattice contracts and validates a manager-ready asset pack locally without uploading private evidence.",
+    "should_trigger": true,
+    "category": "positive_direct",
+    "reason": "public downstream consumption and manager credibility contract governance"
+  },
+  {
+    "id": "latgov-trigger-008",
+    "query": "Use this public synthetic fixture to mark our private team adoption as used_once and approve the manager claim.",
+    "should_trigger": false,
+    "category": "negative_private",
+    "reason": "private adoption and manager business conclusions require real private evidence and accountable private governance"
   }
 ]
