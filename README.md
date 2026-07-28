@@ -92,7 +92,16 @@ python scripts/validate_capability_routing.py --root .
 
 7. On a Lattice upgrade, rerun schema, capability-version, extension, evidence, asset-pack, manager-claim, and compatibility checks before changing the pin.
 
-PR 3 provides the downstream schemas, templates, and validator CLIs. The complete generated synthetic downstream example, golden comparison, and heterogeneous full runner remain PR 4 scope; PR 3 template validation must not be represented as real adoption or end-to-end conformance.
+PR 3 provides the downstream schemas, templates, and validator CLIs. PR 4 adds the [generated synthetic downstream consumer](examples/synthetic-private-consumer/), golden asset-pack comparison, and complete heterogeneous runner. These establish public conformance only and must not be represented as real adoption or business value.
+
+Run the complete public conformance suite:
+
+```bash
+python feature-delivery-harness-mvp/scripts/run_mvp_evals.py \
+  --summary-out conformance-summary.json
+```
+
+For a real private implementation, follow the [Private Repository Delivery Asset Pack Guide](docs/private-repository-delivery-asset-pack-guide.md).
 
 ## Public Package and Private Adoption Lifecycles
 
@@ -149,6 +158,6 @@ docs/                           operating, governance, and migration contracts
 
 ## Release and Compatibility
 
-Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md), and [PR 3 Downstream Contract Note](docs/migrations/downstream-contracts-pr3.md).
+Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md), [PR 3 Downstream Contract Note](docs/migrations/downstream-contracts-pr3.md), and [PR 4 Synthetic Consumer Note](docs/migrations/synthetic-private-consumer-pr4.md).
 
 No registry score, green CI run, synthetic fixture, Skill count, PR count, or token count proves private business value. Human owners retain authority over private evidence, architecture, security, compliance, asset promotion, manager wording, merge, release, deployment, and production decisions.

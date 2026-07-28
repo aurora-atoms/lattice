@@ -1,0 +1,8 @@
+{
+  "contract": "lat.synthetic-negative-case.v1",
+  "case_id": "unsupported-private-extension",
+  "target": "private_extension",
+  "mutation_path": "/public_capability_id",
+  "mutation_value": "skill:missing-private-base@9.9.9",
+  "expected_error": "public capability version does not exist"
+}

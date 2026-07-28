@@ -169,3 +169,5 @@ manager brief
 ```
 
 The schemas describe portable shape. The local validators enforce cross-file identity, canonical capability resolution, evidence-reference, adoption-strength, and authority rules that JSON Schema cannot establish alone.
+
+For an executable public-safe example, run `examples/synthetic-private-consumer/run_conformance.py --check`. For the first real private pack, follow `docs/private-repository-delivery-asset-pack-guide.md` and replace every synthetic record locally.

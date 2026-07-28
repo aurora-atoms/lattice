@@ -129,6 +129,14 @@ class ManagerClaimTests(unittest.TestCase):
         errors = MODULE.validate_manager_brief(value, [evidence("ev-1", "usage_observation")])
         self.assertTrue(any("reuse cannot be claimed" in item for item in errors))
 
+    def test_unknown_reuse_is_preserved_without_overclaim(self) -> None:
+        value = brief()
+        value["claims"].append(
+            claim("c-reuse", "reuse", classification="UNKNOWN", refs=[])
+        )
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertEqual([], errors)
+
     def test_one_case_cannot_be_team_wide(self) -> None:
         value = brief()
         value["claims"].append(claim("c-team", "team_adoption"))

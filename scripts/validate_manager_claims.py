@@ -190,21 +190,26 @@ def validate_manager_brief(
         if not isinstance(claim, dict):
             continue
         kind = claim.get("claim_kind")
+        classification = claim.get("classification")
         refs = set(map(str, claim.get("evidence_refs", [])))
         label = f"claim {claim.get('claim_id', '<missing>')}"
-        if kind == "reuse":
+        if kind == "reuse" and classification != "UNKNOWN":
             if adoption not in {"reused", "team_available"}:
                 errors.append(f"{label}: reuse cannot be claimed at adoption status {adoption}")
             if len(refs & usage_evidence) < 2:
                 errors.append(f"{label}: reuse requires two separately evidenced uses")
-        if kind == "team_adoption":
+        if kind == "team_adoption" and classification != "UNKNOWN":
             if adoption != "team_available":
                 errors.append(f"{label}: team-wide language requires team_available")
             if not nonempty_string(brief["governance_approval_ref"]):
                 errors.append(f"{label}: team-wide language requires governance approval")
-        if kind == "manager_acceptance" and simulation == "synthetic_reference":
+        if (
+            kind == "manager_acceptance"
+            and classification != "UNKNOWN"
+            and simulation == "synthetic_reference"
+        ):
             errors.append(f"{label}: synthetic evidence cannot claim manager acceptance")
-        if kind == "roi":
+        if kind == "roi" and classification != "UNKNOWN":
             if brief["evidence_origin"] == "synthetic":
                 errors.append(f"{label}: synthetic evidence cannot claim ROI")
             if claim.get("classification") not in {"OBSERVED", "DERIVED"}:

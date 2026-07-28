@@ -1,0 +1,8 @@
+{
+  "contract": "lat.synthetic-negative-case.v1",
+  "case_id": "synthetic-maturity-violation",
+  "target": "manager_brief",
+  "mutation_path": "/downstream_adoption_status",
+  "mutation_value": "used_once",
+  "expected_error": "synthetic evidence must remain not_observed"
+}

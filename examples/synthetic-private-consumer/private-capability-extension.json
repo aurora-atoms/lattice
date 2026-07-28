@@ -1,0 +1,32 @@
+{
+  "contract": "lat.private-capability-extension.v1",
+  "contract_version": "1.0.0",
+  "extension_id": "private:synthetic/dangling-ref-review@1.0.0",
+  "extension_version": "1.0.0",
+  "private_namespace": "synthetic",
+  "simulation_status": "synthetic_reference",
+  "relationship": "extends",
+  "public_capability_id": "skill:feature-delivery-case@1.0.0",
+  "scope": {
+    "repositories": [
+      "synthetic/private-consumer"
+    ],
+    "task_types": [
+      "synthetic_pr_review"
+    ],
+    "excluded_uses": [
+      "real delivery approval",
+      "team-wide activation",
+      "manager acceptance"
+    ]
+  },
+  "required_permissions": [],
+  "authority_boundary": "Synthetic conformance only; grants no real review, adoption, promotion, manager-wording, release, or deployment authority.",
+  "preserves_public_safety_boundaries": true,
+  "compatibility": {
+    "public_version_range": ">=1.0.0,<2.0.0",
+    "on_incompatible": "fail"
+  },
+  "governance_review_ref": null,
+  "content_path": "extension/dangling-ref-review.md"
+}

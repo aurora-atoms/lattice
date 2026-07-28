@@ -1,0 +1,32 @@
+{
+  "contract": "lat.delivery-asset-pack-validation-report.v1",
+  "schema_version": "1.0.0",
+  "status": "pass",
+  "pack_id": "SYNTHETIC-PACK-001",
+  "checks": [
+    "downstream_consumer",
+    "feature_delivery_case",
+    "asset_candidate",
+    "synthetic_review",
+    "evidence_ledger",
+    "manager_claims",
+    "delivery_asset_pack",
+    "negative:dangling-evidence-ref",
+    "negative:synthetic-maturity-violation",
+    "negative:team-wide-overclaim",
+    "negative:unreviewed-promotion",
+    "negative:unsupported-private-extension"
+  ],
+  "negative_cases": [
+    "dangling-evidence-ref",
+    "synthetic-maturity-violation",
+    "team-wide-overclaim",
+    "unreviewed-promotion",
+    "unsupported-private-extension"
+  ],
+  "errors": [],
+  "generated_at": "2026-07-28T00:15:00Z",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "privacy_note": "Synthetic local conformance only; no private evidence was read or uploaded."
+}

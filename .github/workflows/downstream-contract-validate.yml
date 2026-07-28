@@ -31,6 +31,12 @@ jobs:
           python -m json.tool schemas/evidence/evidence-claim.v1.schema.json >/dev/null
           python -m json.tool schemas/evidence/delivery-evidence-asset-pack.v1.schema.json >/dev/null
           python -m json.tool schemas/manager/manager-delivery-brief.v1.schema.json >/dev/null
+          python -m json.tool feature-delivery-harness-mvp/schemas/evals/eval-case.v1.schema.json >/dev/null
+          python -m json.tool feature-delivery-harness-mvp/schemas/evals/conformance-summary.v1.schema.json >/dev/null
+      - name: Validate explicit eval manifests
+        run: |
+          find feature-delivery-harness-mvp/evals -name case.json -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
       - name: Validate public template syntax
         run: |
           python -m json.tool templates/private-repository/downstream-consumer-manifest.template.json >/dev/null
@@ -43,7 +49,25 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_manager_claims.py' -v
       - name: Test delivery asset-pack contract
         run: python -m unittest discover -s tests -p 'test_delivery_asset_pack.py' -v
+      - name: Test heterogeneous eval runner contract
+        run: python -m unittest discover -s tests -p 'test_mvp_eval_runner.py' -v
+      - name: Test synthetic private consumer
+        run: python -m unittest discover -s tests -p 'test_synthetic_private_consumer.py' -v
+      - name: Run complete heterogeneous conformance suite
+        run: |
+          python feature-delivery-harness-mvp/scripts/run_mvp_evals.py \
+            --summary-out conformance-summary.json
       - name: Compile local validators
         run: |
-          python -m compileall -q scripts tests
+          python -m compileall -q scripts tests feature-delivery-harness-mvp/scripts examples/synthetic-private-consumer
           git diff --check
+      - name: Upload conformance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: downstream-conformance-evidence
+          path: |
+            conformance-summary.json
+            feature-delivery-harness-mvp/reports/generated/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,291 @@
+{
+  "case_profile": "lifecycle_v1",
+  "case_id": "synthetic_fdc_dangling_ref_001",
+  "revision": 1,
+  "title": "Reject dangling evidence references in a delivery asset pack",
+  "lifecycle_status": "delivered",
+  "accountable_owner": "synthetic-case-owner",
+  "purpose": {
+    "why": "Demonstrate that a private consumer can reject unsupported manager claims locally.",
+    "beneficiaries": [
+      "synthetic downstream maintainer"
+    ],
+    "expected_change": "A dangling evidence reference becomes a deterministic validation failure.",
+    "success_signals": [
+      "valid asset pack passes",
+      "dangling evidence mutation fails"
+    ]
+  },
+  "boundary": {
+    "feature_boundary": "Synthetic downstream contract conformance only.",
+    "in_scope": [
+      "consumer pin",
+      "evidence reference validation",
+      "asset-pack generation",
+      "manager wording"
+    ],
+    "out_of_scope": [
+      "real company evidence",
+      "production delivery",
+      "manager acceptance"
+    ],
+    "affected_surfaces": [
+      "public validators",
+      "synthetic asset pack"
+    ],
+    "impact_areas": [
+      "delivery evidence governance"
+    ],
+    "compatibility_constraints": [
+      "preserve public/private boundary",
+      "remain downstream_adoption_status not_observed"
+    ],
+    "non_goals": [
+      "prove real use",
+      "approve promotion"
+    ]
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Every non-UNKNOWN manager claim resolves local evidence references.",
+      "evidence_requirements": [
+        "synthetic validator result"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "The generated pack remains explicitly synthetic and not_observed.",
+      "evidence_requirements": [
+        "asset-pack manifest",
+        "manager brief"
+      ]
+    }
+  ],
+  "context_coverage": [
+    {
+      "category": "business_rules",
+      "status": "not_applicable",
+      "search_scope": "synthetic fixture",
+      "source_refs": [],
+      "findings": []
+    },
+    {
+      "category": "system_constraints",
+      "status": "found",
+      "search_scope": "public downstream contracts",
+      "source_refs": [
+        "docs/downstream-private-repository-contract.md"
+      ],
+      "findings": [
+        "Validation remains local and no private evidence is uploaded."
+      ]
+    },
+    {
+      "category": "similar_cases",
+      "status": "found",
+      "search_scope": "public conformance fixtures",
+      "source_refs": [
+        "feature-delivery-harness-mvp/evals/dangling_evidence_ref_case_001"
+      ],
+      "findings": [
+        "The harness already rejects dangling delivery evidence references."
+      ]
+    },
+    {
+      "category": "negative_knowledge",
+      "status": "found",
+      "search_scope": "manager credibility contract",
+      "source_refs": [
+        "docs/manager-credibility-contract.md"
+      ],
+      "findings": [
+        "Synthetic conformance cannot establish real adoption or manager value."
+      ]
+    },
+    {
+      "category": "source_facts",
+      "status": "found",
+      "search_scope": "PR 3 schemas and validators",
+      "source_refs": [
+        "schemas/evidence/evidence-claim.v1.schema.json",
+        "scripts/validate_manager_claims.py"
+      ],
+      "findings": [
+        "Non-UNKNOWN claims require resolvable evidence references."
+      ]
+    }
+  ],
+  "decision_log": [
+    {
+      "id": "D1",
+      "status": "active",
+      "choice": "Use a fixed synthetic pin sentinel and never represent it as a real checkout pin.",
+      "decided_at": "2026-07-28T00:00:00Z",
+      "decision_owner": "synthetic-case-owner",
+      "rationale": "Golden output must remain deterministic across public commits.",
+      "alternatives": [
+        "rewrite the fixture on every commit"
+      ],
+      "applicability_conditions": [
+        "simulation_status is synthetic_reference"
+      ],
+      "evidence_refs": [
+        "EV-CONTRACT"
+      ],
+      "review_condition": {
+        "review_at": null,
+        "event_triggers": [
+          "pin contract changes"
+        ]
+      },
+      "supersedes": []
+    }
+  ],
+  "assumption_log": [
+    {
+      "id": "A1",
+      "status": "active",
+      "statement": "The public contract versions remain compatible with this fixture.",
+      "basis": "Pinned synthetic contract versions.",
+      "owner": "synthetic-case-owner",
+      "confidence": "high",
+      "validity_conditions": [
+        "contract versions remain 1.0.0"
+      ],
+      "expires_at": "2027-07-28T00:00:00Z",
+      "review_condition": {
+        "review_at": null,
+        "event_triggers": [
+          "contract version changes"
+        ]
+      },
+      "impact_if_false": "Regenerate and review the golden pack.",
+      "evidence_refs": [
+        "EV-CONTRACT"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "DEP1",
+      "kind": "technical",
+      "name": "Standard-library Python",
+      "state": "satisfied",
+      "blocking": true,
+      "owner": "synthetic-case-owner",
+      "required_participants": [],
+      "evidence_refs": [
+        "EV-VALIDATION"
+      ],
+      "review_triggers": [
+        "runtime support changes"
+      ]
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "id": "EV-CONTRACT",
+      "kind": "fact_source",
+      "source_ref": "schemas/evidence/evidence-claim.v1.schema.json",
+      "relation": "supports",
+      "supports_refs": [
+        "AC1",
+        "D1",
+        "A1"
+      ],
+      "result": "Contract requires evidence-linked claims.",
+      "observed_at": "2026-07-28T00:00:00Z",
+      "expires_at": "2027-07-28T00:00:00Z",
+      "confidence": "high",
+      "source_authority": "public Lattice contract"
+    },
+    {
+      "id": "EV-VALIDATION",
+      "kind": "validation",
+      "source_ref": "synthetic://validator/full-conformance",
+      "relation": "supports",
+      "supports_refs": [
+        "AC1",
+        "AC2",
+        "DEP1"
+      ],
+      "result": "Synthetic positive and negative checks are executable.",
+      "observed_at": "2026-07-28T00:00:00Z",
+      "expires_at": "2027-07-28T00:00:00Z",
+      "confidence": "high",
+      "source_authority": "synthetic conformance runner"
+    }
+  ],
+  "risk_ledger": [
+    {
+      "id": "R1",
+      "kind": "direct",
+      "statement": "Synthetic review language could be mistaken for real approval.",
+      "component_refs": [],
+      "owner": "synthetic-case-owner",
+      "exposure": "medium",
+      "controls": [
+        "not_observed lifecycle",
+        "synthetic disclaimer"
+      ],
+      "evidence_refs": [
+        "EV-CONTRACT"
+      ],
+      "review_triggers": [
+        "manager brief wording changes"
+      ],
+      "status": "controlled"
+    }
+  ],
+  "unresolved_items": [],
+  "artifacts": [
+    {
+      "id": "ART1",
+      "kind": "case_summary",
+      "uri": "golden/manager-ready-delivery-asset-pack/manager-brief.md",
+      "case_revision": 1,
+      "owner": "synthetic-case-owner",
+      "evidence_refs": [
+        "EV-VALIDATION"
+      ],
+      "generated_at": "2026-07-28T00:00:00Z",
+      "expires_at": "2027-07-28T00:00:00Z",
+      "review_triggers": [
+        "golden output changes"
+      ],
+      "authority_note": "Synthetic conformance artifact only; grants no real approval."
+    }
+  ],
+  "readiness": {
+    "target": "review",
+    "result": "ready",
+    "criteria": [
+      {
+        "id": "AC1",
+        "status": "pass",
+        "evidence_refs": [
+          "EV-VALIDATION"
+        ]
+      },
+      {
+        "id": "AC2",
+        "status": "pass",
+        "evidence_refs": [
+          "EV-VALIDATION"
+        ]
+      }
+    ],
+    "blocking_item_refs": [],
+    "evidence_refs": [
+      "EV-CONTRACT",
+      "EV-VALIDATION"
+    ],
+    "assessed_at": "2026-07-28T00:00:00Z",
+    "expires_at": "2027-07-28T00:00:00Z",
+    "review_triggers": [
+      "fixture or validator changes"
+    ],
+    "authority_note": "Readiness for synthetic conformance review only; accountable humans retain all real authority."
+  }
+}

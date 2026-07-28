@@ -94,7 +94,11 @@ def validate_consumer(
             errors.append("lattice_source: SHA ref and commit_sha must match")
         if not nonempty_string(source.get("repository")):
             errors.append("lattice_source: repository must be non-empty")
-        if verify_checkout_pin and SHA_RE.fullmatch(sha):
+        if (
+            verify_checkout_pin
+            and manifest["simulation_status"] == "real_downstream"
+            and SHA_RE.fullmatch(sha)
+        ):
             try:
                 checkout_sha = subprocess.run(
                     ["git", "-C", str(lattice_root), "rev-parse", "HEAD"],
