@@ -117,9 +117,21 @@ one narrow manager decision
 
 Do not lead with schemas, Agent or Skill counts, token data, registries, databases, MCP, or tool-call counts. Those may appear only as supporting technical detail.
 
+## Machine Validation
+
+Structured claims use `schemas/evidence/evidence-claim.v1.schema.json`; the complete structured brief uses `schemas/manager/manager-delivery-brief.v1.schema.json`. Validate locally:
+
+```bash
+python vendor/lattice/scripts/validate_manager_claims.py \
+  manager-brief.json \
+  --evidence-ledger evidence-ledger.jsonl
+```
+
+The validator reads only the supplied local files. It emits rule failures, not evidence content, and performs no network calls.
+
 ## Deterministic Rejection Conditions
 
-The PR 3 validator must reject:
+The validator rejects:
 
 - `OBSERVED`, `DERIVED`, or `JUDGED` claims with missing or dangling evidence refs;
 - an `UNKNOWN` rewritten as fact;

@@ -115,6 +115,25 @@ class CapabilityManifestTests(unittest.TestCase):
             errors = MODULE.validate_entry(value, root, "demo")
             self.assertTrue(any("missing fields" in item for item in errors))
 
+    def test_empty_outputs_fail_structural_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.prepare(root)
+            value = entry()
+            value["outputs"] = []
+            errors = MODULE.validate_entry(value, root, "demo")
+            self.assertTrue(any("outputs must be a non-empty" in item for item in errors))
+
+    def test_malformed_evidence_contract_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.prepare(root)
+            value = entry()
+            value["evidence_contract"] = {"required_sections": [], "policy": ""}
+            errors = MODULE.validate_entry(value, root, "demo")
+            self.assertTrue(any("required_sections" in item for item in errors))
+            self.assertTrue(any("evidence_contract.policy" in item for item in errors))
+
     def test_deprecated_capability_in_active_route_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

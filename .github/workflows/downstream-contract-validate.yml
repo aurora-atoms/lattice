@@ -1,0 +1,49 @@
+name: downstream-contract-validate
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: downstream-contract-validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  downstream-contract-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate canonical dependency source
+        run: |
+          python scripts/generate_capability_registry_projections.py --root . --check
+          python scripts/validate_capability_manifest.py --root .
+          python scripts/validate_workspace_manifest.py --root .
+      - name: Validate downstream contract schemas
+        run: |
+          python -m json.tool schemas/downstream/downstream-consumer-manifest.v1.schema.json >/dev/null
+          python -m json.tool schemas/downstream/private-capability-extension.v1.schema.json >/dev/null
+          python -m json.tool schemas/evidence/evidence-claim.v1.schema.json >/dev/null
+          python -m json.tool schemas/evidence/delivery-evidence-asset-pack.v1.schema.json >/dev/null
+          python -m json.tool schemas/manager/manager-delivery-brief.v1.schema.json >/dev/null
+      - name: Validate public template syntax
+        run: |
+          python -m json.tool templates/private-repository/downstream-consumer-manifest.template.json >/dev/null
+          python -m json.tool templates/private-repository/private-capability-extension.template.json >/dev/null
+          python -m json.tool templates/delivery-evidence-asset-pack/asset-pack.manifest.template.json >/dev/null
+          python -m json.tool templates/manager-delivery-brief/manager-brief.template.json >/dev/null
+      - name: Test downstream consumer and private extension contracts
+        run: python -m unittest discover -s tests -p 'test_downstream_consumer.py' -v
+      - name: Test evidence and manager claim contracts
+        run: python -m unittest discover -s tests -p 'test_manager_claims.py' -v
+      - name: Test delivery asset-pack contract
+        run: python -m unittest discover -s tests -p 'test_delivery_asset_pack.py' -v
+      - name: Compile local validators
+        run: |
+          python -m compileall -q scripts tests
+          git diff --check

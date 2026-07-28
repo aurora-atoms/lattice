@@ -6913,7 +6913,7 @@
       "family_name": "pr-review-template",
       "version": "1.0.0",
       "capability_role": "capability_profile",
-      "public_package_status": "draft",
+      "public_package_status": "contract_validated",
       "path": "workspaces/templates/pr-review-template.json",
       "description": "Public workspace profile for pull_request_review tasks.",
       "changes": "a bounded task type into a least-privilege workspace capability profile",

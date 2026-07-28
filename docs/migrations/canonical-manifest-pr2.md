@@ -38,11 +38,11 @@ knowledge packs = 1
 workspace profiles = 1
 
 public_package_status
-  contract_validated = 75 Skill/Agent packages
-  draft = 3 MCP/knowledge/workspace contracts
+  contract_validated = 76 Skill/Agent/workspace packages
+  draft = 2 MCP/knowledge contracts
 ```
 
-Skill and Agent packages moved through the one-time migration baseline `legacy experimental -> draft -> contract_validated` only after package, context, Agent-record, path, and parity validation. None is marked `conformance_validated` or `released`.
+Skill and Agent packages moved through the one-time migration baseline `legacy experimental -> draft -> contract_validated` only after package, context, Agent-record, path, and parity validation. PR 3 review also confirmed the registered workspace Capability Profile passes `validate_workspace_manifest.py`, so it is `contract_validated` and can be selected by a downstream consumer. None is marked `conformance_validated` or `released`.
 
 ## Compatibility
 
@@ -134,4 +134,4 @@ PR 2 adds deterministic rejection for:
 
 ## Remaining Compatibility Work
 
-PR 3 owns downstream consumer, private-extension, evidence-pack, manager-claim schemas, templates, and validators. PR 4 owns heterogeneous eval dispatch, full synthetic private-consumer generation, golden asset-pack comparison, and the complete conformance runner.
+PR 3 implements downstream consumer, private-extension, evidence-pack, manager-claim schemas, templates, and validators. PR 4 owns heterogeneous eval dispatch, full synthetic private-consumer generation, golden asset-pack comparison, and the complete conformance runner.

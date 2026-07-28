@@ -97,6 +97,15 @@
         "confidence": "high"
       },
       {
+        "claim": "PR 3 review confirmed the registered workspace Capability Profile passes its validator and is contract_validated; MCP and knowledge contracts remain draft.",
+        "source_refs": [
+          "workspaces/templates/pr-review-template.json",
+          "scripts/validate_workspace_manifest.py",
+          "registry/capability-manifest.json"
+        ],
+        "confidence": "high"
+      },
+      {
         "claim": "All 13 public Agent records now satisfy the Agent validator after nine incomplete records received the required token-budget, cache, and telemetry contracts.",
         "source_refs": [
           "agents/",
@@ -158,7 +167,7 @@
     ],
     "assumptions": [
       "Legacy experimental Skill and Agent packages that pass package, context, path, Agent, and parity validation may enter public contract_validated without being released.",
-      "Specialized MCP, knowledge, and workspace contracts remain draft until their own conformance evidence exists."
+      "Specialized MCP and knowledge contracts remain draft until their own contract evidence exists; the validated workspace profile remains unreleased."
     ]
   },
   "success_signals": [

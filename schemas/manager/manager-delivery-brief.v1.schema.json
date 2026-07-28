@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/manager/manager-delivery-brief.v1.schema.json",
+  "title": "Manager Delivery Brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "brief_id",
+    "asset_pack_id",
+    "simulation_status",
+    "downstream_adoption_status",
+    "evidence_origin",
+    "scope",
+    "version",
+    "claims",
+    "human_challenge",
+    "known_limitations",
+    "unresolved_unknowns",
+    "next_use_entry",
+    "manager_decision",
+    "human_review_ref",
+    "governance_approval_ref"
+  ],
+  "properties": {
+    "contract": {"const": "lat.manager-delivery-brief.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "brief_id": {"type": "string", "minLength": 1},
+    "asset_pack_id": {"type": "string", "minLength": 1},
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "downstream_adoption_status": {
+      "enum": [
+        "not_observed",
+        "imported",
+        "task_scoped",
+        "used_once",
+        "reused",
+        "team_available",
+        "deprecated"
+      ]
+    },
+    "evidence_origin": {
+      "enum": ["synthetic", "real_sanitized", "real_restricted"]
+    },
+    "scope": {"type": "string", "minLength": 1},
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "$ref": "../evidence/evidence-claim.v1.schema.json"
+      }
+    },
+    "human_challenge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "challenge_present",
+        "challenger_role",
+        "challenge_summary",
+        "resulting_change_or_open_issue",
+        "review_ref"
+      ],
+      "properties": {
+        "challenge_present": {"type": "boolean"},
+        "challenger_role": {"type": ["string", "null"]},
+        "challenge_summary": {"type": ["string", "null"]},
+        "resulting_change_or_open_issue": {"type": ["string", "null"]},
+        "review_ref": {"type": ["string", "null"]}
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "unresolved_unknowns": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "next_use_entry": {"type": "string", "minLength": 1},
+    "manager_decision": {"type": ["string", "null"]},
+    "human_review_ref": {"type": ["string", "null"]},
+    "governance_approval_ref": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}}
+      },
+      "then": {
+        "properties": {
+          "downstream_adoption_status": {"const": "not_observed"},
+          "evidence_origin": {"const": "synthetic"},
+          "human_review_ref": {"type": "null"},
+          "governance_approval_ref": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"downstream_adoption_status": {"const": "team_available"}}
+      },
+      "then": {
+        "properties": {
+          "human_review_ref": {"type": "string", "minLength": 1},
+          "governance_approval_ref": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ]
+}

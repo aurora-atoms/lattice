@@ -379,7 +379,7 @@ def build_manifest(root: Path) -> dict[str, Any]:
                 family=family,
                 version=version,
                 role="capability_profile",
-                status="draft",
+                status="contract_validated",
                 path=str(record["path"]),
                 description=f"Public workspace profile for {record['task_type']} tasks.",
                 changes="a bounded task type into a least-privilege workspace capability profile",

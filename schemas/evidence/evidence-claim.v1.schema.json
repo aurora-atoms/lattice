@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/evidence/evidence-claim.v1.schema.json",
+  "title": "Evidence Claim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "claim_id",
+    "classification",
+    "claim_kind",
+    "statement",
+    "presentation",
+    "evidence_refs",
+    "evidence_origin",
+    "scope",
+    "method",
+    "judgment_owner",
+    "unknown_reason",
+    "limitations",
+    "approval_authority"
+  ],
+  "properties": {
+    "claim_id": {"type": "string", "minLength": 1},
+    "classification": {
+      "enum": ["OBSERVED", "DERIVED", "JUDGED", "UNKNOWN"]
+    },
+    "claim_kind": {
+      "enum": [
+        "current_delivery",
+        "reusable_asset",
+        "before_state",
+        "after_state",
+        "human_challenge",
+        "limitation",
+        "next_use",
+        "reuse",
+        "team_adoption",
+        "manager_acceptance",
+        "roi",
+        "other"
+      ]
+    },
+    "statement": {"type": "string", "minLength": 1},
+    "presentation": {"enum": ["fact", "qualified", "unknown"]},
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "evidence_origin": {
+      "enum": ["synthetic", "real_sanitized", "real_restricted"]
+    },
+    "scope": {"type": "string", "minLength": 1},
+    "method": {"type": ["string", "null"]},
+    "judgment_owner": {"type": ["string", "null"]},
+    "unknown_reason": {"type": ["string", "null"]},
+    "limitations": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "approval_authority": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "classification": {"enum": ["OBSERVED", "DERIVED", "JUDGED"]}
+        }
+      },
+      "then": {
+        "properties": {"evidence_refs": {"minItems": 1}}
+      }
+    },
+    {
+      "if": {"properties": {"classification": {"const": "DERIVED"}}},
+      "then": {
+        "properties": {"method": {"type": "string", "minLength": 1}}
+      }
+    },
+    {
+      "if": {"properties": {"classification": {"const": "JUDGED"}}},
+      "then": {
+        "properties": {"judgment_owner": {"type": "string", "minLength": 1}}
+      }
+    },
+    {
+      "if": {"properties": {"classification": {"const": "UNKNOWN"}}},
+      "then": {
+        "properties": {
+          "presentation": {"const": "unknown"},
+          "unknown_reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ]
+}

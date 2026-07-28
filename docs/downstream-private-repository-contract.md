@@ -25,7 +25,7 @@ validation_commands:
 compatibility_policy:
 ```
 
-The PR 3 schema will make these fields deterministic. Until then, this document is the normative contract and a manifest is not validator-conformant.
+The machine contract is `schemas/downstream/downstream-consumer-manifest.v1.schema.json`. Start from `templates/private-repository/downstream-consumer-manifest.template.json`; its `REPLACE_...` values intentionally fail until the private owner supplies an immutable pin and local identities.
 
 ## Pinning
 
@@ -122,7 +122,7 @@ pin Lattice
 -> keep all real artifacts private
 ```
 
-The executable validator names reserved for PR 3 are:
+Executable local validators:
 
 ```text
 scripts/validate_downstream_consumer.py
@@ -130,7 +130,7 @@ scripts/validate_delivery_asset_pack.py
 scripts/validate_manager_claims.py
 ```
 
-Their absence in PR 1 is explicit; documentation conformance must not be reported as schema or runtime conformance.
+`validate_downstream_consumer.py` resolves declared capability versions against the pinned checkout's canonical manifest and validates declared extension manifests. It does not traverse `evidence_storage`, call a network service, or write private evidence into Lattice.
 
 ## Asset Pack Location and Shape
 
@@ -144,8 +144,26 @@ manager-ready-delivery-asset-pack/
   contribution-ledger.jsonl
   reusable-assets/<asset-id>/
   reusable-asset-dossier.md
+  manager-brief.json
   manager-brief.md
   validation-report.json
 ```
 
-Public Lattice stores only schemas, templates, validators, and explicitly synthetic examples of this shape.
+`manager-brief.json` is the machine validation boundary; rendered Markdown cannot strengthen claims or hide limitations. Public Lattice stores only schemas, templates, validators, and explicitly synthetic examples of this shape.
+
+## Machine Contract Map
+
+```text
+consumer declaration
+  schemas/downstream/downstream-consumer-manifest.v1.schema.json
+private extension
+  schemas/downstream/private-capability-extension.v1.schema.json
+asset-pack manifest
+  schemas/evidence/delivery-evidence-asset-pack.v1.schema.json
+claim record
+  schemas/evidence/evidence-claim.v1.schema.json
+manager brief
+  schemas/manager/manager-delivery-brief.v1.schema.json
+```
+
+The schemas describe portable shape. The local validators enforce cross-file identity, canonical capability resolution, evidence-reference, adoption-strength, and authority rules that JSON Schema cannot establish alone.

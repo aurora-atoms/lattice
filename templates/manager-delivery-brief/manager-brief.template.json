@@ -1,0 +1,105 @@
+{
+  "contract": "lat.manager-delivery-brief.v1",
+  "contract_version": "1.0.0",
+  "brief_id": "REPLACE_BRIEF_ID",
+  "asset_pack_id": "REPLACE_PACK_ID",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "evidence_origin": "synthetic",
+  "scope": "SYNTHETIC-CASE-ID",
+  "version": "1.0.0",
+  "claims": [
+    {
+      "claim_id": "claim-current-delivery",
+      "classification": "OBSERVED",
+      "claim_kind": "current_delivery",
+      "statement": "Replace with the bounded current delivery.",
+      "presentation": "qualified",
+      "evidence_refs": ["SYNTHETIC-EVIDENCE-1"],
+      "evidence_origin": "synthetic",
+      "scope": "SYNTHETIC-CASE-ID",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": ["Synthetic conformance only."],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "claim-reusable-asset",
+      "classification": "OBSERVED",
+      "claim_kind": "reusable_asset",
+      "statement": "Replace with the reusable asset left behind.",
+      "presentation": "qualified",
+      "evidence_refs": ["SYNTHETIC-EVIDENCE-1"],
+      "evidence_origin": "synthetic",
+      "scope": "SYNTHETIC-CASE-ID",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": ["No real use is established."],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "claim-before",
+      "classification": "OBSERVED",
+      "claim_kind": "before_state",
+      "statement": "Replace with the comparable before state.",
+      "presentation": "qualified",
+      "evidence_refs": ["SYNTHETIC-EVIDENCE-1"],
+      "evidence_origin": "synthetic",
+      "scope": "SYNTHETIC-CASE-ID",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": ["Synthetic baseline."],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "claim-after",
+      "classification": "DERIVED",
+      "claim_kind": "after_state",
+      "statement": "Replace with the comparable after state.",
+      "presentation": "qualified",
+      "evidence_refs": ["SYNTHETIC-EVIDENCE-1"],
+      "evidence_origin": "synthetic",
+      "scope": "SYNTHETIC-CASE-ID",
+      "method": "Compare cited versions of the same scoped object.",
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": ["Synthetic comparison."],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "claim-next-use",
+      "classification": "JUDGED",
+      "claim_kind": "next_use",
+      "statement": "Replace with the next-use entry and required revalidation.",
+      "presentation": "qualified",
+      "evidence_refs": ["SYNTHETIC-EVIDENCE-1"],
+      "evidence_origin": "synthetic",
+      "scope": "SYNTHETIC-CASE-ID",
+      "method": null,
+      "judgment_owner": "synthetic reviewer",
+      "unknown_reason": null,
+      "limitations": ["Requires accountable private review before use."],
+      "approval_authority": null
+    }
+  ],
+  "human_challenge": {
+    "challenge_present": true,
+    "challenger_role": "synthetic reviewer",
+    "challenge_summary": "Replace with the bounded challenge.",
+    "resulting_change_or_open_issue": "Replace with the resulting change or open issue.",
+    "review_ref": "SYNTHETIC-EVIDENCE-1"
+  },
+  "known_limitations": [
+    "This template proves no real use, reuse, team adoption, manager acceptance, or ROI."
+  ],
+  "unresolved_unknowns": [
+    "Real downstream adoption is unknown."
+  ],
+  "next_use_entry": "Replace synthetic inputs with private evidence and revalidate locally.",
+  "manager_decision": null,
+  "human_review_ref": null,
+  "governance_approval_ref": null
+}

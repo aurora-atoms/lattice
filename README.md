@@ -67,19 +67,32 @@ python scripts/validate_capability_routing.py --root .
    git -C vendor/lattice checkout <tag-or-full-commit-sha>
    ```
 
-2. Create a private downstream consumer manifest following [Downstream Private Repository Contract](docs/downstream-private-repository-contract.md). Record the Lattice ref and commit, contract versions, the smallest selected Capability Profile, explicit public capabilities, private extensions, local evidence paths, manager projection, validation commands, and compatibility policy.
+2. Copy the [private repository templates](templates/private-repository/) and create a downstream consumer manifest. Record the immutable Lattice ref and commit, contract versions, the smallest selected Capability Profile, explicit public capabilities, private extensions, local evidence paths, manager projection, validation commands, and compatibility policy.
 
 3. Create one real `feature_delivery_case` in the private repository. Keep real source, Jira, PR, CI, incident, review, secrets, and business context local.
 
 4. Collect a bounded Evidence Pack. Classify claims as `OBSERVED`, `DERIVED`, `JUDGED`, or `UNKNOWN`; attach evidence references and preserve limitations and human challenge.
 
-5. Run the pinned public validators locally against private paths. Validators may read local evidence during the run, but public Lattice must not receive or persist it.
+5. Run the pinned public validators locally against private paths. They perform no network calls or evidence upload:
+
+   ```bash
+   python vendor/lattice/scripts/validate_downstream_consumer.py \
+     downstream-consumer-manifest.json \
+     --lattice-root vendor/lattice \
+     --consumer-root .
+   python vendor/lattice/scripts/validate_delivery_asset_pack.py \
+     private/manager-ready-delivery-asset-pack \
+     --lattice-root vendor/lattice
+   python vendor/lattice/scripts/validate_manager_claims.py \
+     private/manager-ready-delivery-asset-pack/manager-brief.json \
+     --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl
+   ```
 
 6. Generate a **Manager-Ready Delivery Asset Pack** in the private repository. Review it against the Manager Credibility Contract before sharing it.
 
 7. On a Lattice upgrade, rerun schema, capability-version, extension, evidence, asset-pack, manager-claim, and compatibility checks before changing the pin.
 
-PR 1 establishes the normative operating contracts. The downstream schemas and validator CLIs are intentionally reserved for PR 3, and the executable synthetic downstream example for PR 4. Until those land, downstream manifests and packs are contract drafts and must not be represented as validator-conformant.
+PR 3 provides the downstream schemas, templates, and validator CLIs. The complete generated synthetic downstream example, golden comparison, and heterogeneous full runner remain PR 4 scope; PR 3 template validation must not be represented as real adoption or end-to-end conformance.
 
 ## Public Package and Private Adoption Lifecycles
 
@@ -136,6 +149,6 @@ docs/                           operating, governance, and migration contracts
 
 ## Release and Compatibility
 
-Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), and the [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md).
+Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md), and [PR 3 Downstream Contract Note](docs/migrations/downstream-contracts-pr3.md).
 
 No registry score, green CI run, synthetic fixture, Skill count, PR count, or token count proves private business value. Human owners retain authority over private evidence, architecture, security, compliance, asset promotion, manager wording, merge, release, deployment, and production decisions.
