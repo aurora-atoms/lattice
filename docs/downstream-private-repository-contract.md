@@ -11,6 +11,7 @@ The downstream repository must keep a machine-readable consumer manifest with at
 ```yaml
 consumer_id:
 consumer_repository:
+simulation_status:
 lattice_source:
   repository:
   ref:
@@ -38,7 +39,7 @@ The machine contract is `schemas/downstream/downstream-consumer-manifest.v1.sche
 
 The private repository records the pin; public Lattice does not fetch the private repository or its evidence.
 
-The local consumer validator confirms that the pinned Lattice checkout is at `commit_sha`; for a tag pin, it also confirms that the local tag resolves to the same commit. This uses local Git metadata only and performs no fetch.
+The local consumer and asset-pack validators confirm that the pinned Lattice checkout is at `commit_sha`; for a tag pin, they also confirm that the local tag resolves to the same commit. This uses local Git metadata only and performs no fetch. The exact `v0.0.0-synthetic` plus all-zero SHA pair is reserved as the public fixture sentinel; every other synthetic or real pin is resolved.
 
 ## Capability Profile Selection
 
@@ -64,12 +65,13 @@ extension_version
 private_namespace
 relationship = extends | overrides | composes
 public_capability_id
-public_capability_version
 scope
 required_permissions
 authority_boundary
 compatibility
 ```
+
+`public_capability_id` includes the exact semantic version. `compatibility.public_version_range` records the extension's compatible public family range.
 
 Rules:
 
@@ -100,7 +102,7 @@ Rollback restores the prior immutable pin and its compatible private artifacts. 
 
 ## Local Evidence and Secret Boundary
 
-`evidence_storage` resolves only inside the private repository or its approved private evidence service. It must not point to a public Lattice writeback path.
+`evidence_storage` resolves only inside the private repository or its approved private evidence service. It must not point to a public Lattice writeback path. `simulation_status=synthetic_reference` requires synthetic evidence classification; `real_downstream` requires `real_sanitized` or `real_restricted`.
 
 Private storage may contain real source, tickets, PRs, CI output, incidents, review comments, human feedback, asset candidates, usage observations, and manager packs. Secrets should be referenced through approved secret management, never embedded in manifests, evidence ledgers, generated packs, logs, or public fixtures.
 
@@ -151,7 +153,7 @@ manager-ready-delivery-asset-pack/
   validation-report.json
 ```
 
-`manager-brief.json` is the machine validation boundary; rendered Markdown cannot strengthen claims or hide limitations. Public Lattice stores only schemas, templates, validators, and explicitly synthetic examples of this shape.
+`manager-brief.json` is the machine validation boundary. The local validator requires `manager-brief.md` to match the canonical projection byte-for-byte, so rendered Markdown cannot strengthen claims or hide limitations. Public Lattice stores only schemas, templates, validators, and explicitly synthetic examples of this shape.
 
 ## Machine Contract Map
 
@@ -162,6 +164,8 @@ private extension
   schemas/downstream/private-capability-extension.v1.schema.json
 asset-pack manifest
   schemas/evidence/delivery-evidence-asset-pack.v1.schema.json
+asset-pack validation report
+  schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json
 claim record
   schemas/evidence/evidence-claim.v1.schema.json
 manager brief

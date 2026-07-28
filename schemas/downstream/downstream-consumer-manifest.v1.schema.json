@@ -132,6 +132,36 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_storage": {
+            "properties": {"classification": {"const": "synthetic"}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "real_downstream"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_storage": {
+            "properties": {
+              "classification": {
+                "enum": ["real_sanitized", "real_restricted"]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "relative_path": {
       "type": "string",

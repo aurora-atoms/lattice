@@ -85,14 +85,15 @@ python scripts/validate_capability_routing.py --root .
      --lattice-root vendor/lattice
    python vendor/lattice/scripts/validate_manager_claims.py \
      private/manager-ready-delivery-asset-pack/manager-brief.json \
-     --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl
+     --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl \
+     --rendered-brief private/manager-ready-delivery-asset-pack/manager-brief.md
    ```
 
 6. Generate a **Manager-Ready Delivery Asset Pack** in the private repository. Review it against the Manager Credibility Contract before sharing it.
 
 7. On a Lattice upgrade, rerun schema, capability-version, extension, evidence, asset-pack, manager-claim, and compatibility checks before changing the pin.
 
-PR 3 provides the downstream schemas, templates, and validator CLIs. PR 4 adds the [generated synthetic downstream consumer](examples/synthetic-private-consumer/), golden asset-pack comparison, and complete heterogeneous runner. These establish public conformance only and must not be represented as real adoption or business value.
+PR 3 provides the downstream schemas, templates, and validator CLIs. PR 4 adds the [generated synthetic downstream consumer](examples/synthetic-private-consumer/), golden asset-pack comparison, and complete heterogeneous runner. The [PR 31 review hardening](docs/migrations/pr31-review-hardening.md) closes cross-file, rendered-wording, report, pin, and empty-suite gaps found during pre-merge review. These establish public conformance only and must not be represented as real adoption or business value.
 
 Run the complete public conformance suite:
 

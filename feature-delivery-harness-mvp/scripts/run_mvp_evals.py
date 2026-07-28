@@ -6,11 +6,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 EVAL_DIR = BASE_DIR / "evals"
@@ -22,10 +22,27 @@ SUPPORTED_CASE_TYPES = {
     "reusable_asset_loop",
     "synthetic_downstream",
 }
+CASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_]*$")
+CASE_TIMEOUT_SECONDS = 120
+CASE_TYPE_REQUIRED_FILES = {
+    "feature_delivery": {"input.jsonl", "expected.json"},
+    "reusable_asset_loop": {
+        "input.jsonl",
+        "expected_dossier.md",
+    },
+    "synthetic_downstream": {"example.json"},
+}
 
 
 def run(command: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, cwd=BASE_DIR.parent, text=True, capture_output=True)
+    return subprocess.run(
+        command,
+        cwd=BASE_DIR.parent,
+        text=True,
+        capture_output=True,
+        timeout=CASE_TIMEOUT_SECONDS,
+        check=False,
+    )
 
 
 def collect_codes(text: str) -> set[str]:
@@ -318,6 +335,8 @@ def load_case_manifest(case_dir: Path) -> dict[str, object]:
         )
     if manifest["case_id"] != case_dir.name:
         raise ValueError("case_id must match the case directory name")
+    if not CASE_ID_RE.fullmatch(str(manifest["case_id"])):
+        raise ValueError("case_id must use lowercase letters, digits, and underscores")
     case_type = str(manifest["case_type"])
     if case_type not in SUPPORTED_CASE_TYPES:
         raise ValueError(f"unknown case_type: {case_type}")
@@ -328,6 +347,16 @@ def load_case_manifest(case_dir: Path) -> dict[str, object]:
         or any(not isinstance(item, str) or not item for item in required_files)
     ):
         raise ValueError("required_files must be a non-empty string array")
+    if len(set(required_files)) != len(required_files):
+        raise ValueError("required_files must not contain duplicates")
+    missing_declarations = sorted(
+        CASE_TYPE_REQUIRED_FILES[case_type] - set(required_files)
+    )
+    if missing_declarations:
+        raise ValueError(
+            f"{case_type} required_files missing declarations: "
+            + ", ".join(missing_declarations)
+        )
     for relative in required_files:
         path = Path(relative)
         if path.is_absolute() or ".." in path.parts:
@@ -404,7 +433,13 @@ def dispatch_case(case_dir: Path) -> tuple[bool, str, str]:
             ok, note = run_synthetic_downstream_case(case_dir)
         else:
             return False, f"unknown case_type: {case_type}", case_type
-    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        json.JSONDecodeError,
+        subprocess.TimeoutExpired,
+    ) as exc:
         return False, f"{case_type} handler failed: {exc}", case_type
     return ok, note, case_type
 
@@ -424,12 +459,32 @@ def main() -> int:
     )
     args = parser.parse_args()
     eval_dir = Path(args.eval_dir)
-    cases = (
-        [eval_dir / args.case]
-        if args.case
-        else sorted(path for path in eval_dir.iterdir() if path.is_dir())
-    )
     results: list[dict[str, object]] = []
+    if not eval_dir.is_dir():
+        cases: list[Path] = []
+        results.append(
+            {
+                "case_id": "eval_directory",
+                "case_type": "unknown",
+                "status": "fail",
+                "note": f"eval directory does not exist: {eval_dir}",
+            }
+        )
+    else:
+        cases = (
+            [eval_dir / args.case]
+            if args.case
+            else sorted(path for path in eval_dir.iterdir() if path.is_dir())
+        )
+        if not cases:
+            results.append(
+                {
+                    "case_id": "eval_directory",
+                    "case_type": "unknown",
+                    "status": "fail",
+                    "note": f"eval directory contains no case directories: {eval_dir}",
+                }
+            )
     for case in cases:
         if not case.is_dir():
             ok, note, case_type = False, "case directory does not exist", "unknown"

@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import shutil
 import subprocess
@@ -18,6 +17,13 @@ GENERATED_AT = "2026-07-28T00:15:00Z"
 PACK_ID = "SYNTHETIC-PACK-001"
 CASE_ID = "synthetic_fdc_dangling_ref_001"
 ASSET_ID = "dangling-evidence-ref-guard"
+REQUIRED_NEGATIVE_CASES = {
+    "dangling-evidence-ref",
+    "synthetic-maturity-violation",
+    "team-wide-overclaim",
+    "unreviewed-promotion",
+    "unsupported-private-extension",
+}
 
 
 def add_script_path(lattice_root: Path) -> None:
@@ -129,54 +135,17 @@ Run the guard against one bounded private asset pack, keep evidence local, and o
 """
 
 
-def render_manager_brief(brief: dict[str, Any]) -> str:
-    claims = {claim["claim_kind"]: claim for claim in brief["claims"]}
-    return f"""# Manager-Ready Delivery Brief
-
-> Synthetic conformance example. This is not a real manager deliverable and proves no private adoption or business value.
-
-## Current Delivery
-
-{claims['current_delivery']['classification']}: {claims['current_delivery']['statement']} Evidence: `EV-VALIDATOR`.
-
-## Reusable Asset Left Behind
-
-{claims['reusable_asset']['classification']}: {claims['reusable_asset']['statement']} Version `1.0.0`; activation `never_by_default`; adoption `not_observed`.
-
-## Observable State Change
-
-- Before — {claims['before_state']['classification']}: {claims['before_state']['statement']}
-- After — {claims['after_state']['classification']}: {claims['after_state']['statement']}
-
-## Human Challenge
-
-Synthetic review only: {brief['human_challenge']['challenge_summary']} {brief['human_challenge']['resulting_change_or_open_issue']}
-
-## Evidence Boundary
-
-Evidence origin: `synthetic`. Real use, reuse, team availability, manager acceptance, ROI, and business value remain `UNKNOWN`.
-
-## Known Limitations
-
-{chr(10).join(f"- {item}" for item in brief['known_limitations'])}
-
-## Next-Use Path
-
-{brief['next_use_entry']}
-
-## Narrow Manager Decision
-
-{brief['manager_decision']}
-
-This brief may not be presented as evidence that a manager accepted the asset, a team adopted it, or a real delivery outcome improved.
-"""
-
-
-def build_pack(example_root: Path, output_root: Path) -> None:
+def build_pack(
+    example_root: Path, output_root: Path, *, allow_replace: bool = False
+) -> None:
     inputs = example_root / "inputs"
     if output_root.exists():
         if output_root == output_root.parent or len(output_root.parts) < 3:
             raise ValueError(f"refusing unsafe output replacement: {output_root}")
+        if not allow_replace:
+            raise ValueError(
+                f"output already exists: {output_root}; rerun with --force to replace it"
+            )
         shutil.rmtree(output_root)
     output_root.mkdir(parents=True)
     for name in (
@@ -194,8 +163,10 @@ def build_pack(example_root: Path, output_root: Path) -> None:
         render_dossier(), encoding="utf-8"
     )
     brief = load_json(inputs / "manager-brief.json")
+    from validate_manager_claims import render_manager_brief_markdown
+
     (output_root / "manager-brief.md").write_text(
-        render_manager_brief(brief), encoding="utf-8"
+        render_manager_brief_markdown(brief), encoding="utf-8"
     )
     manifest = {
         "contract": "lat.delivery-evidence-asset-pack.v1",
@@ -221,6 +192,7 @@ def build_pack(example_root: Path, output_root: Path) -> None:
             "contribution_ledger": "contribution-ledger.jsonl",
             "reusable_asset_dossier": "reusable-asset-dossier.md",
             "manager_brief": "manager-brief.json",
+            "manager_brief_rendered": "manager-brief.md",
             "validation_report": "validation-report.json",
         },
         "reusable_assets": [
@@ -263,7 +235,9 @@ def run_negative_cases(
     failures: list[str] = []
     passed: list[str] = []
     capabilities = canonical_capabilities(lattice_root)
-    for path in sorted((example_root / "negative-cases").glob("*.json")):
+    paths = sorted((example_root / "negative-cases").glob("*.json"))
+    discovered_ids: set[str] = set()
+    for path in paths:
         case = load_json(path)
         required = {
             "contract",
@@ -276,6 +250,11 @@ def run_negative_cases(
         if set(case) != required or case["contract"] != "lat.synthetic-negative-case.v1":
             failures.append(f"{path.name}: invalid negative-case contract")
             continue
+        case_id = str(case["case_id"])
+        if case_id in discovered_ids:
+            failures.append(f"{path.name}: duplicate negative case ID {case_id}")
+            continue
+        discovered_ids.add(case_id)
         target_name = case["target"]
         if target_name == "manager_brief":
             value = load_json(example_root / "inputs" / "manager-brief.json")
@@ -307,6 +286,11 @@ def run_negative_cases(
             )
         else:
             passed.append(str(case["case_id"]))
+    missing_cases = sorted(REQUIRED_NEGATIVE_CASES - discovered_ids)
+    if missing_cases:
+        failures.append(
+            "missing required negative cases: " + ", ".join(missing_cases)
+        )
     return failures, passed
 
 
@@ -336,7 +320,11 @@ def tree_differences(expected: Path, actual: Path) -> list[str]:
 
 
 def validate_all(
-    example_root: Path, lattice_root: Path, output_root: Path
+    example_root: Path,
+    lattice_root: Path,
+    output_root: Path,
+    *,
+    allow_replace: bool = False,
 ) -> tuple[list[str], list[str]]:
     add_script_path(lattice_root)
     from validate_delivery_asset_pack import validate_asset_pack
@@ -373,6 +361,7 @@ def validate_all(
         cwd=lattice_root,
         capture_output=True,
         text=True,
+        check=False,
     )
     if feature_result.returncode:
         errors.append("feature_delivery_case: " + feature_result.stderr.strip())
@@ -383,9 +372,11 @@ def validate_all(
         errors.extend(f"reusable_asset: {item}" for item in source_errors)
     else:
         checks.extend(["asset_candidate", "synthetic_review"])
-    build_pack(example_root, output_root)
+    build_pack(example_root, output_root, allow_replace=allow_replace)
     evidence = load_jsonl(output_root / "evidence-ledger.jsonl")
-    pack_errors, manifest = validate_asset_pack(output_root, lattice_root)
+    pack_errors, manifest = validate_asset_pack(
+        output_root, lattice_root, allow_missing_validation_report=True
+    )
     if pack_errors:
         errors.extend(f"asset_pack: {item}" for item in pack_errors)
     else:
@@ -410,19 +401,32 @@ def validate_all(
     }
     write_json(output_root / "validation-report.json", report)
     final_errors, _ = validate_asset_pack(output_root, lattice_root)
-    errors.extend(f"final_asset_pack: {item}" for item in final_errors)
+    if final_errors:
+        errors.extend(f"final_asset_pack: {item}" for item in final_errors)
+        report["status"] = "fail"
+        report["errors"] = errors
+        write_json(output_root / "validation-report.json", report)
     return errors, checks
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=str(Path(__file__).resolve().parent))
-    parser.add_argument("--lattice-root", default="../..")
+    parser.add_argument("--lattice-root")
     parser.add_argument("--out")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace an existing explicit or default generated output directory.",
+    )
     args = parser.parse_args()
     example_root = Path(args.root).resolve()
-    lattice_root = Path(args.lattice_root).resolve()
+    lattice_root = (
+        Path(args.lattice_root).resolve()
+        if args.lattice_root
+        else Path(__file__).resolve().parents[2]
+    )
     golden = example_root / "golden" / "manager-ready-delivery-asset-pack"
     temp: tempfile.TemporaryDirectory[str] | None = None
     if args.check:
@@ -435,7 +439,12 @@ def main() -> int:
             else example_root / "generated" / "manager-ready-delivery-asset-pack"
         )
     try:
-        errors, checks = validate_all(example_root, lattice_root, output_root)
+        errors, checks = validate_all(
+            example_root,
+            lattice_root,
+            output_root,
+            allow_replace=args.force,
+        )
         if args.check:
             if not golden.is_dir():
                 errors.append("golden asset pack is missing")

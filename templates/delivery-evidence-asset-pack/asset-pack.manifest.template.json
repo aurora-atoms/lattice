@@ -21,6 +21,7 @@
     "contribution_ledger": "contribution-ledger.jsonl",
     "reusable_asset_dossier": "reusable-asset-dossier.md",
     "manager_brief": "manager-brief.json",
+    "manager_brief_rendered": "manager-brief.md",
     "validation_report": "validation-report.json"
   },
   "reusable_assets": [

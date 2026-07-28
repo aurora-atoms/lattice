@@ -22,7 +22,7 @@ The public synthetic example at `examples/synthetic-private-consumer/` demonstra
 12. Record a real usage observation only after the bounded task completes with addressable evidence.
 13. Generate the Manager-Ready Delivery Asset Pack under a private path.
 14. Run the pinned consumer, Feature Delivery Case, asset-pack, evidence, and manager-claim validators locally.
-15. Review rendered manager wording against the structured claims, limitations, unknowns, and evidence origin.
+15. Generate the canonical Markdown projection and validate it byte-for-byte against the structured claims, limitations, unknowns, and evidence origin.
 16. Store the pack, validation report, and review only in the private repository.
 17. On a later task, append the new usage observation and evolve the existing asset; do not rewrite prior evidence.
 
@@ -43,7 +43,8 @@ python vendor/lattice/scripts/validate_delivery_asset_pack.py \
 
 python vendor/lattice/scripts/validate_manager_claims.py \
   private/manager-ready-delivery-asset-pack/manager-brief.json \
-  --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl
+  --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl \
+  --rendered-brief private/manager-ready-delivery-asset-pack/manager-brief.md
 ```
 
 All commands are local. Review validator output before sharing the rendered brief.

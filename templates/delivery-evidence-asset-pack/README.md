@@ -14,4 +14,4 @@ manager-brief.md
 validation-report.json
 ```
 
-The structured `manager-brief.json` is the validation boundary. Rendered Markdown must not strengthen or omit its claims, limitations, unknowns, evidence origin, or review status.
+The structured `manager-brief.json` is the validation boundary. Generate `manager-brief.md` with the canonical renderer in `scripts/validate_manager_claims.py`; validation rejects any byte-level divergence so Markdown cannot add claims or omit limitations, unknowns, evidence origin, or review status.

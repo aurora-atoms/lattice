@@ -105,6 +105,18 @@
     },
     {
       "if": {
+        "properties": {"simulation_status": {"const": "real_downstream"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_origin": {
+            "enum": ["real_sanitized", "real_restricted"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
         "properties": {"downstream_adoption_status": {"const": "team_available"}}
       },
       "then": {

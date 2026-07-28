@@ -79,6 +79,7 @@ def validate_consumer(
         "real_downstream",
     }:
         errors.append("consumer manifest: invalid simulation_status")
+    simulation = manifest["simulation_status"]
     source = manifest["lattice_source"]
     errors.extend(
         exact_fields(source, {"repository", "ref", "commit_sha"}, "lattice_source")
@@ -94,11 +95,12 @@ def validate_consumer(
             errors.append("lattice_source: SHA ref and commit_sha must match")
         if not nonempty_string(source.get("repository")):
             errors.append("lattice_source: repository must be non-empty")
-        if (
-            verify_checkout_pin
-            and manifest["simulation_status"] == "real_downstream"
-            and SHA_RE.fullmatch(sha)
-        ):
+        synthetic_sentinel = (
+            simulation == "synthetic_reference"
+            and ref == "v0.0.0-synthetic"
+            and sha == "0" * 40
+        )
+        if verify_checkout_pin and not synthetic_sentinel and SHA_RE.fullmatch(sha):
             try:
                 checkout_sha = subprocess.run(
                     ["git", "-C", str(lattice_root), "rev-parse", "HEAD"],
@@ -143,6 +145,7 @@ def validate_consumer(
         "lat.canonical-capability-manifest.v1": "1.0.0",
         "lat.downstream-adoption-lifecycle.v1": "1.0.0",
         "lat.downstream-consumer-manifest.v1": "1.0.0",
+        "lat.delivery-asset-pack-validation-report.v1": "1.0.0",
         "lat.delivery-evidence-asset-pack.v1": "1.0.0",
         "lat.evidence-claim.v1": "1.0.0",
         "lat.manager-delivery-brief.v1": "1.0.0",
@@ -222,6 +225,10 @@ def validate_consumer(
         extension = load_json(path)
         if extension.get("extension_id") != reference["extension_id"]:
             errors.append(f"{label}: extension_id does not match the extension manifest")
+        if extension.get("simulation_status") != simulation:
+            errors.append(
+                f"{label}: extension simulation_status differs from the consumer"
+            )
         errors.extend(
             f"{label}: {error}"
             for error in validate_extension(
@@ -245,8 +252,28 @@ def validate_consumer(
             "real_restricted",
         }:
             errors.append("evidence_storage: invalid classification")
+        elif simulation == "synthetic_reference" and evidence.get(
+            "classification"
+        ) != "synthetic":
+            errors.append(
+                "evidence_storage: synthetic consumer must use synthetic classification"
+            )
+        elif simulation == "real_downstream" and evidence.get(
+            "classification"
+        ) == "synthetic":
+            errors.append(
+                "evidence_storage: real downstream consumer cannot use synthetic classification"
+            )
         if evidence.get("public_upload_prohibited") is not True:
             errors.append("evidence_storage: public upload must be prohibited")
+        evidence_root = (consumer_root / str(evidence.get("root", ""))).resolve()
+        lattice_checkout = lattice_root.resolve()
+        if simulation == "real_downstream" and (
+            evidence_root == lattice_checkout or lattice_checkout in evidence_root.parents
+        ):
+            errors.append(
+                "evidence_storage: root cannot be inside the public Lattice checkout"
+            )
     projection = manifest["manager_projection"]
     errors.extend(
         exact_fields(
@@ -259,10 +286,47 @@ def validate_consumer(
         for field in ("asset_pack_root", "brief_path"):
             if not safe_relative_path(projection.get(field)):
                 errors.append(f"manager_projection: {field} must be a safe relative path")
+        asset_pack_root = Path(str(projection.get("asset_pack_root", "")))
+        brief_path = Path(str(projection.get("brief_path", "")))
+        if (
+            safe_relative_path(projection.get("asset_pack_root"))
+            and safe_relative_path(projection.get("brief_path"))
+            and (
+                brief_path == asset_pack_root
+                or asset_pack_root not in brief_path.parents
+            )
+        ):
+            errors.append(
+                "manager_projection: brief_path must be inside asset_pack_root"
+            )
+        resolved_pack_root = (consumer_root / asset_pack_root).resolve()
+        lattice_checkout = lattice_root.resolve()
+        if simulation == "real_downstream" and (
+            resolved_pack_root == lattice_checkout
+            or lattice_checkout in resolved_pack_root.parents
+        ):
+            errors.append(
+                "manager_projection: asset_pack_root cannot be inside the public Lattice checkout"
+            )
         if projection.get("human_review_required") is not True:
             errors.append("manager_projection: human review must be required")
     if not string_array(manifest["validation_commands"], minimum=3):
         errors.append("validation_commands must contain at least three local commands")
+    else:
+        required_validators = {
+            "validate_downstream_consumer.py",
+            "validate_delivery_asset_pack.py",
+            "validate_manager_claims.py",
+        }
+        declared_commands = "\n".join(manifest["validation_commands"])
+        missing_validators = sorted(
+            name for name in required_validators if name not in declared_commands
+        )
+        if missing_validators:
+            errors.append(
+                "validation_commands missing required local validators: "
+                + ", ".join(missing_validators)
+            )
     policy = manifest["compatibility_policy"]
     errors.extend(
         exact_fields(

@@ -16,9 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Install schema validator
+        run: python -m pip install jsonschema==4.25.1
       - name: Validate canonical dependency source
         run: |
           python scripts/generate_capability_registry_projections.py --root . --check
@@ -30,6 +34,7 @@ jobs:
           python -m json.tool schemas/downstream/private-capability-extension.v1.schema.json >/dev/null
           python -m json.tool schemas/evidence/evidence-claim.v1.schema.json >/dev/null
           python -m json.tool schemas/evidence/delivery-evidence-asset-pack.v1.schema.json >/dev/null
+          python -m json.tool schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json >/dev/null
           python -m json.tool schemas/manager/manager-delivery-brief.v1.schema.json >/dev/null
           python -m json.tool feature-delivery-harness-mvp/schemas/evals/eval-case.v1.schema.json >/dev/null
           python -m json.tool feature-delivery-harness-mvp/schemas/evals/conformance-summary.v1.schema.json >/dev/null
@@ -37,6 +42,8 @@ jobs:
         run: |
           find feature-delivery-harness-mvp/evals -name case.json -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
+      - name: Validate schemas against committed contract instances
+        run: python scripts/validate_downstream_schema_instances.py --root .
       - name: Validate public template syntax
         run: |
           python -m json.tool templates/private-repository/downstream-consumer-manifest.template.json >/dev/null
@@ -60,7 +67,14 @@ jobs:
       - name: Compile local validators
         run: |
           python -m compileall -q scripts tests feature-delivery-harness-mvp/scripts examples/synthetic-private-consumer
-          git diff --check
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}" HEAD
+          elif [ -n "${{ github.event.before }}" ] &&
+               [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            git diff --check "${{ github.event.before }}" HEAD
+          else
+            git diff --check "$(git rev-list --max-parents=0 HEAD)" HEAD
+          fi
       - name: Upload conformance evidence
         if: always()
         uses: actions/upload-artifact@v4

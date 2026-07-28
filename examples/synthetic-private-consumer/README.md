@@ -20,6 +20,8 @@ python examples/synthetic-private-consumer/run_conformance.py \
   --out /tmp/manager-ready-delivery-asset-pack
 ```
 
-The fixed `v0.0.0-synthetic` and all-zero commit are deterministic fixture sentinels. The real downstream validator bypasses local Git resolution only when `simulation_status=synthetic_reference`; real consumers must match their local pinned checkout.
+The fixed `v0.0.0-synthetic` and all-zero commit are deterministic fixture sentinels. Local Git resolution is bypassed only for that exact sentinel pair on a `synthetic_reference`; every other synthetic or real pin must match the local pinned checkout.
+
+Generation refuses to replace an existing output directory unless `--force` is explicit.
 
 The example proves contract shape, local generation, validator dispatch, negative rejection, and golden stability. It does not prove real use, reuse, team adoption, manager acceptance, ROI, business value, or approval.

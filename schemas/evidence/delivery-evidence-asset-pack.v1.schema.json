@@ -77,6 +77,7 @@
         "contribution_ledger",
         "reusable_asset_dossier",
         "manager_brief",
+        "manager_brief_rendered",
         "validation_report"
       ],
       "properties": {
@@ -85,6 +86,7 @@
         "contribution_ledger": {"$ref": "#/$defs/relative_path"},
         "reusable_asset_dossier": {"$ref": "#/$defs/relative_path"},
         "manager_brief": {"$ref": "#/$defs/relative_path"},
+        "manager_brief_rendered": {"$ref": "#/$defs/relative_path"},
         "validation_report": {"$ref": "#/$defs/relative_path"}
       }
     },
@@ -126,6 +128,18 @@
         "properties": {
           "downstream_adoption_status": {"const": "not_observed"},
           "evidence_origin": {"const": "synthetic"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "real_downstream"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_origin": {
+            "enum": ["real_sanitized", "real_restricted"]
+          }
         }
       }
     }

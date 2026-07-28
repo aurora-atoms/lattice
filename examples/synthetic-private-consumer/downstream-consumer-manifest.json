@@ -17,6 +17,7 @@
     "lat.downstream-adoption-lifecycle.v1": "1.0.0",
     "lat.downstream-consumer-manifest.v1": "1.0.0",
     "lat.private-capability-extension.v1": "1.0.0",
+    "lat.delivery-asset-pack-validation-report.v1": "1.0.0",
     "lat.delivery-evidence-asset-pack.v1": "1.0.0",
     "lat.evidence-claim.v1": "1.0.0",
     "lat.manager-delivery-brief.v1": "1.0.0"
@@ -55,8 +56,9 @@
   },
   "validation_commands": [
     "python run_conformance.py --check",
+    "python ../../scripts/validate_downstream_consumer.py downstream-consumer-manifest.json --lattice-root ../.. --consumer-root .",
     "python ../../scripts/validate_delivery_asset_pack.py manager-ready-delivery-asset-pack --lattice-root ../..",
-    "python ../../scripts/validate_manager_claims.py manager-ready-delivery-asset-pack/manager-brief.json --evidence-ledger manager-ready-delivery-asset-pack/evidence-ledger.jsonl"
+    "python ../../scripts/validate_manager_claims.py manager-ready-delivery-asset-pack/manager-brief.json --evidence-ledger manager-ready-delivery-asset-pack/evidence-ledger.jsonl --rendered-brief manager-ready-delivery-asset-pack/manager-brief.md"
   ],
   "compatibility_policy": {
     "missing_capability": "fail",

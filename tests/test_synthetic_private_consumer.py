@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -26,6 +28,7 @@ class SyntheticPrivateConsumerTests(unittest.TestCase):
             cwd=ROOT,
             capture_output=True,
             text=True,
+            check=False,
         )
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertIn("golden Manager-Ready Delivery Asset Pack matches", result.stdout)
@@ -62,6 +65,54 @@ class SyntheticPrivateConsumerTests(unittest.TestCase):
         }
         for kind in ("reuse", "team_adoption", "manager_acceptance", "roi"):
             self.assertEqual("UNKNOWN", classifications[kind])
+
+    def test_missing_required_negative_case_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            copied = Path(temp) / "synthetic-private-consumer"
+            shutil.copytree(EXAMPLE, copied)
+            (copied / "negative-cases" / "dangling-evidence-ref.json").unlink()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(copied / "run_conformance.py"),
+                    "--root",
+                    str(copied),
+                    "--lattice-root",
+                    str(ROOT),
+                    "--check",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(1, result.returncode)
+            self.assertIn("missing required negative cases", result.stderr)
+
+    def test_existing_output_requires_force(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / "asset-pack"
+            output.mkdir()
+            (output / "keep.txt").write_text("do not replace\n", encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXAMPLE / "run_conformance.py"),
+                    "--root",
+                    str(EXAMPLE),
+                    "--lattice-root",
+                    str(ROOT),
+                    "--out",
+                    str(output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(2, result.returncode)
+            self.assertIn("rerun with --force", result.stderr)
+            self.assertTrue((output / "keep.txt").is_file())
 
 
 if __name__ == "__main__":

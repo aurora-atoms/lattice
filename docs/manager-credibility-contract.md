@@ -19,7 +19,7 @@ Every `OBSERVED`, `DERIVED`, or `JUDGED` claim has at least one resolvable `evid
 
 ## Required Brief Content
 
-A manager-ready brief states:
+A manager-ready brief, together with its enclosing asset-pack and reusable-asset manifests, states:
 
 - current delivery and user-usable outcome;
 - reusable asset created or changed;
@@ -124,10 +124,11 @@ Structured claims use `schemas/evidence/evidence-claim.v1.schema.json`; the comp
 ```bash
 python vendor/lattice/scripts/validate_manager_claims.py \
   manager-brief.json \
-  --evidence-ledger evidence-ledger.jsonl
+  --evidence-ledger evidence-ledger.jsonl \
+  --rendered-brief manager-brief.md
 ```
 
-The validator reads only the supplied local files. It emits rule failures, not evidence content, and performs no network calls.
+The validator reads only the supplied local files. When `--rendered-brief` is supplied, it requires the Markdown to match the canonical structured projection exactly, preventing extra claims or omitted limitations. It emits rule failures, not evidence content, and performs no network calls.
 
 ## Deterministic Rejection Conditions
 
@@ -135,11 +136,14 @@ The validator rejects:
 
 - `OBSERVED`, `DERIVED`, or `JUDGED` claims with missing or dangling evidence refs;
 - an `UNKNOWN` rewritten as fact;
+- affirmative reuse, team, manager-acceptance, or ROI wording hidden under another claim kind;
+- rendered Markdown that diverges from the structured brief;
 - hidden known limitations;
 - synthetic `used_once`, `reused`, or `team_available`;
 - one use described as reuse;
 - one case described as team-wide;
 - activation without the required human review;
 - `team_available` without separate governance approval;
+- a team-level manager decision without `team_available` and governance approval;
 - DeliveryYield used as an approval authority;
 - exact ROI or success claims unsupported by private evidence and a declared method.

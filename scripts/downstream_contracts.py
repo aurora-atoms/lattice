@@ -46,6 +46,19 @@ CLAIM_KINDS = {
     "roi",
     "other",
 }
+UNKNOWN_STATEMENT_MARKERS = (
+    "unknown",
+    "not established",
+    "not observed",
+    "not available",
+    "not proven",
+    "unproven",
+    "no evidence",
+    "insufficient evidence",
+    "cannot be established",
+    "cannot be determined",
+    "remains uncertain",
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -252,6 +265,8 @@ def validate_claim(claim: dict[str, Any], evidence_ids: set[str]) -> list[str]:
     if not isinstance(refs, list) or any(not nonempty_string(ref) for ref in refs):
         errors.append(f"{label}: evidence_refs must be a string array")
         refs = []
+    elif len(set(map(str, refs))) != len(refs):
+        errors.append(f"{label}: evidence_refs must not contain duplicates")
     if classification in {"OBSERVED", "DERIVED", "JUDGED"} and not refs:
         errors.append(f"{label}: {classification} requires evidence_refs")
     dangling = sorted(set(map(str, refs)) - evidence_ids)
@@ -266,6 +281,14 @@ def validate_claim(claim: dict[str, Any], evidence_ids: set[str]) -> list[str]:
             errors.append(f"{label}: UNKNOWN cannot be presented as fact")
         if not nonempty_string(claim["unknown_reason"]):
             errors.append(f"{label}: UNKNOWN requires unknown_reason")
+        statement = str(claim["statement"]).lower()
+        if not (
+            statement.strip().startswith("no ")
+            or any(marker in statement for marker in UNKNOWN_STATEMENT_MARKERS)
+        ):
+            errors.append(
+                f"{label}: UNKNOWN statement must visibly communicate uncertainty"
+            )
     if claim["presentation"] not in {"fact", "qualified", "unknown"}:
         errors.append(f"{label}: invalid presentation")
     if claim["evidence_origin"] not in EVIDENCE_ORIGINS:

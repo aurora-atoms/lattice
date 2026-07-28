@@ -38,6 +38,7 @@ def consumer() -> dict:
             "lat.canonical-capability-manifest.v1": "1.0.0",
             "lat.downstream-adoption-lifecycle.v1": "1.0.0",
             "lat.downstream-consumer-manifest.v1": "1.0.0",
+            "lat.delivery-asset-pack-validation-report.v1": "1.0.0",
             "lat.delivery-evidence-asset-pack.v1": "1.0.0",
             "lat.evidence-claim.v1": "1.0.0",
             "lat.manager-delivery-brief.v1": "1.0.0",
@@ -177,6 +178,45 @@ class DownstreamConsumerTests(unittest.TestCase):
             )
             self.assertEqual([], errors)
 
+    def test_only_explicit_synthetic_sentinel_skips_checkout_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            value["simulation_status"] = "synthetic_reference"
+            value["evidence_storage"]["classification"] = "synthetic"
+            value["lattice_source"]["ref"] = "v0.0.0-synthetic"
+            value["lattice_source"]["commit_sha"] = "0" * 40
+            errors = MODULE.validate_consumer(
+                value,
+                ROOT,
+                Path(temp),
+                validate_extension_files=False,
+                verify_checkout_pin=True,
+            )
+            self.assertEqual([], errors)
+
+            value["lattice_source"]["ref"] = "v1.0.0"
+            value["lattice_source"]["commit_sha"] = SHA
+            errors = MODULE.validate_consumer(
+                value,
+                ROOT,
+                Path(temp),
+                validate_extension_files=False,
+                verify_checkout_pin=True,
+            )
+            self.assertTrue(any("does not match the local" in item for item in errors))
+
+    def test_simulation_and_evidence_classification_must_agree(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            value["simulation_status"] = "synthetic_reference"
+            errors = self.validate(value, Path(temp))
+            self.assertTrue(any("must use synthetic classification" in item for item in errors))
+
+            value = consumer()
+            value["evidence_storage"]["classification"] = "synthetic"
+            errors = self.validate(value, Path(temp))
+            self.assertTrue(any("cannot use synthetic classification" in item for item in errors))
+
     def test_unbounded_wildcard_selection_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             value = consumer()
@@ -198,6 +238,51 @@ class DownstreamConsumerTests(unittest.TestCase):
         value["relationship"] = "overrides"
         errors = MODULE.validate_extension(value, capabilities)
         self.assertTrue(any("governance_review_ref" in item for item in errors))
+
+    def test_extension_simulation_must_match_consumer(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            ext = extension()
+            ext["simulation_status"] = "synthetic_reference"
+            path = root / "extensions" / "governance.json"
+            path.parent.mkdir()
+            path.write_text(json.dumps(ext), encoding="utf-8")
+            value = consumer()
+            value["private_extensions"] = [
+                {
+                    "extension_id": ext["extension_id"],
+                    "manifest_path": "extensions/governance.json",
+                }
+            ]
+            value["contract_versions"][
+                "lat.private-capability-extension.v1"
+            ] = "1.0.0"
+            errors = self.validate(value, root)
+            self.assertTrue(any("differs from the consumer" in item for item in errors))
+
+    def test_manager_brief_path_must_stay_inside_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            value["manager_projection"]["brief_path"] = "private/other/brief.json"
+            errors = self.validate(value, Path(temp))
+            self.assertTrue(any("brief_path must be inside" in item for item in errors))
+
+    def test_declared_commands_must_include_all_local_validators(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            value["validation_commands"] = ["true", "true", "true"]
+            errors = self.validate(value, Path(temp))
+            self.assertTrue(any("missing required local validators" in item for item in errors))
+
+    def test_real_evidence_cannot_write_inside_lattice_checkout(self) -> None:
+        value = consumer()
+        errors = MODULE.validate_consumer(
+            value,
+            ROOT,
+            ROOT,
+            validate_extension_files=False,
+        )
+        self.assertTrue(any("public Lattice checkout" in item for item in errors))
 
 
 if __name__ == "__main__":

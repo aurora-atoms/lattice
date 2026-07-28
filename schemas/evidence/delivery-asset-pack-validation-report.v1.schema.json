@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json",
+  "title": "Delivery Asset Pack Validation Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "schema_version",
+    "status",
+    "pack_id",
+    "checks",
+    "errors",
+    "generated_at",
+    "simulation_status",
+    "downstream_adoption_status",
+    "privacy_note"
+  ],
+  "properties": {
+    "contract": {"const": "lat.delivery-asset-pack-validation-report.v1"},
+    "schema_version": {"const": "1.0.0"},
+    "status": {"enum": ["pass", "fail"]},
+    "pack_id": {"type": "string", "minLength": 1},
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "negative_cases": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "errors": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "generated_at": {"type": "string", "format": "date-time"},
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "downstream_adoption_status": {
+      "enum": [
+        "not_observed",
+        "imported",
+        "task_scoped",
+        "used_once",
+        "reused",
+        "team_available",
+        "deprecated"
+      ]
+    },
+    "privacy_note": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "pass"}}},
+      "then": {"properties": {"errors": {"maxItems": 0}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "fail"}}},
+      "then": {"properties": {"errors": {"minItems": 1}}}
+    },
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}}
+      },
+      "then": {
+        "properties": {
+          "downstream_adoption_status": {"const": "not_observed"}
+        }
+      }
+    }
+  ]
+}

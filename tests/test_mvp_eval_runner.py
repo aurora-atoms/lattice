@@ -72,6 +72,35 @@ class MvpEvalRunnerTests(unittest.TestCase):
             self.assertFalse(ok)
             self.assertIn("missing required file", note)
 
+    def test_duplicate_required_file_declaration_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            case = self.prepare(Path(temp))
+            value = case_manifest(case.name)
+            value["required_files"].append("input.jsonl")
+            (case / "case.json").write_text(json.dumps(value), encoding="utf-8")
+            ok, note, _ = MODULE.dispatch_case(case)
+            self.assertFalse(ok)
+            self.assertIn("must not contain duplicates", note)
+
+    def test_case_type_required_files_must_be_declared(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            case = self.prepare(Path(temp))
+            value = case_manifest(case.name)
+            value["required_files"] = ["input.jsonl"]
+            (case / "case.json").write_text(json.dumps(value), encoding="utf-8")
+            ok, note, _ = MODULE.dispatch_case(case)
+            self.assertFalse(ok)
+            self.assertIn("missing declarations: expected.json", note)
+
+    def test_case_id_format_is_enforced_without_jsonschema(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            case = self.prepare(Path(temp), name="Case-001")
+            value = case_manifest(case.name)
+            (case / "case.json").write_text(json.dumps(value), encoding="utf-8")
+            ok, note, _ = MODULE.dispatch_case(case)
+            self.assertFalse(ok)
+            self.assertIn("lowercase letters", note)
+
     def test_missing_case_manifest_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             case = self.prepare(Path(temp))
@@ -110,12 +139,59 @@ class MvpEvalRunnerTests(unittest.TestCase):
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
+                check=False,
             )
             self.assertEqual(1, result.returncode)
             report = json.loads(summary.read_text(encoding="utf-8"))
             self.assertEqual("lat.conformance-summary.v1", report["contract"])
             self.assertEqual(1, report["failed"])
             self.assertEqual("fail", report["results"][0]["status"])
+
+    def test_missing_eval_directory_writes_failed_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            summary = root / "summary.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--eval-dir",
+                    str(root / "missing"),
+                    "--summary-out",
+                    str(summary),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(1, result.returncode)
+            report = json.loads(summary.read_text(encoding="utf-8"))
+            self.assertEqual(1, report["total"])
+            self.assertIn("does not exist", report["results"][0]["note"])
+
+    def test_empty_eval_directory_is_not_a_false_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            summary = root / "summary.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--eval-dir",
+                    str(root),
+                    "--summary-out",
+                    str(summary),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(1, result.returncode)
+            report = json.loads(summary.read_text(encoding="utf-8"))
+            self.assertEqual(1, report["failed"])
+            self.assertIn("no case directories", report["results"][0]["note"])
 
 
 if __name__ == "__main__":

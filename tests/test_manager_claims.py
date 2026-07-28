@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -38,7 +39,11 @@ def claim(
         "claim_id": claim_id,
         "classification": classification,
         "claim_kind": kind,
-        "statement": f"Bounded {kind} statement.",
+        "statement": (
+            f"{kind} is not established."
+            if classification == "UNKNOWN"
+            else f"Bounded {kind} statement."
+        ),
         "presentation": "unknown" if classification == "UNKNOWN" else "qualified",
         "evidence_refs": ["ev-1"] if refs is None else refs,
         "evidence_origin": "real_restricted",
@@ -122,6 +127,32 @@ class ManagerClaimTests(unittest.TestCase):
         errors = MODULE.validate_manager_brief(value, [evidence()])
         self.assertTrue(any("UNKNOWN cannot be presented as fact" in item for item in errors))
 
+    def test_unknown_statement_cannot_make_affirmative_claim(self) -> None:
+        value = brief()
+        value["claims"].append(
+            claim("c-reuse", "reuse", classification="UNKNOWN", refs=[])
+        )
+        value["claims"][-1]["statement"] = "This asset is proven reusable."
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(
+            any("visibly communicate uncertainty" in item for item in errors)
+        )
+
+    def test_every_claim_scope_must_match_brief(self) -> None:
+        value = brief()
+        value["claims"].append(claim("c-other", "other"))
+        value["claims"][-1]["scope"] = "OTHER"
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(any("scope differs from the brief" in item for item in errors))
+
+    def test_review_references_must_resolve(self) -> None:
+        value = brief()
+        value["human_challenge"]["review_ref"] = "missing"
+        value["human_review_ref"] = "missing"
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(any("human_review_ref" in item for item in errors))
+        self.assertTrue(any("human_challenge: review_ref" in item for item in errors))
+
     def test_one_use_cannot_be_reuse(self) -> None:
         value = brief()
         value["downstream_adoption_status"] = "used_once"
@@ -142,6 +173,50 @@ class ManagerClaimTests(unittest.TestCase):
         value["claims"].append(claim("c-team", "team_adoption"))
         errors = MODULE.validate_manager_brief(value, [evidence()])
         self.assertTrue(any("team-wide language requires team_available" in item for item in errors))
+
+    def test_sensitive_wording_cannot_hide_under_other_claim_kind(self) -> None:
+        value = brief()
+        value["claims"].append(claim("c-other", "other"))
+        value["claims"][-1]["statement"] = "The team adopted this capability."
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(
+            any("must use claim_kind team_adoption" in item for item in errors)
+        )
+
+    def test_unknown_cannot_mix_uncertainty_with_affirmative_overclaim(self) -> None:
+        value = brief()
+        value["claims"].append(
+            claim("c-team", "team_adoption", classification="UNKNOWN", refs=[])
+        )
+        value["claims"][-1][
+            "statement"
+        ] = "The team adopted this capability, but ROI is unknown."
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(
+            any("UNKNOWN statement contains affirmative team_adoption" in item for item in errors)
+        )
+
+    def test_green_ci_cannot_be_used_as_value_proxy(self) -> None:
+        value = brief()
+        value["claims"][0]["statement"] = "Green CI proves delivery value."
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(any("forbidden proxy" in item for item in errors))
+
+    def test_manager_decision_cannot_bypass_team_adoption_gate(self) -> None:
+        value = brief()
+        value["manager_decision"] = "Approve rollout to the team."
+        errors = MODULE.validate_manager_brief(value, [evidence()])
+        self.assertTrue(any("team-level manager decision" in item for item in errors))
+
+    def test_real_brief_cannot_use_synthetic_evidence_origin(self) -> None:
+        value = brief()
+        value["evidence_origin"] = "synthetic"
+        for item in value["claims"]:
+            item["evidence_origin"] = "synthetic"
+        synthetic = evidence()
+        synthetic["evidence_origin"] = "synthetic"
+        errors = MODULE.validate_manager_brief(value, [synthetic])
+        self.assertTrue(any("cannot use synthetic evidence origin" in item for item in errors))
 
     def test_hidden_limitations_fail(self) -> None:
         value = brief()
@@ -167,6 +242,24 @@ class ManagerClaimTests(unittest.TestCase):
         synthetic["evidence_origin"] = "synthetic"
         errors = MODULE.validate_manager_brief(value, [synthetic])
         self.assertTrue(any("must remain not_observed" in item for item in errors))
+
+    def test_rendered_markdown_must_match_canonical_projection(self) -> None:
+        value = brief()
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "manager-brief.md"
+            path.write_text(
+                MODULE.render_manager_brief_markdown(value), encoding="utf-8"
+            )
+            self.assertEqual(
+                [], MODULE.validate_rendered_manager_brief(value, path)
+            )
+            path.write_text(
+                path.read_text(encoding="utf-8")
+                + "\nThe team adopted this capability.\n",
+                encoding="utf-8",
+            )
+            errors = MODULE.validate_rendered_manager_brief(value, path)
+            self.assertTrue(any("canonical structured projection" in item for item in errors))
 
 
 if __name__ == "__main__":
