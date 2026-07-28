@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,7 +19,6 @@ from downstream_contracts import (
     CAPABILITY_ID_RE,
     FLOATING_REFS,
     SHA_RE,
-    TAG_RE,
     canonical_capabilities,
     exact_fields,
     load_json,
@@ -35,6 +35,7 @@ def validate_consumer(
     consumer_root: Path,
     *,
     validate_extension_files: bool = True,
+    verify_checkout_pin: bool = False,
 ) -> list[str]:
     required = {
         "contract",
@@ -85,17 +86,65 @@ def validate_consumer(
     if isinstance(source, dict):
         ref = str(source.get("ref", ""))
         sha = str(source.get("commit_sha", ""))
-        if ref.lower() in FLOATING_REFS or not (
-            SHA_RE.fullmatch(ref) or TAG_RE.fullmatch(ref)
-        ):
-            errors.append("lattice_source: ref must be an immutable semver tag or full commit SHA")
+        if ref.lower() in FLOATING_REFS or ref.startswith("refs/heads/"):
+            errors.append("lattice_source: ref must be an immutable tag or full commit SHA")
         if not SHA_RE.fullmatch(sha):
             errors.append("lattice_source: commit_sha must be a full lowercase SHA")
         if SHA_RE.fullmatch(ref) and ref != sha:
             errors.append("lattice_source: SHA ref and commit_sha must match")
         if not nonempty_string(source.get("repository")):
             errors.append("lattice_source: repository must be non-empty")
+        if verify_checkout_pin and SHA_RE.fullmatch(sha):
+            try:
+                checkout_sha = subprocess.run(
+                    ["git", "-C", str(lattice_root), "rev-parse", "HEAD"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip()
+            except (OSError, subprocess.CalledProcessError):
+                errors.append(
+                    "lattice_source: pinned checkout commit could not be verified locally"
+                )
+            else:
+                if checkout_sha != sha:
+                    errors.append(
+                        "lattice_source: commit_sha does not match the local Lattice checkout"
+                    )
+            if not SHA_RE.fullmatch(ref):
+                try:
+                    tag_sha = subprocess.run(
+                        [
+                            "git",
+                            "-C",
+                            str(lattice_root),
+                            "rev-parse",
+                            f"refs/tags/{ref}^{{commit}}",
+                        ],
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                    ).stdout.strip()
+                except (OSError, subprocess.CalledProcessError):
+                    errors.append(
+                        f"lattice_source: immutable tag does not exist locally: {ref}"
+                    )
+                else:
+                    if tag_sha != sha:
+                        errors.append(
+                            "lattice_source: tag and commit_sha resolve to different commits"
+                        )
     versions = manifest["contract_versions"]
+    required_contract_versions = {
+        "lat.canonical-capability-manifest.v1": "1.0.0",
+        "lat.downstream-adoption-lifecycle.v1": "1.0.0",
+        "lat.downstream-consumer-manifest.v1": "1.0.0",
+        "lat.delivery-evidence-asset-pack.v1": "1.0.0",
+        "lat.evidence-claim.v1": "1.0.0",
+        "lat.manager-delivery-brief.v1": "1.0.0",
+    }
+    if manifest["private_extensions"]:
+        required_contract_versions["lat.private-capability-extension.v1"] = "1.0.0"
     if not isinstance(versions, dict) or not versions:
         errors.append("contract_versions must be a non-empty object")
     elif any(
@@ -103,6 +152,12 @@ def validate_consumer(
         for name, version in versions.items()
     ):
         errors.append("contract_versions must map contract names to versions")
+    else:
+        for contract, supported_version in required_contract_versions.items():
+            if versions.get(contract) != supported_version:
+                errors.append(
+                    f"contract_versions: {contract} must be pinned to {supported_version}"
+                )
     capabilities = canonical_capabilities(lattice_root)
     selected: set[str] = set()
     profile_ids: set[str] = set()
@@ -250,6 +305,7 @@ def main() -> int:
             lattice_root,
             consumer_root,
             validate_extension_files=not args.skip_extension_files,
+            verify_checkout_pin=True,
         )
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         errors = [str(exc)]

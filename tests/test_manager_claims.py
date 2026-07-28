@@ -101,6 +101,18 @@ class ManagerClaimTests(unittest.TestCase):
         errors = MODULE.validate_manager_brief(value, [evidence()])
         self.assertTrue(any("dangling evidence refs" in item for item in errors))
 
+    def test_observed_requires_supporting_relation(self) -> None:
+        record = evidence()
+        record["relation"] = "inconclusive"
+        errors = MODULE.validate_manager_brief(brief(), [record])
+        self.assertTrue(any("OBSERVED requires supporting evidence" in item for item in errors))
+
+    def test_claim_and_evidence_origin_must_match_brief(self) -> None:
+        record = evidence()
+        record["evidence_origin"] = "real_sanitized"
+        errors = MODULE.validate_manager_brief(brief(), [record])
+        self.assertTrue(any("cited evidence origin differs" in item for item in errors))
+
     def test_unknown_presented_as_fact_fails(self) -> None:
         value = brief()
         value["claims"][0] = claim(

@@ -117,6 +117,11 @@ def validate_manager_brief(
         errors.append("manager brief: unsupported contract_version")
     evidence_validation, evidence_ids = evidence_errors(evidence_records)
     errors.extend(evidence_validation)
+    evidence_by_id = {
+        str(record.get("evidence_id")): record
+        for record in evidence_records
+        if nonempty_string(record.get("evidence_id"))
+    }
     claims = brief["claims"]
     claim_ids: set[str] = set()
     claim_kinds: set[str] = set()
@@ -135,6 +140,18 @@ def validate_manager_brief(
         errors.extend(validate_claim(claim, evidence_ids))
         if claim.get("evidence_origin") != brief["evidence_origin"]:
             errors.append(f"claim {claim_id}: evidence_origin differs from the brief")
+        if claim.get("claim_kind") in REQUIRED_CLAIM_KINDS and claim.get("scope") != brief["scope"]:
+            errors.append(f"claim {claim_id}: scope differs from the brief")
+        refs = [str(ref) for ref in claim.get("evidence_refs", [])]
+        resolved = [evidence_by_id[ref] for ref in refs if ref in evidence_by_id]
+        if any(record.get("evidence_origin") != brief["evidence_origin"] for record in resolved):
+            errors.append(f"claim {claim_id}: cited evidence origin differs from the brief")
+        if (
+            claim.get("classification") == "OBSERVED"
+            and resolved
+            and not any(record.get("relation") == "supports" for record in resolved)
+        ):
+            errors.append(f"claim {claim_id}: OBSERVED requires supporting evidence")
     missing_kinds = sorted(REQUIRED_CLAIM_KINDS - claim_kinds)
     if missing_kinds:
         errors.append(

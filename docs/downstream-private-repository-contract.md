@@ -38,6 +38,8 @@ The machine contract is `schemas/downstream/downstream-consumer-manifest.v1.sche
 
 The private repository records the pin; public Lattice does not fetch the private repository or its evidence.
 
+The local consumer validator confirms that the pinned Lattice checkout is at `commit_sha`; for a tag pin, it also confirms that the local tag resolves to the same commit. This uses local Git metadata only and performs no fetch.
+
 ## Capability Profile Selection
 
 Choose the smallest profile that can satisfy the task. A profile declares selected atomic capabilities, selectors, workflows, schemas, validators, and templates. Optional context is advisory and cannot trigger eager portfolio loading.

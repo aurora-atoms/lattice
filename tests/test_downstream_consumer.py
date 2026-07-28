@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -34,9 +35,11 @@ def consumer() -> dict:
             "commit_sha": SHA,
         },
         "contract_versions": {
+            "lat.canonical-capability-manifest.v1": "1.0.0",
+            "lat.downstream-adoption-lifecycle.v1": "1.0.0",
             "lat.downstream-consumer-manifest.v1": "1.0.0",
-            "lat.private-capability-extension.v1": "1.0.0",
             "lat.delivery-evidence-asset-pack.v1": "1.0.0",
+            "lat.evidence-claim.v1": "1.0.0",
             "lat.manager-delivery-brief.v1": "1.0.0",
         },
         "capability_profiles": [
@@ -114,6 +117,9 @@ class DownstreamConsumerTests(unittest.TestCase):
             value["private_extensions"] = [
                 {"extension_id": ext["extension_id"], "manifest_path": "extensions/governance.json"}
             ]
+            value["contract_versions"][
+                "lat.private-capability-extension.v1"
+            ] = "1.0.0"
             self.assertEqual([], self.validate(value, root))
 
     def test_floating_ref_fails(self) -> None:
@@ -131,6 +137,45 @@ class DownstreamConsumerTests(unittest.TestCase):
             )
             errors = self.validate(value, Path(temp))
             self.assertTrue(any("does not exist" in item for item in errors))
+
+    def test_missing_consumed_contract_version_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            del value["contract_versions"]["lat.evidence-claim.v1"]
+            errors = self.validate(value, Path(temp))
+            self.assertTrue(any("lat.evidence-claim.v1" in item for item in errors))
+
+    def test_checkout_commit_mismatch_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            value = consumer()
+            errors = MODULE.validate_consumer(
+                value,
+                ROOT,
+                Path(temp),
+                validate_extension_files=False,
+                verify_checkout_pin=True,
+            )
+            self.assertTrue(any("does not match the local" in item for item in errors))
+
+    def test_checkout_commit_pin_resolves_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            checkout_sha = subprocess.run(
+                ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            value = consumer()
+            value["lattice_source"]["ref"] = checkout_sha
+            value["lattice_source"]["commit_sha"] = checkout_sha
+            errors = MODULE.validate_consumer(
+                value,
+                ROOT,
+                Path(temp),
+                validate_extension_files=False,
+                verify_checkout_pin=True,
+            )
+            self.assertEqual([], errors)
 
     def test_unbounded_wildcard_selection_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
