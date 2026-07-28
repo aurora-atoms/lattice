@@ -1,0 +1,191 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-07-28-public-reference-pr1",
+  "status": "human_review_required",
+  "artifacts": [
+    {
+      "artifact_id": "positioning-navigation",
+      "kind": "public-reference-entry",
+      "format": "markdown",
+      "path": "README.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "public-private-operating-model",
+      "kind": "governance-contract",
+      "format": "markdown",
+      "path": "docs/public-private-operating-model.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "downstream-contract",
+      "kind": "governance-contract",
+      "format": "markdown",
+      "path": "docs/downstream-private-repository-contract.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "manager-credibility-contract",
+      "kind": "governance-contract",
+      "format": "markdown",
+      "path": "docs/manager-credibility-contract.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "capability-taxonomy",
+      "kind": "governance-contract",
+      "format": "markdown",
+      "path": "docs/capability-taxonomy.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "release-compatibility-policy",
+      "kind": "governance-contract",
+      "format": "markdown",
+      "path": "docs/release-and-compatibility-policy.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "governor-package",
+      "kind": "skill-package",
+      "format": "markdown-json",
+      "path": "skills/lattice-governor",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-public-reference-pr1/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "The prior README described Lattice primarily as a generic AI capability control-plane.",
+        "source_refs": [
+          "git:HEAD:README.md:3"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The repository had no requested public-private, downstream, manager credibility, capability taxonomy, or release policy document before this patch.",
+        "source_refs": [
+          "git:HEAD:docs/"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The full MVP eval runner currently crashes on the reusable asset case because expected.json is absent.",
+        "source_refs": [
+          "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+          "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The changed Skill authoring and incremental CI contract validators passed after one bounded correction.",
+        "source_refs": [
+          "scripts/validate_skill_change_contract.py",
+          "scripts/validate_skill_ci_contracts.py",
+          "/private/tmp/lattice-pr1-skill-ci-contract-report.json"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "The governor change is a backward-compatible minor expansion because it adds downstream contract governance and claim boundaries without removing existing inputs, outputs, or authority protections.",
+        "based_on": [
+          "skills/lattice-governor/SKILL.md",
+          "docs/capability-context-contract.md",
+          "registry/capability-context-policy.json"
+        ],
+        "uncertainty": "Accountable maintainer review is still required before release."
+      }
+    ],
+    "citations": [
+      "README.md",
+      "AGENTS.md",
+      "docs/public-private-operating-model.md",
+      "docs/downstream-private-repository-contract.md",
+      "docs/manager-credibility-contract.md",
+      "docs/capability-taxonomy.md",
+      "docs/release-and-compatibility-policy.md",
+      "docs/migrations/public-reference-layer-pr1.md"
+    ],
+    "uncertainty": [
+      "Canonical per-capability role and public-package status assignments await PR 2 human review."
+    ],
+    "unknowns": [
+      "No private repository implementation or real adoption evidence was inspected or claimed.",
+      "Downstream schemas, validators, templates, and executable asset-pack generation do not exist in PR 1."
+    ],
+    "assumptions": [
+      "The requested four-PR sequence makes documentation-first contracts the intended PR 1 review boundary."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": [
+        "README.md",
+        "skills/lattice-governor/SKILL.md",
+        "docs/public-private-operating-model.md"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions",
+      "result": "met",
+      "evidence_refs": [
+        "registry/capability-context-policy.json"
+      ]
+    },
+    {
+      "signal": "catalog, package, context, authoring, routing, and incremental CI checks pass",
+      "result": "met",
+      "evidence_refs": [
+        "registry/skill-context.catalog.json",
+        "/private/tmp/lattice-pr1-skill-ci-contract-report.json"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and authority boundaries are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "AGENTS.md",
+        "docs/capability-context-contract.md",
+        "skills/lattice-governor/SKILL.md"
+      ]
+    },
+    {
+      "signal": "public conformance claims remain separate from private adoption and business value",
+      "result": "met",
+      "evidence_refs": [
+        "docs/public-private-operating-model.md",
+        "docs/manager-credibility-contract.md",
+        "docs/release-and-compatibility-policy.md"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "stage_gate_reached",
+    "condition": "PR 1 working-tree patch is complete and validated; PR 2 changes require the requested separate reviewable stage.",
+    "retry_count": 1,
+    "retry_allowed": false,
+    "requested_permission": "A verified commit-signing configuration is required before creating and publishing the PR 1 commit.",
+    "next_step": "Review PR 1, establish verified signing, then commit and publish it before starting PR 2."
+  },
+  "generated_at": "2026-07-28T12:24:25Z"
+}

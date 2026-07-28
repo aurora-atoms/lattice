@@ -1,0 +1,207 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-07-28-downstream-contracts-pr3",
+  "status": "human_review_required",
+  "artifacts": [
+    {
+      "artifact_id": "downstream-consumer-contract",
+      "kind": "schema",
+      "format": "json-schema",
+      "path": "schemas/downstream/downstream-consumer-manifest.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "private-extension-contract",
+      "kind": "schema",
+      "format": "json-schema",
+      "path": "schemas/downstream/private-capability-extension.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "delivery-evidence-contracts",
+      "kind": "schema-pack",
+      "format": "json-schema",
+      "path": "schemas/evidence/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "manager-brief-contract",
+      "kind": "schema",
+      "format": "json-schema",
+      "path": "schemas/manager/manager-delivery-brief.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "downstream-local-validators",
+      "kind": "validator-pack",
+      "format": "python",
+      "path": "scripts/validate_downstream_consumer.py",
+      "visible": true,
+      "write_status": "written",
+      "notes": "Paired with validate_delivery_asset_pack.py, validate_manager_claims.py, and downstream_contracts.py."
+    },
+    {
+      "artifact_id": "downstream-public-templates",
+      "kind": "template-pack",
+      "format": "json-jsonl-markdown",
+      "path": "templates/private-repository/",
+      "visible": true,
+      "write_status": "written",
+      "notes": "Paired with delivery-evidence-asset-pack and manager-delivery-brief templates."
+    },
+    {
+      "artifact_id": "pr3-migration-note",
+      "kind": "compatibility-note",
+      "format": "markdown",
+      "path": "docs/migrations/downstream-contracts-pr3.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "pr3-run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-downstream-contracts-pr3/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "Five versioned downstream, private-extension, evidence, asset-pack, and manager-brief schema families are present.",
+        "source_refs": [
+          "schemas/downstream/downstream-consumer-manifest.v1.schema.json",
+          "schemas/downstream/private-capability-extension.v1.schema.json",
+          "schemas/evidence/evidence-claim.v1.schema.json",
+          "schemas/evidence/delivery-evidence-asset-pack.v1.schema.json",
+          "schemas/manager/manager-delivery-brief.v1.schema.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Three local validator entrypoints enforce canonical capability resolution, private-extension boundaries, evidence-reference integrity, asset-pack presence, claim strength, and approval authority without network code.",
+        "source_refs": [
+          "scripts/validate_downstream_consumer.py",
+          "scripts/validate_delivery_asset_pack.py",
+          "scripts/validate_manager_claims.py",
+          "scripts/downstream_contracts.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "PR 2 review strengthened canonical manifest structural validation and made the validator-confirmed workspace Capability Profile dependency-ready.",
+        "source_refs": [
+          "scripts/validate_capability_manifest.py",
+          "tests/test_capability_manifest.py",
+          "scripts/validate_workspace_manifest.py",
+          "registry/capability-manifest.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Public templates explicitly preserve synthetic not_observed semantics or intentionally invalid replacement markers and contain no real private evidence.",
+        "source_refs": [
+          "templates/private-repository/",
+          "templates/delivery-evidence-asset-pack/",
+          "templates/manager-delivery-brief/"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "PR 3 reaches the reviewable contract stage at which a private repository can declare an immutable Lattice dependency and deterministically validate bounded local records without public evidence transfer.",
+        "based_on": [
+          "schemas/downstream/downstream-consumer-manifest.v1.schema.json",
+          "scripts/validate_downstream_consumer.py",
+          "scripts/validate_delivery_asset_pack.py",
+          "scripts/validate_manager_claims.py",
+          "tests/test_downstream_consumer.py",
+          "tests/test_manager_claims.py",
+          "tests/test_delivery_asset_pack.py"
+        ],
+        "uncertainty": "The complete generated synthetic consumer, golden output, and heterogeneous full runner remain PR 4 work."
+      }
+    ],
+    "citations": [
+      "docs/downstream-private-repository-contract.md",
+      "docs/manager-credibility-contract.md",
+      "docs/migrations/downstream-contracts-pr3.md",
+      ".github/workflows/downstream-contract-validate.yml"
+    ],
+    "uncertainty": [
+      "The new contract family versions and workspace profile status require accountable maintainer review before release.",
+      "The validators are proven against bounded unit fixtures, not a complete generated downstream repository."
+    ],
+    "unknowns": [
+      "No real private downstream use, reuse, team availability, manager acceptance, or ROI was inspected or claimed.",
+      "The heterogeneous full eval runner remains incomplete pending PR 4."
+    ],
+    "assumptions": [
+      "A private consumer can execute standard-library Python from its pinned Lattice checkout.",
+      "Private repositories retain their evidence, validation reports, rendered briefs, and governance decisions locally."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": [
+        "schemas/downstream/downstream-consumer-manifest.v1.schema.json",
+        "schemas/downstream/private-capability-extension.v1.schema.json",
+        "schemas/evidence/delivery-evidence-asset-pack.v1.schema.json",
+        "schemas/manager/manager-delivery-brief.v1.schema.json"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions",
+      "result": "not_evaluated",
+      "evidence_refs": [
+        "No Skill package changed in PR 3."
+      ]
+    },
+    {
+      "signal": "catalog, schema, validator, and CI checks pass",
+      "result": "met",
+      "evidence_refs": [
+        ".github/workflows/downstream-contract-validate.yml",
+        "tests/test_downstream_consumer.py",
+        "tests/test_manager_claims.py",
+        "tests/test_delivery_asset_pack.py"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and authority boundaries are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/downstream_contracts.py",
+        "scripts/validate_manager_claims.py",
+        "docs/manager-credibility-contract.md"
+      ]
+    },
+    {
+      "signal": "public conformance claims remain separate from private adoption and business value",
+      "result": "met",
+      "evidence_refs": [
+        "schemas/manager/manager-delivery-brief.v1.schema.json",
+        "templates/manager-delivery-brief/manager-brief.template.json",
+        "docs/migrations/downstream-contracts-pr3.md"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "stage_gate_reached",
+    "condition": "PR 2 review amendments and PR 3 downstream contracts, validators, templates, tests, and CI are complete; PR 4 is a separate reviewable stage.",
+    "retry_count": 0,
+    "retry_allowed": false,
+    "requested_permission": "A verified commit-signing identity and configuration are required before publishing the stacked PR 2 and PR 3 changes on this branch.",
+    "next_step": "Review the PR 2 amendments and PR 3 contract versions, establish verified signing, publish the staged changes, then begin PR 4 synthetic end-to-end work."
+  },
+  "generated_at": "2026-07-28T13:11:15Z"
+}

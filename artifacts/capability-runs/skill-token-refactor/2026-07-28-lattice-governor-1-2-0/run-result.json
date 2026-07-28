@@ -1,0 +1,130 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:skill-token-refactor@1.1.0",
+  "run_id": "2026-07-28-lattice-governor-1-2-0",
+  "status": "succeeded",
+  "artifacts": [
+    {
+      "artifact_id": "refactored-governor",
+      "kind": "skill-package",
+      "format": "markdown-json",
+      "path": "skills/lattice-governor",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/skill-token-refactor/2026-07-28-lattice-governor-1-2-0/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "The lattice-governor frontmatter retains only the existing name and description properties.",
+        "source_refs": [
+          "skills/lattice-governor/SKILL.md"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Long public-private operating detail is routed to topic-scoped documents while hard boundaries remain in the Skill control plane.",
+        "source_refs": [
+          "skills/lattice-governor/SKILL.md",
+          "docs/public-private-operating-model.md",
+          "docs/downstream-private-repository-contract.md",
+          "docs/manager-credibility-contract.md"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The changed package passed the authoring and incremental Skill CI contracts after correcting its repository-root writeback path.",
+        "source_refs": [
+          "scripts/validate_skill_change_contract.py",
+          "scripts/validate_skill_ci_contracts.py",
+          "/private/tmp/lattice-pr1-skill-ci-contract-report.json"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "The rewrite preserves the governor's existing public governance, privacy, validation, evidence, stop, and authority behavior while adding a backward-compatible downstream contract boundary.",
+        "based_on": [
+          "skills/lattice-governor/SKILL.md",
+          "registry/capability-context-policy.json",
+          "skills/lattice-governor/evals/output_cases.json"
+        ],
+        "uncertainty": "Behavioral release acceptance remains subject to human review."
+      }
+    ],
+    "citations": [
+      "skills/lattice-governor/SKILL.md",
+      "skills/lattice-governor/evals/trigger_queries.json",
+      "skills/lattice-governor/evals/output_cases.json"
+    ],
+    "uncertainty": [
+      "ConPort was unavailable, so the rewrite used targeted authoritative repository sources."
+    ],
+    "unknowns": [
+      "No runtime model-based output evaluation was performed; deterministic eval shape and package contracts were validated."
+    ],
+    "assumptions": [
+      "The original governor source and current repository contracts are the authoritative behavior baseline."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "behavior-critical trigger, input, output, safety, evidence, stop, and failure rules are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "skills/lattice-governor/SKILL.md",
+        "skills/lattice-governor/evals/output_cases.json"
+      ]
+    },
+    {
+      "signal": "required Skill contract sections are present and capability specific",
+      "result": "met",
+      "evidence_refs": [
+        "skills/lattice-governor/SKILL.md"
+      ]
+    },
+    {
+      "signal": "semantic version increased and compatibility level is justified",
+      "result": "met",
+      "evidence_refs": [
+        "registry/capability-context-policy.json",
+        "docs/migrations/public-reference-layer-pr1.md"
+      ]
+    },
+    {
+      "signal": "package context and change-gate validation passes",
+      "result": "met",
+      "evidence_refs": [
+        "/private/tmp/lattice-pr1-skill-ci-contract-report.json"
+      ]
+    },
+    {
+      "signal": "moved content destinations and references resolve",
+      "result": "met",
+      "evidence_refs": [
+        "docs/public-private-operating-model.md",
+        "docs/downstream-private-repository-contract.md",
+        "docs/manager-credibility-contract.md",
+        "docs/capability-taxonomy.md",
+        "docs/release-and-compatibility-policy.md"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "stage_gate_reached",
+    "condition": "The lattice-governor 1.2.0 rewrite is complete and the PR 1 review boundary has been reached.",
+    "retry_count": 1,
+    "retry_allowed": false,
+    "next_step": "Obtain human review of the PR 1 package before beginning the separate PR 2 lifecycle and registry work."
+  },
+  "generated_at": "2026-07-28T12:24:25Z"
+}

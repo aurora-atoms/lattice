@@ -1,0 +1,8 @@
+{
+  "contract": "lat.synthetic-negative-case.v1",
+  "case_id": "dangling-evidence-ref",
+  "target": "manager_brief",
+  "mutation_path": "/claims/0/evidence_refs/0",
+  "mutation_value": "MISSING-EVIDENCE",
+  "expected_error": "dangling evidence refs"
+}

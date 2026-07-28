@@ -1,0 +1,1 @@
+{"contract":"lat.eval-case.v1","schema_version":"1.0.0","case_id":"reusable_asset_loop_case_001","case_type":"reusable_asset_loop","required_files":["input.jsonl","expected_dossier.md"]}

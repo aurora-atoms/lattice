@@ -1,0 +1,8 @@
+{
+  "contract": "lat.synthetic-negative-case.v1",
+  "case_id": "unreviewed-promotion",
+  "target": "asset_review",
+  "mutation_path": "/activation_approved",
+  "mutation_value": true,
+  "expected_error": "synthetic review cannot approve activation"
+}

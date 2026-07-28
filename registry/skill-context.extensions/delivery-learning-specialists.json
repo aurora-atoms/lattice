@@ -2,64 +2,173 @@
   "contract": "lat.capability-context-extension.v1",
   "skills": [
     {
-      "name": "delivery-learning",
-      "changes": "bounded lifecycle evidence into the smallest evidence-backed organizational-learning artifact",
-      "primary_user": "delivery learning agent",
-      "secondary_audience": ["delivery owners", "product owners", "engineering leads", "quality owners", "governance reviewers"],
-      "trigger": "a delivery produces a decision pattern reusable lesson control opportunity outcome question or measurement need",
-      "minimum": ["Feature Delivery Case or learning target", "lifecycle evidence", "target decision or reuse need", "owner", "scope", "authority boundary"],
-      "outputs": ["specialist selection and versioned learning artifact"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "name": "delivery-immune-conversion",
+      "changes": "validated delivery lessons defects incidents and expired assumptions into bounded control-change proposals",
+      "primary_user": "delivery immune agent",
+      "secondary_audience": [
+        "quality owners",
+        "engineering leads",
+        "security reviewers",
+        "knowledge owners"
+      ],
+      "trigger": "a verified delivery failure or near miss exposes a test rule check knowledge monitoring or lifecycle gap",
+      "minimum": [
+        "Feature Delivery Case",
+        "failure evidence",
+        "contributing conditions",
+        "current controls",
+        "affected scope",
+        "owner"
+      ],
+      "outputs": [
+        "control proposal and evidence-based closure plan"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "delivery-judgment-playbook",
       "changes": "repeated case decisions and outcomes into a scoped judgment playbook with criteria mandatory steps exceptions and review triggers",
       "primary_user": "delivery judgment agent",
-      "secondary_audience": ["delivery owners", "architects", "quality owners", "governance reviewers"],
+      "secondary_audience": [
+        "delivery owners",
+        "architects",
+        "quality owners",
+        "governance reviewers"
+      ],
       "trigger": "multiple delivery cases show a recurring judgment or non-skippable step under named conditions",
-      "minimum": ["bounded case set", "decisions and outcomes", "controls and exceptions", "applicability scope", "owner and authority"],
-      "outputs": ["versioned judgment playbook candidate"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "bounded case set",
+        "decisions and outcomes",
+        "controls and exceptions",
+        "applicability scope",
+        "owner and authority"
+      ],
+      "outputs": [
+        "versioned judgment playbook candidate"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
-      "name": "reusable-delivery-pattern",
-      "changes": "multiple delivery cases into a reusable pattern with conditions checklist failure signals and transfer boundaries",
-      "primary_user": "delivery pattern agent",
-      "secondary_audience": ["engineering teams", "delivery owners", "architects", "quality owners"],
-      "trigger": "several cases share a solution shape checklist failure signal or coordination pattern",
-      "minimum": ["multiple bounded cases", "conditions and implementations", "tests and outcomes", "failures", "environments", "owner"],
-      "outputs": ["pattern candidate and applicability matrix"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "delivery-immune-conversion",
-      "changes": "validated delivery lessons defects incidents and expired assumptions into bounded control-change proposals",
-      "primary_user": "delivery immune agent",
-      "secondary_audience": ["quality owners", "engineering leads", "security reviewers", "knowledge owners"],
-      "trigger": "a verified delivery failure or near miss exposes a test rule check knowledge monitoring or lifecycle gap",
-      "minimum": ["Feature Delivery Case", "failure evidence", "contributing conditions", "current controls", "affected scope", "owner"],
-      "outputs": ["control proposal and evidence-based closure plan"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "name": "delivery-learning",
+      "changes": "bounded lifecycle evidence into the smallest evidence-backed organizational-learning artifact",
+      "primary_user": "delivery learning agent",
+      "secondary_audience": [
+        "delivery owners",
+        "product owners",
+        "engineering leads",
+        "quality owners",
+        "governance reviewers"
+      ],
+      "trigger": "a delivery produces a decision pattern reusable lesson control opportunity outcome question or measurement need",
+      "minimum": [
+        "Feature Delivery Case or learning target",
+        "lifecycle evidence",
+        "target decision or reuse need",
+        "owner",
+        "scope",
+        "authority boundary"
+      ],
+      "outputs": [
+        "specialist selection and versioned learning artifact"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "feature-outcome-review",
       "changes": "feature goals assumptions releases metrics and feedback into an evidence-backed outcome comparison and product recommendation",
       "primary_user": "feature outcome agent",
-      "secondary_audience": ["product owners", "delivery owners", "engineering leads", "management"],
+      "secondary_audience": [
+        "product owners",
+        "delivery owners",
+        "engineering leads",
+        "management"
+      ],
       "trigger": "a released and enabled feature has enough exposure for an outcome decision",
-      "minimum": ["Feature Delivery Case", "goals and assumptions", "release and exposure evidence", "metrics and feedback", "window", "owner"],
-      "outputs": ["outcome review recommendation and learning candidates"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "Feature Delivery Case",
+        "goals and assumptions",
+        "release and exposure evidence",
+        "metrics and feedback",
+        "window",
+        "owner"
+      ],
+      "outputs": [
+        "outcome review recommendation and learning candidates"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "measurement-plan-pack",
       "changes": "feature goals workflows assumptions and risks into success criteria telemetry guardrails windows and decision rules",
       "primary_user": "measurement planning agent",
-      "secondary_audience": ["product owners", "engineering teams", "data owners", "privacy and governance reviewers"],
+      "secondary_audience": [
+        "product owners",
+        "engineering teams",
+        "data owners",
+        "privacy and governance reviewers"
+      ],
       "trigger": "a feature needs success criteria instrumentation observation windows guardrails or precommitted decision rules",
-      "minimum": ["Feature Delivery Case", "target outcome and cohort", "workflow and assumptions", "risks", "telemetry", "data constraints", "owners"],
-      "outputs": ["measurement plan and instrumentation gap list"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "Feature Delivery Case",
+        "target outcome and cohort",
+        "workflow and assumptions",
+        "risks",
+        "telemetry",
+        "data constraints",
+        "owners"
+      ],
+      "outputs": [
+        "measurement plan and instrumentation gap list"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "reusable-delivery-pattern",
+      "changes": "multiple delivery cases into a reusable pattern with conditions checklist failure signals and transfer boundaries",
+      "primary_user": "delivery pattern agent",
+      "secondary_audience": [
+        "engineering teams",
+        "delivery owners",
+        "architects",
+        "quality owners"
+      ],
+      "trigger": "several cases share a solution shape checklist failure signal or coordination pattern",
+      "minimum": [
+        "multiple bounded cases",
+        "conditions and implementations",
+        "tests and outcomes",
+        "failures",
+        "environments",
+        "owner"
+      ],
+      "outputs": [
+        "pattern candidate and applicability matrix"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "proposal_id": "PROPOSAL-001",
+  "asset_id": "dangling-evidence-ref-guard",
+  "operation": "create",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "before": {
+    "state": "A manager claim can contain an unresolved evidence reference."
+  },
+  "after": {
+    "state": "The local validator deterministically rejects unresolved evidence references."
+  },
+  "evidence_refs": [
+    "EV-PR-REVIEW",
+    "EV-VALIDATOR"
+  ],
+  "status": "synthetic_review_required"
+}

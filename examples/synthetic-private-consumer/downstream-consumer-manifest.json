@@ -1,0 +1,69 @@
+{
+  "contract": "lat.downstream-consumer-manifest.v1",
+  "contract_version": "1.0.0",
+  "consumer_id": "synthetic.private-consumer",
+  "consumer_repository": {
+    "repository_id": "synthetic/private-consumer",
+    "visibility": "private"
+  },
+  "simulation_status": "synthetic_reference",
+  "lattice_source": {
+    "repository": "https://github.com/aurora-atoms/lattice.git",
+    "ref": "v0.0.0-synthetic",
+    "commit_sha": "0000000000000000000000000000000000000000"
+  },
+  "contract_versions": {
+    "lat.canonical-capability-manifest.v1": "1.0.0",
+    "lat.downstream-adoption-lifecycle.v1": "1.0.0",
+    "lat.downstream-consumer-manifest.v1": "1.0.0",
+    "lat.private-capability-extension.v1": "1.0.0",
+    "lat.delivery-asset-pack-validation-report.v1": "1.0.0",
+    "lat.delivery-evidence-asset-pack.v1": "1.0.0",
+    "lat.evidence-claim.v1": "1.0.0",
+    "lat.manager-delivery-brief.v1": "1.0.0"
+  },
+  "capability_profiles": [
+    {
+      "capability_id": "workspace:pr-review-template@1.0.0",
+      "purpose": "Bound this synthetic PR-review-to-asset conformance case"
+    }
+  ],
+  "public_capabilities": [
+    {
+      "capability_id": "skill:feature-delivery-case@1.0.0",
+      "purpose": "Validate the Feature Delivery Case evidence boundary"
+    },
+    {
+      "capability_id": "skill:lattice-governor@1.2.0",
+      "purpose": "Validate public governance and claim boundaries"
+    }
+  ],
+  "private_extensions": [
+    {
+      "extension_id": "private:synthetic/dangling-ref-review@1.0.0",
+      "manifest_path": "private-capability-extension.json"
+    }
+  ],
+  "evidence_storage": {
+    "root": "inputs",
+    "classification": "synthetic",
+    "public_upload_prohibited": true
+  },
+  "manager_projection": {
+    "asset_pack_root": "manager-ready-delivery-asset-pack",
+    "brief_path": "manager-ready-delivery-asset-pack/manager-brief.json",
+    "human_review_required": true
+  },
+  "validation_commands": [
+    "python run_conformance.py --check",
+    "python ../../scripts/validate_downstream_consumer.py downstream-consumer-manifest.json --lattice-root ../.. --consumer-root .",
+    "python ../../scripts/validate_delivery_asset_pack.py manager-ready-delivery-asset-pack --lattice-root ../..",
+    "python ../../scripts/validate_manager_claims.py manager-ready-delivery-asset-pack/manager-brief.json --evidence-ledger manager-ready-delivery-asset-pack/evidence-ledger.jsonl --rendered-brief manager-ready-delivery-asset-pack/manager-brief.md"
+  ],
+  "compatibility_policy": {
+    "missing_capability": "fail",
+    "deprecated_capability": "human_review",
+    "major_version_change": "human_review",
+    "authority_change": "human_review"
+  }
+}

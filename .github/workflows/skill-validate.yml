@@ -40,6 +40,20 @@ jobs:
         run: python scripts/validate_skill_package.py --root skills
       - name: Validate capability context catalogs
         run: python scripts/validate_capability_context.py --root .
+      - name: Validate canonical capability manifest
+        run: |
+          python scripts/generate_capability_registry_projections.py --root . --check
+          python scripts/validate_capability_manifest.py --root .
+          python scripts/validate_public_private_boundary.py --root .
+          python scripts/migrate_synthetic_fixture_markers.py --root . --check
+          python scripts/migrate_legacy_capabilities.py --root . --out /tmp/capability-manifest-rebuilt.json --force
+          cmp registry/capability-manifest.json /tmp/capability-manifest-rebuilt.json
+      - name: Test canonical manifest and lifecycle boundaries
+        run: |
+          python -m unittest discover -s tests -p 'test_capability_manifest.py' -v
+          python -m unittest discover -s tests -p 'test_public_private_boundary.py' -v
+      - name: Validate public Agent contracts
+        run: python scripts/validate_agent.py --root .
       - name: Validate changed Skill authoring contracts
         run: python scripts/validate_skill_change_contract.py --base-ref "${{ steps.comparison.outputs.base_sha }}" --head-ref HEAD
       - name: Validate incremental Skill CI contracts
@@ -56,6 +70,12 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_capability_context.py' -v
       - name: Validate capability context schema
         run: python -m json.tool schemas/capability/capability-context.v1.schema.json >/dev/null
+      - name: Validate canonical manifest and lifecycle schemas
+        run: |
+          python -m json.tool registry/capability-manifest.json >/dev/null
+          python -m json.tool schemas/capability/canonical-capability-manifest.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/public-package-lifecycle.v1.schema.json >/dev/null
+          python -m json.tool schemas/downstream/downstream-adoption-lifecycle.v1.schema.json >/dev/null
       - name: Validate capability run result schema
         run: python -m json.tool schemas/capability/capability-run-result.v1.schema.json >/dev/null
       - name: Validate Skill CI contract report schema

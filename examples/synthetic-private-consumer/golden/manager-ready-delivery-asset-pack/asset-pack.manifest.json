@@ -1,0 +1,39 @@
+{
+  "contract": "lat.delivery-evidence-asset-pack.v1",
+  "contract_version": "1.0.0",
+  "pack_id": "SYNTHETIC-PACK-001",
+  "pack_version": "1.0.0",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "feature_delivery_case_id": "synthetic_fdc_dangling_ref_001",
+  "accountable_owner": "synthetic-case-owner",
+  "lattice_pin": {
+    "ref": "v0.0.0-synthetic",
+    "commit_sha": "0000000000000000000000000000000000000000"
+  },
+  "public_capabilities": [
+    "skill:feature-delivery-case@1.0.0",
+    "skill:lattice-governor@1.2.0"
+  ],
+  "evidence_origin": "synthetic",
+  "artifacts": {
+    "feature_delivery_case": "feature-delivery-case.json",
+    "evidence_ledger": "evidence-ledger.jsonl",
+    "contribution_ledger": "contribution-ledger.jsonl",
+    "reusable_asset_dossier": "reusable-asset-dossier.md",
+    "manager_brief": "manager-brief.json",
+    "manager_brief_rendered": "manager-brief.md",
+    "validation_report": "validation-report.json"
+  },
+  "reusable_assets": [
+    {
+      "asset_id": "dangling-evidence-ref-guard",
+      "asset_version": "1.0.0",
+      "manifest_path": "reusable-assets/dangling-evidence-ref-guard/asset-manifest.json",
+      "change_proposal_path": "reusable-assets/dangling-evidence-ref-guard/change-proposal.json",
+      "review_path": "reusable-assets/dangling-evidence-ref-guard/review.json",
+      "usage_observations_path": "reusable-assets/dangling-evidence-ref-guard/usage-observations.jsonl"
+    }
+  ],
+  "generated_at": "2026-07-28T00:15:00Z"
+}

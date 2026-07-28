@@ -1,0 +1,8 @@
+{
+  "contract": "lat.synthetic-negative-case.v1",
+  "case_id": "team-wide-overclaim",
+  "target": "manager_brief",
+  "mutation_path": "/claims/7/classification",
+  "mutation_value": "OBSERVED",
+  "expected_error": "team-wide language requires team_available"
+}

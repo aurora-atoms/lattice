@@ -1,0 +1,33 @@
+{
+  "contract": "lat.private-capability-extension.v1",
+  "contract_version": "1.0.0",
+  "extension_id": "private:replace/governance@1.0.0",
+  "extension_version": "1.0.0",
+  "private_namespace": "replace",
+  "simulation_status": "real_downstream",
+  "relationship": "extends",
+  "public_capability_id": "skill:lattice-governor@1.2.0",
+  "scope": {
+    "repositories": [
+      "REPLACE_PRIVATE_REPOSITORY_ID"
+    ],
+    "task_types": [
+      "REPLACE_BOUNDED_TASK_TYPE"
+    ],
+    "excluded_uses": [
+      "public publication",
+      "automatic asset promotion"
+    ]
+  },
+  "required_permissions": [
+    "REPLACE_WITH_LEAST_PRIVILEGE_PERMISSION"
+  ],
+  "authority_boundary": "The accountable private owner approves local business conclusions, asset promotion, adoption, and manager wording.",
+  "preserves_public_safety_boundaries": true,
+  "compatibility": {
+    "public_version_range": ">=1.2.0,<2.0.0",
+    "on_incompatible": "human_review"
+  },
+  "governance_review_ref": null,
+  "content_path": "extensions/governance.md"
+}

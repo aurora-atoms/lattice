@@ -6,15 +6,20 @@ The capability context contract gives every reusable Skill and Agent a stable, v
 
 The native runtime still discovers a Skill primarily from its `name` and `description`. The context catalogs are a governance, compatibility, evaluation, and progressive-discovery layer.
 
+Lattice is the public reference and governance layer. Private downstream repositories pin these public identities and contracts while retaining all real business evidence, private extensions, adoption observations, and manager-ready artifacts.
+
 ## Contract Location
 
+- `registry/capability-manifest.json`: canonical identity, version, role, public package status, path, behavior, evidence, success, stop, authority, compatibility, and projection metadata.
 - `registry/skill-context.catalog.json`: one compact context entry for every `skills/**/SKILL.md` package.
 - `registry/agent-context.catalog.json`: one compact context entry for every Agent instruction registered in `registry/agents.index.jsonl`.
 - `schemas/capability/capability-context.v1.schema.json`: expanded context-record contract used by adapters and projections.
 - `schemas/capability/capability-run-result.v1.schema.json`: mandatory structured run-result contract.
 - `scripts/validate_capability_context.py`: semantic and inventory-drift validator.
+- `scripts/generate_capability_registry_projections.py`: deterministic compatibility projection generator and drift check.
+- `scripts/validate_capability_manifest.py`: canonical identity, role, status, path, description/trigger, deprecation, and parity validator.
 
-Catalog defaults provide the contract name, contract version, default capability version, semantic-version policy, optional-context discovery instruction, structured run-result schema, evidence policy, success policy, and stop policy. Every cataloged Skill and Agent inherits these mandatory run requirements.
+The canonical manifest is the source of truth. Catalogs, version policy, legacy indexes, and the cross-runtime capability index are generated compatibility projections. Catalog defaults still provide optional-context discovery and shared run requirements.
 
 ## Identity and Versioning
 
@@ -136,3 +141,23 @@ The contract standardizes discovery, outputs, evidence, success assessment, and 
 - authorize endless retry;
 - supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module;
 - make a registry score or success signal an approval decision.
+
+## Public and Downstream Ownership
+
+Public Lattice owns public capability identities, behavior contracts, package versions, reference workflows, profile templates, schemas, validators, synthetic fixtures, and compatibility projections.
+
+Private repositories own real `feature_delivery_case` records, source and business context, delivery evidence, private extensions, human feedback, adoption state, reusable assets, and manager deliverables. Catalog discovery never grants access to those artifacts.
+
+```text
+public_package_status =
+  draft | contract_validated | conformance_validated | released | deprecated
+
+downstream_adoption_status =
+  not_observed | imported | task_scoped | used_once | reused | team_available | deprecated
+```
+
+These lifecycles must not share one ambiguous status field. Public synthetic fixtures declare `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`. Public conformance cannot establish use, reuse, team availability, manager acceptance, ROI, or private business value.
+
+Capability roles follow `docs/capability-taxonomy.md`. A selector, reference workflow, profile, projection, validator, or template cannot be counted as an executed atomic outcome capability.
+
+Downstream consumers follow `docs/downstream-private-repository-contract.md`; manager-facing claims follow `docs/manager-credibility-contract.md`. DeliveryYield, validators, selectors, registries, and success signals provide evidence only and do not approve delivery, asset promotion, manager wording, release, or private adoption.

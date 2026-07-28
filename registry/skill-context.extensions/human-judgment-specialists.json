@@ -2,44 +2,116 @@
   "contract": "lat.capability-context-extension.v1",
   "skills": [
     {
+      "name": "collaboration-impact-receipt",
+      "changes": "confirmed delivery-enabling collaboration into an evidence-backed impact receipt without ranking surveillance or sole-credit claims",
+      "primary_user": "delivery owner or manager",
+      "secondary_audience": [
+        "contributors",
+        "beneficiaries",
+        "engineering leads",
+        "capability curators"
+      ],
+      "trigger": "collaboration changed a real delivery state and participants need a confirmable account",
+      "minimum": [
+        "Feature Delivery Case",
+        "before and after state",
+        "evidence",
+        "participant confirmation",
+        "attribution limits",
+        "owner"
+      ],
+      "outputs": [
+        "confirmable collaboration impact receipt"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
       "name": "human-judgment-amplifier",
       "changes": "bounded expert demand learning opportunities and confirmed collaboration outcomes into the smallest human-judgment specialist artifact",
       "primary_user": "human judgment agent",
-      "secondary_audience": ["engineering leads", "senior engineers", "delivery owners", "learners", "managers"],
+      "secondary_audience": [
+        "engineering leads",
+        "senior engineers",
+        "delivery owners",
+        "learners",
+        "managers"
+      ],
       "trigger": "delivery work needs scarce expert judgment reusable mentorship or evidence-backed recognition without personnel scoring",
-      "minimum": ["bounded decision learning or impact need", "source evidence", "owner", "human authority", "privacy boundary"],
-      "outputs": ["specialist selection and reviewable human-judgment artifact"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "senior-attention-queue",
-      "changes": "multiple expert requests into an evidence-backed decision queue with minimum context latest-safe timing and delegable preparation",
-      "primary_user": "engineering lead or expert coordinator",
-      "secondary_audience": ["senior engineers", "architects", "product owners", "delivery owners"],
-      "trigger": "expert requests or critical decisions accumulate and scarce attention must be allocated transparently",
-      "minimum": ["decision requests", "impact", "evidence", "options", "latest-safe times", "decision owners"],
-      "outputs": ["prioritized expert decision queue and delegation plan"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "bounded decision learning or impact need",
+        "source evidence",
+        "owner",
+        "human authority",
+        "privacy boundary"
+      ],
+      "outputs": [
+        "specialist selection and reviewable human-judgment artifact"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "mentorship-case-builder",
       "changes": "real delivery decisions and reviews into bounded teach-back cases with reasoning signals failure options and applicability limits",
       "primary_user": "mentor or capability curator",
-      "secondary_audience": ["new engineers", "cross-domain learners", "reviewers", "engineering leads"],
+      "secondary_audience": [
+        "new engineers",
+        "cross-domain learners",
+        "reviewers",
+        "engineering leads"
+      ],
       "trigger": "an authentic decision or review can teach reusable judgment without another meeting",
-      "minimum": ["source case", "learning objective", "evidence", "alternatives", "outcome", "curator"],
-      "outputs": ["reviewable mentorship case and exercise"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "source case",
+        "learning objective",
+        "evidence",
+        "alternatives",
+        "outcome",
+        "curator"
+      ],
+      "outputs": [
+        "reviewable mentorship case and exercise"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
-      "name": "collaboration-impact-receipt",
-      "changes": "confirmed delivery-enabling collaboration into an evidence-backed impact receipt without ranking surveillance or sole-credit claims",
-      "primary_user": "delivery owner or manager",
-      "secondary_audience": ["contributors", "beneficiaries", "engineering leads", "capability curators"],
-      "trigger": "collaboration changed a real delivery state and participants need a confirmable account",
-      "minimum": ["Feature Delivery Case", "before and after state", "evidence", "participant confirmation", "attribution limits", "owner"],
-      "outputs": ["confirmable collaboration impact receipt"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "name": "senior-attention-queue",
+      "changes": "multiple expert requests into an evidence-backed decision queue with minimum context latest-safe timing and delegable preparation",
+      "primary_user": "engineering lead or expert coordinator",
+      "secondary_audience": [
+        "senior engineers",
+        "architects",
+        "product owners",
+        "delivery owners"
+      ],
+      "trigger": "expert requests or critical decisions accumulate and scarce attention must be allocated transparently",
+      "minimum": [
+        "decision requests",
+        "impact",
+        "evidence",
+        "options",
+        "latest-safe times",
+        "decision owners"
+      ],
+      "outputs": [
+        "prioritized expert decision queue and delegation plan"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     }
   ]
 }

@@ -1,24 +1,48 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Run deterministic Feature Delivery Harness MVP evals."""
+"""Run heterogeneous deterministic Lattice conformance evals."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parents[1]
 EVAL_DIR = BASE_DIR / "evals"
 PYTHON = sys.executable
+CASE_CONTRACT = "lat.eval-case.v1"
+CASE_SCHEMA_VERSION = "1.0.0"
+SUPPORTED_CASE_TYPES = {
+    "feature_delivery",
+    "reusable_asset_loop",
+    "synthetic_downstream",
+}
+CASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_]*$")
+CASE_TIMEOUT_SECONDS = 120
+CASE_TYPE_REQUIRED_FILES = {
+    "feature_delivery": {"input.jsonl", "expected.json"},
+    "reusable_asset_loop": {
+        "input.jsonl",
+        "expected_dossier.md",
+    },
+    "synthetic_downstream": {"example.json"},
+}
 
 
 def run(command: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, cwd=BASE_DIR.parent, text=True, capture_output=True)
+    return subprocess.run(
+        command,
+        cwd=BASE_DIR.parent,
+        text=True,
+        capture_output=True,
+        timeout=CASE_TIMEOUT_SECONDS,
+        check=False,
+    )
 
 
 def collect_codes(text: str) -> set[str]:
@@ -128,7 +152,7 @@ def run_expected_code_check(
     return ok
 
 
-def run_case(case_dir: Path) -> tuple[bool, str]:
+def run_feature_delivery_case(case_dir: Path) -> tuple[bool, str]:
     expected = json.loads((case_dir / "expected.json").read_text(encoding="utf-8"))
     input_path = case_dir / "input.jsonl"
     validate_jsonl = run([PYTHON, str(BASE_DIR / "scripts" / "validate_jsonl.py"), str(input_path)])
@@ -280,18 +304,217 @@ def run_case(case_dir: Path) -> tuple[bool, str]:
     return ok, "; ".join(notes) if notes else "ok"
 
 
+def load_case_manifest(case_dir: Path) -> dict[str, object]:
+    path = case_dir / "case.json"
+    if not path.is_file():
+        raise ValueError("missing required case.json")
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"malformed case.json: {exc.msg}") from exc
+    if not isinstance(manifest, dict):
+        raise ValueError("case.json must be an object")
+    required = {
+        "contract",
+        "schema_version",
+        "case_id",
+        "case_type",
+        "required_files",
+    }
+    missing = sorted(required - set(manifest))
+    if missing:
+        raise ValueError("case.json missing fields: " + ", ".join(missing))
+    extra = sorted(set(manifest) - required)
+    if extra:
+        raise ValueError("case.json unknown fields: " + ", ".join(extra))
+    if manifest["contract"] != CASE_CONTRACT:
+        raise ValueError(f"case contract must be {CASE_CONTRACT}")
+    if manifest["schema_version"] != CASE_SCHEMA_VERSION:
+        raise ValueError(
+            f"incompatible case schema version: {manifest['schema_version']}"
+        )
+    if manifest["case_id"] != case_dir.name:
+        raise ValueError("case_id must match the case directory name")
+    if not CASE_ID_RE.fullmatch(str(manifest["case_id"])):
+        raise ValueError("case_id must use lowercase letters, digits, and underscores")
+    case_type = str(manifest["case_type"])
+    if case_type not in SUPPORTED_CASE_TYPES:
+        raise ValueError(f"unknown case_type: {case_type}")
+    required_files = manifest["required_files"]
+    if (
+        not isinstance(required_files, list)
+        or not required_files
+        or any(not isinstance(item, str) or not item for item in required_files)
+    ):
+        raise ValueError("required_files must be a non-empty string array")
+    if len(set(required_files)) != len(required_files):
+        raise ValueError("required_files must not contain duplicates")
+    missing_declarations = sorted(
+        CASE_TYPE_REQUIRED_FILES[case_type] - set(required_files)
+    )
+    if missing_declarations:
+        raise ValueError(
+            f"{case_type} required_files missing declarations: "
+            + ", ".join(missing_declarations)
+        )
+    for relative in required_files:
+        path = Path(relative)
+        if path.is_absolute() or ".." in path.parts:
+            raise ValueError(f"unsafe required file path: {relative}")
+        if not (case_dir / path).is_file():
+            raise ValueError(f"missing required file: {relative}")
+    return manifest
+
+
+def run_reusable_asset_case(case_dir: Path) -> tuple[bool, str]:
+    with tempfile.NamedTemporaryFile(
+        delete=False, suffix=".md"
+    ) as temp_output:
+        out = Path(temp_output.name)
+    try:
+        result = run(
+            [
+                PYTHON,
+                str(BASE_DIR / "scripts" / "run_reusable_asset_loop.py"),
+                str(case_dir / "input.jsonl"),
+                "--out",
+                str(out),
+                "--expected",
+                str(case_dir / "expected_dossier.md"),
+            ]
+        )
+        if result.returncode:
+            return False, result.stderr.strip() or result.stdout.strip()
+        return True, "ok"
+    finally:
+        out.unlink(missing_ok=True)
+
+
+def run_synthetic_downstream_case(case_dir: Path) -> tuple[bool, str]:
+    config = json.loads((case_dir / "example.json").read_text(encoding="utf-8"))
+    if not isinstance(config, dict) or set(config) != {"example_path"}:
+        return False, "example.json must contain only example_path"
+    relative = Path(str(config["example_path"]))
+    if relative.is_absolute() or ".." in relative.parts:
+        return False, "example_path must be a safe repository-relative path"
+    repo_root = BASE_DIR.parent
+    example_root = repo_root / relative
+    runner = example_root / "run_conformance.py"
+    if not runner.is_file():
+        return False, f"synthetic downstream runner missing: {relative}/run_conformance.py"
+    result = run(
+        [
+            PYTHON,
+            str(runner),
+            "--root",
+            str(example_root),
+            "--lattice-root",
+            str(repo_root),
+            "--check",
+        ]
+    )
+    if result.returncode:
+        return False, result.stderr.strip() or result.stdout.strip()
+    return True, "ok"
+
+
+def dispatch_case(case_dir: Path) -> tuple[bool, str, str]:
+    try:
+        manifest = load_case_manifest(case_dir)
+    except (OSError, ValueError) as exc:
+        return False, str(exc), "unknown"
+    case_type = str(manifest["case_type"])
+    try:
+        if case_type == "feature_delivery":
+            ok, note = run_feature_delivery_case(case_dir)
+        elif case_type == "reusable_asset_loop":
+            ok, note = run_reusable_asset_case(case_dir)
+        elif case_type == "synthetic_downstream":
+            ok, note = run_synthetic_downstream_case(case_dir)
+        else:
+            return False, f"unknown case_type: {case_type}", case_type
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        json.JSONDecodeError,
+        subprocess.TimeoutExpired,
+    ) as exc:
+        return False, f"{case_type} handler failed: {exc}", case_type
+    return ok, note, case_type
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case", help="Optional single eval case name.")
+    parser.add_argument(
+        "--eval-dir",
+        default=str(EVAL_DIR),
+        help="Eval directory. Defaults to the repository conformance cases.",
+    )
+    parser.add_argument(
+        "--summary-out",
+        default=str(BASE_DIR / "reports" / "generated" / "conformance-summary.json"),
+        help="Machine-readable validation summary.",
+    )
     args = parser.parse_args()
-    cases = [EVAL_DIR / args.case] if args.case else sorted(path for path in EVAL_DIR.iterdir() if path.is_dir())
-    failed = 0
+    eval_dir = Path(args.eval_dir)
+    results: list[dict[str, object]] = []
+    if not eval_dir.is_dir():
+        cases: list[Path] = []
+        results.append(
+            {
+                "case_id": "eval_directory",
+                "case_type": "unknown",
+                "status": "fail",
+                "note": f"eval directory does not exist: {eval_dir}",
+            }
+        )
+    else:
+        cases = (
+            [eval_dir / args.case]
+            if args.case
+            else sorted(path for path in eval_dir.iterdir() if path.is_dir())
+        )
+        if not cases:
+            results.append(
+                {
+                    "case_id": "eval_directory",
+                    "case_type": "unknown",
+                    "status": "fail",
+                    "note": f"eval directory contains no case directories: {eval_dir}",
+                }
+            )
     for case in cases:
-        ok, note = run_case(case)
+        if not case.is_dir():
+            ok, note, case_type = False, "case directory does not exist", "unknown"
+        else:
+            ok, note, case_type = dispatch_case(case)
         status = "PASS" if ok else "FAIL"
         print(f"{status} {case.name}: {note}")
-        if not ok:
-            failed += 1
+        results.append(
+            {
+                "case_id": case.name,
+                "case_type": case_type,
+                "status": status.lower(),
+                "note": note,
+            }
+        )
+    failed = sum(item["status"] == "fail" for item in results)
+    summary = {
+        "contract": "lat.conformance-summary.v1",
+        "schema_version": "1.0.0",
+        "total": len(results),
+        "passed": len(results) - failed,
+        "failed": failed,
+        "results": results,
+    }
+    summary_path = Path(args.summary_out)
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(f"wrote conformance summary to {summary_path}")
     return 1 if failed else 0
 
 

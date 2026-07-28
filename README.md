@@ -1,6 +1,10 @@
 # Lattice
 
-Lattice is a public, generic AI capability control-plane workspace for repo-native agents, skills, registries, validators, and runtime adapter contracts.
+Lattice is a public, evidence-grounded delivery capability reference and governance repository.
+
+It publishes reusable Skills, schemas, validators, reference workflows, capability profiles, templates, and synthetic conformance fixtures. Private downstream repositories pin these public contracts to collect real delivery evidence, evolve reusable capability assets, and generate manager-ready deliverables without exposing private business context.
+
+Lattice does **not** store real company logic, source code, tickets, pull requests, incidents, reviews, employee feedback, delivery traces, adoption data, ROI, or manager-ready business materials.
 
 License: Apache-2.0.
 
@@ -10,163 +14,151 @@ project_id = lattice
 namespace = lat
 ```
 
-## Scope
-
-This phase keeps the existing Skill Rewrite / Skill Refactor System and adds an executable capability-control-plane MVP for generic agents, skills, workspaces, MCP records, knowledge packs, validation, and deterministic runtime rendering contracts.
-
-Skill refactor pipeline:
+## Operating Boundary
 
 ```text
-old Markdown skill -> ConPort-first retrieval -> inventory -> classification -> token-friendly rewrite plan -> optimized SKILL.md -> moved content plan -> validation report
+Public Lattice
+  contracts / Skills / schemas / validators / templates / synthetic fixtures
+                                |
+                                | pinned tag or commit
+                                v
+Private downstream repository
+  real feature_delivery_case / private evidence / private extensions
+  reusable asset evolution / human review / manager-ready asset packs
 ```
 
-Governance pipeline:
+The Feature Delivery Case (`feature_delivery_case`) is the primary user-value and evidence boundary. Jira, Issue, PR, commit, CI, review, merge, and release records are evidence; they are not the final value unit.
 
-```text
-candidate skill -> registry record -> trigger eval -> output eval -> validator -> release recommendation
-```
+Read the [Public–Private Operating Model](docs/public-private-operating-model.md), [Downstream Private Repository Contract](docs/downstream-private-repository-contract.md), and [Manager Credibility Contract](docs/manager-credibility-contract.md) before integrating Lattice.
 
-Capability-control-plane pipeline:
+## Capability Portfolio
 
-```text
-registry metadata -> generic agent -> workspace manifest -> selected skills/MCP/knowledge -> adapter render plan -> install manifest -> validation
-```
+Do not discover Lattice through a hand-maintained shortlist of Skills. Use native runtime discovery first, then the smallest relevant registry projection:
 
-MVP in this repo:
+| Portfolio view | Capability type | Version source | Status source | Entry |
+|---|---|---|---|---|
+| Canonical portfolio | Atomic, selector, workflow, profile, projection, validator, template, or governance contract | `registry/capability-manifest.json` | `registry/capability-manifest.json` | `registry/capability-manifest.json` |
+| Skill context projection | Public Skill packages | Canonical manifest | Canonical manifest | `registry/skill-context.catalog.json` |
+| Agent context projection | Public Agent packages | Canonical manifest | Canonical manifest | `registry/agent-context.catalog.json` |
+| Cross-runtime projection | Agent, Skill, MCP, knowledge pack, or workspace template | Canonical manifest | Canonical manifest | `registry/capabilities.index.jsonl` |
+| Fallback routing | Selector compatibility entry | Referenced Skill version | Routing policy | `registry/capability-routing.index.jsonl` |
+| Workflow/Profile extensions | Reference workflow or capability profile | Owning public capability version | Owning public capability status | `registry/skill-context.extensions/` |
 
-```text
-generic agent schema
-workspace template schema
-MCP registry schema
-knowledge-pack registry schema
-render manifest schema
-agent validator
-workspace manifest validator
-MCP registry validator
-global overinstall detector
-seed pr-reviewer and python-expert agents
-seed PR review workspace template
-```
+The role definitions are normative in [Capability Taxonomy](docs/capability-taxonomy.md). Registry files are deterministic compatibility projections generated from the canonical manifest; legacy `status` fields remain for compatibility while `public_package_status` controls dependency readiness.
 
-Deferred: full renderers, installer CLI, remote registry service, UI, GraphDB, automatic orchestration, and non-MVP runtime adapters.
-
-## Current Skills
-
-- `skills/lattice-governor`: public Lattice governance skill for skill registry design, trigger/output evals, token-efficient refactor plans, validator workflows, and release gates.
-- `skills/vscode-workspace-ai-context`: public VS Code workspace AI context skill for supported instruction and skill discovery settings.
-
-## Capability Control Plane
-
-Canonical sources:
-
-```text
-agents/<agent-name>/agent.json
-agents/<agent-name>/<agent-name>.agent.md
-workspaces/templates/*.json
-registry/*.index.jsonl
-schemas/capability/*.schema.json
-```
-
-Core registries:
-
-```text
-registry/skills.index.jsonl
-registry/agents.index.jsonl
-registry/capabilities.index.jsonl
-registry/mcp_servers.index.jsonl
-registry/knowledge_packs.index.jsonl
-registry/workspace_templates.index.jsonl
-registry/release_log.jsonl
-```
-
-Rules:
-
-```text
-agents are generic role packages, not feature or ticket context
-workspace manifests hold scenario-specific repo context
-runtime configs are rendered outputs unless explicitly marked source
-MCP exposure requires explicit toolsets and approval policy
-global installs must not expose all skills, tools, or knowledge by default
-public Lattice records must not contain private downstream context
-```
-
-## Revision 1 Rules
-
-Current policy enforces:
-
-```text
-preserve existing frontmatter schemas during refactor
-do not add use_when or do_not_use_when YAML fields
-put when-to-use and when-not-to-use guidance inside description
-query ConPort before loading or searching full skill text
-prioritize machine readability over human readability in control planes
-define token efficiency as quality-adjusted output per token cost
-use stable prompt prefixes to improve token caching and batch repeatability
-```
-
-## Format Policy
-
-Use `docs/skill_format_policy.md` as the source of truth.
-
-Core routing:
-
-```text
-Always-loaded project rules | Markdown container + compact rule manifest
-Skill control plane | SKILL.md + references/scripts/schemas/evals
-Agent handoff | JSONL + JSON Schema
-Tool/function input/output | JSON Schema / Structured Outputs
-Runtime event log | Append-only JSONL
-Bulk context into LLM | LATPACK / schema-once compact rows
-Manager report | Markdown
-```
-
-Markdown is allowed for instructions, module contracts, `SKILL.md`, references, architecture notes, and manager-facing reports. It is not appropriate for raw logs, telemetry dumps, token records, event ledgers, or bulk machine records.
-
-Human-readable prose is not required by default in control planes. Use compact rule lines and structured blocks when precision matters.
-
-Skill refactor agents must prefer:
-
-```text
-ConPort MCP -> targeted source file read -> broader file search
-```
-
-Local scripts remain dependency-light and work without ConPort.
-
-## Quickstart
-
-Recommended interpreter: Python 3.14.6.
+Current inventory and context validation:
 
 ```bash
-python3.14 scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
-python3.14 scripts/validate_skill_package.py --root skills
-python3.14 scripts/generate_skill_refactor_report.py --inventory skill_inventory.jsonl --out skill_quality_report.md
+python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
+python scripts/validate_skill_package.py --root skills
+python scripts/validate_capability_context.py --root .
+python scripts/generate_capability_registry_projections.py --root . --check
+python scripts/validate_capability_manifest.py --root .
+python scripts/validate_public_private_boundary.py --root .
+python scripts/validate_capability_routing.py --root .
 ```
 
-Optional token estimate:
+## Downstream Quickstart
+
+1. Pin Lattice by immutable tag or commit SHA. A floating `main` reference is invalid.
+
+   ```bash
+   git submodule add https://github.com/aurora-atoms/lattice.git vendor/lattice
+   git -C vendor/lattice checkout <tag-or-full-commit-sha>
+   ```
+
+2. Copy the [private repository templates](templates/private-repository/) and create a downstream consumer manifest. Record the immutable Lattice ref and commit, contract versions, the smallest selected Capability Profile, explicit public capabilities, private extensions, local evidence paths, manager projection, validation commands, and compatibility policy.
+
+3. Create one real `feature_delivery_case` in the private repository. Keep real source, Jira, PR, CI, incident, review, secrets, and business context local.
+
+4. Collect a bounded Evidence Pack. Classify claims as `OBSERVED`, `DERIVED`, `JUDGED`, or `UNKNOWN`; attach evidence references and preserve limitations and human challenge.
+
+5. Run the pinned public validators locally against private paths. They perform no network calls or evidence upload:
+
+   ```bash
+   python vendor/lattice/scripts/validate_downstream_consumer.py \
+     downstream-consumer-manifest.json \
+     --lattice-root vendor/lattice \
+     --consumer-root .
+   python vendor/lattice/scripts/validate_delivery_asset_pack.py \
+     private/manager-ready-delivery-asset-pack \
+     --lattice-root vendor/lattice
+   python vendor/lattice/scripts/validate_manager_claims.py \
+     private/manager-ready-delivery-asset-pack/manager-brief.json \
+     --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl \
+     --rendered-brief private/manager-ready-delivery-asset-pack/manager-brief.md
+   ```
+
+6. Generate a **Manager-Ready Delivery Asset Pack** in the private repository. Review it against the Manager Credibility Contract before sharing it.
+
+7. On a Lattice upgrade, rerun schema, capability-version, extension, evidence, asset-pack, manager-claim, and compatibility checks before changing the pin.
+
+PR 3 provides the downstream schemas, templates, and validator CLIs. PR 4 adds the [generated synthetic downstream consumer](examples/synthetic-private-consumer/), golden asset-pack comparison, and complete heterogeneous runner. The [PR 31 review hardening](docs/migrations/pr31-review-hardening.md) closes cross-file, rendered-wording, report, pin, and empty-suite gaps found during pre-merge review. These establish public conformance only and must not be represented as real adoption or business value.
+
+Run the complete public conformance suite:
 
 ```bash
-python3.14 scripts/estimate_skill_tokens.py --root skills
+python feature-delivery-harness-mvp/scripts/run_mvp_evals.py \
+  --summary-out conformance-summary.json
 ```
 
-Capability-control-plane validation:
+For a real private implementation, follow the [Private Repository Delivery Asset Pack Guide](docs/private-repository-delivery-asset-pack-guide.md).
 
-```bash
-python3.14 scripts/validate_agent.py --root .
-python3.14 scripts/validate_workspace_manifest.py --root .
-python3.14 scripts/validate_mcp_registry.py --root .
-python3.14 scripts/detect_global_overinstall.py --root .
+## Public Package and Private Adoption Lifecycles
+
+These are separate concepts:
+
+```text
+public_package_status =
+  draft | contract_validated | conformance_validated | released | deprecated
+
+downstream_adoption_status =
+  not_observed | imported | task_scoped | used_once | reused | team_available | deprecated
 ```
 
-## Registry
+Public synthetic fixtures use:
 
-Public skill records live in `registry/skills.index.jsonl`. Public records must not contain private downstream project context.
+```text
+simulation_status = synthetic_reference
+downstream_adoption_status = not_observed
+```
 
-Public capability records extend this with agents, MCP servers, knowledge packs, workspace templates, and a denormalized `capabilities.index.jsonl` search surface. Existing skill registry records remain compatible.
+Synthetic conformance cannot establish private use, reuse, team availability, manager acceptance, or business value. The canonical manifest, lifecycle schemas, registry projections, fixture markers, and parity validation enforce this separation.
 
-## Outputs
+## Reference Workflows and Profiles
 
-`skill_inventory.jsonl` contains one JSON record per detected skill package.
+Lattice keeps complex delivery flows out of mega Skills. The portfolio distinguishes:
 
-`skill_quality_report.md` summarizes largest skills, missing sections, risk flags, top refactor candidates, and review queue items.
+```text
+reference workflow
+capability profile
+selector entry
+atomic capabilities
+schemas
+validators
+templates
+```
 
-Validation exits nonzero when package errors are found and prints warnings for token-risk patterns.
+The initial logical families are Experience-to-Asset, Feature Understanding, Manager Evidence Projection, and Reusable Asset Review. They compose existing capabilities and preserve the boundaries of Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, and DeliveryYield. DeliveryYield may provide evidence signals; it does not approve delivery or asset promotion.
+
+## Repository Navigation
+
+```text
+skills/                         public capability packages
+agents/                         public Agent packages
+registry/                       discovery and compatibility projections
+registry/capability-manifest.json canonical public capability identity source
+schemas/                        public machine contracts
+feature-delivery-harness-mvp/   Feature Delivery Case conformance testbed
+templates/                      public-safe authoring templates
+examples/                       synthetic examples only
+scripts/                        deterministic validators and projections
+tests/                          positive, negative, and compatibility tests
+docs/                           operating, governance, and migration contracts
+```
+
+## Release and Compatibility
+
+Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md), [PR 3 Downstream Contract Note](docs/migrations/downstream-contracts-pr3.md), and [PR 4 Synthetic Consumer Note](docs/migrations/synthetic-private-consumer-pr4.md).
+
+No registry score, green CI run, synthetic fixture, Skill count, PR count, or token count proves private business value. Human owners retain authority over private evidence, architecture, security, compliance, asset promotion, manager wording, merge, release, deployment, and production decisions.

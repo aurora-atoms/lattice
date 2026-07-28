@@ -1,0 +1,1 @@
+{"contract":"lat.eval-case.v1","schema_version":"1.0.0","case_id":"good_feature_case_001","case_type":"feature_delivery","required_files":["input.jsonl","expected.json","expected_dossier.md"]}

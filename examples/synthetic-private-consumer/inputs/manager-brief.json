@@ -1,0 +1,216 @@
+{
+  "contract": "lat.manager-delivery-brief.v1",
+  "contract_version": "1.0.0",
+  "brief_id": "SYNTHETIC-BRIEF-001",
+  "asset_pack_id": "SYNTHETIC-PACK-001",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "evidence_origin": "synthetic",
+  "scope": "synthetic_fdc_dangling_ref_001",
+  "version": "1.0.0",
+  "claims": [
+    {
+      "claim_id": "CLAIM-CURRENT",
+      "classification": "OBSERVED",
+      "claim_kind": "current_delivery",
+      "statement": "The synthetic case produces a local validator failure for a dangling evidence reference.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-VALIDATOR"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": [
+        "This is synthetic contract evidence, not a real delivery result."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-ASSET",
+      "classification": "OBSERVED",
+      "claim_kind": "reusable_asset",
+      "statement": "The case leaves a versioned dangling-evidence-reference guard candidate.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-PR-REVIEW",
+        "EV-ASSET-REVIEW"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": [
+        "The candidate has no real usage observation."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-BEFORE",
+      "classification": "OBSERVED",
+      "claim_kind": "before_state",
+      "statement": "Before the guard, the mutated synthetic claim referenced a missing evidence record.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-PR-REVIEW"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": [
+        "The baseline is an intentionally malformed synthetic mutation."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-AFTER",
+      "classification": "DERIVED",
+      "claim_kind": "after_state",
+      "statement": "After the guard, the same mutation fails before a manager brief can be treated as conformant.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-PR-REVIEW",
+        "EV-VALIDATOR"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": "Compare the validator result before and after resolving the evidence-reference rule.",
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": [
+        "Only deterministic fixture behavior was compared."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-CHALLENGE",
+      "classification": "OBSERVED",
+      "claim_kind": "human_challenge",
+      "statement": "A simulated reviewer challenged wording that implied real usefulness.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-ASSET-REVIEW"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": null,
+      "limitations": [
+        "The reviewer is synthetic and proves only that the workflow accepts challenge records."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-NEXT",
+      "classification": "JUDGED",
+      "claim_kind": "next_use",
+      "statement": "The next valid step is one bounded private case with local evidence and accountable human review.",
+      "presentation": "qualified",
+      "evidence_refs": [
+        "EV-ASSET-REVIEW"
+      ],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": "synthetic-reviewer",
+      "unknown_reason": null,
+      "limitations": [
+        "A private owner must decide whether that trial is appropriate."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-REUSE",
+      "classification": "UNKNOWN",
+      "claim_kind": "reuse",
+      "statement": "No second real use has been observed.",
+      "presentation": "unknown",
+      "evidence_refs": [],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": "Public synthetic conformance contains no real usage observations.",
+      "limitations": [
+        "Reuse is not established."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-TEAM",
+      "classification": "UNKNOWN",
+      "claim_kind": "team_adoption",
+      "statement": "Team availability is not established.",
+      "presentation": "unknown",
+      "evidence_refs": [],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": "There is no real private governance approval.",
+      "limitations": [
+        "A single synthetic case cannot establish team adoption."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-MANAGER",
+      "classification": "UNKNOWN",
+      "claim_kind": "manager_acceptance",
+      "statement": "Manager acceptance is not established.",
+      "presentation": "unknown",
+      "evidence_refs": [],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": "No real manager received or accepted this synthetic brief.",
+      "limitations": [
+        "This brief is a conformance fixture only."
+      ],
+      "approval_authority": null
+    },
+    {
+      "claim_id": "CLAIM-ROI",
+      "classification": "UNKNOWN",
+      "claim_kind": "roi",
+      "statement": "ROI and success rate are not established.",
+      "presentation": "unknown",
+      "evidence_refs": [],
+      "evidence_origin": "synthetic",
+      "scope": "synthetic_fdc_dangling_ref_001",
+      "method": null,
+      "judgment_owner": null,
+      "unknown_reason": "Synthetic conformance contains no real cost, outcome, or adoption evidence.",
+      "limitations": [
+        "No numeric ROI may be inferred."
+      ],
+      "approval_authority": null
+    }
+  ],
+  "human_challenge": {
+    "challenge_present": true,
+    "challenger_role": "synthetic reviewer",
+    "challenge_summary": "The draft implied that passing conformance demonstrated real usefulness.",
+    "resulting_change_or_open_issue": "Wording was narrowed to contract behavior; real value remains UNKNOWN.",
+    "review_ref": "EV-ASSET-REVIEW"
+  },
+  "known_limitations": [
+    "All evidence and review records are synthetic.",
+    "No real use, reuse, team availability, manager acceptance, ROI, or business value is established."
+  ],
+  "unresolved_unknowns": [
+    "Whether the guard improves one real private delivery remains unknown.",
+    "Whether a second independent use will occur remains unknown."
+  ],
+  "next_use_entry": "In a private repository, replace synthetic records with one bounded real Feature Delivery Case, retain evidence locally, obtain accountable review, and rerun the pinned validators.",
+  "manager_decision": "Decide only whether to authorize one bounded private trial; do not approve team-wide adoption.",
+  "human_review_ref": null,
+  "governance_approval_ref": null
+}

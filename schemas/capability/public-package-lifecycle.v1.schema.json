@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/public-package-lifecycle.v1.schema.json",
+  "title": "Public Capability Package Lifecycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capability_id",
+    "public_package_status",
+    "evidence_refs",
+    "review_ref"
+  ],
+  "properties": {
+    "capability_id": {
+      "type": "string",
+      "pattern": "^(skill|agent|mcp|knowledge|workspace):[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "public_package_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "contract_validated",
+        "conformance_validated",
+        "released",
+        "deprecated"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deprecated_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

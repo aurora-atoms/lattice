@@ -1,0 +1,25 @@
+{
+  "asset_id": "dangling-evidence-ref-guard",
+  "asset_version": "1.0.0",
+  "asset_type": "validator-rule",
+  "feature_delivery_case_id": "synthetic_fdc_dangling_ref_001",
+  "created_from_contribution_refs": [
+    "CONTRIB-PR-REVIEW-001"
+  ],
+  "problem_addressed": "Manager claims can overstate evidence when a referenced record is missing.",
+  "scope": "Manager-Ready Delivery Asset Pack claim validation.",
+  "out_of_scope": [
+    "real manager approval",
+    "public evidence storage",
+    "automatic promotion"
+  ],
+  "activation_mode": "never_by_default",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "owner": "synthetic-case-owner",
+  "known_limitations": [
+    "Validated only against synthetic contract fixtures.",
+    "No real downstream use or reuse is established."
+  ],
+  "next_use_entry": "Run against one bounded private asset pack and retain the result locally."
+}

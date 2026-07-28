@@ -1,0 +1,81 @@
+{
+  "contract": "lat.conformance-summary.v1",
+  "failed": 0,
+  "passed": 12,
+  "results": [
+    {
+      "case_id": "blocked_dependency_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "dangling_evidence_ref_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "failed_delivery_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "good_feature_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "missing_evidence_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "missing_manual_acceptance_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "oversized_context_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "promotion_candidate_no_auto_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "reusable_asset_loop_case_001",
+      "case_type": "reusable_asset_loop",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "synthetic_downstream_case_001",
+      "case_type": "synthetic_downstream",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "vague_spec_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    },
+    {
+      "case_id": "validation_failed_status_case_001",
+      "case_type": "feature_delivery",
+      "note": "ok",
+      "status": "pass"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "total": 12
+}

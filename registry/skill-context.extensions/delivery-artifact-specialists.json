@@ -5,81 +5,237 @@
       "name": "delivery-artifact-builder",
       "changes": "a bounded delivery artifact need into the smallest evidence-linked lifecycle specialist and editable artifact",
       "primary_user": "delivery-artifact agent",
-      "secondary_audience": ["product owners", "developers", "reviewers", "QA", "release managers", "engineering managers"],
+      "secondary_audience": [
+        "product owners",
+        "developers",
+        "reviewers",
+        "QA",
+        "release managers",
+        "engineering managers"
+      ],
       "trigger": "a ticket implementation review test readiness or release artifact is required",
-      "minimum": ["bounded Feature Delivery Case or change", "lifecycle stage and next gate", "audience and decision need", "owners", "permission boundary", "evidence"],
-      "outputs": ["specialist selection and editable evidence-linked delivery artifact"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "ticket-ready-package",
-      "changes": "requirements and delivery context into confirmed and proposed goals non-goals acceptance impact risks tests questions and ticket splits",
-      "primary_user": "ticket readiness agent",
-      "secondary_audience": ["product owners", "developers", "reviewers", "delivery owners"],
-      "trigger": "a requirement is new ambiguous stalled or not ready for implementation",
-      "minimum": ["bounded requirement or Feature Delivery Case", "authoritative sources", "domain and system context", "owners", "deadlines", "evidence"],
-      "outputs": ["Ticket Ready Package and explicit readiness gaps"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "implementation-plan",
-      "changes": "approved ticket scope and system evidence into work decomposition dependencies critical path validation parallel work and expert decisions",
-      "primary_user": "implementation planning agent",
-      "secondary_audience": ["developers", "technical leads", "reviewers", "delivery owners"],
-      "trigger": "approved work is complex cross-module multi-contributor or requires sequencing and coordination",
-      "minimum": ["confirmed Ticket Ready Package", "Feature Delivery Case", "system and code maps", "constraints", "dependencies", "owners", "evidence"],
-      "outputs": ["editable implementation plan and explicit planning gaps"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "reviewer-rehearsal",
-      "changes": "a proposed change and governing evidence into material reviewer challenges missing evidence and author actions",
-      "primary_user": "review preparation agent",
-      "secondary_audience": ["PR authors", "reviewers", "architects", "quality owners"],
-      "trigger": "a complex important cross-boundary or high-risk change is preparing for review",
-      "minimum": ["bounded change or diff", "ticket and plan", "architecture and domain context", "test evidence", "risks", "owners"],
-      "outputs": ["reviewer challenge rehearsal and evidence completion actions"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "pr-ready-package",
-      "changes": "a code change and delivery evidence into an editable review package covering intent rationale impact acceptance tests risks monitoring rollback and gaps",
-      "primary_user": "PR readiness agent",
-      "secondary_audience": ["PR authors", "reviewers", "QA", "product owners", "future maintainers"],
-      "trigger": "a change is preparing to request review or an existing PR lacks delivery context and evidence",
-      "minimum": ["bounded diff or branch", "ticket and acceptance", "implementation plan", "decisions", "tests", "risks", "owners"],
-      "outputs": ["PR Ready Package and unresolved review gaps"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "test-asset-package",
-      "changes": "acceptance risk implementation and defect evidence into focused executable validation assets and coverage gaps",
-      "primary_user": "test asset agent",
-      "secondary_audience": ["developers", "QA", "reviewers", "release owners"],
-      "trigger": "critical behavior needs executable validation during implementation bug fixing review or release preparation",
-      "minimum": ["Feature Delivery Case", "acceptance criteria", "code or design evidence", "existing tests", "risks", "environments", "owners"],
-      "outputs": ["Test Asset Package and explicit validation gaps"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "bounded Feature Delivery Case or change",
+        "lifecycle stage and next gate",
+        "audience and decision need",
+        "owners",
+        "permission boundary",
+        "evidence"
+      ],
+      "outputs": [
+        "specialist selection and editable evidence-linked delivery artifact"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "delivery-readiness-card",
       "changes": "feature lifecycle evidence into a scoped status card showing goal current state gaps launch risks evidence next actions and owners",
       "primary_user": "delivery readiness agent",
-      "secondary_audience": ["delivery teams", "release owners", "engineering managers", "product owners", "cross-team owners"],
+      "secondary_audience": [
+        "delivery teams",
+        "release owners",
+        "engineering managers",
+        "product owners",
+        "cross-team owners"
+      ],
       "trigger": "a milestone release candidate management review or handoff needs a clear statement of what remains before delivery",
-      "minimum": ["Feature Delivery Case", "target gate", "ticket and PR evidence", "tests", "risks", "dependencies", "decisions", "owners"],
-      "outputs": ["Delivery Readiness Card and explicit delivery gaps"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "Feature Delivery Case",
+        "target gate",
+        "ticket and PR evidence",
+        "tests",
+        "risks",
+        "dependencies",
+        "decisions",
+        "owners"
+      ],
+      "outputs": [
+        "Delivery Readiness Card and explicit delivery gaps"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "implementation-plan",
+      "changes": "approved ticket scope and system evidence into work decomposition dependencies critical path validation parallel work and expert decisions",
+      "primary_user": "implementation planning agent",
+      "secondary_audience": [
+        "developers",
+        "technical leads",
+        "reviewers",
+        "delivery owners"
+      ],
+      "trigger": "approved work is complex cross-module multi-contributor or requires sequencing and coordination",
+      "minimum": [
+        "confirmed Ticket Ready Package",
+        "Feature Delivery Case",
+        "system and code maps",
+        "constraints",
+        "dependencies",
+        "owners",
+        "evidence"
+      ],
+      "outputs": [
+        "editable implementation plan and explicit planning gaps"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "pr-ready-package",
+      "changes": "a code change and delivery evidence into an editable review package covering intent rationale impact acceptance tests risks monitoring rollback and gaps",
+      "primary_user": "PR readiness agent",
+      "secondary_audience": [
+        "PR authors",
+        "reviewers",
+        "QA",
+        "product owners",
+        "future maintainers"
+      ],
+      "trigger": "a change is preparing to request review or an existing PR lacks delivery context and evidence",
+      "minimum": [
+        "bounded diff or branch",
+        "ticket and acceptance",
+        "implementation plan",
+        "decisions",
+        "tests",
+        "risks",
+        "owners"
+      ],
+      "outputs": [
+        "PR Ready Package and unresolved review gaps"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "pr-to-release-summary",
       "changes": "merged or release-candidate change evidence into cross-role release validation rollout rollback limitation support and operations information",
       "primary_user": "release communication agent",
-      "secondary_audience": ["QA", "product owners", "support", "operations", "release managers", "affected teams"],
+      "secondary_audience": [
+        "QA",
+        "product owners",
+        "support",
+        "operations",
+        "release managers",
+        "affected teams"
+      ],
       "trigger": "a PR is merged a release candidate exists or release and support communication is being prepared",
-      "minimum": ["Feature Delivery Case", "PR Ready Package or merged diff", "tests", "configuration and user impact", "rollout and rollback", "owners", "audience"],
-      "outputs": ["editable PR-to-Release Summary with sensitive details filtered"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "Feature Delivery Case",
+        "PR Ready Package or merged diff",
+        "tests",
+        "configuration and user impact",
+        "rollout and rollback",
+        "owners",
+        "audience"
+      ],
+      "outputs": [
+        "editable PR-to-Release Summary with sensitive details filtered"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "reviewer-rehearsal",
+      "changes": "a proposed change and governing evidence into material reviewer challenges missing evidence and author actions",
+      "primary_user": "review preparation agent",
+      "secondary_audience": [
+        "PR authors",
+        "reviewers",
+        "architects",
+        "quality owners"
+      ],
+      "trigger": "a complex important cross-boundary or high-risk change is preparing for review",
+      "minimum": [
+        "bounded change or diff",
+        "ticket and plan",
+        "architecture and domain context",
+        "test evidence",
+        "risks",
+        "owners"
+      ],
+      "outputs": [
+        "reviewer challenge rehearsal and evidence completion actions"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "test-asset-package",
+      "changes": "acceptance risk implementation and defect evidence into focused executable validation assets and coverage gaps",
+      "primary_user": "test asset agent",
+      "secondary_audience": [
+        "developers",
+        "QA",
+        "reviewers",
+        "release owners"
+      ],
+      "trigger": "critical behavior needs executable validation during implementation bug fixing review or release preparation",
+      "minimum": [
+        "Feature Delivery Case",
+        "acceptance criteria",
+        "code or design evidence",
+        "existing tests",
+        "risks",
+        "environments",
+        "owners"
+      ],
+      "outputs": [
+        "Test Asset Package and explicit validation gaps"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "ticket-ready-package",
+      "changes": "requirements and delivery context into confirmed and proposed goals non-goals acceptance impact risks tests questions and ticket splits",
+      "primary_user": "ticket readiness agent",
+      "secondary_audience": [
+        "product owners",
+        "developers",
+        "reviewers",
+        "delivery owners"
+      ],
+      "trigger": "a requirement is new ambiguous stalled or not ready for implementation",
+      "minimum": [
+        "bounded requirement or Feature Delivery Case",
+        "authoritative sources",
+        "domain and system context",
+        "owners",
+        "deadlines",
+        "evidence"
+      ],
+      "outputs": [
+        "Ticket Ready Package and explicit readiness gaps"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     }
   ]
 }

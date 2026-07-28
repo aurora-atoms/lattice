@@ -1,0 +1,64 @@
+{
+  "contract": "lat.downstream-consumer-manifest.v1",
+  "contract_version": "1.0.0",
+  "consumer_id": "replace.private-consumer",
+  "consumer_repository": {
+    "repository_id": "REPLACE_PRIVATE_REPOSITORY_ID",
+    "visibility": "private"
+  },
+  "simulation_status": "real_downstream",
+  "lattice_source": {
+    "repository": "https://github.com/aurora-atoms/lattice.git",
+    "ref": "REPLACE_WITH_IMMUTABLE_SEMVER_TAG_OR_FULL_SHA",
+    "commit_sha": "REPLACE_WITH_FULL_40_CHARACTER_COMMIT_SHA"
+  },
+  "contract_versions": {
+    "lat.canonical-capability-manifest.v1": "1.0.0",
+    "lat.downstream-adoption-lifecycle.v1": "1.0.0",
+    "lat.downstream-consumer-manifest.v1": "1.0.0",
+    "lat.private-capability-extension.v1": "1.0.0",
+    "lat.delivery-asset-pack-validation-report.v1": "1.0.0",
+    "lat.delivery-evidence-asset-pack.v1": "1.0.0",
+    "lat.evidence-claim.v1": "1.0.0",
+    "lat.manager-delivery-brief.v1": "1.0.0"
+  },
+  "capability_profiles": [
+    {
+      "capability_id": "workspace:pr-review-template@1.0.0",
+      "purpose": "REPLACE_WITH_BOUNDED_TASK_PURPOSE"
+    }
+  ],
+  "public_capabilities": [
+    {
+      "capability_id": "skill:lattice-governor@1.2.0",
+      "purpose": "Validate the public governance boundary"
+    }
+  ],
+  "private_extensions": [
+    {
+      "extension_id": "private:replace/governance@1.0.0",
+      "manifest_path": "private-capability-extension.json"
+    }
+  ],
+  "evidence_storage": {
+    "root": "private/evidence",
+    "classification": "real_restricted",
+    "public_upload_prohibited": true
+  },
+  "manager_projection": {
+    "asset_pack_root": "private/manager-ready-delivery-asset-pack",
+    "brief_path": "private/manager-ready-delivery-asset-pack/manager-brief.json",
+    "human_review_required": true
+  },
+  "validation_commands": [
+    "python vendor/lattice/scripts/validate_downstream_consumer.py downstream-consumer-manifest.json --lattice-root vendor/lattice --consumer-root .",
+    "python vendor/lattice/scripts/validate_delivery_asset_pack.py private/manager-ready-delivery-asset-pack --lattice-root vendor/lattice",
+    "python vendor/lattice/scripts/validate_manager_claims.py private/manager-ready-delivery-asset-pack/manager-brief.json --evidence-ledger private/manager-ready-delivery-asset-pack/evidence-ledger.jsonl --rendered-brief private/manager-ready-delivery-asset-pack/manager-brief.md"
+  ],
+  "compatibility_policy": {
+    "missing_capability": "fail",
+    "deprecated_capability": "human_review",
+    "major_version_change": "human_review",
+    "authority_change": "human_review"
+  }
+}

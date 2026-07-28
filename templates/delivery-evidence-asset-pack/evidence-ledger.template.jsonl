@@ -1,0 +1,1 @@
+{"evidence_id":"SYNTHETIC-EVIDENCE-1","evidence_type":"validation","source_ref":"synthetic://replace","relation":"supports","observed_at":"REPLACE_WITH_DATE_TIME","source_authority":"synthetic fixture","evidence_origin":"synthetic","feature_delivery_case_id":"SYNTHETIC-CASE-ID","summary":"Replace with a bounded local evidence summary.","integrity_sha256":null}

@@ -25,15 +25,35 @@ class ReusableAssetLoopTests(unittest.TestCase):
         dossier = MODULE.render_dossier(records)
         self.assertIn("# Reusable Asset Dossier v0.1", dossier)
         self.assertIn("Decision: `approved`", dossier)
-        self.assertIn("Activation: `task_scoped`", dossier)
+        self.assertIn("Activation: `never_by_default`", dossier)
+        self.assertIn("Downstream adoption: `not_observed`", dossier)
+        self.assertIn("Simulation: `synthetic_reference`", dossier)
 
     def test_unapproved_candidate_cannot_be_task_scoped_or_used(self) -> None:
         records = self.records()
         review = next(item for item in records if item["type"] == "reusable_asset.review")
+        candidate = next(item for item in records if item["type"] == "reusable_asset.candidate")
         review["payload"]["decision"] = "needs_changes"
+        candidate["payload"]["activation_mode"] = "task_scoped"
+        candidate["payload"]["current_status"] = "used_once"
         errors = MODULE.validate(records)
         self.assertTrue(any("never_by_default" in item for item in errors))
         self.assertTrue(any("cannot claim qualified or used maturity" in item for item in errors))
+
+    def test_synthetic_candidate_cannot_claim_used_once(self) -> None:
+        records = self.records()
+        candidate = next(item for item in records if item["type"] == "reusable_asset.candidate")
+        candidate["payload"]["current_status"] = "used_once"
+        candidate["payload"]["downstream_adoption_status"] = "used_once"
+        errors = MODULE.validate(records)
+        self.assertTrue(any("synthetic candidate cannot claim" in item for item in errors))
+        self.assertTrue(any("adoption must remain not_observed" in item for item in errors))
+
+    def test_synthetic_records_require_explicit_markers(self) -> None:
+        records = self.records()
+        records[0]["constraints"].pop("simulation_status")
+        errors = MODULE.validate(records)
+        self.assertTrue(any("missing simulation_status" in item for item in errors))
 
     def test_originating_comment_must_be_preserved(self) -> None:
         records = self.records()

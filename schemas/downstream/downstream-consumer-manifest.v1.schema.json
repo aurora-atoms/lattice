@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/downstream/downstream-consumer-manifest.v1.schema.json",
+  "title": "Downstream Consumer Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "consumer_id",
+    "consumer_repository",
+    "simulation_status",
+    "lattice_source",
+    "contract_versions",
+    "capability_profiles",
+    "public_capabilities",
+    "private_extensions",
+    "evidence_storage",
+    "manager_projection",
+    "validation_commands",
+    "compatibility_policy"
+  ],
+  "properties": {
+    "contract": {"const": "lat.downstream-consumer-manifest.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "consumer_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{2,127}$"
+    },
+    "consumer_repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "visibility"],
+      "properties": {
+        "repository_id": {"type": "string", "minLength": 1},
+        "visibility": {"const": "private"}
+      }
+    },
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "lattice_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "ref", "commit_sha"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "ref": {
+          "type": "string",
+          "pattern": "^(?!main$|master$|develop$|development$|latest$|HEAD$)(?:[0-9a-f]{40}|[A-Za-z0-9][A-Za-z0-9._/-]*)$"
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "contract_versions": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^lat\\.[a-z0-9.-]+\\.v[0-9]+$"},
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    },
+    "capability_profiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/capability_ref"}
+    },
+    "public_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/capability_ref"}
+    },
+    "private_extensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["extension_id", "manifest_path"],
+        "properties": {
+          "extension_id": {"type": "string", "minLength": 1},
+          "manifest_path": {"$ref": "#/$defs/relative_path"}
+        }
+      }
+    },
+    "evidence_storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "classification", "public_upload_prohibited"],
+      "properties": {
+        "root": {"$ref": "#/$defs/relative_path"},
+        "classification": {
+          "enum": ["real_sanitized", "real_restricted", "synthetic"]
+        },
+        "public_upload_prohibited": {"const": true}
+      }
+    },
+    "manager_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_pack_root", "brief_path", "human_review_required"],
+      "properties": {
+        "asset_pack_root": {"$ref": "#/$defs/relative_path"},
+        "brief_path": {"$ref": "#/$defs/relative_path"},
+        "human_review_required": {"const": true}
+      }
+    },
+    "validation_commands": {
+      "type": "array",
+      "minItems": 3,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "compatibility_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "missing_capability",
+        "deprecated_capability",
+        "major_version_change",
+        "authority_change"
+      ],
+      "properties": {
+        "missing_capability": {"const": "fail"},
+        "deprecated_capability": {"enum": ["fail", "human_review"]},
+        "major_version_change": {"const": "human_review"},
+        "authority_change": {"const": "human_review"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_storage": {
+            "properties": {"classification": {"const": "synthetic"}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "real_downstream"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_storage": {
+            "properties": {
+              "classification": {
+                "enum": ["real_sanitized", "real_restricted"]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "capability_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability_id", "purpose"],
+      "properties": {
+        "capability_id": {
+          "type": "string",
+          "pattern": "^(skill|agent|mcp|knowledge|workspace):[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "purpose": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

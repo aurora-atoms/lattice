@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/evidence/delivery-evidence-asset-pack.v1.schema.json",
+  "title": "Manager-Ready Delivery Asset Pack Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "pack_id",
+    "pack_version",
+    "simulation_status",
+    "downstream_adoption_status",
+    "feature_delivery_case_id",
+    "accountable_owner",
+    "lattice_pin",
+    "public_capabilities",
+    "evidence_origin",
+    "artifacts",
+    "reusable_assets",
+    "generated_at"
+  ],
+  "properties": {
+    "contract": {"const": "lat.delivery-evidence-asset-pack.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "pack_id": {"type": "string", "minLength": 1},
+    "pack_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "downstream_adoption_status": {
+      "enum": [
+        "not_observed",
+        "imported",
+        "task_scoped",
+        "used_once",
+        "reused",
+        "team_available",
+        "deprecated"
+      ]
+    },
+    "feature_delivery_case_id": {"type": "string", "minLength": 1},
+    "accountable_owner": {"type": "string", "minLength": 1},
+    "lattice_pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "commit_sha"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1},
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "public_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(skill|agent|mcp|knowledge|workspace):[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    },
+    "evidence_origin": {
+      "enum": ["synthetic", "real_sanitized", "real_restricted"]
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_delivery_case",
+        "evidence_ledger",
+        "contribution_ledger",
+        "reusable_asset_dossier",
+        "manager_brief",
+        "manager_brief_rendered",
+        "validation_report"
+      ],
+      "properties": {
+        "feature_delivery_case": {"$ref": "#/$defs/relative_path"},
+        "evidence_ledger": {"$ref": "#/$defs/relative_path"},
+        "contribution_ledger": {"$ref": "#/$defs/relative_path"},
+        "reusable_asset_dossier": {"$ref": "#/$defs/relative_path"},
+        "manager_brief": {"$ref": "#/$defs/relative_path"},
+        "manager_brief_rendered": {"$ref": "#/$defs/relative_path"},
+        "validation_report": {"$ref": "#/$defs/relative_path"}
+      }
+    },
+    "reusable_assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "asset_id",
+          "asset_version",
+          "manifest_path",
+          "change_proposal_path",
+          "review_path",
+          "usage_observations_path"
+        ],
+        "properties": {
+          "asset_id": {"type": "string", "minLength": 1},
+          "asset_version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "manifest_path": {"$ref": "#/$defs/relative_path"},
+          "change_proposal_path": {"$ref": "#/$defs/relative_path"},
+          "review_path": {"$ref": "#/$defs/relative_path"},
+          "usage_observations_path": {"$ref": "#/$defs/relative_path"}
+        }
+      }
+    },
+    "generated_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}}
+      },
+      "then": {
+        "properties": {
+          "downstream_adoption_status": {"const": "not_observed"},
+          "evidence_origin": {"const": "synthetic"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "real_downstream"}}
+      },
+      "then": {
+        "properties": {
+          "evidence_origin": {
+            "enum": ["real_sanitized", "real_restricted"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
+}

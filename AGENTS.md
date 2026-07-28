@@ -1,34 +1,35 @@
 # Repository AI Guidance
 
-This file is a small cross-runtime map, not a replacement for the native GitHub Copilot, VS Code, Codex, Claude, or other agent harnesses.
+Lattice is a public, evidence-grounded delivery capability reference and governance repository. Private downstream repositories own real business context, delivery evidence, extensions, adoption observations, and manager-ready assets.
 
-## Native-First Operation
+## Native and Progressive Discovery
 
-1. Use the active runtime's built-in agent loop, Skill discovery, context management, permissions, sandbox, and tool selection first.
-2. Let the runtime match task intent against Skill `name` and `description`; do not run a repository router before every normal task.
-3. When compact capability metadata is useful, consult `registry/skill-context.catalog.json` or `registry/agent-context.catalog.json` before loading a Skill or Agent body. Use its stable ID/version, intended change, users, trigger, minimum inputs, outputs, and optional-context guidance.
+1. Use the active runtime's native agent loop, Skill discovery, context management, permissions, sandbox, and tools first.
+2. Select the smallest sufficient capability. Do not load all Skills, Agents, knowledge, or workflows by default.
+3. `registry/capability-manifest.json` is the canonical identity, version, role, public-status, compatibility, and authority source. For compact discovery, consult its generated `registry/skill-context.catalog.json` or `registry/agent-context.catalog.json` projection before loading a capability body.
 4. Load progressively:
 
 ```text
-native name + description
+native name and description
 -> compact capability context
--> selected SKILL.md or Agent instruction
--> named references or scripts
--> bounded task evidence
--> optional related capability or source only for a named quality gap
+-> selected Skill or Agent
+-> named reference, schema, script, or bounded evidence
+-> optional context only for a named quality gap
 ```
 
-5. Use native custom agents, subagents or forked Skill contexts, handoffs, worktrees, and hooks when the runtime supports them and the task justifies them.
-6. Select the smallest sufficient capability. Add another capability only for a required dependency, independent check, lifecycle gate, or explicit optional-context gap.
-7. Keep context packs bounded to scope, files and line ranges, symbols, tests, risks, decisions, validation commands, evidence refs, and permission boundaries.
-8. Optional context is advisory discovery guidance. It does not grant tools, permissions, network access, repository writes, or approval authority.
-9. Preserve human authority for scope, security, compliance, architecture, merge, release, deployment, and production decisions.
+5. Use `scripts/route_capabilities.py` only as a compatibility/evaluation fallback when native selection is unavailable, ambiguous, or explicitly under test.
 
-## Mandatory Skill Authoring Gate
+## Public–Private Boundary
 
-Any task that creates, copies, renames, restructures, or modifies `skills/<name>/` must follow `docs/skill-authoring-gate.md` before finalizing the change.
+- Public Lattice owns public contracts, capability packages, reference workflows, schemas, validators, templates, and synthetic conformance fixtures.
+- Private repositories own real `feature_delivery_case` records, source code, tickets, PRs, CI, incidents, reviews, employee feedback, private extensions, adoption observations, and manager deliverables.
+- Never copy private business evidence, secrets, real delivery traces, or manager materials into Lattice.
+- Synthetic fixtures use `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`; they cannot prove real use, reuse, team adoption, manager acceptance, ROI, or business value.
+- Route downstream integration to `docs/downstream-private-repository-contract.md` and manager wording to `docs/manager-credibility-contract.md`.
 
-Use this discovery order:
+## Skill Authoring Gate
+
+Any change under `skills/<name>/` must follow:
 
 ```text
 root AGENTS.md
@@ -40,61 +41,43 @@ root AGENTS.md
 -> target SKILL.md and bounded supporting files
 ```
 
-Use `skill-token-refactor` in addition when rewriting, compressing, splitting, or migrating an existing Skill package.
+Use `skill-token-refactor` additionally for an existing Skill rewrite, compression, split, or migration.
 
 For every changed Skill package:
 
 - increase its semantic version in `registry/capability-context-policy.json`;
-- preserve or update its catalog entry;
-- require non-empty `Outputs`, `Evidence`, `Success Signals`, and `Stop Conditions` sections;
-- define visible structured output and writeback behavior;
+- preserve or update its catalog and compatibility projections;
+- keep non-empty `Outputs`, `Evidence`, `Success Signals`, and `Stop Conditions`;
+- define visible structured output and writeback;
 - run `scripts/validate_skill_change_contract.py` against the PR base and head refs;
-- stop for review when compatibility impact, source behavior, permission, evidence, or authority cannot be established.
+- stop for review when compatibility, source behavior, permission, evidence, or authority cannot be established.
 
-Do not create a parallel governance Skill or rely on README guidance alone. Extend `lattice-governor`, the authoring gate, templates, schemas, and validators within their existing boundaries.
+Do not create a parallel governance Skill or a new control module. Extend `lattice-governor`, the authoring gate, templates, schemas, validators, or existing modules within their owned boundaries.
 
-## Required Run Result
+## Identity, Version, and Compatibility
 
-Every selected Skill or Agent must produce a visible structured result conforming to `schemas/capability/capability-run-result.v1.schema.json`.
+- Project identity is `Lattice`, `lattice`, and `lat`; do not use `lattice` as a module, Agent, Schema, Artifact, or Record name.
+- Capability identity uses `skill:<name>@<semver>` or `agent:<name>@<semver>`.
+- Version changes to required inputs, permissions, outputs, evidence, success, stop behavior, authority, or behavior semantics under `docs/capability-context-contract.md`.
+- Public package status and private downstream adoption status are separate lifecycles.
+- Regenerate registry projections with `scripts/generate_capability_registry_projections.py`; never hand-edit a generated capability record.
+- Run `scripts/validate_capability_manifest.py` and `scripts/validate_public_private_boundary.py` before finalizing identity, role, status, profile, or fixture changes.
+- Preserve compatibility entrances or publish an explicit migration note; do not silently rename, remove, or reclassify a public capability.
 
-Default writeback:
+## Required Result and Human Authority
+
+Every selected Skill or Agent emits a visible result conforming to `schemas/capability/capability-run-result.v1.schema.json`, normally at:
 
 ```text
 artifacts/capability-runs/<capability-name>/<run-id>/run-result.json
 ```
 
-When write permission is unavailable, return the complete result inline and record that it was not written.
+Separate facts, inference, citations, uncertainty, unknowns, and assumptions; evaluate success signals; state stop reason, retries, permission gap, and next step. Return the full result inline if write permission is unavailable.
 
-The result must separate facts, inference, citations, uncertainty, unknowns, and assumptions; evaluate success signals; and state the stop reason, retry count, permission gap, and next step.
+Humans retain authority for private business conclusions, scope, security, compliance, architecture, asset promotion, `team_available`, manager wording, merge, release, deployment, and production. DeliveryYield signals never approve delivery or promotion.
 
-## Stop and Retry
+## Stop Conditions
 
-Stop when the requested goal or next reviewable stage is reached. Unless the user explicitly requests end-to-end continuation, pause for review before proceeding to the next stage.
+Stop at the requested result or next reviewable stage unless end-to-end continuation is explicit. Default to one bounded retry. Stop without bypass attempts for missing input, permission, source access, evidence, failed validation, high-risk boundaries, or required human decisions.
 
-Stop without repeated probing when required input, permission, source access, internet access, or sufficient evidence is unavailable; when validation remains failed after the bounded retry; or when a security, privacy, compliance, data-governance, architecture, production, or other high-risk boundary is reached.
-
-For a permission stop, identify the exact permission, accountable owner, reason, and resumable next step. Never attempt bypasses. Default to one bounded retry after the initial attempt unless the user or selected capability explicitly authorizes a different deterministic retry policy.
-
-## Compatibility
-
-Capability identity uses `skill:<name>@<semver>` or `agent:<name>@<semver>`. Treat changes to required inputs, permissions, outputs, evidence, success signals, stop behavior, authority boundaries, or behavior semantics as compatibility decisions under `docs/capability-context-contract.md`.
-
-## Fallback and Evaluation
-
-Use `scripts/route_capabilities.py` only when:
-
-- the runtime lacks native Skill discovery;
-- native selection is ambiguous or appears wrong;
-- an expected route is needed for CI or regression evaluation;
-- comparing actual native selection against repository policy;
-- explicitly debugging routing behavior.
-
-The fallback routing policy lives in `registry/capability-routing.index.jsonl`. It is an evaluation oracle and compatibility layer, not a mandatory preflight for every prompt.
-
-## Stable Boundaries
-
-- Feature Delivery Case is the primary user-value and evidence boundary.
-- Distinguish facts, inferences, conflicts, assumptions, uncertainty, and unknowns.
-- Do not load the full Skill, Agent, tool, knowledge, log, or repository catalog by default.
-- Do not use routing, token, or agent activity for personnel ranking.
-- Do not supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module without explicit instruction.
+The Feature Delivery Case remains the primary user-value and evidence boundary. Do not supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module.

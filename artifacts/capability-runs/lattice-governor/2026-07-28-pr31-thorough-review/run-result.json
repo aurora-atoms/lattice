@@ -1,0 +1,219 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-07-28-pr31-thorough-review",
+  "status": "human_review_required",
+  "artifacts": [
+    {
+      "artifact_id": "review-hardening-note",
+      "kind": "compatibility-note",
+      "format": "markdown",
+      "path": "docs/migrations/pr31-review-hardening.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "hardened-downstream-validators",
+      "kind": "validator-pack",
+      "format": "python",
+      "path": "scripts/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "validation-report-contract",
+      "kind": "json-schema",
+      "format": "json-schema",
+      "path": "schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "downstream-schema-instance-validator",
+      "kind": "validator",
+      "format": "python",
+      "path": "scripts/validate_downstream_schema_instances.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "canonical-manager-brief",
+      "kind": "golden-output",
+      "format": "markdown",
+      "path": "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/manager-brief.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "adversarial-regressions",
+      "kind": "test-pack",
+      "format": "python",
+      "path": "tests/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "pr31-review-run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-pr31-thorough-review/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "The review identified and corrected accepted-invalid paths in asset-pack completeness, cross-file identity, rendered manager wording, synthetic pin handling, manager semantic claims, negative-case inventory, and empty or missing eval suites.",
+        "source_refs": [
+          "scripts/validate_delivery_asset_pack.py",
+          "scripts/validate_manager_claims.py",
+          "scripts/validate_downstream_consumer.py",
+          "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+          "examples/synthetic-private-consumer/run_conformance.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The complete repository unit suite passed 109 tests.",
+        "source_refs": [
+          "tests/"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The full heterogeneous conformance runner passed all 12 explicitly manifested cases with zero failures.",
+        "source_refs": [
+          "feature-delivery-harness-mvp/evals/",
+          "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+          "/tmp/lattice-pr31-conformance-summary.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The synthetic downstream consumer completed 12 checks, retained not_observed adoption, and matched the golden asset pack byte for byte.",
+        "source_refs": [
+          "examples/synthetic-private-consumer/run_conformance.py",
+          "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Draft 2020-12 validation passed for 28 committed downstream instances, and registry parity passed for 15 projections and 78 canonical capability records.",
+        "source_refs": [
+          "scripts/validate_downstream_schema_instances.py",
+          "scripts/generate_capability_registry_projections.py",
+          "scripts/validate_capability_manifest.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Skill, capability-context, Agent, public-private, workspace, compile, YAML, lint, and whitespace checks passed; the Skill validator retained pre-existing non-blocking warnings.",
+        "source_refs": [
+          "scripts/validate_skill_package.py",
+          "scripts/validate_capability_context.py",
+          "scripts/validate_agent.py",
+          "scripts/validate_public_private_boundary.py",
+          ".github/workflows/downstream-contract-validate.yml"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "PR 31 has no GitHub review comments or unresolved review threads, while all five existing stacked commits are unsigned.",
+        "source_refs": [
+          "github:aurora-atoms/lattice#31",
+          "git:main..HEAD-signature-status"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "The corrected branch is a stronger public conformance candidate because machine schemas, local validators, rendered output, golden fixtures, and adversarial tests now enforce the same public-private and manager-credibility boundaries.",
+        "based_on": [
+          "schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json",
+          "scripts/validate_downstream_schema_instances.py",
+          "tests/test_delivery_asset_pack.py",
+          "tests/test_manager_claims.py",
+          "tests/test_mvp_eval_runner.py",
+          "tests/test_synthetic_private_consumer.py"
+        ],
+        "uncertainty": "The corrections have not been committed or pushed because no verified signing identity is available."
+      }
+    ],
+    "citations": [
+      "docs/migrations/pr31-review-hardening.md",
+      ".github/workflows/downstream-contract-validate.yml",
+      "schemas/evidence/delivery-evidence-asset-pack.v1.schema.json",
+      "schemas/manager/manager-delivery-brief.v1.schema.json",
+      "feature-delivery-harness-mvp/schemas/evals/conformance-summary.v1.schema.json"
+    ],
+    "uncertainty": [
+      "GitHub Actions has validated commit 16c024b, not the current uncommitted correction set.",
+      "Existing Skill-quality warnings remain outside this correction because changing unrelated Skill packages would expand scope and require separate versioned authoring work."
+    ],
+    "unknowns": [
+      "No real private use, reuse, team availability, manager acceptance, ROI, or business value was inspected or established.",
+      "No real private repository has yet completed the first bounded asset pack against these corrected contracts."
+    ],
+    "assumptions": [
+      "The downstream 1.0.0 contracts are still pre-release inside PR 31, so correcting required artifacts and validation semantics before merge does not require a released-contract major-version migration.",
+      "Byte-for-byte canonical Markdown is an acceptable public portability contract for preventing manager wording from strengthening or omitting structured claims."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": [
+        "docs/migrations/pr31-review-hardening.md",
+        "schemas/evidence/delivery-asset-pack-validation-report.v1.schema.json",
+        "scripts/validate_delivery_asset_pack.py"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions",
+      "result": "not_evaluated",
+      "evidence_refs": [
+        "No Skill package changed in the review correction."
+      ]
+    },
+    {
+      "signal": "catalog, schema, validator, and CI checks pass",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/validate_downstream_schema_instances.py",
+        ".github/workflows/downstream-contract-validate.yml",
+        "tests/"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and authority boundaries are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/validate_manager_claims.py",
+        "scripts/validate_delivery_asset_pack.py",
+        "tests/test_manager_claims.py",
+        "tests/test_delivery_asset_pack.py"
+      ]
+    },
+    {
+      "signal": "public conformance claims remain separate from private adoption and business value",
+      "result": "met",
+      "evidence_refs": [
+        "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/manager-brief.md",
+        "docs/manager-credibility-contract.md",
+        "docs/downstream-private-repository-contract.md"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "missing_permission",
+    "condition": "The thorough correction and local validation stage is complete, but publishing requires a verified signing identity that is not configured in this environment.",
+    "retry_count": 0,
+    "retry_allowed": false,
+    "requested_permission": "Provide or configure an existing verified Git signing identity before committing and pushing the correction set.",
+    "next_step": "Accountable review of the correction diff, then create a verified signed commit and push it to PR 31 without auto-merging."
+  },
+  "generated_at": "2026-07-28T14:05:27Z"
+}

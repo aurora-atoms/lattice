@@ -1,0 +1,17 @@
+{
+  "review_id": "REVIEW-001",
+  "asset_id": "dangling-evidence-ref-guard",
+  "proposal_id": "PROPOSAL-001",
+  "review_mode": "synthetic_conformance",
+  "reviewer": "synthetic-reviewer",
+  "decision": "format_validated",
+  "human_review_claim": false,
+  "activation_approved": false,
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "challenge": "The original wording implied that a passing fixture established real usefulness.",
+  "resulting_change": "The asset and manager brief now state that only contract shape and rejection behavior were validated.",
+  "evidence_refs": [
+    "EV-ASSET-REVIEW"
+  ]
+}

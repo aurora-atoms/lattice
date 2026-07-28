@@ -1,0 +1,206 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-07-28-synthetic-private-consumer-pr4",
+  "status": "human_review_required",
+  "artifacts": [
+    {
+      "artifact_id": "heterogeneous-eval-runner",
+      "kind": "conformance-runner",
+      "format": "python",
+      "path": "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "eval-contracts",
+      "kind": "schema-pack",
+      "format": "json-schema",
+      "path": "feature-delivery-harness-mvp/schemas/evals/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "synthetic-private-consumer",
+      "kind": "synthetic-conformance-fixture",
+      "format": "json-jsonl-markdown-python",
+      "path": "examples/synthetic-private-consumer/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "golden-delivery-asset-pack",
+      "kind": "golden-output",
+      "format": "json-jsonl-markdown",
+      "path": "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "private-repository-guide",
+      "kind": "implementation-guide",
+      "format": "markdown",
+      "path": "docs/private-repository-delivery-asset-pack-guide.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "pr4-migration-note",
+      "kind": "compatibility-note",
+      "format": "markdown",
+      "path": "docs/migrations/synthetic-private-consumer-pr4.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "pr4-run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-synthetic-private-consumer-pr4/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "pr4-conformance-summary",
+      "kind": "validation-summary",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-synthetic-private-consumer-pr4/conformance-summary.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "The heterogeneous runner executed 12 explicitly manifested cases across feature_delivery, reusable_asset_loop, and synthetic_downstream types with 12 passes and zero failures.",
+        "source_refs": [
+          "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+          "feature-delivery-harness-mvp/evals/",
+          "artifacts/capability-runs/lattice-governor/2026-07-28-synthetic-private-consumer-pr4/conformance-summary.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The synthetic downstream command validates the consumer, Feature Delivery Case, asset candidate, synthetic review, evidence ledger, manager claims, delivery asset pack, and five required negative mutations.",
+        "source_refs": [
+          "examples/synthetic-private-consumer/run_conformance.py",
+          "examples/synthetic-private-consumer/negative-cases/",
+          "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/validation-report.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The generated 13-file Manager-Ready Delivery Asset Pack matches its committed golden output byte for byte.",
+        "source_refs": [
+          "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/",
+          "tests/test_synthetic_private_consumer.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Repository-wide validation completed with 79 passing unit tests, 78 canonical capability records, 15 deterministic projections, 62 Skill packages, and 13 Agent records.",
+        "source_refs": [
+          "tests/",
+          "registry/capability-manifest.json",
+          "scripts/generate_capability_registry_projections.py",
+          "scripts/validate_skill_package.py",
+          "scripts/validate_agent.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "No Skill package was changed in PR 4.",
+        "source_refs": [
+          "git:working-tree-diff"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "PR 4 closes the previously observed heterogeneous-runner crash and demonstrates that a public-safe synthetic consumer can generate and validate the complete downstream asset-pack shape with deterministic negative rejection.",
+        "based_on": [
+          "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+          "examples/synthetic-private-consumer/run_conformance.py",
+          "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/validation-report.json",
+          "tests/test_mvp_eval_runner.py"
+        ],
+        "uncertainty": "This is engineering and conformance proof only; behavior against real private evidence remains unobserved."
+      }
+    ],
+    "citations": [
+      "docs/migrations/synthetic-private-consumer-pr4.md",
+      "docs/private-repository-delivery-asset-pack-guide.md",
+      ".github/workflows/downstream-contract-validate.yml",
+      "feature-delivery-harness-mvp/schemas/evals/eval-case.v1.schema.json",
+      "feature-delivery-harness-mvp/schemas/evals/conformance-summary.v1.schema.json"
+    ],
+    "uncertainty": [
+      "Accountable maintainer review is still required for the new eval contracts, fixture wording, and CI scope.",
+      "Existing Skill-quality warnings remain outside PR 4 because no Skill package was modified."
+    ],
+    "unknowns": [
+      "No real private use, reuse, team availability, manager acceptance, ROI, or business value was inspected or claimed.",
+      "No real private repository has yet replaced the synthetic records and completed the first bounded asset pack."
+    ],
+    "assumptions": [
+      "A deterministic synthetic pin sentinel is acceptable only when simulation_status is synthetic_reference; real consumers continue to require local Git pin verification.",
+      "Byte-for-byte golden comparison is the compatibility baseline for the public synthetic asset-pack projection."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": [
+        "feature-delivery-harness-mvp/schemas/evals/eval-case.v1.schema.json",
+        "feature-delivery-harness-mvp/scripts/run_mvp_evals.py",
+        "examples/synthetic-private-consumer/run_conformance.py"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions",
+      "result": "not_evaluated",
+      "evidence_refs": [
+        "No Skill package changed in PR 4."
+      ]
+    },
+    {
+      "signal": "catalog, schema, validator, and CI checks pass",
+      "result": "met",
+      "evidence_refs": [
+        ".github/workflows/downstream-contract-validate.yml",
+        "tests/test_mvp_eval_runner.py",
+        "tests/test_synthetic_private_consumer.py",
+        "artifacts/capability-runs/lattice-governor/2026-07-28-synthetic-private-consumer-pr4/conformance-summary.json"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and authority boundaries are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "examples/synthetic-private-consumer/negative-cases/",
+        "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/manager-brief.json",
+        "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/reusable-assets/dangling-evidence-ref-guard/review.json"
+      ]
+    },
+    {
+      "signal": "public conformance claims remain separate from private adoption and business value",
+      "result": "met",
+      "evidence_refs": [
+        "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/asset-pack.manifest.json",
+        "examples/synthetic-private-consumer/golden/manager-ready-delivery-asset-pack/manager-brief.md",
+        "docs/private-repository-delivery-asset-pack-guide.md"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "stage_gate_reached",
+    "condition": "PR 4 implementation and the complete public conformance suite are ready for accountable review; no further roadmap stage was authorized.",
+    "retry_count": 0,
+    "retry_allowed": false,
+    "requested_permission": "A verified commit-signing identity and configuration are required before publishing PR 4 on this branch.",
+    "next_step": "Review the synthetic wording, eval contracts, negative gates, and golden asset pack; then publish with a verified signature without auto-merging."
+  },
+  "generated_at": "2026-07-28T13:30:10Z"
+}

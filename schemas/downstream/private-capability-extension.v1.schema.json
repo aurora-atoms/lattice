@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/downstream/private-capability-extension.v1.schema.json",
+  "title": "Private Capability Extension",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "extension_id",
+    "extension_version",
+    "private_namespace",
+    "simulation_status",
+    "relationship",
+    "public_capability_id",
+    "scope",
+    "required_permissions",
+    "authority_boundary",
+    "preserves_public_safety_boundaries",
+    "compatibility",
+    "governance_review_ref",
+    "content_path"
+  ],
+  "properties": {
+    "contract": {"const": "lat.private-capability-extension.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "extension_id": {
+      "type": "string",
+      "pattern": "^private:[a-z][a-z0-9-]*/[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "extension_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "private_namespace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,63}$",
+      "not": {"enum": ["lat", "lattice"]}
+    },
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "relationship": {"enum": ["extends", "overrides", "composes"]},
+    "public_capability_id": {
+      "type": "string",
+      "pattern": "^(skill|agent|mcp|knowledge|workspace):[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "task_types", "excluded_uses"],
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "task_types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "excluded_uses": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "required_permissions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authority_boundary": {"type": "string", "minLength": 1},
+    "preserves_public_safety_boundaries": {"const": true},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_version_range", "on_incompatible"],
+      "properties": {
+        "public_version_range": {"type": "string", "minLength": 1},
+        "on_incompatible": {"enum": ["fail", "human_review"]}
+      }
+    },
+    "governance_review_ref": {"type": ["string", "null"]},
+    "content_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"relationship": {"const": "overrides"}}},
+      "then": {
+        "properties": {
+          "governance_review_ref": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ]
+}
