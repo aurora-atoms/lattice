@@ -6,7 +6,7 @@ Lattice is a public, evidence-grounded delivery capability reference and governa
 
 1. Use the active runtime's native agent loop, Skill discovery, context management, permissions, sandbox, and tools first.
 2. Select the smallest sufficient capability. Do not load all Skills, Agents, knowledge, or workflows by default.
-3. When compact metadata is needed, consult `registry/skill-context.catalog.json` or `registry/agent-context.catalog.json` before loading a capability body.
+3. `registry/capability-manifest.json` is the canonical identity, version, role, public-status, compatibility, and authority source. For compact discovery, consult its generated `registry/skill-context.catalog.json` or `registry/agent-context.catalog.json` projection before loading a capability body.
 4. Load progressively:
 
 ```text
@@ -60,6 +60,8 @@ Do not create a parallel governance Skill or a new control module. Extend `latti
 - Capability identity uses `skill:<name>@<semver>` or `agent:<name>@<semver>`.
 - Version changes to required inputs, permissions, outputs, evidence, success, stop behavior, authority, or behavior semantics under `docs/capability-context-contract.md`.
 - Public package status and private downstream adoption status are separate lifecycles.
+- Regenerate registry projections with `scripts/generate_capability_registry_projections.py`; never hand-edit a generated capability record.
+- Run `scripts/validate_capability_manifest.py` and `scripts/validate_public_private_boundary.py` before finalizing identity, role, status, profile, or fixture changes.
 - Preserve compatibility entrances or publish an explicit migration note; do not silently rename, remove, or reclassify a public capability.
 
 ## Required Result and Human Authority

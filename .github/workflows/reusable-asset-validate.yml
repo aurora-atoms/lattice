@@ -23,6 +23,10 @@ jobs:
         run: python feature-delivery-harness-mvp/scripts/validate_contract_alignment.py
       - name: Validate reusable asset record-set schema
         run: python -m json.tool feature-delivery-harness-mvp/schemas/reusable-assets/reusable-asset-loop.v1.schema.json >/dev/null
+      - name: Validate public-private fixture boundaries
+        run: |
+          python scripts/validate_public_private_boundary.py --root .
+          python scripts/migrate_synthetic_fixture_markers.py --root . --check
       - name: Run reusable asset vertical slice
         run: |
           python feature-delivery-harness-mvp/scripts/run_reusable_asset_loop.py \
@@ -30,7 +34,9 @@ jobs:
             --out reusable_asset_dossier.md \
             --expected feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/expected_dossier.md
       - name: Test reusable asset review boundaries
-        run: python -m unittest discover -s tests -p 'test_reusable_asset_loop.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_reusable_asset_loop.py' -v
+          python -m unittest discover -s tests -p 'test_public_private_boundary.py' -v
       - name: Compile implementation
         run: python -m compileall -q feature-delivery-harness-mvp/scripts tests
       - name: Upload dossier evidence

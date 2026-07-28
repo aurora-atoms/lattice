@@ -1,0 +1,219 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-07-28-canonical-manifest-pr2",
+  "status": "human_review_required",
+  "artifacts": [
+    {
+      "artifact_id": "canonical-capability-manifest",
+      "kind": "canonical-registry",
+      "format": "json",
+      "path": "registry/capability-manifest.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "canonical-manifest-schema",
+      "kind": "schema",
+      "format": "json-schema",
+      "path": "schemas/capability/canonical-capability-manifest.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "lifecycle-schemas",
+      "kind": "schema-pack",
+      "format": "json-schema",
+      "path": "schemas/capability/public-package-lifecycle.v1.schema.json",
+      "visible": true,
+      "write_status": "written",
+      "notes": "Paired with schemas/downstream/downstream-adoption-lifecycle.v1.schema.json."
+    },
+    {
+      "artifact_id": "projection-generator",
+      "kind": "deterministic-generator",
+      "format": "python",
+      "path": "scripts/generate_capability_registry_projections.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "manifest-validator",
+      "kind": "validator",
+      "format": "python",
+      "path": "scripts/validate_capability_manifest.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "public-private-validator",
+      "kind": "validator",
+      "format": "python",
+      "path": "scripts/validate_public_private_boundary.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "synthetic-lifecycle-fixture",
+      "kind": "synthetic-conformance-fixture",
+      "format": "jsonl-markdown",
+      "path": "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "migration-note",
+      "kind": "compatibility-note",
+      "format": "markdown",
+      "path": "docs/migrations/canonical-manifest-pr2.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "run-result",
+      "kind": "capability-run-result",
+      "format": "json",
+      "path": "artifacts/capability-runs/lattice-governor/2026-07-28-canonical-manifest-pr2/run-result.json",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "The canonical manifest contains 78 public capability records: 62 Skills, 13 Agents, one MCP contract, one knowledge pack, and one workspace profile.",
+        "source_refs": [
+          "registry/capability-manifest.json",
+          "scripts/validate_capability_manifest.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Fifteen registry files are generated deterministically and match the canonical manifest.",
+        "source_refs": [
+          "scripts/generate_capability_registry_projections.py",
+          "registry/capability-manifest.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "All 13 public Agent records now satisfy the Agent validator after nine incomplete records received the required token-budget, cache, and telemetry contracts.",
+        "source_refs": [
+          "agents/",
+          "scripts/validate_agent.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "All 11 harness input fixtures explicitly declare synthetic_reference and not_observed markers.",
+        "source_refs": [
+          "feature-delivery-harness-mvp/evals/",
+          "scripts/migrate_synthetic_fixture_markers.py",
+          "scripts/validate_public_private_boundary.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The reusable-asset fixture remains never_by_default, runnable, public package draft, and downstream adoption not_observed.",
+        "source_refs": [
+          "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/input.jsonl",
+          "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/expected_dossier.md"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The PR 1 commit currently at branch HEAD is unsigned.",
+        "source_refs": [
+          "git:c25770b5bb5b5bc488a376e73dc9765cd076378c"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "PR 2 closes the observed identity, version, role, public-status, projection, Agent-contract, and synthetic-adoption drift without releasing or deprecating a capability.",
+        "based_on": [
+          "registry/capability-manifest.json",
+          "scripts/validate_capability_manifest.py",
+          "scripts/validate_public_private_boundary.py",
+          "docs/migrations/canonical-manifest-pr2.md"
+        ],
+        "uncertainty": "Initial role assignments and contract_validated states still require accountable human review."
+      }
+    ],
+    "citations": [
+      "registry/capability-manifest.json",
+      "schemas/capability/canonical-capability-manifest.v1.schema.json",
+      "schemas/capability/public-package-lifecycle.v1.schema.json",
+      "schemas/downstream/downstream-adoption-lifecycle.v1.schema.json",
+      "docs/migrations/canonical-manifest-pr2.md"
+    ],
+    "uncertainty": [
+      "The initial role mapping is explicit and validated structurally but has not received accountable maintainer approval.",
+      "Existing Skill quality warnings remain outside PR 2 scope."
+    ],
+    "unknowns": [
+      "No real private downstream adoption, use, reuse, team availability, manager acceptance, or ROI was inspected or claimed.",
+      "The heterogeneous full eval runner remains incomplete and still crashes on the reusable-asset case."
+    ],
+    "assumptions": [
+      "Legacy experimental Skill and Agent packages that pass package, context, path, Agent, and parity validation may enter public contract_validated without being released.",
+      "Specialized MCP, knowledge, and workspace contracts remain draft until their own conformance evidence exists."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": [
+        "registry/capability-manifest.json",
+        "docs/capability-context-contract.md",
+        "docs/migrations/canonical-manifest-pr2.md"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions",
+      "result": "not_evaluated",
+      "evidence_refs": [
+        "No Skill package changed in PR 2."
+      ]
+    },
+    {
+      "signal": "catalog, schema, validator, and CI checks pass",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/validate_capability_manifest.py",
+        "scripts/validate_public_private_boundary.py",
+        ".github/workflows/skill-validate.yml",
+        ".github/workflows/reusable-asset-validate.yml"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and authority boundaries are preserved",
+      "result": "met",
+      "evidence_refs": [
+        "registry/capability-manifest.json",
+        "schemas/downstream/downstream-adoption-lifecycle.v1.schema.json",
+        "tests/test_public_private_boundary.py"
+      ]
+    },
+    {
+      "signal": "public conformance claims remain separate from private adoption and business value",
+      "result": "met",
+      "evidence_refs": [
+        "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/input.jsonl",
+        "feature-delivery-harness-mvp/evals/reusable_asset_loop_case_001/expected_dossier.md",
+        "scripts/validate_public_private_boundary.py"
+      ]
+    }
+  ],
+  "stop": {
+    "reason": "stage_gate_reached",
+    "condition": "PR 2 implementation and local validation are complete; PR 3 downstream contracts are a separate reviewable stage.",
+    "retry_count": 1,
+    "retry_allowed": false,
+    "requested_permission": "A verified commit-signing identity and configuration are required before publishing the PR 2 commit on this branch.",
+    "next_step": "Review PR 2 role/status assignments, establish verified signing, publish the commit, then begin PR 3 downstream schemas and validators."
+  },
+  "generated_at": "2026-07-28T12:51:09Z"
+}

@@ -2,44 +2,124 @@
   "contract": "lat.capability-context-extension.v1",
   "skills": [
     {
-      "name": "management-translation",
-      "changes": "bounded delivery evidence into the smallest audience-specific management artifact without changing facts risk or decision ownership",
-      "primary_user": "management translation agent",
-      "secondary_audience": ["delivery owners", "engineering leads", "product owners", "managers", "executives"],
-      "trigger": "a delivery state risk milestone or decision needs concise management communication",
-      "minimum": ["Feature Delivery Case or management question", "business purpose", "delivery evidence", "risk", "decision need", "audience", "owner"],
-      "outputs": ["specialist selection and traceable management artifact"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "name": "audience-adapted-management-update",
+      "changes": "one authoritative evidence base into an audience-appropriate brief oral update risk package or decision record with explicit omissions",
+      "primary_user": "delivery owner or communication owner",
+      "secondary_audience": [
+        "managers",
+        "executives",
+        "engineering teams",
+        "cross-functional stakeholders"
+      ],
+      "trigger": "the same delivery facts need different management projections by audience channel or time limit",
+      "minimum": [
+        "authoritative evidence",
+        "business purpose",
+        "lifecycle state",
+        "risks",
+        "decision context",
+        "audience",
+        "channel",
+        "owner"
+      ],
+      "outputs": [
+        "audience-adapted management update and source mapping"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "executive-feature-brief",
       "changes": "Feature Delivery Case evidence into a one-page brief covering purpose delivered state next milestone material risk quantified evidence and required decision",
       "primary_user": "delivery owner or manager",
-      "secondary_audience": ["executives", "product leaders", "engineering leaders", "cross-functional stakeholders"],
+      "secondary_audience": [
+        "executives",
+        "product leaders",
+        "engineering leaders",
+        "cross-functional stakeholders"
+      ],
       "trigger": "a feature needs a weekly milestone portfolio or leadership brief",
-      "minimum": ["business purpose", "lifecycle state", "delivered capability", "evidence", "next milestone", "risks", "decision request", "owner"],
-      "outputs": ["executive feature brief and structured record"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "business purpose",
+        "lifecycle state",
+        "delivered capability",
+        "evidence",
+        "next milestone",
+        "risks",
+        "decision request",
+        "owner"
+      ],
+      "outputs": [
+        "executive feature brief and structured record"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
+    },
+    {
+      "name": "management-translation",
+      "changes": "bounded delivery evidence into the smallest audience-specific management artifact without changing facts risk or decision ownership",
+      "primary_user": "management translation agent",
+      "secondary_audience": [
+        "delivery owners",
+        "engineering leads",
+        "product owners",
+        "managers",
+        "executives"
+      ],
+      "trigger": "a delivery state risk milestone or decision needs concise management communication",
+      "minimum": [
+        "Feature Delivery Case or management question",
+        "business purpose",
+        "delivery evidence",
+        "risk",
+        "decision need",
+        "audience",
+        "owner"
+      ],
+      "outputs": [
+        "specialist selection and traceable management artifact"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     },
     {
       "name": "risk-escalation-packet",
       "changes": "an unresolved blocker conflict or material risk into a decision-ready escalation with impact options recommendation timing and no-decision consequence",
       "primary_user": "delivery owner or escalation requester",
-      "secondary_audience": ["managers", "executives", "architecture owners", "security and compliance owners"],
+      "secondary_audience": [
+        "managers",
+        "executives",
+        "architecture owners",
+        "security and compliance owners"
+      ],
       "trigger": "the current team lacks authority to resolve a consequential blocker or risk",
-      "minimum": ["one-line ask", "impact", "evidence", "options", "tradeoffs", "recommendation", "latest-safe time", "decision owner"],
-      "outputs": ["decision-ready risk escalation packet"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
-    },
-    {
-      "name": "audience-adapted-management-update",
-      "changes": "one authoritative evidence base into an audience-appropriate brief oral update risk package or decision record with explicit omissions",
-      "primary_user": "delivery owner or communication owner",
-      "secondary_audience": ["managers", "executives", "engineering teams", "cross-functional stakeholders"],
-      "trigger": "the same delivery facts need different management projections by audience channel or time limit",
-      "minimum": ["authoritative evidence", "business purpose", "lifecycle state", "risks", "decision context", "audience", "channel", "owner"],
-      "outputs": ["audience-adapted management update and source mapping"],
-      "runtime_targets": ["chatgpt", "codex", "github-copilot"]
+      "minimum": [
+        "one-line ask",
+        "impact",
+        "evidence",
+        "options",
+        "tradeoffs",
+        "recommendation",
+        "latest-safe time",
+        "decision owner"
+      ],
+      "outputs": [
+        "decision-ready risk escalation packet"
+      ],
+      "runtime_targets": [
+        "chatgpt",
+        "codex",
+        "github-copilot"
+      ]
     }
   ]
 }

@@ -24,6 +24,8 @@ ASSET_TYPES = {
 }
 ACTIVATION_MODES = {"never_by_default", "task_scoped", "profile_selected", "team_available"}
 MATURITY = {"idea", "draft", "runnable", "qualified_for_scope", "used_once", "reused", "team_available", "deprecated"}
+PUBLIC_PACKAGE_STATUSES = {"draft", "contract_validated", "conformance_validated", "released", "deprecated"}
+DOWNSTREAM_ADOPTION_STATUSES = {"not_observed", "imported", "task_scoped", "used_once", "reused", "team_available", "deprecated"}
 OPERATIONS = {"create", "update", "split", "merge", "reclassify", "deprecate"}
 OUTCOMES = {
     "completed_as_requested", "partially_completed", "usable_with_revision", "artifact_created",
@@ -65,6 +67,19 @@ def validate(records: list[dict[str, Any]]) -> list[str]:
             errors.append(f"duplicate id: {record_id}")
         ids.add(record_id)
         by_type.setdefault(record_type, []).append(record)
+        constraints = record.get("constraints", {})
+        if not isinstance(constraints, dict):
+            errors.append(f"{record_id}: constraints must be an object")
+        else:
+            if constraints.get("simulation_status") not in {"synthetic_reference", "real_downstream"}:
+                errors.append(f"{record_id}: invalid or missing simulation_status")
+            if constraints.get("downstream_adoption_status") not in DOWNSTREAM_ADOPTION_STATUSES:
+                errors.append(f"{record_id}: invalid or missing downstream_adoption_status")
+            if (
+                constraints.get("simulation_status") == "synthetic_reference"
+                and constraints.get("downstream_adoption_status") != "not_observed"
+            ):
+                errors.append(f"{record_id}: synthetic reference must remain not_observed")
     missing_types = sorted(REQUIRED_TYPES - set(by_type))
     if missing_types:
         errors.append("missing record types: " + ", ".join(missing_types))
@@ -83,10 +98,10 @@ def validate(records: list[dict[str, Any]]) -> list[str]:
     up = usage["payload"]
 
     errors += require(cp, {"feature_delivery_case_id", "source_ref", "contributor", "contribution_kind", "original_text", "evidence_class", "captured_at"}, contribution["id"])
-    errors += require(ap, {"feature_delivery_case_id", "asset_id", "name", "version", "asset_type", "created_from_contribution_refs", "problem_addressed", "summary", "current_scope", "out_of_scope", "artifact_location", "activation_mode", "current_status", "known_limitations", "open_questions", "owner", "evidence_refs"}, candidate["id"])
+    errors += require(ap, {"feature_delivery_case_id", "asset_id", "name", "version", "asset_type", "created_from_contribution_refs", "problem_addressed", "summary", "current_scope", "out_of_scope", "artifact_location", "activation_mode", "current_status", "public_package_status", "downstream_adoption_status", "known_limitations", "open_questions", "owner", "evidence_refs"}, candidate["id"])
     errors += require(pp, {"candidate_id", "operation", "contribution_refs", "proposed_changes", "evidence_refs", "status"}, proposal["id"])
     errors += require(rp, {"candidate_id", "proposal_id", "reviewer", "decision", "review_notes", "evidence_refs", "validation_refs", "reviewed_at"}, review["id"])
-    errors += require(up, {"asset_id", "version", "feature_delivery_case_id", "used_for", "user_role", "outcome_status", "evidence_refs", "observed_at"}, usage["id"])
+    errors += require(up, {"asset_id", "version", "feature_delivery_case_id", "used_for", "user_role", "outcome_status", "downstream_adoption_status", "evidence_refs", "observed_at"}, usage["id"])
 
     if ap.get("asset_type") not in ASSET_TYPES:
         errors.append(f"{candidate['id']}: invalid asset_type")
@@ -94,6 +109,12 @@ def validate(records: list[dict[str, Any]]) -> list[str]:
         errors.append(f"{candidate['id']}: invalid activation_mode")
     if ap.get("current_status") not in MATURITY:
         errors.append(f"{candidate['id']}: invalid current_status")
+    if ap.get("public_package_status") not in PUBLIC_PACKAGE_STATUSES:
+        errors.append(f"{candidate['id']}: invalid public_package_status")
+    if ap.get("downstream_adoption_status") not in DOWNSTREAM_ADOPTION_STATUSES:
+        errors.append(f"{candidate['id']}: invalid downstream_adoption_status")
+    if up.get("downstream_adoption_status") not in DOWNSTREAM_ADOPTION_STATUSES:
+        errors.append(f"{usage['id']}: invalid downstream_adoption_status")
     if pp.get("operation") not in OPERATIONS:
         errors.append(f"{proposal['id']}: invalid operation")
     if rp.get("decision") not in {"approved", "rejected", "needs_changes"}:
@@ -116,6 +137,19 @@ def validate(records: list[dict[str, Any]]) -> list[str]:
         errors.append("unapproved assets cannot claim qualified or used maturity")
     if ap.get("activation_mode") == "team_available" and rp.get("decision") != "approved":
         errors.append("team_available activation requires approved human review")
+    synthetic = all(
+        record.get("constraints", {}).get("simulation_status") == "synthetic_reference"
+        for record in records
+    )
+    if synthetic:
+        if ap.get("activation_mode") != "never_by_default":
+            errors.append("synthetic candidate must remain never_by_default")
+        if ap.get("current_status") in {"qualified_for_scope", "used_once", "reused", "team_available"}:
+            errors.append("synthetic candidate cannot claim qualified or used maturity")
+        if ap.get("downstream_adoption_status") != "not_observed":
+            errors.append("synthetic candidate adoption must remain not_observed")
+        if up.get("downstream_adoption_status") != "not_observed":
+            errors.append("synthetic usage simulation adoption must remain not_observed")
     return errors
 
 
@@ -135,7 +169,10 @@ def render_dossier(records: list[dict[str, Any]]) -> str:
 - Name: {ap['name']}
 - Version: `{ap['version']}`
 - Type: `{ap['asset_type']}`
-- Status: `{ap['current_status']}`
+- Legacy maturity: `{ap['current_status']}`
+- Public package status: `{ap['public_package_status']}`
+- Downstream adoption: `{ap['downstream_adoption_status']}`
+- Simulation: `{candidate['constraints']['simulation_status']}`
 - Activation: `{ap['activation_mode']}`
 - Owner: {ap['owner']}
 
@@ -156,15 +193,16 @@ def render_dossier(records: list[dict[str, Any]]) -> str:
 - Out of scope: {ap['out_of_scope']}
 - Artifact: `{ap['artifact_location']}`
 
-## Human Review
+## Synthetic Conformance Review
 - Decision: `{rp['decision']}`
 - Reviewer: {rp['reviewer']}
 - Notes: {rp['review_notes']}
 
-## Observed Usage
+## Synthetic Usage Simulation
 - Used for: {up['used_for']}
 - User role: `{up['user_role']}`
 - Outcome: `{up['outcome_status']}`
+- Downstream adoption: `{up['downstream_adoption_status']}`
 - Evidence: {', '.join(f'`{item}`' for item in up['evidence_refs'])}
 
 ## Known Limitations
@@ -176,7 +214,7 @@ def render_dossier(records: list[dict[str, Any]]) -> str:
 ## Next Iteration
 {ap.get('next_iteration', 'Not specified')}
 
-This dossier reports a scoped, evidence-linked asset state. It does not prove organization-wide ROI or authorize automatic promotion.
+This synthetic dossier demonstrates contract shape and conformance flow only. It does not prove real use, reuse, team adoption, manager acceptance, organization-wide ROI, or automatic promotion authority.
 """
 
 

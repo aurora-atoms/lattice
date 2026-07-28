@@ -34,7 +34,26 @@
         "additionalProperties": false
       },
       "payload": {"type": "object"},
-      "constraints": {"type": "object"}
+      "constraints": {
+        "type": "object",
+        "required": [
+          "ip_boundary",
+          "simulation_status",
+          "downstream_adoption_status"
+        ],
+        "properties": {
+          "ip_boundary": {
+            "const": "synthetic"
+          },
+          "simulation_status": {
+            "const": "synthetic_reference"
+          },
+          "downstream_adoption_status": {
+            "const": "not_observed"
+          }
+        },
+        "additionalProperties": true
+      }
     }
   }
 }

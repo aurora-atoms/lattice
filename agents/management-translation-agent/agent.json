@@ -12,5 +12,27 @@
   "skills": [{"skill_id": "management-translation", "required": true, "implicit": true}],
   "mcp": [],
   "knowledge": [],
+  "token_budget": {
+    "max_instruction_chars": 7000,
+    "max_skill_catalog_chars": 10000,
+    "max_active_mcp_tools": 20,
+    "max_knowledge_index_items": 20
+  },
+  "cache": {
+    "deterministic_order": true,
+    "no_timestamps": true,
+    "no_random_ids": true,
+    "no_absolute_local_paths": true,
+    "agent_hash_required": true
+  },
   "install": {"targets": ["codex", "github-copilot"], "scopes": ["project"], "project_install_preferred": true}
+  ,
+  "telemetry": {
+    "record_agent_hash": true,
+    "record_selected_skills": true,
+    "record_selected_mcp_tools": true,
+    "record_selected_knowledge_packs": true,
+    "record_prompt_tokens_when_available": true,
+    "record_cached_tokens_when_available": true
+  }
 }

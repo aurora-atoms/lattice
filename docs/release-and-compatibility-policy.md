@@ -87,15 +87,14 @@ accountable private review
 
 The public repository does not read the private evidence used by these checks.
 
-## Compatibility Projection Migration
+## Compatibility Projections
 
-Until PR 2 establishes a canonical capability manifest, existing registries remain supported compatibility projections. PR 2 must:
+`registry/capability-manifest.json` is canonical. Existing registries remain supported generated projections:
 
-- preserve old fields while adding canonical role and public status;
-- generate projections deterministically;
-- reject identity, version, status, role, and path drift;
-- reject deprecated capabilities in active profiles;
-- publish a migration note rather than silently removing fields or entrances.
+- old fields are preserved while version, canonical role, public status, description, and trigger are added;
+- `scripts/generate_capability_registry_projections.py --check` rejects projection drift;
+- `scripts/validate_capability_manifest.py` rejects identity, version, status, role, path, description/trigger, and deprecation-reference failures;
+- `docs/migrations/canonical-manifest-pr2.md` records the one-time migration and review boundary.
 
 ## Human Authority
 

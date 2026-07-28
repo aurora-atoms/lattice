@@ -10,13 +10,16 @@ Lattice is the public reference and governance layer. Private downstream reposit
 
 ## Contract Location
 
+- `registry/capability-manifest.json`: canonical identity, version, role, public package status, path, behavior, evidence, success, stop, authority, compatibility, and projection metadata.
 - `registry/skill-context.catalog.json`: one compact context entry for every `skills/**/SKILL.md` package.
 - `registry/agent-context.catalog.json`: one compact context entry for every Agent instruction registered in `registry/agents.index.jsonl`.
 - `schemas/capability/capability-context.v1.schema.json`: expanded context-record contract used by adapters and projections.
 - `schemas/capability/capability-run-result.v1.schema.json`: mandatory structured run-result contract.
 - `scripts/validate_capability_context.py`: semantic and inventory-drift validator.
+- `scripts/generate_capability_registry_projections.py`: deterministic compatibility projection generator and drift check.
+- `scripts/validate_capability_manifest.py`: canonical identity, role, status, path, description/trigger, deprecation, and parity validator.
 
-Catalog defaults provide the contract name, contract version, default capability version, semantic-version policy, optional-context discovery instruction, structured run-result schema, evidence policy, success policy, and stop policy. Every cataloged Skill and Agent inherits these mandatory run requirements.
+The canonical manifest is the source of truth. Catalogs, version policy, legacy indexes, and the cross-runtime capability index are generated compatibility projections. Catalog defaults still provide optional-context discovery and shared run requirements.
 
 ## Identity and Versioning
 

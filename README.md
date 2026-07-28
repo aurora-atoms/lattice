@@ -37,13 +37,14 @@ Do not discover Lattice through a hand-maintained shortlist of Skills. Use nativ
 
 | Portfolio view | Capability type | Version source | Status source | Entry |
 |---|---|---|---|---|
-| Skill context | Atomic, selector, workflow entry, profile entry, projection, validator, template, or governance contract | `registry/capability-context-policy.json` | `registry/skills.index.jsonl` | `registry/skill-context.catalog.json` |
-| Agent context | Public Agent package | `registry/capability-context-policy.json` | `registry/agents.index.jsonl` | `registry/agent-context.catalog.json` |
-| Cross-runtime projection | Agent, Skill, MCP, knowledge pack, or workspace template | Source registry identity | Source registry status | `registry/capabilities.index.jsonl` |
+| Canonical portfolio | Atomic, selector, workflow, profile, projection, validator, template, or governance contract | `registry/capability-manifest.json` | `registry/capability-manifest.json` | `registry/capability-manifest.json` |
+| Skill context projection | Public Skill packages | Canonical manifest | Canonical manifest | `registry/skill-context.catalog.json` |
+| Agent context projection | Public Agent packages | Canonical manifest | Canonical manifest | `registry/agent-context.catalog.json` |
+| Cross-runtime projection | Agent, Skill, MCP, knowledge pack, or workspace template | Canonical manifest | Canonical manifest | `registry/capabilities.index.jsonl` |
 | Fallback routing | Selector compatibility entry | Referenced Skill version | Routing policy | `registry/capability-routing.index.jsonl` |
 | Workflow/Profile extensions | Reference workflow or capability profile | Owning public capability version | Owning public capability status | `registry/skill-context.extensions/` |
 
-The role definitions are normative in [Capability Taxonomy](docs/capability-taxonomy.md). The current registries are compatibility projections; the canonical capability manifest and deterministic role/status parity gate are planned for PR 2.
+The role definitions are normative in [Capability Taxonomy](docs/capability-taxonomy.md). Registry files are deterministic compatibility projections generated from the canonical manifest; legacy `status` fields remain for compatibility while `public_package_status` controls dependency readiness.
 
 Current inventory and context validation:
 
@@ -51,6 +52,9 @@ Current inventory and context validation:
 python scripts/inventory_skills.py --root skills --out skill_inventory.jsonl
 python scripts/validate_skill_package.py --root skills
 python scripts/validate_capability_context.py --root .
+python scripts/generate_capability_registry_projections.py --root . --check
+python scripts/validate_capability_manifest.py --root .
+python scripts/validate_public_private_boundary.py --root .
 python scripts/validate_capability_routing.py --root .
 ```
 
@@ -96,7 +100,7 @@ simulation_status = synthetic_reference
 downstream_adoption_status = not_observed
 ```
 
-Synthetic conformance cannot establish private use, reuse, team availability, manager acceptance, or business value. PR 2 will encode this separation in the canonical manifest, schemas, registry projections, fixtures, and parity validation.
+Synthetic conformance cannot establish private use, reuse, team availability, manager acceptance, or business value. The canonical manifest, lifecycle schemas, registry projections, fixture markers, and parity validation enforce this separation.
 
 ## Reference Workflows and Profiles
 
@@ -120,6 +124,7 @@ The initial logical families are Experience-to-Asset, Feature Understanding, Man
 skills/                         public capability packages
 agents/                         public Agent packages
 registry/                       discovery and compatibility projections
+registry/capability-manifest.json canonical public capability identity source
 schemas/                        public machine contracts
 feature-delivery-harness-mvp/   Feature Delivery Case conformance testbed
 templates/                      public-safe authoring templates
@@ -131,6 +136,6 @@ docs/                           operating, governance, and migration contracts
 
 ## Release and Compatibility
 
-Capability identity uses `skill:<name>@<semver>` or `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), and the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md).
+Capability identity uses versioned, typed IDs such as `skill:<name>@<semver>` and `agent:<name>@<semver>`. Public package maturity and private adoption are never encoded in one ambiguous `status` field. See [Release and Compatibility Policy](docs/release-and-compatibility-policy.md), [Capability Context Contract](docs/capability-context-contract.md), the [PR 1 Migration Note](docs/migrations/public-reference-layer-pr1.md), and the [PR 2 Canonical Manifest Migration](docs/migrations/canonical-manifest-pr2.md).
 
 No registry score, green CI run, synthetic fixture, Skill count, PR count, or token count proves private business value. Human owners retain authority over private evidence, architecture, security, compliance, asset promotion, manager wording, merge, release, deployment, and production decisions.

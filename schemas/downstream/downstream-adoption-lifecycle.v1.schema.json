@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/downstream-adoption-lifecycle.v1.schema.json",
+  "title": "Private Downstream Adoption Lifecycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "public_capability_id",
+    "simulation_status",
+    "downstream_adoption_status",
+    "evidence_refs",
+    "human_review_ref",
+    "governance_approval_ref"
+  ],
+  "properties": {
+    "public_capability_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "simulation_status": {
+      "type": "string",
+      "enum": [
+        "synthetic_reference",
+        "real_downstream"
+      ]
+    },
+    "downstream_adoption_status": {
+      "type": "string",
+      "enum": [
+        "not_observed",
+        "imported",
+        "task_scoped",
+        "used_once",
+        "reused",
+        "team_available",
+        "deprecated"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "human_review_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "governance_approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "simulation_status": {
+            "const": "synthetic_reference"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "downstream_adoption_status": {
+            "const": "not_observed"
+          },
+          "human_review_ref": {
+            "type": "null"
+          },
+          "governance_approval_ref": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "downstream_adoption_status": {
+            "const": "team_available"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "human_review_ref",
+          "governance_approval_ref"
+        ],
+        "properties": {
+          "human_review_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "governance_approval_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

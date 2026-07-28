@@ -41,7 +41,7 @@ team_available
   requires explicit approved review and separate governance decision
 ```
 
-The initial fixture approves only `task_scoped` and `used_once`. It does not prove cross-project transferability.
+The public fixture remains `never_by_default`, `runnable`, and `downstream_adoption_status=not_observed`. Its synthetic review proves only that the conformance flow can represent accountable review; it does not establish real task-scoped activation, use, reuse, or cross-project transferability.
 
 ## Evidence Classification
 
@@ -53,6 +53,18 @@ Contributions should distinguish:
 - `unknown`: unresolved information.
 
 Unknown results remain unknown. The dossier must not manufacture ROI, success rates, or organization-wide claims.
+
+Public package readiness and private adoption use separate fields:
+
+```text
+public_package_status =
+  draft | contract_validated | conformance_validated | released | deprecated
+
+downstream_adoption_status =
+  not_observed | imported | task_scoped | used_once | reused | team_available | deprecated
+```
+
+Every public fixture declares `simulation_status=synthetic_reference` and remains `not_observed`.
 
 ## Feature Delivery Case Compatibility
 

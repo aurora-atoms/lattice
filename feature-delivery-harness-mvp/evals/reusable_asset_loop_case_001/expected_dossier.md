@@ -5,8 +5,11 @@
 - Name: No-Auto-Promotion Guidance
 - Version: `0.1.0`
 - Type: `rule`
-- Status: `used_once`
-- Activation: `task_scoped`
+- Legacy maturity: `runnable`
+- Public package status: `draft`
+- Downstream adoption: `not_observed`
+- Simulation: `synthetic_reference`
+- Activation: `never_by_default`
 - Owner: capability-governance-owner
 
 ## Origin
@@ -16,34 +19,35 @@
 - Contribution kind: `review_comment`
 
 ## Problem Addressed
-A successful delivery case could be overgeneralized into a team-wide rule without review.
+A synthetic delivery case could be overgeneralized into a real-use or team-wide claim.
 
 ## Summary
-Require explicit human review before a reusable asset becomes qualified or team-available.
+Require real private evidence and accountable review before a reusable asset advances adoption state.
 
 ## Scope
 - Current scope: Synthetic Feature Delivery Harness promotion-boundary cases.
-- Out of scope: Organization-wide policy or automatic Skill activation.
+- Out of scope: Real use, organization-wide policy, manager acceptance, or automatic Skill activation.
 - Artifact: `feature-delivery-harness-mvp/references/reusable-asset-loop.md`
 
-## Human Review
+## Synthetic Conformance Review
 - Decision: `approved`
-- Reviewer: capability-governance-owner
-- Notes: Approved for task-scoped use once. This does not authorize team-wide activation or automatic promotion.
+- Reviewer: synthetic-capability-reviewer
+- Notes: Approved as a synthetic conformance example only. This does not establish real human acceptance, activation, use, reuse, team availability, or manager value.
 
-## Observed Usage
-- Used for: Validate that a review comment can become a scoped, reviewed asset candidate without automatic promotion.
-- User role: `capability-maintainer`
+## Synthetic Usage Simulation
+- Used for: Simulate the record shape used to validate that no public fixture advances downstream adoption.
+- User role: `synthetic-capability-maintainer`
 - Outcome: `artifact_created`
+- Downstream adoption: `not_observed`
 - Evidence: `asset_review_001`, `reusable_asset_loop_case_001`
 
 ## Known Limitations
-- Validated only on a synthetic vertical-slice fixture.
+- Validated only as a synthetic conformance fixture.
 
 ## Open Questions
-- Which additional asset types require specialized validation before reuse?
+- Which private evidence will be required before the first real task-scoped use?
 
 ## Next Iteration
-Run the same path on one real PR or CI failure with sanitized evidence.
+Run the same path in one private repository with real bounded evidence and accountable review.
 
-This dossier reports a scoped, evidence-linked asset state. It does not prove organization-wide ROI or authorize automatic promotion.
+This synthetic dossier demonstrates contract shape and conformance flow only. It does not prove real use, reuse, team adoption, manager acceptance, organization-wide ROI, or automatic promotion authority.
