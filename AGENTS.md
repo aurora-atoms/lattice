@@ -19,6 +19,22 @@ native name and description
 
 5. Use `scripts/route_capabilities.py` only as a compatibility/evaluation fallback when native selection is unavailable, ambiguous, or explicitly under test.
 
+## Direction Before Capability
+
+Before creating a new Skill, Agent, capability profile, reference workflow, governance surface, or internal platform—or materially expanding an existing one—apply the [Direction Investment Gate](docs/direction-investment-gate.md).
+
+1. Select exactly one primary value path:
+   - `current_product_delivery`: a specific user-usable product, customer, defect, or delivery outcome;
+   - `strategic_asset`: a verifiable company-advantaged dataset, benchmark, prototype, protocol, decision model, or intellectual-property candidate with at least a second use;
+   - `team_reuse`: a reusable internal capability backed by observed second-use demand and an accountable adoption owner.
+2. Prefer the sequence `current_product_delivery -> strategic_asset_candidate -> proven_second_use -> optional_team_distribution`. Do not build a team reuse system first and search for demand later.
+3. Treat PRs, Skills, registries, profiles, dashboards, and platform components as means, not value outcomes.
+4. A new capability must state why existing active capabilities, modules, scripts, schemas, or workflows are insufficient.
+5. When evidence supports only a plausible idea, keep it candidate-scoped and bind it to a real delivery or validation case. Do not promote it by assertion.
+6. Stop or defer when the primary beneficiary, user outcome, proprietary advantage, verification method, second use, maintenance owner, or authority boundary cannot be established.
+
+For newly created Skill packages, include the machine-checkable `## Direction Fit` block from `templates/direction-fit.template.md`. The Skill authoring validator rejects a new package without it.
+
 ## Public–Private Boundary
 
 - Public Lattice owns public contracts, capability packages, reference workflows, schemas, validators, templates, and synthetic conformance fixtures.
