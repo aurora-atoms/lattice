@@ -10,6 +10,34 @@ from pathlib import Path
 
 SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 REQUIRED_SECTIONS = ("Outputs", "Evidence", "Success Signals", "Stop Conditions")
+DIRECTION_PRIMARY_VALUES = {
+    "current_product_delivery",
+    "strategic_asset",
+    "team_reuse",
+}
+DIRECTION_VERDICTS = {
+    "proceed",
+    "bind_to_delivery",
+    "retain_candidate",
+    "stop",
+}
+DIRECTION_COMMON_FIELDS = (
+    "primary_value_path",
+    "direction_verdict",
+    "evidence_refs",
+    "existing_capability_gap",
+)
+DIRECTION_PATH_FIELDS = {
+    "current_product_delivery": ("user_outcome",),
+    "strategic_asset": (
+        "proprietary_input",
+        "verifiable_artifact",
+        "second_use",
+        "maintenance_owner",
+    ),
+    "team_reuse": ("second_use_evidence", "adoption_owner"),
+}
+PLACEHOLDER_VALUES = {"", "none", "n/a", "na", "tbd", "todo", "unknown"}
 
 
 def run_git(*args: str, cwd: Path) -> str:
@@ -24,6 +52,17 @@ def run_git(*args: str, cwd: Path) -> str:
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or f"git {' '.join(args)} failed")
     return result.stdout
+
+
+def path_exists_at(ref: str, path: str, root: Path) -> bool:
+    result = subprocess.run(
+        ["git", "cat-file", "-e", f"{ref}:{path}"],
+        cwd=root,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return result.returncode == 0
 
 
 def parse_semver(value: str) -> tuple[int, int, int]:
@@ -59,6 +98,78 @@ def section_body(text: str, heading: str) -> str | None:
     )
     match = pattern.search(text)
     return match.group("body").strip() if match else None
+
+
+def direction_fields(text: str) -> dict[str, str]:
+    body = section_body(text, "Direction Fit")
+    if body is None:
+        return {}
+    fields: dict[str, str] = {}
+    for line in body.splitlines():
+        match = re.match(r"^([a-z][a-z0-9_]*):\s*(.*?)\s*$", line.strip())
+        if match:
+            fields[match.group(1)] = match.group(2)
+    return fields
+
+
+def is_placeholder(value: str) -> bool:
+    normalized = value.strip().lower()
+    return (
+        normalized in PLACEHOLDER_VALUES
+        or "<" in value
+        or ">" in value
+        or " | " in value
+    )
+
+
+def validate_direction_fit(text: str) -> list[str]:
+    errors: list[str] = []
+    body = section_body(text, "Direction Fit")
+    if body is None:
+        return ["missing required section '## Direction Fit' for new Skill package"]
+    if not body:
+        return ["section '## Direction Fit' must be non-empty"]
+
+    fields = direction_fields(text)
+    for field in DIRECTION_COMMON_FIELDS:
+        value = fields.get(field)
+        if value is None:
+            errors.append(f"Direction Fit missing field '{field}'")
+        elif is_placeholder(value):
+            errors.append(f"Direction Fit field '{field}' contains a placeholder")
+
+    primary = fields.get("primary_value_path")
+    if primary and primary not in DIRECTION_PRIMARY_VALUES:
+        errors.append(
+            "Direction Fit primary_value_path must be one of "
+            + ", ".join(sorted(DIRECTION_PRIMARY_VALUES))
+        )
+
+    verdict = fields.get("direction_verdict")
+    if verdict and verdict not in DIRECTION_VERDICTS:
+        errors.append(
+            "Direction Fit direction_verdict must be one of "
+            + ", ".join(sorted(DIRECTION_VERDICTS))
+        )
+    elif verdict and verdict != "proceed":
+        errors.append(
+            "new Skill package requires direction_verdict 'proceed'; "
+            "bind_to_delivery, retain_candidate, and stop decisions must remain outside skills/"
+        )
+
+    if primary in DIRECTION_PATH_FIELDS:
+        for field in DIRECTION_PATH_FIELDS[primary]:
+            value = fields.get(field)
+            if value is None:
+                errors.append(
+                    f"Direction Fit for {primary} missing field '{field}'"
+                )
+            elif is_placeholder(value):
+                errors.append(
+                    f"Direction Fit field '{field}' contains a placeholder"
+                )
+
+    return errors
 
 
 def catalog_names(root: Path) -> set[str]:
@@ -127,6 +238,15 @@ def main() -> int:
                         )
 
             text = skill_path.read_text(encoding="utf-8")
+            is_new_skill = not path_exists_at(
+                args.base_ref,
+                f"skills/{name}/SKILL.md",
+                root,
+            )
+            if is_new_skill:
+                for error in validate_direction_fit(text):
+                    errors.append(f"skills/{name}/SKILL.md: {error}")
+
             for heading in REQUIRED_SECTIONS:
                 body = section_body(text, heading)
                 if body is None:
