@@ -241,6 +241,6 @@
   "validation": [
     "python scripts/validate_agent.py --root .",
     "python scripts/validate_capability_profile.py --root .",
-    "python -m unittest discover -s tests -p test_capability_profile_runtime.py -v"
+    "python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v"
   ]
 }
