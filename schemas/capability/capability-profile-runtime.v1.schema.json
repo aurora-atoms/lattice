@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/capability-profile-runtime.v1.schema.json",
+  "title": "Lattice Capability Profile Runtime Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "profile_id",
+    "profile_version",
+    "status",
+    "task_type",
+    "agent_bindings",
+    "profile_ownership",
+    "skills",
+    "mcp",
+    "knowledge",
+    "permissions",
+    "model_routing",
+    "verification",
+    "handoff",
+    "cache",
+    "token_budget",
+    "human_factors",
+    "telemetry",
+    "validation"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.capability-profile.runtime.v1"},
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "profile_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"enum": ["synthetic_reference", "draft", "contract_validated", "released", "deprecated"]},
+    "task_type": {"type": "string", "minLength": 1},
+    "agent_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agent_id", "responsibilities", "cannot_own"],
+        "properties": {
+          "agent_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+$"},
+          "responsibilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "cannot_own": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    },
+    "profile_ownership": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skill_id", "activation", "authority"],
+        "properties": {
+          "skill_id": {"type": "string", "minLength": 1},
+          "activation": {"enum": ["explicit", "implicit", "on_demand"]},
+          "authority": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "mcp": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mcp_id", "toolsets", "approval"],
+        "properties": {
+          "mcp_id": {"type": "string", "minLength": 1},
+          "toolsets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "approval": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["read", "write", "destructive"],
+            "properties": {
+              "read": {"enum": ["auto", "prompt", "deny"]},
+              "write": {"enum": ["prompt", "deny"]},
+              "destructive": {"const": "deny"}
+            }
+          }
+        }
+      }
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pack_id", "load"],
+        "properties": {
+          "pack_id": {"type": "string", "minLength": 1},
+          "load": {"enum": ["on_demand", "required"]}
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_read", "repository_write", "merge", "deploy", "secret_access"],
+      "properties": {
+        "repository_read": {"type": "boolean"},
+        "repository_write": {"type": "boolean"},
+        "merge": {"type": "boolean"},
+        "deploy": {"type": "boolean"},
+        "secret_access": {"type": "boolean"}
+      }
+    },
+    "model_routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "lanes", "escalation_triggers"],
+      "properties": {
+        "policy": {"const": "lowest_authority_sufficient"},
+        "lanes": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["lane_id", "model_class", "purpose", "max_authority", "requires", "forbidden"],
+            "properties": {
+              "lane_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+              "model_class": {"enum": ["deterministic", "economy", "coding", "flagship", "human"]},
+              "purpose": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+              "max_authority": {"enum": ["observed", "derived", "candidate", "candidate_change", "judged", "human_decision"]},
+              "requires": {"type": "array", "items": {"type": "string"}},
+              "forbidden": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        },
+        "escalation_triggers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deterministic", "independent_review", "delivery_verdict", "model_consensus_is_not_proof"],
+      "properties": {
+        "deterministic": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "independent_review": {"const": true},
+        "delivery_verdict": {"enum": ["evidence_gate", "evidence_and_human_gate"]},
+        "model_consensus_is_not_proof": {"const": true}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_fields", "full_reasoning_transcript_authoritative"],
+      "properties": {
+        "required_fields": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "full_reasoning_transcript_authoritative": {"const": false}
+      }
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "cross_model_reuse", "stable_prefix", "dynamic_suffix", "include_in_key", "write_when_expected_reuses_at_least", "invalidate_on"],
+      "properties": {
+        "scope": {"const": "model_and_profile_version"},
+        "cross_model_reuse": {"const": false},
+        "stable_prefix": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "dynamic_suffix": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "include_in_key": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "write_when_expected_reuses_at_least": {"type": "integer", "minimum": 2},
+        "invalidate_on": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "token_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefix_max_tokens", "max_active_mcp_tools", "max_always_loaded_knowledge"],
+      "properties": {
+        "prefix_max_tokens": {"type": "integer", "minimum": 1},
+        "max_active_mcp_tools": {"type": "integer", "minimum": 1},
+        "max_always_loaded_knowledge": {"type": "integer", "minimum": 0}
+      }
+    },
+    "human_factors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_status", "design_intents", "avoid", "feedback_prompt", "telemetry_use"],
+      "properties": {
+        "evidence_status": {"const": "hypothesis"},
+        "design_intents": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "avoid": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "feedback_prompt": {"type": "string", "minLength": 1},
+        "telemetry_use": {"const": "system_improvement_only"}
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_profile_hash", "record_model_lane", "record_toolset_hash", "record_cached_tokens", "record_quality_outcome", "personnel_ranking"],
+      "properties": {
+        "record_profile_hash": {"const": true},
+        "record_model_lane": {"const": true},
+        "record_toolset_hash": {"const": true},
+        "record_cached_tokens": {"const": true},
+        "record_quality_outcome": {"const": true},
+        "personnel_ranking": {"const": false}
+      }
+    },
+    "validation": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}
