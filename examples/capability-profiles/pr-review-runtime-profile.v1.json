@@ -1,0 +1,246 @@
+{
+  "$schema": "../../schemas/capability/capability-profile-runtime.v1.schema.json",
+  "contract": "lat.capability-profile.runtime.v1",
+  "profile_id": "pr-review-runtime",
+  "profile_version": "1.0.0",
+  "status": "synthetic_reference",
+  "task_type": "pull_request_review",
+  "agent_bindings": [
+    {
+      "agent_id": "pr-reviewer@1.0.0",
+      "responsibilities": [
+        "assess_state",
+        "select_next_action",
+        "stop",
+        "escalate"
+      ],
+      "cannot_own": [
+        "model_routing",
+        "tool_permissions",
+        "cache_policy",
+        "delivery_verdict"
+      ]
+    }
+  ],
+  "profile_ownership": [
+    "model_routing",
+    "skills",
+    "tools",
+    "knowledge",
+    "permissions",
+    "token_budget",
+    "cache_policy",
+    "telemetry"
+  ],
+  "skills": [
+    {
+      "skill_id": "lattice-governor",
+      "activation": "explicit",
+      "authority": "governance_advice"
+    }
+  ],
+  "mcp": [
+    {
+      "mcp_id": "github-readonly@1.0.0",
+      "toolsets": [
+        "pull_requests",
+        "repository_read",
+        "code_scanning"
+      ],
+      "approval": {
+        "read": "auto",
+        "write": "prompt",
+        "destructive": "deny"
+      }
+    }
+  ],
+  "knowledge": [
+    {
+      "pack_id": "lattice-public-standards@1.0.0",
+      "load": "on_demand"
+    }
+  ],
+  "permissions": {
+    "repository_read": true,
+    "repository_write": false,
+    "merge": false,
+    "deploy": false,
+    "secret_access": false
+  },
+  "model_routing": {
+    "policy": "lowest_authority_sufficient",
+    "lanes": [
+      {
+        "lane_id": "economy",
+        "model_class": "economy",
+        "purpose": [
+          "metadata_extraction",
+          "classification",
+          "log_summarization",
+          "context_candidate_generation"
+        ],
+        "max_authority": "candidate",
+        "requires": [
+          "source_refs",
+          "schema_validation"
+        ],
+        "forbidden": [
+          "approve_delivery",
+          "resolve_p0_conflict",
+          "expand_scope"
+        ]
+      },
+      {
+        "lane_id": "coding",
+        "model_class": "coding",
+        "purpose": [
+          "bounded_code_reasoning",
+          "localized_patch_review",
+          "test_candidate_generation"
+        ],
+        "max_authority": "candidate_change",
+        "requires": [
+          "bounded_diff",
+          "target_tests",
+          "regression_anchors"
+        ],
+        "forbidden": [
+          "approve_delivery",
+          "expand_scope",
+          "weaken_tests"
+        ]
+      },
+      {
+        "lane_id": "flagship",
+        "model_class": "flagship",
+        "purpose": [
+          "ambiguous_requirement_analysis",
+          "cross_system_impact",
+          "high_risk_semantic_review"
+        ],
+        "max_authority": "judged",
+        "requires": [
+          "independent_problem_reconstruction",
+          "evidence_refs"
+        ],
+        "forbidden": [
+          "self_confirm_delivery",
+          "override_machine_failure"
+        ]
+      },
+      {
+        "lane_id": "human",
+        "model_class": "human",
+        "purpose": [
+          "business_intent",
+          "risk_acceptance",
+          "policy_exception",
+          "delivery_decision"
+        ],
+        "max_authority": "human_decision",
+        "requires": [
+          "evidence_summary",
+          "known_blind_spots"
+        ],
+        "forbidden": []
+      }
+    ],
+    "escalation_triggers": [
+      "ambiguity",
+      "high_blast_radius",
+      "irreversibility",
+      "low_observability",
+      "conflicting_evidence",
+      "security_or_compliance"
+    ]
+  },
+  "verification": {
+    "deterministic": [
+      "schema",
+      "diff_inspection",
+      "tests",
+      "static_analysis"
+    ],
+    "independent_review": true,
+    "delivery_verdict": "evidence_and_human_gate",
+    "model_consensus_is_not_proof": true
+  },
+  "handoff": {
+    "required_fields": [
+      "decision_required",
+      "verified_facts",
+      "conflicts",
+      "unknowns",
+      "evidence_refs",
+      "reason_for_escalation"
+    ],
+    "full_reasoning_transcript_authoritative": false
+  },
+  "cache": {
+    "scope": "model_and_profile_version",
+    "cross_model_reuse": false,
+    "stable_prefix": [
+      "kernel_rules",
+      "profile_contract",
+      "tool_schemas",
+      "output_schema"
+    ],
+    "dynamic_suffix": [
+      "task_request",
+      "repository_evidence",
+      "current_diff",
+      "fresh_test_results"
+    ],
+    "include_in_key": [
+      "profile_id",
+      "profile_version",
+      "model_lane",
+      "toolset_hash",
+      "schema_version"
+    ],
+    "write_when_expected_reuses_at_least": 2,
+    "invalidate_on": [
+      "profile_version_change",
+      "toolset_change",
+      "schema_change",
+      "policy_change"
+    ]
+  },
+  "token_budget": {
+    "prefix_max_tokens": 6000,
+    "max_active_mcp_tools": 25,
+    "max_always_loaded_knowledge": 0
+  },
+  "human_factors": {
+    "evidence_status": "hypothesis",
+    "design_intents": [
+      "controllability",
+      "competence",
+      "cognitive_clarity",
+      "safe_dissent",
+      "collective_efficacy"
+    ],
+    "avoid": [
+      "choice_overload",
+      "approval_fatigue",
+      "surveillance",
+      "replacement_framing",
+      "zero_error_promises"
+    ],
+    "feedback_prompt": "Identify the most likely failure point for the next user.",
+    "telemetry_use": "system_improvement_only"
+  },
+  "telemetry": {
+    "record_profile_hash": true,
+    "record_model_lane": true,
+    "record_toolset_hash": true,
+    "record_cached_tokens": true,
+    "record_quality_outcome": true,
+    "personnel_ranking": false
+  },
+  "validation": [
+    "python scripts/validate_agent.py --root .",
+    "python scripts/validate_capability_profile.py --root .",
+    "python -m unittest discover -s tests -p test_capability_profile_runtime.py -v"
+  ]
+}
