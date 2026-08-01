@@ -45,6 +45,55 @@ Agent is a packaging/runtime record type, not a substitute for `capability_role`
 - A template and synthetic fixture prove shape only.
 - A governance contract preserves human authority and cannot become a new control module.
 
+## Agent and Capability Profile Boundary
+
+An Agent and a Capability Profile are composed at runtime but own different concerns.
+
+```text
+Agent owns:
+  role
+  state assessment
+  next-action selection
+  stop
+  escalation
+
+Capability Profile owns:
+  model routing
+  Skill activation
+  tool and MCP exposure
+  knowledge loading
+  permissions and approvals
+  token budget
+  cache policy
+  telemetry requirements
+  verification gates
+```
+
+Existing Agent manifests may retain Skills, MCP, knowledge, token, cache, install, and telemetry fields as compatibility defaults. They do not grant runtime authority. The selected task Capability Profile is authoritative and may only narrow, not silently broaden, the effective runtime boundary.
+
+A Profile does not act or decide the next step. An Agent does not self-assign models, tools, permissions, or delivery authority.
+
+The enforceable runtime contract is defined in `docs/capability-profile-runtime-contract.md` and `schemas/capability/capability-profile-runtime.v1.schema.json`.
+
+## Model Authority Is Not Model Tier
+
+Model price, size, or product label does not determine evidence status. Capability Profiles must state the maximum authority of each vendor-neutral model lane and require external verification.
+
+```text
+economy -> candidate
+coding -> candidate_change
+flagship -> judged
+human -> human_decision
+```
+
+A cheaper model may produce a reliable result when deterministic evidence establishes it. A flagship model cannot self-confirm delivery or override failed machine checks.
+
+## Human Factors Are Design Hypotheses
+
+Capability Profiles may target controllability, competence, cognitive clarity, safe dissent, and collective efficacy, but these outcomes remain hypotheses until observed in real use.
+
+Profiles must avoid choice overload, approval fatigue, surveillance, replacement framing, and zero-error promises. Telemetry is for system improvement, not personnel ranking.
+
 ## Initial Workflow Families
 
 ```text
