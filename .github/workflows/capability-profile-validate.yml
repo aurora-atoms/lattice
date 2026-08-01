@@ -1,0 +1,43 @@
+name: capability-profile-validate
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: capability-profile-validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capability-profile-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate profile contract syntax
+        run: |
+          python -m json.tool schemas/capability/capability-profile-runtime.v1.schema.json >/dev/null
+          find examples/capability-profiles -name '*.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
+      - name: Validate capability profile semantics
+        run: python scripts/validate_capability_profile.py --root .
+      - name: Test capability profile boundaries
+        run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
+      - name: Compile validators and tests
+        run: |
+          python -m compileall -q scripts tests
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}" HEAD
+          elif [ -n "${{ github.event.before }}" ] &&
+               [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            git diff --check "${{ github.event.before }}" HEAD
+          else
+            git diff --check "$(git rev-list --max-parents=0 HEAD)" HEAD
+          fi
