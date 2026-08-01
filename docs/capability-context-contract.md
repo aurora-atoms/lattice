@@ -18,6 +18,8 @@ Lattice is the public reference and governance layer. Private downstream reposit
 - `scripts/validate_capability_context.py`: semantic and inventory-drift validator.
 - `scripts/generate_capability_registry_projections.py`: deterministic compatibility projection generator and drift check.
 - `scripts/validate_capability_manifest.py`: canonical identity, role, status, path, description/trigger, deprecation, and parity validator.
+- `schemas/capability/capability-profile-runtime.v1.schema.json`: task-scoped runtime authority, model-lane, verification, cache, handoff, human-factor, and telemetry contract.
+- `scripts/validate_capability_profile.py`: deterministic Capability Profile boundary validator.
 
 The canonical manifest is the source of truth. Catalogs, version policy, legacy indexes, and the cross-runtime capability index are generated compatibility projections. Catalog defaults still provide optional-context discovery and shared run requirements.
 
@@ -125,7 +127,75 @@ Unless the user explicitly requests end-to-end autonomous continuation, stop at 
 
 ## Required Inputs, Permissions, and Tools
 
-Permission and tool authority come from the Skill body, Agent manifest, active runtime, and current user approval; the catalog never grants access. Tool availability does not imply permission.
+Permission and tool authority come from the Skill body, Agent manifest, active runtime, current user approval, and selected Capability Profile. The catalog never grants access. Tool availability does not imply permission.
+
+For a task using a Capability Profile, the Profile is authoritative for effective model lanes, Skills, tools, knowledge, permissions, budgets, cache, and telemetry. Existing Agent manifest fields are compatibility defaults and may not silently broaden the selected Profile.
+
+## Agent and Profile Runtime Boundary
+
+The Agent owns role behavior:
+
+```text
+assess current state
+select next action
+stop
+escalate
+```
+
+The Capability Profile owns the bounded execution environment:
+
+```text
+model routing
+Skill activation
+tool and MCP exposure
+knowledge loading
+permissions and approvals
+token budget
+cache policy
+telemetry
+verification gates
+```
+
+A Profile does not act. An Agent does not self-grant runtime authority. Runtime adapters must preserve this boundary even if a provider packages both concepts in one configuration surface.
+
+## Model-Lane Context Rules
+
+Model tier is not evidence status. Public profiles use vendor-neutral classes such as economy, coding, flagship, and human. Private runtime adapters may bind them to current provider models.
+
+Cross-model handoffs must preserve:
+
+```text
+decision_required
+verified_facts
+conflicts
+unknowns
+evidence_refs
+reason_for_escalation
+```
+
+Free-form summaries and full reasoning transcripts are not authoritative state. The receiving lane must be able to reopen evidence and independently reconstruct high-impact assumptions.
+
+## Cache Context Rules
+
+Cache identity is scoped by model lane and Profile version. At minimum it includes:
+
+```text
+profile_id
+profile_version
+model_lane
+toolset_hash
+schema_version
+```
+
+Do not assume cross-model cache reuse. Keep stable kernel, Profile, tool-schema, and output-schema content in the stable prefix. Keep current task, repository evidence, diff, tests, and runtime facts in the dynamic suffix.
+
+A cache optimization cannot justify stale policy, excess tool exposure, or loading unrelated Skills and knowledge.
+
+## Human-Factor Context Rules
+
+Controllability, competence, cognitive clarity, safe dissent, and collective efficacy are design hypotheses until observed. Public profiles must not claim these outcomes as proven.
+
+Telemetry must not be used for personnel ranking. Profile design should avoid choice overload, approval fatigue, surveillance, replacement framing, and zero-error promises.
 
 ## Optional Context
 
@@ -133,20 +203,20 @@ Permission and tool authority come from the Skill body, Agent manifest, active r
 
 ## Compatibility and Authority
 
-The contract standardizes discovery, outputs, evidence, success assessment, and stopping behavior. It does not:
+The contract standardizes discovery, outputs, evidence, success assessment, stopping behavior, and Profile runtime boundaries. It does not:
 
 - replace native runtime orchestration;
 - authorize tool use, repository writes, merge, release, deployment, or production actions;
 - turn optional context into automatic broad retrieval;
 - authorize endless retry;
 - supersede Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, DeliveryYield, or another active module;
-- make a registry score or success signal an approval decision.
+- make a registry score, model tier, model consensus, or success signal an approval decision.
 
 ## Public and Downstream Ownership
 
 Public Lattice owns public capability identities, behavior contracts, package versions, reference workflows, profile templates, schemas, validators, synthetic fixtures, and compatibility projections.
 
-Private repositories own real `feature_delivery_case` records, source and business context, delivery evidence, private extensions, human feedback, adoption state, reusable assets, and manager deliverables. Catalog discovery never grants access to those artifacts.
+Private repositories own real `feature_delivery_case` records, source and business context, delivery evidence, private extensions, human feedback, adoption state, reusable assets, provider model bindings, and manager deliverables. Catalog discovery never grants access to those artifacts.
 
 ```text
 public_package_status =
@@ -156,7 +226,7 @@ downstream_adoption_status =
   not_observed | imported | task_scoped | used_once | reused | team_available | deprecated
 ```
 
-These lifecycles must not share one ambiguous status field. Public synthetic fixtures declare `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`. Public conformance cannot establish use, reuse, team availability, manager acceptance, ROI, or private business value.
+These lifecycles must not share one ambiguous status field. Public synthetic fixtures declare `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`. Public conformance cannot establish use, reuse, team availability, manager acceptance, ROI, emotional impact, or private business value.
 
 Capability roles follow `docs/capability-taxonomy.md`. A selector, reference workflow, profile, projection, validator, or template cannot be counted as an executed atomic outcome capability.
 
