@@ -1,3 +1,26 @@
+<!-- For a newly created Skill package, copy and complete the Direction Fit block below. Existing Skills do not need it solely because they are edited. -->
+
+## Direction Fit
+
+```yaml
+primary_value_path: current_product_delivery | strategic_asset | team_reuse
+direction_verdict: proceed
+evidence_refs: <one or more stable source or case references>
+existing_capability_gap: <why the smallest existing capability combination is insufficient>
+
+user_outcome: <required for current_product_delivery>
+
+proprietary_input: <required for strategic_asset>
+verifiable_artifact: <required for strategic_asset>
+second_use: <required for strategic_asset>
+maintenance_owner: <required for strategic_asset>
+
+second_use_evidence: <required for team_reuse>
+adoption_owner: <required for team_reuse>
+```
+
+See `direction-fit.template.md` and `../docs/direction-investment-gate.md`. Remove unused path-specific fields and replace every placeholder.
+
 ## Outputs
 
 - Structured result: `lat.capability.run_result.v1`.

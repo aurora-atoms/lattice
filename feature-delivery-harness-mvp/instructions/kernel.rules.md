@@ -27,4 +27,13 @@ FDH.KER.023 | MUST  | verification | Distinguish claim submission, independent v
 FDH.KER.024 | MUST  | verification | Verification records preserve passed, failed, unknown, not_checked, and conditional outcomes explicitly.
 FDH.KER.025 | NEVER | verification | Builder self-assertion satisfies independent verification.
 FDH.KER.026 | MUST  | deliveryyield | DeliveryYield may measure false completion claims, verification cost, and rework cost but must not approve delivery.
+FDH.KER.027 | MUST  | direction | Select exactly one primary value path before creating or materially expanding a Skill, Agent, profile, workflow, governance surface, or platform.
+FDH.KER.028 | MUST  | direction | Primary value path is current_product_delivery, strategic_asset, or team_reuse.
+FDH.KER.029 | MUST  | outcome | Define beneficiary, observable state change, verification method, owner, and evidence before implementation.
+FDH.KER.030 | NEVER | value | Treat Skill, Agent, profile, PR, dashboard, registry, or platform creation as final value.
+FDH.KER.031 | MUST  | reuse | Evaluate the smallest existing capability combination before creating a new capability.
+FDH.KER.032 | MUST  | strategy | Strategic assets require proprietary leverage, a verifiable artifact, a second use, maintenance ownership, and IP/data boundaries.
+FDH.KER.033 | MUST  | team-reuse | Team reuse requires observed second-use demand or an accountable sponsor and independent-use validation.
+FDH.KER.034 | NEVER | sequencing | Build a team distribution system first and search for a real use case later.
+FDH.KER.035 | MUST  | stop | Bind unsupported ideas to a real delivery case, retain them as candidates, or stop when value, verification, ownership, or authority is insufficient.
 ```

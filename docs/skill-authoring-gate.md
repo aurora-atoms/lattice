@@ -6,6 +6,7 @@ Use a layered authoring gate rather than a new standalone enforcement Skill or a
 
 ```text
 root AGENTS.md discovery rule
+-> Direction Investment Gate for new capability investment
 -> lattice-governor governance Skill
 -> skill-token-refactor when rewriting an existing package
 -> capability context catalogs and version policy
@@ -22,23 +23,43 @@ Use `skill-token-refactor` in addition when the task compresses, restructures, s
 
 The authoring agent must read this file and `capability-context-contract.md` before changing the behavior contract.
 
+## Direction Gate Before New Skills
+
+Before creating a new Skill family, apply `direction-investment-gate.md` and evaluate the smallest existing capability combination first.
+
+A newly created `skills/<name>/SKILL.md` must contain the machine-checkable `## Direction Fit` block from `../templates/direction-fit.template.md`.
+
+The block must:
+
+- select exactly one `primary_value_path`: `current_product_delivery`, `strategic_asset`, or `team_reuse`;
+- select one direction verdict: `proceed`, `bind_to_delivery`, `retain_candidate`, or `stop`;
+- cite bounded evidence and state the existing capability gap;
+- include path-specific evidence;
+- contain no unfilled placeholders.
+
+The direction block does not grant permission to create, promote, merge, release, deploy, or operate the capability. It only establishes that implementation effort has a reviewable value path.
+
+Existing Skill packages are not forced to add the block solely because they are modified. Add it when a change materially expands the Skill's purpose, authority, or investment scope.
+
 ## Required Authoring Flow
 
-1. Identify the target Skill family and current semantic version in `registry/capability-context-policy.json`.
-2. Read the compact entry in `registry/skill-context.catalog.json` before loading broad Skill context.
-3. State the intended change and classify it as patch, minor, or major.
-4. Preserve runtime-native frontmatter. Keep `name` and `description` as the native discovery surface.
-5. Ensure `description` clearly covers the task, trigger, input/output type, exclusions, and behavior boundary.
-6. Ensure the selected `SKILL.md` contains non-empty sections named `Outputs`, `Evidence`, `Success Signals`, and `Stop Conditions`.
-7. Define visible artifacts and their default writeback location. Inherit `lat.capability.run_result.v1` and use the repository default run-result path unless the Skill has a more specific governed location.
-8. Define evidence as facts plus source references, inference basis, citations, uncertainty, unknowns, and assumptions.
-9. Define measurable or reviewable success signals with explicit met, not-met, or not-evaluated outcomes.
-10. Define stop conditions for goal completion, stage review, missing inputs, missing permissions, unavailable sources or internet, insufficient evidence, failed validation, retry exhaustion, human authority, and high-risk boundaries as applicable.
-11. Update the Skill catalog entry when intended change, users, trigger, minimum inputs, outputs, or runtime targets change.
-12. Bump the Skill version in `registry/capability-context-policy.json` for every changed Skill package. Do not reuse a prior version for changed package content.
-13. Add or update trigger, output, validation, and failure regression cases when observable behavior changes.
-14. Run package, context, change-gate, schema, and relevant domain validations.
-15. Emit a structured visible run result with evidence, success signals, stop reason, and writeback status.
+1. For a new Skill family, complete the Direction Investment Gate and select a reviewable verdict before implementation.
+2. Identify the target Skill family and current semantic version in `registry/capability-context-policy.json`.
+3. Read the compact entry in `registry/skill-context.catalog.json` before loading broad Skill context.
+4. State the intended change and classify it as patch, minor, or major.
+5. Preserve runtime-native frontmatter. Keep `name` and `description` as the native discovery surface.
+6. Ensure `description` clearly covers the task, trigger, input/output type, exclusions, and behavior boundary.
+7. For a new Skill, include a valid `## Direction Fit` section.
+8. Ensure the selected `SKILL.md` contains non-empty sections named `Outputs`, `Evidence`, `Success Signals`, and `Stop Conditions`.
+9. Define visible artifacts and their default writeback location. Inherit `lat.capability.run_result.v1` and use the repository default run-result path unless the Skill has a more specific governed location.
+10. Define evidence as facts plus source references, inference basis, citations, uncertainty, unknowns, and assumptions.
+11. Define measurable or reviewable success signals with explicit met, not-met, or not-evaluated outcomes.
+12. Define stop conditions for goal completion, stage review, missing inputs, missing permissions, unavailable sources or internet, insufficient evidence, failed validation, retry exhaustion, human authority, and high-risk boundaries as applicable.
+13. Update the Skill catalog entry when intended change, users, trigger, minimum inputs, outputs, or runtime targets change.
+14. Bump the Skill version in `registry/capability-context-policy.json` for every changed Skill package. Do not reuse a prior version for changed package content.
+15. Add or update trigger, output, validation, and failure regression cases when observable behavior changes.
+16. Run package, context, change-gate, schema, and relevant domain validations.
+17. Emit a structured visible run result with evidence, success signals, stop reason, and writeback status.
 
 ## Version Decision
 
@@ -94,9 +115,10 @@ The gate checks changed Skill packages for:
 - catalog registration;
 - a monotonically increased semantic version;
 - required contract sections;
-- valid paths and shared capability context contracts.
+- valid paths and shared capability context contracts;
+- a valid Direction Fit block for newly created Skill packages.
 
-CI runs this check on pull requests with full Git history. A failure is a hard stop until the package or version contract is corrected.
+CI runs this check on pull requests with full Git history. A failure is a hard stop until the package, direction decision, or version contract is corrected.
 
 ## Authority and Stop Rules
 
@@ -105,6 +127,7 @@ The authoring agent must stop and request review when:
 - required repository or source access is unavailable;
 - the current version or compatibility impact cannot be determined;
 - behavior-critical source rules are missing or contradictory;
+- a new Skill lacks a defensible direction, beneficiary, verification method, existing-capability gap, or path-specific evidence;
 - the requested change would weaken safety, privacy, evidence, or authority boundaries;
 - a major version or deprecation decision needs an accountable owner;
 - validation remains failed after one bounded corrective retry.
