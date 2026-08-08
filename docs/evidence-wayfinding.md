@@ -6,6 +6,23 @@ Evidence Wayfinding is a portable reference workflow for moving one bounded deci
 
 The workflow reuses the existing `feature_delivery_case`, `delivery-capability-conductor`, understanding, challenge, judgment, delivery-artifact, outcome-review, and governed-evolution capabilities. Its north star is verified team-usable decisions and artifacts per unit of scarce human attention, subject to correctness, visible unknowns, preserved human authority, and real delivery-state change.
 
+## Blueprint Preservation
+
+The complete 2026-08-07 source blueprint, including the original capability matrix, artifact contracts, claim lifecycle, VDY model, EIR/ECR model, cross-runtime adapter design, rollout roadmap, failure pre-mortem, acceptance criteria, source IDs, and deferred work, is preserved at:
+
+- `docs/evidence-wayfinding/blueprint-preserved.md`
+- `docs/evidence-wayfinding/frontier-practice-scout-candidate.md`
+- `docs/evidence-wayfinding/runtime-conformance.md`
+- `docs/evidence-wayfinding/evaluation-and-evolution.md`
+
+These documents preserve design intent without silently promoting deferred ideas into active capabilities.
+
+### Current implementation decision
+
+`frontier-practice-scout` remains a **candidate, not an active Skill**. Merging the contract phase did not create the second-use / independent-value evidence required by the Direction Investment Gate. Existing capabilities plus on-demand current-source research remain the smaller valid composition until replay or real cases prove a stable, distinct capability boundary.
+
+Do not edit existing generic Skills merely to mention Evidence Wayfinding. Change a Skill only when observed delivery evidence shows a behavior, trigger, output, or authority gap that the workflow contract cannot solve through composition.
+
 ## Mission Anchor
 
 Every run carries a short, versioned mission anchor:
@@ -67,7 +84,7 @@ Do not load all of these by default. The active Capability Profile makes only th
 
 ## Frontier Practice Scout Decision
 
-The current public repository does not yet contain enough second-use evidence to justify promoting a new `frontier-practice-scout` Skill under the Direction Investment Gate. Therefore this first implementation keeps frontier research as a workflow stage and a candidate contract, not a new active Skill.
+The current public repository does not yet contain enough second-use evidence to justify promoting a new `frontier-practice-scout` Skill under the Direction Investment Gate. Therefore frontier research remains a workflow stage and a preserved candidate contract, not a new active Skill.
 
 Promotion requires all of the following:
 
@@ -143,7 +160,7 @@ A single successful case, a persuasive model explanation, token savings, or incr
 
 ## Public / Private Boundary
 
-Public Lattice contains only the workflow contract, profile template, schema, validator/test logic, and synthetic fixtures. Real `feature_delivery_case` records, private source references, proprietary evidence, model bindings, observed human feedback, adoption state, and manager-facing business claims remain in downstream private repositories.
+Public Lattice contains only the workflow contract, profile template, schema, validator/test logic, synthetic fixtures, and public-safe preservation documents. Real `feature_delivery_case` records, private source references, proprietary evidence, model bindings, observed human feedback, adoption state, and manager-facing business claims remain in downstream private repositories.
 
 ## Validation
 
