@@ -24,12 +24,19 @@ jobs:
       - name: Validate profile contract syntax
         run: |
           python -m json.tool schemas/capability/capability-profile-runtime.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/portable-case-pack.v1.schema.json >/dev/null
           find examples/capability-profiles -name '*.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
+          find examples/evidence-wayfinding -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
       - name: Validate capability profile semantics
         run: python scripts/validate_capability_profile.py --root .
+      - name: Validate portable case pack semantics
+        run: python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
       - name: Test capability profile boundaries
         run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
+      - name: Test evidence wayfinding contracts
+        run: python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v
       - name: Compile validators and tests
         run: |
           python -m compileall -q scripts tests

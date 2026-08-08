@@ -1,0 +1,124 @@
+{
+  "$schema": "../../schemas/capability/portable-case-pack.v1.schema.json",
+  "contract": "lat.portable_case_pack.v1",
+  "case_id": "synthetic/evidence-wayfinding-001",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "decision_requested": "Should the synthetic delivery case use the bounded evidence-wayfinding profile for its next reviewable decision?",
+  "audience": "senior_engineer",
+  "scope": {
+    "in": [
+      "public Lattice capability contracts",
+      "synthetic decision evidence"
+    ],
+    "out": [
+      "private company data",
+      "production changes",
+      "asset promotion"
+    ]
+  },
+  "evidence_cutoff": "2026-08-07T22:00:00-05:00",
+  "claims": {
+    "observed": [
+      {
+        "claim_id": "OBS-001",
+        "statement": "The public repository defines a Capability Profile runtime contract that separates Agent behavior from runtime authority.",
+        "evidence_refs": ["EV-001"],
+        "uncertainty": ""
+      }
+    ],
+    "derived": [
+      {
+        "claim_id": "DER-001",
+        "statement": "A decision-wayfinding profile can reuse the existing runtime contract without creating another module.",
+        "evidence_refs": ["EV-001", "EV-002"],
+        "uncertainty": "This is a public-contract design inference, not evidence of downstream adoption."
+      }
+    ],
+    "judged": [
+      {
+        "claim_id": "JDG-001",
+        "statement": "The smallest first implementation is workflow, profile, schema, fixture, and validation rather than immediate promotion of a new frontier-research Skill.",
+        "evidence_refs": ["EV-002", "EV-003"],
+        "uncertainty": "Promotion value must still be tested in downstream real or replayable cases."
+      }
+    ],
+    "unknown": [
+      {
+        "claim_id": "UNK-001",
+        "statement": "Whether a dedicated frontier-practice-scout capability produces distinct second-use value in downstream delivery cases remains unknown.",
+        "evidence_refs": [],
+        "uncertainty": "Requires downstream evidence before promotion."
+      }
+    ]
+  },
+  "conflicts": [],
+  "strongest_counterevidence": [
+    {
+      "statement": "A dedicated frontier-research capability may become justified when repeated cases show a distinct decision-changing boundary.",
+      "evidence_refs": ["EV-003"],
+      "impact": "Keep the capability as an explicit candidate with a promotion path rather than rejecting it permanently."
+    }
+  ],
+  "rejected_directions": [
+    {
+      "direction": "Create a new Evidence Wayfinding module",
+      "reason": "The existing active module boundaries and capability taxonomy already provide the required ownership surfaces.",
+      "evidence_refs": ["EV-001", "EV-002"]
+    },
+    {
+      "direction": "Promote frontier-practice-scout immediately",
+      "reason": "The Direction Investment Gate requires evidence of independent value or second-use demand before team-reuse investment.",
+      "evidence_refs": ["EV-003"]
+    }
+  ],
+  "evidence_refs": [
+    {
+      "id": "EV-001",
+      "uri": "repo://docs/capability-profile-runtime-contract.md",
+      "date": "2026-08-07T21:10:28Z",
+      "access": "public",
+      "content_hash": "synthetic-reference:capability-profile-runtime-contract"
+    },
+    {
+      "id": "EV-002",
+      "uri": "repo://docs/capability-taxonomy.md",
+      "date": "2026-08-07T21:10:28Z",
+      "access": "public",
+      "content_hash": "synthetic-reference:capability-taxonomy"
+    },
+    {
+      "id": "EV-003",
+      "uri": "repo://docs/direction-investment-gate.md",
+      "date": "2026-08-07T21:10:08Z",
+      "access": "public",
+      "content_hash": "synthetic-reference:direction-investment-gate"
+    }
+  ],
+  "source_gaps": [
+    "No downstream second-use evidence is included in this public synthetic fixture."
+  ],
+  "next_tool_task": "Validate the synthetic runtime profile and Portable Case Pack references.",
+  "required_output": {
+    "artifact_kind": "decision_card",
+    "audience": "senior_engineer",
+    "contract": "bounded recommendation with evidence, counterevidence, unknowns, and next action"
+  },
+  "falsification": "Reverse the defer-promotion recommendation if two governed downstream cases show that a dedicated frontier research capability materially changes decisions and cannot be represented safely by existing capabilities plus on-demand research tools.",
+  "data_classification": "public",
+  "compression_receipt": {
+    "inspected": [
+      "repo://docs/capability-profile-runtime-contract.md",
+      "repo://docs/capability-taxonomy.md",
+      "repo://docs/direction-investment-gate.md"
+    ],
+    "unavailable": [
+      "downstream real-case adoption evidence"
+    ],
+    "omitted": [
+      {
+        "item": "full reasoning transcript",
+        "reason": "Authoritative handoff uses claims and evidence references, not reasoning transcripts."
+      }
+    ]
+  }
+}

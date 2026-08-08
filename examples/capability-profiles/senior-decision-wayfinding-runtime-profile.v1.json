@@ -1,0 +1,155 @@
+{
+  "$schema": "../../schemas/capability/capability-profile-runtime.v1.schema.json",
+  "contract": "lat.capability-profile.runtime.v1",
+  "profile_id": "senior-decision-wayfinding-runtime",
+  "profile_version": "0.1.0",
+  "status": "synthetic_reference",
+  "task_type": "senior_decision_wayfinding",
+  "agent_bindings": [
+    {
+      "agent_id": "delivery-capability-conductor@1.0.0",
+      "responsibilities": [
+        "assess_state",
+        "select_next_action",
+        "stop",
+        "escalate"
+      ],
+      "cannot_own": [
+        "model_routing",
+        "tool_permissions",
+        "cache_policy",
+        "delivery_verdict"
+      ]
+    }
+  ],
+  "profile_ownership": [
+    "model_routing",
+    "skills",
+    "tools",
+    "knowledge",
+    "permissions",
+    "token_budget",
+    "cache_policy",
+    "telemetry"
+  ],
+  "skills": [
+    {"skill_id": "delivery-capability-conductor", "activation": "implicit", "authority": "routing_candidate"},
+    {"skill_id": "feature-understanding-loop", "activation": "on_demand", "authority": "decision_understanding"},
+    {"skill_id": "context-mastery", "activation": "on_demand", "authority": "bounded_context"},
+    {"skill_id": "system-mental-model", "activation": "on_demand", "authority": "evidence_map"},
+    {"skill_id": "unasked-questions-generator", "activation": "on_demand", "authority": "challenge_candidate"},
+    {"skill_id": "contradiction-adjudication", "activation": "on_demand", "authority": "contradiction_packet"},
+    {"skill_id": "negative-knowledge-pack", "activation": "on_demand", "authority": "counterevidence"},
+    {"skill_id": "decision-question-builder", "activation": "explicit", "authority": "human_decision_packet"},
+    {"skill_id": "delivery-artifact-builder", "activation": "explicit", "authority": "delivery_projection"},
+    {"skill_id": "feature-outcome-review", "activation": "on_demand", "authority": "outcome_review"},
+    {"skill_id": "reusable-delivery-pattern", "activation": "on_demand", "authority": "reuse_candidate"},
+    {"skill_id": "delivery-judgment-playbook", "activation": "on_demand", "authority": "judgment_candidate"}
+  ],
+  "mcp": [
+    {
+      "mcp_id": "github-readonly@1.0.0",
+      "toolsets": ["repository_read", "pull_requests", "code_scanning"],
+      "approval": {"read": "auto", "write": "deny", "destructive": "deny"}
+    }
+  ],
+  "knowledge": [
+    {"pack_id": "lattice-public-standards@1.0.0", "load": "on_demand"}
+  ],
+  "permissions": {
+    "repository_read": true,
+    "repository_write": false,
+    "merge": false,
+    "deploy": false,
+    "secret_access": false
+  },
+  "model_routing": {
+    "policy": "lowest_authority_sufficient",
+    "lanes": [
+      {
+        "lane_id": "economy",
+        "model_class": "economy",
+        "purpose": ["evidence_metadata_extraction", "claim_candidate_generation", "source_indexing"],
+        "max_authority": "candidate",
+        "requires": ["source_refs", "schema_validation"],
+        "forbidden": ["approve_delivery", "resolve_p0_conflict", "expand_scope"]
+      },
+      {
+        "lane_id": "coding",
+        "model_class": "coding",
+        "purpose": ["bounded_repository_reasoning", "validation_candidate_generation"],
+        "max_authority": "candidate_change",
+        "requires": ["bounded_diff", "target_tests", "regression_anchors"],
+        "forbidden": ["approve_delivery", "expand_scope", "weaken_tests"]
+      },
+      {
+        "lane_id": "flagship",
+        "model_class": "flagship",
+        "purpose": ["conflicting_evidence_analysis", "cross_system_impact", "frontier_evidence_synthesis"],
+        "max_authority": "judged",
+        "requires": ["independent_problem_reconstruction", "evidence_refs"],
+        "forbidden": ["self_confirm_delivery", "override_machine_failure"]
+      },
+      {
+        "lane_id": "human",
+        "model_class": "human",
+        "purpose": ["business_intent", "risk_acceptance", "goal_or_scope_change", "delivery_decision"],
+        "max_authority": "human_decision",
+        "requires": ["evidence_summary", "known_blind_spots"],
+        "forbidden": []
+      }
+    ],
+    "escalation_triggers": [
+      "ambiguity",
+      "high_blast_radius",
+      "irreversibility",
+      "low_observability",
+      "conflicting_evidence",
+      "security_or_compliance",
+      "mission_conflict"
+    ]
+  },
+  "verification": {
+    "deterministic": ["schema", "source_reachability", "claim_evidence_mapping", "contradiction_check"],
+    "independent_review": true,
+    "delivery_verdict": "evidence_and_human_gate",
+    "model_consensus_is_not_proof": true
+  },
+  "handoff": {
+    "required_fields": ["decision_required", "verified_facts", "conflicts", "unknowns", "evidence_refs", "reason_for_escalation"],
+    "full_reasoning_transcript_authoritative": false
+  },
+  "cache": {
+    "scope": "model_and_profile_version",
+    "cross_model_reuse": false,
+    "stable_prefix": ["kernel_rules", "profile_contract", "mission_anchor", "tool_schemas", "output_schema"],
+    "dynamic_suffix": ["task_request", "portable_case_pack", "fresh_repository_evidence", "verification_results"],
+    "include_in_key": ["profile_id", "profile_version", "model_lane", "toolset_hash", "schema_version"],
+    "write_when_expected_reuses_at_least": 2,
+    "invalidate_on": ["profile_version_change", "toolset_change", "schema_change", "policy_change"]
+  },
+  "token_budget": {
+    "prefix_max_tokens": 6500,
+    "max_active_mcp_tools": 12,
+    "max_always_loaded_knowledge": 0
+  },
+  "human_factors": {
+    "evidence_status": "hypothesis",
+    "design_intents": ["controllability", "competence", "cognitive_clarity", "safe_dissent", "collective_efficacy"],
+    "avoid": ["choice_overload", "approval_fatigue", "surveillance", "replacement_framing", "zero_error_promises"],
+    "feedback_prompt": "Identify the strongest counterevidence or failure point that could reverse this decision.",
+    "telemetry_use": "system_improvement_only"
+  },
+  "telemetry": {
+    "record_profile_hash": true,
+    "record_model_lane": true,
+    "record_toolset_hash": true,
+    "record_cached_tokens": true,
+    "record_quality_outcome": true,
+    "personnel_ranking": false
+  },
+  "validation": [
+    "python scripts/validate_capability_profile.py --root .",
+    "python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v"
+  ]
+}
