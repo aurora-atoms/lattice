@@ -110,6 +110,15 @@ Feature Understanding
   atomic capabilities: domain-context-pack, system-mental-model,
     contradiction-adjudication, unasked-questions-generator, reviewer-rehearsal
 
+Evidence Wayfinding
+  workflow: orient -> route -> sense -> model -> challenge -> frontier -> verify -> decide -> deliver -> settle -> evolve
+  profile: senior-decision-wayfinding synthetic reference profile
+  selector: delivery-capability-conductor
+  shared object: feature_delivery_case
+  atomic capabilities: existing understanding, challenge, decision, delivery, outcome, and learning capabilities
+  candidate capability: frontier-practice-scout remains non-active until the Direction Investment Gate is satisfied
+  reference: docs/evidence-wayfinding.md and docs/evidence-wayfinding/blueprint-preserved.md
+
 Manager Evidence Projection
   workflow: evidence -> claim classification -> limitations -> wording review -> brief
   profile: bounded evidence and management projection capabilities
