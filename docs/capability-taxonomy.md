@@ -159,6 +159,6 @@ compatibility
 deprecated_by
 ```
 
-Current registries are deterministic compatibility projections. `scripts/validate_capability_manifest.py` rejects missing roles, status or version drift, missing paths, description/trigger conflict, adoption state in public records, and deprecated capabilities referenced by active routing or profiles.
+Current registries are deterministic compatibility projections. `scripts/validate_capability_manifest.py` rejects missing roles, status or version drift, missing paths, native-description drift, description/trigger conflict, adoption state in public records, and deprecated capabilities referenced by active routing or profiles.
 
 The initial PR 2 assignments are documented in `docs/migrations/canonical-manifest-pr2.md`. Later role changes and public-package lifecycle promotion require human review; they are not silently inferred from path names.
