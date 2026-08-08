@@ -29,6 +29,8 @@ New evidence may change claims, route, priority, or plan. It must not silently c
 
 ## Ordered Workflow
 
+The reference path has stages `0` through `10` (eleven state transitions including orientation and evolution):
+
 | Stage | Action | Minimum artifact | Stop / pass condition |
 |---|---|---|---|
 | 0 Orient | Freeze one user, one bounded decision, scope, non-goals, deadline, and falsification condition. | Wayfinding Contract | If one `decision_requested` cannot be stated, stop for human clarification. |
@@ -151,5 +153,6 @@ Run:
 python scripts/validate_capability_profile.py --root .
 python -m json.tool schemas/capability/portable-case-pack.v1.schema.json >/dev/null
 python -m json.tool examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json >/dev/null
+python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
 python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v
 ```
