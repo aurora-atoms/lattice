@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../schemas/capability/portable-case-pack.v1.schema.json",
+  "contract": "lat.portable_case_pack.v1",
+  "case_id": "synthetic/schema-parity-valid",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "decision_requested": "Should this synthetic case be accepted by the Portable Case Pack structural contract?",
+  "audience": "senior_engineer",
+  "scope": {
+    "in": ["portable case pack structural validation"],
+    "out": ["private evidence", "delivery approval"]
+  },
+  "evidence_cutoff": "2026-08-08T12:00:00Z",
+  "claims": {
+    "observed": [
+      {
+        "claim_id": "OBS-001",
+        "statement": "This fixture contains one addressable public evidence record.",
+        "evidence_refs": ["EV-001"],
+        "uncertainty": ""
+      }
+    ],
+    "derived": [],
+    "judged": [],
+    "unknown": []
+  },
+  "conflicts": [],
+  "strongest_counterevidence": [],
+  "rejected_directions": [],
+  "evidence_refs": [
+    {
+      "id": "EV-001",
+      "uri": "repo://tests/fixtures/evidence-wayfinding/valid/portable-case-pack.minimal.v1.json",
+      "date": "2026-08-08T11:59:00Z",
+      "access": "public",
+      "content_hash": "synthetic-reference:schema-parity-valid"
+    }
+  ],
+  "source_gaps": [],
+  "next_tool_task": "Run structural and semantic validation.",
+  "required_output": {
+    "artifact_kind": "verification_receipt",
+    "audience": "senior_engineer",
+    "contract": "portable case pack structural validation result"
+  },
+  "falsification": "Reject this fixture if any declared v1 structural constraint is violated.",
+  "data_classification": "public"
+}
