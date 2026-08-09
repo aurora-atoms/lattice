@@ -102,12 +102,25 @@ def _pack_evidence_ready(pack: dict[str, Any]) -> bool:
     return True
 
 
-def _counterevidence_ready(pack: dict[str, Any]) -> bool:
+def _counterevidence_ready(pack: dict[str, Any], receipt: dict[str, Any]) -> bool:
+    basis = receipt.get("counterevidence_basis")
+    if not isinstance(basis, dict):
+        return False
+    mode = basis.get("mode")
     counterevidence = pack.get("strongest_counterevidence")
-    if isinstance(counterevidence, list) and bool(counterevidence):
-        return True
-    source_gaps = pack.get("source_gaps")
-    return isinstance(source_gaps, list) and bool(source_gaps)
+    has_counterevidence = isinstance(counterevidence, list) and bool(counterevidence)
+    if mode == "recorded_counterevidence":
+        return has_counterevidence
+    if mode == "bounded_search_no_counterevidence":
+        blind_spots = basis.get("blind_spots")
+        return all(
+            [
+                not has_counterevidence,
+                bool(str(basis.get("search_scope", "")).strip()),
+                isinstance(blind_spots, list) and bool(blind_spots),
+            ]
+        )
+    return False
 
 
 def _risk_authority_status(
@@ -183,7 +196,7 @@ def validate_admission(
     expected = {
         "M1_target": "pass" if _case_target_ready(case_contract) else "fail",
         "M2_evidence": "pass" if _pack_evidence_ready(pack) else "fail",
-        "M3_counterevidence": "pass" if _counterevidence_ready(pack) else "fail",
+        "M3_counterevidence": "pass" if _counterevidence_ready(pack, receipt) else "fail",
         "M4_risk_authority": _risk_authority_status(case_contract, receipt),
         "M5_delivery": "pass" if _delivery_ready(pack, receipt) else "fail",
     }
