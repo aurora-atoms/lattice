@@ -21,6 +21,7 @@
     "blindness",
     "case_results",
     "reserved_oracle",
+    "variant_mapping",
     "decision",
     "promotion_boundary",
     "evidence_refs"
@@ -107,6 +108,12 @@
         "evaluated_at": {"type": "string", "format": "date-time"}
       }
     },
+    "variant_mapping": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/variantMapping"}
+      ]
+    },
     "decision": {
       "oneOf": [
         {"type": "null"},
@@ -190,6 +197,16 @@
         }
       }
     },
+    "variantMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B", "revealed_at"],
+      "properties": {
+        "A": {"type": "string", "minLength": 1},
+        "B": {"type": "string", "minLength": 1},
+        "revealed_at": {"type": "string", "format": "date-time"}
+      }
+    },
     "decision": {
       "type": "object",
       "additionalProperties": false,
@@ -220,6 +237,7 @@
       "then": {
         "properties": {
           "reserved_oracle": {"properties": {"status": {"const": "unavailable"}}},
+          "variant_mapping": {"type": "null"},
           "decision": {"type": "null"}
         }
       }
@@ -233,6 +251,7 @@
             "properties": {"status": {"const": "available"}},
             "required": ["attestation_ref", "attestation_hash", "evaluated_by", "evaluated_at"]
           },
+          "variant_mapping": {"$ref": "#/$defs/variantMapping"},
           "decision": {"$ref": "#/$defs/decision"}
         }
       }
