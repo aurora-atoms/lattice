@@ -1,0 +1,129 @@
+{
+  "$schema": "../../../../schemas/capability/blind-challenge-execution.v1.schema.json",
+  "contract": "lat.blind_challenge_execution.v1",
+  "execution_id": "bce.synthetic.contract-parity-conformance",
+  "candidate_ref": "examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json",
+  "candidate_id": "hmc.case0.contract-parity-verifier",
+  "candidate_version": "0.1.0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "created_at": "2026-08-09T03:45:00Z",
+  "completed_at": "2026-08-09T03:50:00Z",
+  "status": "evaluated",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "frozen_plan": {
+    "evaluator_version": "case0-contract-parity-eval-protocol@0.1.0",
+    "primary_metric": "contract_false_ready_detection_without_valid_case_regression",
+    "protected_metrics": [
+      "critical_false_ready",
+      "authority_drift",
+      "private_to_public_leakage"
+    ],
+    "decision_options": [
+      "reject",
+      "revise",
+      "continue_shadow",
+      "scoped_canary"
+    ],
+    "target_hash": "sha256:4b0686b92582ec59cc4add5e1e97dea7ce0b3433dbcf9050578f92c266b193e2",
+    "case_allocations_hash": "sha256:c1195152d33bd85c4c89f541d7a279f6d6389eb3f729aade93510f4f2ddbf42f"
+  },
+  "blindness": {
+    "variant_labels_blinded_to_evaluator": true,
+    "candidate_author_can_view_reserved_outcome": false,
+    "reserved_oracle_visibility": "evaluator_only",
+    "oracle_content_included": false,
+    "mapping_revealed_after_evaluation": true
+  },
+  "case_results": [
+    {
+      "case_id": "representative.missing-audience",
+      "class": "representative",
+      "variant_outcomes": [
+        {"label": "A", "target_result": "fail", "evidence_refs": []},
+        {"label": "B", "target_result": "pass", "evidence_refs": []}
+      ],
+      "comparison": "B_better",
+      "protected_metrics": [
+        {"metric": "critical_false_ready", "status": "pass", "evidence_refs": []},
+        {"metric": "authority_drift", "status": "pass", "evidence_refs": []},
+        {"metric": "private_to_public_leakage", "status": "pass", "evidence_refs": []}
+      ],
+      "evidence_refs": []
+    },
+    {
+      "case_id": "hard.semantic-boundary-derived-evidence",
+      "class": "hard",
+      "variant_outcomes": [
+        {"label": "A", "target_result": "pass", "evidence_refs": []},
+        {"label": "B", "target_result": "pass", "evidence_refs": []}
+      ],
+      "comparison": "tie",
+      "protected_metrics": [
+        {"metric": "critical_false_ready", "status": "pass", "evidence_refs": []},
+        {"metric": "authority_drift", "status": "pass", "evidence_refs": []},
+        {"metric": "private_to_public_leakage", "status": "pass", "evidence_refs": []}
+      ],
+      "evidence_refs": []
+    },
+    {
+      "case_id": "counterexample.valid-minimal-pack",
+      "class": "counterexample",
+      "variant_outcomes": [
+        {"label": "A", "target_result": "pass", "evidence_refs": []},
+        {"label": "B", "target_result": "pass", "evidence_refs": []}
+      ],
+      "comparison": "tie",
+      "protected_metrics": [
+        {"metric": "critical_false_ready", "status": "pass", "evidence_refs": []},
+        {"metric": "authority_drift", "status": "pass", "evidence_refs": []},
+        {"metric": "private_to_public_leakage", "status": "pass", "evidence_refs": []}
+      ],
+      "evidence_refs": []
+    },
+    {
+      "case_id": "reserved.contract-parity-001",
+      "class": "reserved",
+      "variant_outcomes": [
+        {"label": "A", "target_result": "fail", "evidence_refs": []},
+        {"label": "B", "target_result": "pass", "evidence_refs": []}
+      ],
+      "comparison": "B_better",
+      "protected_metrics": [
+        {"metric": "critical_false_ready", "status": "pass", "evidence_refs": []},
+        {"metric": "authority_drift", "status": "pass", "evidence_refs": []},
+        {"metric": "private_to_public_leakage", "status": "pass", "evidence_refs": []}
+      ],
+      "evidence_refs": []
+    }
+  ],
+  "reserved_oracle": {
+    "case_id": "reserved.contract-parity-001",
+    "status": "available",
+    "oracle_visibility": "evaluator_only",
+    "oracle_content_included": false,
+    "attestation_ref": "synthetic-attestation://reserved/contract-parity-001",
+    "attestation_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "evaluated_by": "synthetic-conformance-evaluator",
+    "evaluated_at": "2026-08-09T03:49:00Z"
+  },
+  "variant_mapping": {
+    "A": "incumbent.syntax-plus-semantic",
+    "B": "challenger.schema-instance-parity-gate",
+    "revealed_at": "2026-08-09T03:51:00Z"
+  },
+  "decision": {
+    "verdict": "continue_shadow",
+    "rationale": "Synthetic conformance fixture only; it demonstrates contract behavior and does not establish a real reserved-case result or promotion evidence.",
+    "human_approval_required": true,
+    "team_available_allowed": false
+  },
+  "promotion_boundary": {
+    "automatic_promotion_allowed": false,
+    "team_available_allowed": false,
+    "human_owner_required": true,
+    "scoped_canary_requires_human_approval": true
+  },
+  "evidence_refs": []
+}
