@@ -1,0 +1,40 @@
+{
+  "contract": "lat.evidence_wayfinding.admission_receipt.candidate.v0",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "status": "READY",
+  "mandatory_checks": [
+    {
+      "id": "bounded_decision",
+      "status": "pass",
+      "evidence_refs": ["EV-001", "EV-002"]
+    },
+    {
+      "id": "evidence",
+      "status": "pass",
+      "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+    },
+    {
+      "id": "counterevidence",
+      "status": "pass",
+      "evidence_refs": ["EV-001", "EV-002"]
+    },
+    {
+      "id": "authority",
+      "status": "pass",
+      "evidence_refs": ["EV-003"]
+    },
+    {
+      "id": "delivery_state_change",
+      "status": "pass",
+      "evidence_refs": ["EV-003"]
+    }
+  ],
+  "decision_required": "Choose whether the published JSON Schema or the handwritten semantic validator owns Portable Case Pack structural validity.",
+  "consequence_of_delay": "A runtime may continue accepting instances that contradict the published contract, preserving a false-ready boundary for downstream consumers.",
+  "reversibility": "The CI ordering and validator invocation are reversible repository changes; any newly exposed compatibility issue must be reviewed rather than bypassed.",
+  "next_step": "Present the bounded Decision Card to the repository maintainer.",
+  "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+}
