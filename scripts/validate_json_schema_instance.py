@@ -45,7 +45,10 @@ def validate_instance(schema_path: Path, instance_path: Path) -> list[str]:
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     errors = sorted(
         validator.iter_errors(instance),
-        key=lambda error: (list(error.absolute_path), error.message),
+        key=lambda error: (
+            tuple(str(part) for part in error.absolute_path),
+            error.message,
+        ),
     )
     return [f"{_json_path(list(error.absolute_path))}: {error.message}" for error in errors]
 
