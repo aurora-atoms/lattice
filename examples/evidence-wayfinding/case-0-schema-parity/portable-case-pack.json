@@ -115,7 +115,7 @@
   "required_output": {
     "artifact_kind": "decision_card",
     "audience": "repository_maintainer",
-    "contract": "candidate projection containing recommendation, alternatives, evidence, strongest counterevidence, unknowns, reversibility, and the required human decision"
+    "contract": "lat.evidence_wayfinding.decision_card.candidate.v0"
   },
   "falsification": "Reverse the recommendation if executing the published schema demonstrably rejects an intentionally valid Portable Case Pack v1 shape that the contract is required to support.",
   "data_classification": "public",
