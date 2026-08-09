@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../../schemas/capability/portable-case-pack.v1.schema.json",
+  "contract": "lat.portable_case_pack.v1",
+  "case_id": "synthetic/schema-parity-unknown-field",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "decision_requested": "Should an unknown top-level field be rejected?",
+  "audience": "senior_engineer",
+  "scope": {"in": ["structural validation"], "out": []},
+  "evidence_cutoff": "2026-08-08T12:00:00Z",
+  "claims": {"observed": [], "derived": [], "judged": [], "unknown": []},
+  "conflicts": [],
+  "strongest_counterevidence": [],
+  "rejected_directions": [],
+  "evidence_refs": [{"id": "EV-001", "uri": "repo://synthetic", "date": "2026-08-08T11:59:00Z", "access": "public", "content_hash": "synthetic"}],
+  "source_gaps": [],
+  "next_tool_task": "Validate structure.",
+  "required_output": {"artifact_kind": "verification_receipt", "audience": "senior_engineer", "contract": "schema rejection"},
+  "falsification": "The schema unexpectedly accepts an unknown top-level field.",
+  "data_classification": "public",
+  "unexpected_field": true
+}
