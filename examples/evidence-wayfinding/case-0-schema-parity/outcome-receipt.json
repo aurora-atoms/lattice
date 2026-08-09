@@ -1,66 +1,170 @@
 {
-  "contract": "lat.evidence_wayfinding.outcome_receipt.candidate.v0",
+  "$schema": "../../../schemas/capability/outcome-receipt.v1.schema.json",
+  "contract": "lat.outcome_receipt.v1",
   "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "projection_of": {
+    "case_contract": "case-contract.json",
+    "portable_case_pack": "portable-case-pack.json"
+  },
+  "observed_at": "2026-08-09T03:00:00Z",
   "simulation_status": "synthetic_reference",
   "downstream_adoption_status": "not_observed",
   "data_classification": "public",
   "decision": {
     "selected_option": "A",
     "decision_owner": "repository_maintainer",
-    "decision_evidence": "Merged PR 36 adopted schema-first structural validation while preserving the semantic validator."
+    "decision_ref": "decision-card.json",
+    "evidence_refs": ["EV-003"]
   },
-  "state_before": "Portable Case Pack v1 structural rules were published but not executed against instances in CI.",
-  "state_after": "Portable Case Pack v1 instances are structurally validated against the published Draft 2020-12 schema before semantic validation, with four negative mutation regression anchors.",
+  "state_before": {
+    "statement": "Portable Case Pack v1 structural rules were published but not executed against instances in CI.",
+    "evidence_refs": ["EV-001", "EV-002"]
+  },
+  "state_after": {
+    "statement": "Portable Case Pack v1 instances are structurally validated against the published Draft 2020-12 schema before semantic validation, with four negative mutation regression anchors.",
+    "evidence_refs": ["EV-003"]
+  },
   "delivery_state_changed": true,
   "accepted_artifact": {
     "kind": "repository_change",
-    "reference": "repo://commit/863ceb307416975ddb43ec3fba2606648b2c0c59"
+    "reference": "repo://commit/863ceb307416975ddb43ec3fba2606648b2c0c59",
+    "evidence_refs": ["EV-003"]
   },
-  "earliest_failure_point": "The CI path validated the JSON syntax of the schema document but did not execute that schema against Portable Case Pack instances.",
+  "earliest_failure_point": {
+    "stage": "verification",
+    "statement": "The CI path validated the JSON syntax of the schema document but did not execute that schema against Portable Case Pack instances.",
+    "evidence_refs": ["EV-001", "EV-002"]
+  },
   "human_corrections": [
-    "Treat the published JSON Schema as the structural authority rather than assuming the handwritten semantic validator fully implements it.",
-    "Do not use the parity fix to silently tighten unresolved derived-claim evidence semantics."
+    {
+      "correction_id": "HC-001",
+      "statement": "Treat the published JSON Schema as the structural authority rather than assuming the handwritten semantic validator fully implements it.",
+      "disposition": "accepted",
+      "evidence_refs": ["EV-003"]
+    },
+    {
+      "correction_id": "HC-002",
+      "statement": "Do not use the parity fix to silently tighten unresolved derived-claim evidence semantics.",
+      "disposition": "accepted",
+      "evidence_refs": ["EV-003"]
+    }
   ],
   "claim_outcomes": [
     {
       "claim_id": "OBS-001",
-      "status": "confirmed",
-      "evidence_refs": ["EV-001"]
+      "version": 1,
+      "status": "CONFIRMED",
+      "evidence_refs": ["EV-001"],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "CONFIRMED",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The published schema directly contains the observed structural constraints.",
+          "evidence_refs": ["EV-001"]
+        }
+      ]
     },
     {
       "claim_id": "OBS-002",
-      "status": "confirmed",
-      "evidence_refs": ["EV-002"]
+      "version": 1,
+      "status": "CONFIRMED",
+      "evidence_refs": ["EV-002"],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "CONFIRMED",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The pre-fix workflow records JSON syntax validation without schema-instance execution.",
+          "evidence_refs": ["EV-002"]
+        }
+      ]
     },
     {
       "claim_id": "OBS-003",
-      "status": "confirmed",
-      "evidence_refs": ["EV-003"]
+      "version": 1,
+      "status": "CONFIRMED",
+      "evidence_refs": ["EV-003"],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "CONFIRMED",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The merged parity repair commit records schema-instance validation and mutation tests.",
+          "evidence_refs": ["EV-003"]
+        }
+      ]
     },
     {
       "claim_id": "DER-001",
-      "status": "evidenced",
-      "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+      "version": 1,
+      "status": "EVIDENCED",
+      "evidence_refs": ["EV-001", "EV-002", "EV-003"],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "EVIDENCED",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The before/after repository evidence supports the bounded parity conclusion for the covered mutation classes.",
+          "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+        }
+      ]
     },
     {
       "claim_id": "JDG-001",
-      "status": "judged",
-      "evidence_refs": ["EV-001", "EV-003"]
+      "version": 1,
+      "status": "EVIDENCED",
+      "evidence_refs": ["EV-001", "EV-003"],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "EVIDENCED",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The architecture judgment remains a JUDGED claim in the Case Pack while its outcome status records supporting repository evidence.",
+          "evidence_refs": ["EV-001", "EV-003"]
+        }
+      ]
     },
     {
       "claim_id": "UNK-001",
-      "status": "unknown",
-      "evidence_refs": []
+      "version": 1,
+      "status": "UNKNOWN",
+      "evidence_refs": [],
+      "cutoff": "2026-08-09T03:00:00Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "UNKNOWN",
+          "changed_at": "2026-08-09T03:00:00Z",
+          "reason": "The parity case intentionally does not decide the derived-claim evidence requirement.",
+          "evidence_refs": []
+        }
+      ]
     }
   ],
   "remaining_unknowns": [
-    "Whether every derived claim must carry evidence in a future Portable Case Pack contract version.",
-    "Whether the public Evidence Wayfinding workflow produces measurable Senior Attention value in private live cases."
+    {
+      "claim_id": "UNK-001",
+      "statement": "Whether every derived claim must carry evidence in a future Portable Case Pack contract version.",
+      "next_evidence": "A separate compatibility decision backed by replay cases that exercise derived claims without direct evidence.",
+      "owner": "repository_maintainer"
+    },
+    {
+      "statement": "Whether the public Evidence Wayfinding workflow produces measurable Senior Attention value in private live cases.",
+      "next_evidence": "One private live Feature Delivery Case with baseline and observed Senior review/correction time.",
+      "owner": "downstream_case_owner"
+    }
   ],
   "failure_point_candidate": {
     "eligible_for_harness_candidate": true,
     "candidate_scope": "schema-validation ordering and contract-parity regression protection",
-    "promotion_authority": "none_from_this_case"
+    "promotion_authority": "none_from_outcome_receipt"
   },
   "evidence_refs": ["EV-001", "EV-002", "EV-003"]
 }
