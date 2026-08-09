@@ -30,6 +30,7 @@ jobs:
           python -m json.tool schemas/capability/attention-admission-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/outcome-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/harness-mutation-candidate.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/blind-challenge-execution.v1.schema.json >/dev/null
           find examples/capability-profiles -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
@@ -53,6 +54,12 @@ jobs:
           python scripts/validate_json_schema_instance.py \
             schemas/capability/harness-mutation-candidate.v1.schema.json \
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
+      - name: Validate Blind Challenge structural contract
+        run: |
+          python scripts/validate_json_schema_instance.py \
+            schemas/capability/blind-challenge-execution.v1.schema.json \
+            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
+            tests/fixtures/evidence-wayfinding/blind-challenge/evaluated.synthetic-conformance.json
       - name: Validate capability profile semantics
         run: python scripts/validate_capability_profile.py --root .
       - name: Validate portable case pack semantics
@@ -76,6 +83,14 @@ jobs:
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
             examples/evidence-wayfinding/case-0-schema-parity/outcome-receipt.json \
             examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json
+      - name: Validate Blind Challenge execution semantics
+        run: |
+          python scripts/validate_blind_challenge_execution.py \
+            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
+            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
+          python scripts/validate_blind_challenge_execution.py \
+            tests/fixtures/evidence-wayfinding/blind-challenge/evaluated.synthetic-conformance.json \
+            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
       - name: Validate Evidence Wayfinding Case 0 spine
         run: python scripts/validate_evidence_wayfinding_case.py examples/evidence-wayfinding/case-0-schema-parity
       - name: Test capability profile boundaries
@@ -86,6 +101,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_attention_outcome_contracts.py' -v
       - name: Test Harness mutation candidate
         run: python -m unittest discover -s tests -p 'test_harness_mutation_candidate.py' -v
+      - name: Test Blind Challenge execution
+        run: python -m unittest discover -s tests -p 'test_blind_challenge_execution.py' -v
       - name: Test Evidence Wayfinding Case 0
         run: python -m unittest discover -s tests -p 'test_evidence_wayfinding_case0.py' -v
       - name: Test evidence wayfinding contracts
