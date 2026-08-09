@@ -39,6 +39,13 @@
       "evidence_refs": ["EV-003"]
     }
   },
+  "counterevidence_basis": {
+    "mode": "recorded_counterevidence",
+    "search_scope": "Published Portable Case Pack schema, pre-fix CI behavior, and compatibility risk of closed-schema execution.",
+    "blind_spots": [
+      "Private downstream Portable Case Pack compatibility observations are unavailable in the public replay."
+    ]
+  },
   "delivery_contract": {
     "required_output_contract": "lat.evidence_wayfinding.decision_card.candidate.v0",
     "verifier": "Portable Case Pack Draft 2020-12 schema validation plus semantic validator and mutation tests",
