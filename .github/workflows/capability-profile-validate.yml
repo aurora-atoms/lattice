@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-validation.txt
       - name: Validate profile contract syntax
         run: |
           python -m json.tool schemas/capability/capability-profile-runtime.v1.schema.json >/dev/null
@@ -29,12 +31,19 @@ jobs:
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
+      - name: Validate portable case pack structural contract
+        run: |
+          python scripts/validate_json_schema_instance.py \
+            schemas/capability/portable-case-pack.v1.schema.json \
+            examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
       - name: Validate capability profile semantics
         run: python scripts/validate_capability_profile.py --root .
       - name: Validate portable case pack semantics
         run: python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
       - name: Test capability profile boundaries
         run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
+      - name: Test portable case pack schema parity
+        run: python -m unittest discover -s tests -p 'test_portable_case_pack_schema.py' -v
       - name: Test evidence wayfinding contracts
         run: python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v
       - name: Compile validators and tests

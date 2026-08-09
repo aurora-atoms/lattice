@@ -116,6 +116,14 @@ Cross-Agent and cross-runtime handoff uses `lat.portable_case_pack.v1` rather th
 
 The schema is `schemas/capability/portable-case-pack.v1.schema.json`. A public synthetic example is under `examples/evidence-wayfinding/`.
 
+### Structural and semantic validation authority
+
+The published Draft 2020-12 schema is the authoritative structural gate for Portable Case Pack v1. It owns required fields, types, enums/constants, `additionalProperties`, nested shape, and declared formats such as `date-time`.
+
+`scripts/validate_portable_case_pack.py` remains the semantic gate for cross-field invariants such as evidence-reference resolution, duplicate identifiers, classification compatibility, observed-claim evidence, and mission/contract rules. It does not replace schema execution.
+
+Run structural validation before semantic validation. Negative mutation fixtures under `tests/fixtures/evidence-wayfinding/invalid/` protect this parity. A derived claim with empty `evidence_refs` remains an explicit v1 semantic-contract decision; do not silently tighten it as part of structural parity work.
+
 ## Human Attention Surfaces
 
 Use progressive disclosure:
@@ -167,9 +175,14 @@ Public Lattice contains only the workflow contract, profile template, schema, va
 Run:
 
 ```bash
+python -m pip install -r requirements-validation.txt
 python scripts/validate_capability_profile.py --root .
 python -m json.tool schemas/capability/portable-case-pack.v1.schema.json >/dev/null
 python -m json.tool examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json >/dev/null
+python scripts/validate_json_schema_instance.py \
+  schemas/capability/portable-case-pack.v1.schema.json \
+  examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
 python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
+python -m unittest discover -s tests -p 'test_portable_case_pack_schema.py' -v
 python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v
 ```

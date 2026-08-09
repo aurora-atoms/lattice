@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../schemas/capability/portable-case-pack.v1.schema.json",
+  "contract": "lat.portable_case_pack.v1",
+  "case_id": "synthetic/schema-parity-derived-without-evidence",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "decision_requested": "Should v1 structurally reject a derived claim with no evidence_refs?",
+  "audience": "senior_engineer",
+  "scope": {"in": ["portable case pack v1 contract interpretation"], "out": ["silent contract expansion"]},
+  "evidence_cutoff": "2026-08-08T12:00:00Z",
+  "claims": {
+    "observed": [],
+    "derived": [
+      {
+        "claim_id": "DER-001",
+        "statement": "A derived claim may currently be structurally representable without evidence references.",
+        "evidence_refs": [],
+        "uncertainty": "Whether this should remain legal is a semantic contract decision, not an implicit validator patch."
+      }
+    ],
+    "judged": [],
+    "unknown": []
+  },
+  "conflicts": [],
+  "strongest_counterevidence": [],
+  "rejected_directions": [],
+  "evidence_refs": [{"id": "EV-001", "uri": "repo://schemas/capability/portable-case-pack.v1.schema.json", "date": "2026-08-08T11:59:00Z", "access": "public", "content_hash": "synthetic-reference:v1-schema"}],
+  "source_gaps": ["The v1 schema does not require non-empty evidence_refs for derived claims."],
+  "next_tool_task": "Record an explicit contract decision before changing derived-claim evidence semantics.",
+  "required_output": {"artifact_kind": "contract_decision", "audience": "maintainer", "contract": "explicit semantic decision"},
+  "falsification": "If the published v1 contract already requires derived claims to carry evidence, this fixture should move to invalid.",
+  "data_classification": "public"
+}
