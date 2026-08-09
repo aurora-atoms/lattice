@@ -13,6 +13,7 @@
     "evaluated_at",
     "status",
     "mandatory_checks",
+    "counterevidence_basis",
     "delivery_contract",
     "decision_required",
     "consequence_of_delay",
@@ -49,6 +50,26 @@
         "M4_risk_authority": {"$ref": "#/$defs/check"},
         "M5_delivery": {"$ref": "#/$defs/check"}
       }
+    },
+    "counterevidence_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "search_scope", "blind_spots"],
+      "properties": {
+        "mode": {"enum": ["recorded_counterevidence", "bounded_search_no_counterevidence"]},
+        "search_scope": {"type": "string", "minLength": 1},
+        "blind_spots": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"mode": {"const": "bounded_search_no_counterevidence"}}
+          },
+          "then": {
+            "properties": {"blind_spots": {"minItems": 1}}
+          }
+        }
+      ]
     },
     "delivery_contract": {
       "type": "object",
