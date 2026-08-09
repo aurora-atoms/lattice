@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../schemas/capability/portable-case-pack.v1.schema.json",
+  "contract": "lat.portable_case_pack.v1",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "decision_requested": "Should Portable Case Pack v1 execute its published Draft 2020-12 JSON Schema as the structural authority before semantic validation?",
+  "audience": "repository_maintainer",
+  "scope": {
+    "in": [
+      "Portable Case Pack v1 structural validation",
+      "schema-validator parity",
+      "negative mutation regression anchors"
+    ],
+    "out": [
+      "Portable Case Pack v2 claim lifecycle",
+      "new active Skills",
+      "automatic Harness mutation"
+    ]
+  },
+  "evidence_cutoff": "2026-08-09T03:00:00Z",
+  "claims": {
+    "observed": [
+      {
+        "claim_id": "OBS-001",
+        "statement": "Portable Case Pack v1 declares required fields, closed object shapes, and date-time formats in a Draft 2020-12 JSON Schema.",
+        "evidence_refs": ["EV-001"],
+        "uncertainty": ""
+      },
+      {
+        "claim_id": "OBS-002",
+        "statement": "Before the parity fix, CI checked that the schema document was valid JSON but did not execute the schema against Portable Case Pack instances.",
+        "evidence_refs": ["EV-002"],
+        "uncertainty": "This is a replay observation anchored to the pre-fix public commit."
+      },
+      {
+        "claim_id": "OBS-003",
+        "statement": "Merged PR 36 added Draft 2020-12 instance validation and negative mutation coverage before semantic validation.",
+        "evidence_refs": ["EV-003"],
+        "uncertainty": ""
+      }
+    ],
+    "derived": [
+      {
+        "claim_id": "DER-001",
+        "statement": "Executing the published schema before the semantic validator removes the previously observed structural-authority mismatch for the covered mutation classes.",
+        "evidence_refs": ["EV-001", "EV-002", "EV-003"],
+        "uncertainty": "The statement is limited to the structural constraints and mutation classes covered by Portable Case Pack v1 and the committed tests."
+      }
+    ],
+    "judged": [
+      {
+        "claim_id": "JDG-001",
+        "statement": "Schema execution should remain the structural authority while the handwritten validator remains responsible for cross-field domain semantics.",
+        "evidence_refs": ["EV-001", "EV-003"],
+        "uncertainty": "This is an architecture judgment accepted by the repository change, not proof that all future Case Pack semantics are complete."
+      }
+    ],
+    "unknown": [
+      {
+        "claim_id": "UNK-001",
+        "statement": "Whether every derived claim must carry at least one evidence reference remains an explicit Portable Case Pack v1 semantic-contract decision.",
+        "evidence_refs": [],
+        "uncertainty": "Do not silently tighten this rule inside the Case 0 replay."
+      }
+    ]
+  },
+  "conflicts": [],
+  "strongest_counterevidence": [
+    {
+      "statement": "Executing a closed schema can expose compatibility failures in instances that were previously tolerated by a narrower handwritten validator.",
+      "evidence_refs": ["EV-001", "EV-002"],
+      "impact": "Treat newly rejected previously-supported shapes as compatibility findings; do not weaken the schema merely to preserve a false-ready path."
+    }
+  ],
+  "rejected_directions": [
+    {
+      "direction": "Keep the handwritten semantic validator as the only runtime gate",
+      "reason": "That path leaves published structural constraints non-authoritative and recreates the false-ready condition.",
+      "evidence_refs": ["EV-001", "EV-002"]
+    },
+    {
+      "direction": "Use the parity repair to tighten derived-claim evidence semantics",
+      "reason": "That would mix structural enforcement with an unresolved contract change and would require separate compatibility review.",
+      "evidence_refs": ["EV-003"]
+    }
+  ],
+  "evidence_refs": [
+    {
+      "id": "EV-001",
+      "uri": "repo://schemas/capability/portable-case-pack.v1.schema.json@6d8365c6ef1ca8cf82a220e5c87b9b25fada8fd7",
+      "date": "2026-08-08T13:56:25Z",
+      "access": "public",
+      "content_hash": "git:31dbb1d1e720ee42da864203727ce06a2ad85ecf"
+    },
+    {
+      "id": "EV-002",
+      "uri": "repo://.github/workflows/capability-profile-validate.yml@6d8365c6ef1ca8cf82a220e5c87b9b25fada8fd7",
+      "date": "2026-08-08T13:56:25Z",
+      "access": "public",
+      "content_hash": "git:pre-parity-workflow"
+    },
+    {
+      "id": "EV-003",
+      "uri": "repo://commit/863ceb307416975ddb43ec3fba2606648b2c0c59",
+      "date": "2026-08-09T02:58:00Z",
+      "access": "public",
+      "content_hash": "git:863ceb307416975ddb43ec3fba2606648b2c0c59"
+    }
+  ],
+  "source_gaps": [
+    "This public replay does not establish private downstream adoption or manager value.",
+    "The derived-claim evidence requirement remains intentionally unresolved in Portable Case Pack v1."
+  ],
+  "next_tool_task": "Validate the Case 0 receipts against the same case identity and evidence boundary.",
+  "required_output": {
+    "artifact_kind": "decision_card",
+    "audience": "repository_maintainer",
+    "contract": "candidate projection containing recommendation, alternatives, evidence, strongest counterevidence, unknowns, reversibility, and the required human decision"
+  },
+  "falsification": "Reverse the recommendation if executing the published schema demonstrably rejects an intentionally valid Portable Case Pack v1 shape that the contract is required to support.",
+  "data_classification": "public",
+  "compression_receipt": {
+    "inspected": [
+      "repo://schemas/capability/portable-case-pack.v1.schema.json@6d8365c6ef1ca8cf82a220e5c87b9b25fada8fd7",
+      "repo://.github/workflows/capability-profile-validate.yml@6d8365c6ef1ca8cf82a220e5c87b9b25fada8fd7",
+      "repo://commit/863ceb307416975ddb43ec3fba2606648b2c0c59"
+    ],
+    "unavailable": [
+      "private downstream Case Pack compatibility observations"
+    ],
+    "omitted": [
+      {
+        "item": "full reasoning transcript",
+        "reason": "Case handoff preserves claims and evidence references rather than hidden reasoning."
+      }
+    ]
+  }
+}
