@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/attention-admission-receipt.v1.schema.json",
+  "title": "Lattice Attention Admission Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "case_id",
+    "mission_anchor_ref",
+    "projection_of",
+    "evaluated_at",
+    "status",
+    "mandatory_checks",
+    "delivery_contract",
+    "decision_required",
+    "consequence_of_delay",
+    "reversibility",
+    "missing_actions",
+    "next_step",
+    "evidence_refs",
+    "data_classification"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.attention_admission_receipt.v1"},
+    "case_id": {"type": "string", "minLength": 1},
+    "mission_anchor_ref": {"const": "lat.goal.verified-decision-yield.v1"},
+    "projection_of": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_contract", "portable_case_pack"],
+      "properties": {
+        "case_contract": {"type": "string", "minLength": 1},
+        "portable_case_pack": {"type": "string", "minLength": 1}
+      }
+    },
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["READY", "BLOCKED", "ESCALATE"]},
+    "mandatory_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["M1_target", "M2_evidence", "M3_counterevidence", "M4_risk_authority", "M5_delivery"],
+      "properties": {
+        "M1_target": {"$ref": "#/$defs/check"},
+        "M2_evidence": {"$ref": "#/$defs/check"},
+        "M3_counterevidence": {"$ref": "#/$defs/check"},
+        "M4_risk_authority": {"$ref": "#/$defs/check"},
+        "M5_delivery": {"$ref": "#/$defs/check"}
+      }
+    },
+    "delivery_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_output_contract", "verifier", "expected_state_change"],
+      "properties": {
+        "required_output_contract": {"type": "string", "minLength": 1},
+        "verifier": {"type": "string", "minLength": 1},
+        "expected_state_change": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision_required": {"type": "string", "minLength": 1},
+    "consequence_of_delay": {"type": "string", "minLength": 1},
+    "reversibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "notes"],
+      "properties": {
+        "level": {"enum": ["reversible", "partially_reversible", "irreversible", "unknown"]},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "missing_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "action"],
+        "properties": {
+          "check_id": {"enum": ["M1_target", "M2_evidence", "M3_counterevidence", "M4_risk_authority", "M5_delivery"]},
+          "action": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "next_step": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "data_classification": {"enum": ["public", "private", "restricted"]},
+    "simulation_status": {"enum": ["synthetic_reference"]},
+    "downstream_adoption_status": {"enum": ["not_observed", "imported", "task_scoped", "used_once", "reused", "team_available", "deprecated"]}
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["pass", "fail", "escalate"]},
+        "reason": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
