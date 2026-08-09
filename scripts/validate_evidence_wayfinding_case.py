@@ -71,6 +71,20 @@ def as_string_set(value: Any) -> set[str]:
     return {str(item) for item in value}
 
 
+def collect_evidence_refs(value: Any) -> set[str]:
+    refs: set[str] = set()
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            if key == "evidence_refs":
+                refs.update(as_string_set(nested))
+            else:
+                refs.update(collect_evidence_refs(nested))
+    elif isinstance(value, list):
+        for nested in value:
+            refs.update(collect_evidence_refs(nested))
+    return refs
+
+
 def validate_case(case_dir: Path) -> list[str]:
     errors: list[str] = []
     records: dict[str, dict[str, Any]] = {}
@@ -141,9 +155,7 @@ def validate_case(case_dir: Path) -> list[str]:
         errors.append("portable-case-pack.json must expose evidence ids")
 
     for name in ["admission_receipt", "decision_card", "verification_receipt", "outcome_receipt"]:
-        record = records[name]
-        refs = as_string_set(record.get("evidence_refs"))
-        unknown = refs - evidence_ids
+        unknown = collect_evidence_refs(records[name]) - evidence_ids
         if unknown:
             errors.append(
                 f"{REQUIRED_FILES[name]} references unknown evidence: "
@@ -167,12 +179,6 @@ def validate_case(case_dir: Path) -> list[str]:
         seen_checks.add(check_id)
         if check.get("status") != "pass":
             errors.append(f"READY admission cannot contain non-pass check: {check_id}")
-        unknown = as_string_set(check.get("evidence_refs")) - evidence_ids
-        if unknown:
-            errors.append(
-                f"admission check {check_id} references unknown evidence: "
-                + ", ".join(sorted(unknown))
-            )
     missing_checks = MANDATORY_ADMISSION_CHECKS - seen_checks
     if missing_checks:
         errors.append(
