@@ -1,40 +1,63 @@
 {
-  "contract": "lat.evidence_wayfinding.admission_receipt.candidate.v0",
+  "$schema": "../../../schemas/capability/attention-admission-receipt.v1.schema.json",
+  "contract": "lat.attention_admission_receipt.v1",
   "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "projection_of": {
+    "case_contract": "case-contract.json",
+    "portable_case_pack": "portable-case-pack.json"
+  },
+  "evaluated_at": "2026-08-09T03:00:00Z",
   "simulation_status": "synthetic_reference",
   "downstream_adoption_status": "not_observed",
   "data_classification": "public",
   "status": "READY",
-  "mandatory_checks": [
-    {
-      "id": "bounded_decision",
+  "mandatory_checks": {
+    "M1_target": {
       "status": "pass",
+      "reason": "The Case Contract freezes one decision, owner, in/out scope, evidence cutoff, acceptance criteria, and acceptance observer.",
       "evidence_refs": ["EV-001", "EV-002"]
     },
-    {
-      "id": "evidence",
+    "M2_evidence": {
       "status": "pass",
+      "reason": "Every observed, derived, and judged claim in the Portable Case Pack has at least one resolvable evidence reference.",
       "evidence_refs": ["EV-001", "EV-002", "EV-003"]
     },
-    {
-      "id": "counterevidence",
+    "M3_counterevidence": {
       "status": "pass",
+      "reason": "The compatibility risk from executing a closed schema is recorded as the strongest counterevidence.",
       "evidence_refs": ["EV-001", "EV-002"]
     },
-    {
-      "id": "authority",
+    "M4_risk_authority": {
       "status": "pass",
+      "reason": "Repository maintainers retain the decision, the change is reversible, and the Agent has no contract-change or promotion authority.",
       "evidence_refs": ["EV-003"]
     },
-    {
-      "id": "delivery_state_change",
+    "M5_delivery": {
       "status": "pass",
+      "reason": "The required Decision Card contract, deterministic verification path, and expected CI state change are explicit.",
       "evidence_refs": ["EV-003"]
     }
-  ],
+  },
+  "counterevidence_basis": {
+    "mode": "recorded_counterevidence",
+    "search_scope": "Published Portable Case Pack schema, pre-fix CI behavior, and compatibility risk of closed-schema execution.",
+    "blind_spots": [
+      "Private downstream Portable Case Pack compatibility observations are unavailable in the public replay."
+    ]
+  },
+  "delivery_contract": {
+    "required_output_contract": "lat.evidence_wayfinding.decision_card.candidate.v0",
+    "verifier": "Portable Case Pack Draft 2020-12 schema validation plus semantic validator and mutation tests",
+    "expected_state_change": "CI rejects Portable Case Pack instances that violate the published structural contract before semantic validation."
+  },
   "decision_required": "Choose whether the published JSON Schema or the handwritten semantic validator owns Portable Case Pack structural validity.",
   "consequence_of_delay": "A runtime may continue accepting instances that contradict the published contract, preserving a false-ready boundary for downstream consumers.",
-  "reversibility": "The CI ordering and validator invocation are reversible repository changes; any newly exposed compatibility issue must be reviewed rather than bypassed.",
+  "reversibility": {
+    "level": "reversible",
+    "notes": "The CI ordering and validator invocation can be reverted; any newly exposed compatibility issue must be reviewed rather than bypassed."
+  },
+  "missing_actions": [],
   "next_step": "Present the bounded Decision Card to the repository maintainer.",
   "evidence_refs": ["EV-001", "EV-002", "EV-003"]
 }

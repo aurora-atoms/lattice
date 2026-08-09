@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/outcome-receipt.v1.schema.json",
+  "title": "Lattice Outcome Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "case_id",
+    "mission_anchor_ref",
+    "projection_of",
+    "observed_at",
+    "decision",
+    "state_before",
+    "state_after",
+    "delivery_state_changed",
+    "accepted_artifact",
+    "earliest_failure_point",
+    "human_corrections",
+    "claim_outcomes",
+    "remaining_unknowns",
+    "failure_point_candidate",
+    "evidence_refs",
+    "data_classification"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.outcome_receipt.v1"},
+    "case_id": {"type": "string", "minLength": 1},
+    "mission_anchor_ref": {"const": "lat.goal.verified-decision-yield.v1"},
+    "projection_of": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_contract", "portable_case_pack"],
+      "properties": {
+        "case_contract": {"type": "string", "minLength": 1},
+        "portable_case_pack": {"type": "string", "minLength": 1}
+      }
+    },
+    "observed_at": {"type": "string", "format": "date-time"},
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected_option", "decision_owner", "decision_ref", "evidence_refs"],
+      "properties": {
+        "selected_option": {"type": "string", "minLength": 1},
+        "decision_owner": {"type": "string", "minLength": 1},
+        "decision_ref": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "state_before": {"$ref": "#/$defs/evidence_statement"},
+    "state_after": {"$ref": "#/$defs/evidence_statement"},
+    "delivery_state_changed": {"type": "boolean"},
+    "accepted_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference", "evidence_refs"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "reference": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "earliest_failure_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "statement", "evidence_refs"],
+      "properties": {
+        "stage": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "human_corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["correction_id", "statement", "disposition", "evidence_refs"],
+        "properties": {
+          "correction_id": {"type": "string", "minLength": 1},
+          "statement": {"type": "string", "minLength": 1},
+          "disposition": {"enum": ["accepted", "rejected", "deferred"]},
+          "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "claim_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "version", "status", "evidence_refs", "cutoff", "status_history"],
+        "properties": {
+          "claim_id": {"type": "string", "minLength": 1},
+          "version": {"type": "integer", "minimum": 1},
+          "status": {"$ref": "#/$defs/claim_status"},
+          "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "cutoff": {"type": "string", "format": "date-time"},
+          "status_history": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["from", "to", "changed_at", "reason", "evidence_refs"],
+              "properties": {
+                "from": {
+                  "anyOf": [
+                    {"$ref": "#/$defs/claim_status"},
+                    {"type": "null"}
+                  ]
+                },
+                "to": {"$ref": "#/$defs/claim_status"},
+                "changed_at": {"type": "string", "format": "date-time"},
+                "reason": {"type": "string", "minLength": 1},
+                "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "remaining_unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["statement", "next_evidence", "owner"],
+        "properties": {
+          "claim_id": {"type": "string", "minLength": 1},
+          "statement": {"type": "string", "minLength": 1},
+          "next_evidence": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "failure_point_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible_for_harness_candidate", "candidate_scope", "promotion_authority"],
+      "properties": {
+        "eligible_for_harness_candidate": {"type": "boolean"},
+        "candidate_scope": {"type": "string", "minLength": 1},
+        "promotion_authority": {"const": "none_from_outcome_receipt"}
+      }
+    },
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "data_classification": {"enum": ["public", "private", "restricted"]},
+    "simulation_status": {"enum": ["synthetic_reference"]},
+    "downstream_adoption_status": {"enum": ["not_observed", "imported", "task_scoped", "used_once", "reused", "team_available", "deprecated"]}
+  },
+  "$defs": {
+    "claim_status": {
+      "enum": ["UNKNOWN", "HYPOTHESIS", "EVIDENCED", "CONFIRMED", "CONFLICTED", "STALE", "INVALIDATED"]
+    },
+    "evidence_statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "evidence_refs"],
+      "properties": {
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

@@ -37,7 +37,9 @@ PACK_VALIDATOR = load_module(
 
 CASE_DIR = ROOT / "examples" / "evidence-wayfinding" / "case-0-schema-parity"
 PACK = CASE_DIR / "portable-case-pack.json"
-SCHEMA = ROOT / "schemas" / "capability" / "portable-case-pack.v1.schema.json"
+PACK_SCHEMA = ROOT / "schemas" / "capability" / "portable-case-pack.v1.schema.json"
+ADMISSION_SCHEMA = ROOT / "schemas" / "capability" / "attention-admission-receipt.v1.schema.json"
+OUTCOME_SCHEMA = ROOT / "schemas" / "capability" / "outcome-receipt.v1.schema.json"
 
 
 class EvidenceWayfindingCase0Tests(unittest.TestCase):
@@ -45,7 +47,21 @@ class EvidenceWayfindingCase0Tests(unittest.TestCase):
         self.assertEqual([], CASE_VALIDATOR.validate_case(CASE_DIR))
 
     def test_case_pack_passes_authoritative_structural_schema(self) -> None:
-        self.assertEqual([], SCHEMA_VALIDATOR.validate_instance(SCHEMA, PACK))
+        self.assertEqual([], SCHEMA_VALIDATOR.validate_instance(PACK_SCHEMA, PACK))
+
+    def test_admission_and_outcome_pass_authoritative_schemas(self) -> None:
+        self.assertEqual(
+            [],
+            SCHEMA_VALIDATOR.validate_instance(
+                ADMISSION_SCHEMA, CASE_DIR / "admission-receipt.json"
+            ),
+        )
+        self.assertEqual(
+            [],
+            SCHEMA_VALIDATOR.validate_instance(
+                OUTCOME_SCHEMA, CASE_DIR / "outcome-receipt.json"
+            ),
+        )
 
     def test_case_pack_passes_semantic_validator_after_schema(self) -> None:
         record = PACK_VALIDATOR.load_json(PACK)
@@ -68,7 +84,7 @@ class EvidenceWayfindingCase0Tests(unittest.TestCase):
         outcome = CASE_VALIDATOR.load_json(CASE_DIR / "outcome-receipt.json")
         candidate = outcome["failure_point_candidate"]
         self.assertTrue(candidate["eligible_for_harness_candidate"])
-        self.assertEqual("none_from_this_case", candidate["promotion_authority"])
+        self.assertEqual("none_from_outcome_receipt", candidate["promotion_authority"])
 
     def mutate_case(self, filename: str, mutator) -> list[str]:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -81,11 +97,11 @@ class EvidenceWayfindingCase0Tests(unittest.TestCase):
             return CASE_VALIDATOR.validate_case(copied)
 
     def test_ready_admission_cannot_waive_mandatory_check(self) -> None:
-        errors = self.mutate_case(
-            "admission-receipt.json",
-            lambda record: record["mandatory_checks"].pop(),
-        )
-        self.assertTrue(any("missing mandatory checks" in error for error in errors))
+        def remove_check(record):
+            del record["mandatory_checks"]["M3_counterevidence"]
+
+        errors = self.mutate_case("admission-receipt.json", remove_check)
+        self.assertTrue(any("missing mandatory admission check" in error for error in errors))
 
     def test_receipt_cannot_reference_unknown_case_evidence(self) -> None:
         def add_unknown(record):
@@ -99,7 +115,7 @@ class EvidenceWayfindingCase0Tests(unittest.TestCase):
             record["failure_point_candidate"]["promotion_authority"] = "team_available"
 
         errors = self.mutate_case("outcome-receipt.json", promote)
-        self.assertTrue(any("must not grant promotion authority" in error for error in errors))
+        self.assertTrue(any("cannot grant Harness promotion authority" in error for error in errors))
 
 
 if __name__ == "__main__":

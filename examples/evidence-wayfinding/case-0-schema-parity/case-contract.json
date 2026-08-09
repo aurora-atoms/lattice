@@ -33,6 +33,7 @@
     "Malformed evidence date-time is rejected.",
     "The existing semantic validator still checks cross-field evidence invariants after structural validation."
   ],
+  "acceptance_observer": "repository CI plus repository maintainer review",
   "authority": {
     "final_decision_owner": "repository_maintainer",
     "agent_can_change_contract": false,
