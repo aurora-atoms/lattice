@@ -1,0 +1,49 @@
+{
+  "contract": "lat.evidence_wayfinding.decision_card.candidate.v0",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "projection_of": "portable-case-pack.json",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "decision_requested": "Should Portable Case Pack v1 execute its published Draft 2020-12 JSON Schema as the structural authority before semantic validation?",
+  "recommendation": {
+    "option_id": "A",
+    "statement": "Execute the published Draft 2020-12 JSON Schema first, then run the semantic validator for cross-field domain invariants."
+  },
+  "options": [
+    {
+      "option_id": "A",
+      "action": "Use the JSON Schema as structural authority and the semantic validator as the cross-field authority.",
+      "benefits": [
+        "Published required, closed-shape, enum, type, and date-time rules become executable.",
+        "Structural and semantic responsibilities are explicit instead of overlapping ambiguously."
+      ],
+      "risks": [
+        "Previously tolerated but schema-invalid instances may begin failing and require compatibility review."
+      ],
+      "reversibility": "High; CI ordering and validator invocation can be reverted, while compatibility findings remain observable.",
+      "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+    },
+    {
+      "option_id": "B",
+      "action": "Keep the handwritten semantic validator as the only runtime gate.",
+      "benefits": [
+        "Avoids exposing new schema-validation failures immediately."
+      ],
+      "risks": [
+        "Retains a false-ready condition where an instance can contradict the published structural contract and still be accepted."
+      ],
+      "reversibility": "High, but the unresolved contract mismatch remains active until changed.",
+      "evidence_refs": ["EV-001", "EV-002"]
+    }
+  ],
+  "strongest_counterevidence": "A closed schema can reveal compatibility failures in previously tolerated instances, so schema execution may create short-term migration work.",
+  "unknowns": [
+    "Whether every derived claim must carry evidence remains outside this decision and requires a separate semantic-contract review.",
+    "This public replay does not establish private downstream adoption or business value."
+  ],
+  "largest_risk": "Mistaking structural conformance for semantic correctness; both gates remain required.",
+  "latest_safe_decision_time": "Before another runtime or downstream consumer relies on Portable Case Pack v1 validation behavior.",
+  "minimum_response": "A | B | defer until <specific compatibility evidence>",
+  "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+}

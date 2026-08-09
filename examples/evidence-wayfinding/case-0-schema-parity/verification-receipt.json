@@ -1,0 +1,53 @@
+{
+  "contract": "lat.evidence_wayfinding.verification_receipt.candidate.v0",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "target": "Portable Case Pack v1 structural schema execution precedes semantic validation and rejects the documented false-ready mutations.",
+  "checks": [
+    {
+      "id": "valid-pack-structural",
+      "status": "pass",
+      "mechanism": "Draft 2020-12 schema instance validation",
+      "evidence_refs": ["EV-001", "EV-003"]
+    },
+    {
+      "id": "valid-pack-semantic",
+      "status": "pass",
+      "mechanism": "Portable Case Pack semantic validator",
+      "evidence_refs": ["EV-003"]
+    },
+    {
+      "id": "mutation-unknown-top-level",
+      "status": "pass",
+      "mechanism": "The schema rejects an instance containing an unknown top-level field.",
+      "evidence_refs": ["EV-001", "EV-003"]
+    },
+    {
+      "id": "mutation-missing-audience",
+      "status": "pass",
+      "mechanism": "The schema rejects an instance missing required audience.",
+      "evidence_refs": ["EV-001", "EV-003"]
+    },
+    {
+      "id": "mutation-missing-required-output",
+      "status": "pass",
+      "mechanism": "The schema rejects an instance missing required_output.",
+      "evidence_refs": ["EV-001", "EV-003"]
+    },
+    {
+      "id": "mutation-malformed-evidence-date",
+      "status": "pass",
+      "mechanism": "The schema rejects an evidence date that is not a valid date-time.",
+      "evidence_refs": ["EV-001", "EV-003"]
+    }
+  ],
+  "coverage_limits": [
+    "The replay verifies the four structural mutation classes preserved by PR 36; it does not prove every possible invalid Portable Case Pack is rejected.",
+    "Semantic questions intentionally outside Portable Case Pack v1 structural parity remain unresolved."
+  ],
+  "verdict": "pass_for_case_target",
+  "human_gate_required": true,
+  "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+}

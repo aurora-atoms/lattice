@@ -1,0 +1,66 @@
+{
+  "contract": "lat.evidence_wayfinding.outcome_receipt.candidate.v0",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "decision": {
+    "selected_option": "A",
+    "decision_owner": "repository_maintainer",
+    "decision_evidence": "Merged PR 36 adopted schema-first structural validation while preserving the semantic validator."
+  },
+  "state_before": "Portable Case Pack v1 structural rules were published but not executed against instances in CI.",
+  "state_after": "Portable Case Pack v1 instances are structurally validated against the published Draft 2020-12 schema before semantic validation, with four negative mutation regression anchors.",
+  "delivery_state_changed": true,
+  "accepted_artifact": {
+    "kind": "repository_change",
+    "reference": "repo://commit/863ceb307416975ddb43ec3fba2606648b2c0c59"
+  },
+  "earliest_failure_point": "The CI path validated the JSON syntax of the schema document but did not execute that schema against Portable Case Pack instances.",
+  "human_corrections": [
+    "Treat the published JSON Schema as the structural authority rather than assuming the handwritten semantic validator fully implements it.",
+    "Do not use the parity fix to silently tighten unresolved derived-claim evidence semantics."
+  ],
+  "claim_outcomes": [
+    {
+      "claim_id": "OBS-001",
+      "status": "confirmed",
+      "evidence_refs": ["EV-001"]
+    },
+    {
+      "claim_id": "OBS-002",
+      "status": "confirmed",
+      "evidence_refs": ["EV-002"]
+    },
+    {
+      "claim_id": "OBS-003",
+      "status": "confirmed",
+      "evidence_refs": ["EV-003"]
+    },
+    {
+      "claim_id": "DER-001",
+      "status": "evidenced",
+      "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+    },
+    {
+      "claim_id": "JDG-001",
+      "status": "judged",
+      "evidence_refs": ["EV-001", "EV-003"]
+    },
+    {
+      "claim_id": "UNK-001",
+      "status": "unknown",
+      "evidence_refs": []
+    }
+  ],
+  "remaining_unknowns": [
+    "Whether every derived claim must carry evidence in a future Portable Case Pack contract version.",
+    "Whether the public Evidence Wayfinding workflow produces measurable Senior Attention value in private live cases."
+  ],
+  "failure_point_candidate": {
+    "eligible_for_harness_candidate": true,
+    "candidate_scope": "schema-validation ordering and contract-parity regression protection",
+    "promotion_authority": "none_from_this_case"
+  },
+  "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+}

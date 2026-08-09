@@ -1,0 +1,43 @@
+{
+  "contract": "lat.evidence_wayfinding.case_contract.candidate.v0",
+  "case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "decision_requested": "Should Portable Case Pack v1 execute its published Draft 2020-12 JSON Schema as the structural authority before semantic validation?",
+  "beneficiary": "Lattice maintainers and downstream runtime adapters that rely on Portable Case Pack validity",
+  "value_path": "current_product_delivery",
+  "before_state": "The published schema described structural constraints, but CI did not execute those constraints against Portable Case Pack instances.",
+  "target_state": "CI rejects Portable Case Pack instances that violate the published structural schema before domain semantic validation runs.",
+  "scope": {
+    "in": [
+      "schemas/capability/portable-case-pack.v1.schema.json",
+      "scripts/validate_json_schema_instance.py",
+      "scripts/validate_portable_case_pack.py",
+      "tests/fixtures/evidence-wayfinding",
+      ".github/workflows/capability-profile-validate.yml"
+    ],
+    "out": [
+      "new active Skills",
+      "Portable Case Pack v2 semantics",
+      "private downstream business evidence",
+      "Harness mutation or automatic promotion"
+    ]
+  },
+  "acceptance": [
+    "A valid Portable Case Pack passes Draft 2020-12 structural validation.",
+    "Unknown top-level fields are rejected.",
+    "Missing audience is rejected.",
+    "Missing required_output is rejected.",
+    "Malformed evidence date-time is rejected.",
+    "The existing semantic validator still checks cross-field evidence invariants after structural validation."
+  ],
+  "authority": {
+    "final_decision_owner": "repository_maintainer",
+    "agent_can_change_contract": false,
+    "agent_can_promote_assets": false
+  },
+  "evidence_cutoff": "2026-08-09T03:00:00Z",
+  "falsification": "Reject this direction if executing the published schema would contradict an intentionally supported Portable Case Pack v1 instance or if structural rules cannot be applied deterministically across supported runtimes."
+}
