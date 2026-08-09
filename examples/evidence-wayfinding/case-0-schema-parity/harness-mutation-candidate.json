@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../schemas/capability/harness-mutation-candidate.v1.schema.json",
+  "contract": "lat.harness_mutation_candidate.v1",
+  "candidate_id": "hmc.case0.contract-parity-verifier",
+  "version": "0.1.0",
+  "status": "session_local_candidate",
+  "source_case_id": "synthetic/evidence-wayfinding-schema-parity-case-0",
+  "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+  "source_outcome_ref": "outcome-receipt.json",
+  "created_at": "2026-08-09T03:29:00Z",
+  "expires_at": "2026-09-08T03:29:00Z",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "data_classification": "public",
+  "failure_point": {
+    "category": "verification_gap",
+    "stage": "verification",
+    "statement": "The CI path validated the JSON syntax of the schema document but did not execute that schema against Portable Case Pack instances.",
+    "evidence_refs": ["EV-001", "EV-002"]
+  },
+  "mutation": {
+    "mechanism": "verifier_change",
+    "primary_delta": "For a public JSON-Schema-backed contract audit, insert authoritative schema-instance conformance on a known-valid fixture and bounded negative fixtures before trusting a handwritten semantic validator.",
+    "hypothesis": "A schema-instance parity gate will detect published-contract/runtime mismatches earlier than the incumbent syntax-plus-semantic path without increasing critical false-ready or rejecting valid structurally conforming cases.",
+    "incumbent": {
+      "variant_id": "incumbent.syntax-plus-semantic",
+      "behavior": "Validate that the schema document is legal JSON, then rely on the handwritten semantic validator for runtime acceptance."
+    },
+    "challenger": {
+      "variant_id": "challenger.schema-instance-parity-gate",
+      "behavior": "Validate the schema document, execute the authoritative schema against known-valid and bounded negative fixtures, then run the handwritten semantic validator for cross-field domain rules."
+    }
+  },
+  "scope": {
+    "in": [
+      "public contract audits with an authoritative Draft 2020-12 JSON Schema",
+      "session-local replay and evaluation",
+      "verification ordering and contract-parity detection"
+    ],
+    "out": [
+      "automatic mutation generation",
+      "team-default verifier routing",
+      "private downstream source code or business evidence",
+      "Skill creation or promotion",
+      "automatic canary, merge, release, or deployment"
+    ]
+  },
+  "evaluation_plan": {
+    "status": "blocked_pending_reserved_oracle",
+    "target_frozen": true,
+    "evaluator_version": "case0-contract-parity-eval-protocol@0.1.0",
+    "blindness": {
+      "variant_labels_blinded_to_evaluator": true,
+      "candidate_author_can_view_reserved_outcome": false
+    },
+    "case_allocations": [
+      {
+        "case_id": "representative.missing-audience",
+        "class": "representative",
+        "case_ref": "repo://tests/fixtures/evidence-wayfinding/invalid/missing-audience.json",
+        "availability": "public_fixture",
+        "oracle_visibility": "visible_to_evaluator",
+        "oracle_ref": "repo://tests/test_portable_case_pack_schema.py#test_required_fields_are_rejected_when_missing"
+      },
+      {
+        "case_id": "hard.semantic-boundary-derived-evidence",
+        "class": "hard",
+        "case_ref": "repo://tests/fixtures/evidence-wayfinding/semantic-decision/derived-claim-without-evidence.json",
+        "availability": "public_fixture",
+        "oracle_visibility": "visible_to_evaluator",
+        "oracle_ref": "repo://tests/test_attention_outcome_contracts.py#test_derived_claim_without_evidence_blocks_admission"
+      },
+      {
+        "case_id": "counterexample.valid-minimal-pack",
+        "class": "counterexample",
+        "case_ref": "repo://tests/fixtures/evidence-wayfinding/valid/portable-case-pack.minimal.v1.json",
+        "availability": "public_fixture",
+        "oracle_visibility": "visible_to_evaluator",
+        "oracle_ref": "repo://tests/test_portable_case_pack_schema.py#test_valid_minimal_fixture_passes_authoritative_schema"
+      },
+      {
+        "case_id": "reserved.contract-parity-001",
+        "class": "reserved",
+        "case_ref": "downstream://reserved/contract-parity-001",
+        "availability": "external_required",
+        "oracle_visibility": "evaluator_only",
+        "oracle_ref": "withheld://reserved/contract-parity-001"
+      }
+    ],
+    "primary_metric": "contract_false_ready_detection_without_valid_case_regression",
+    "protected_metrics": [
+      "critical_false_ready",
+      "authority_drift",
+      "private_to_public_leakage"
+    ],
+    "non_regression_constraints": [
+      "A known-valid structurally conforming Portable Case Pack remains accepted by structural validation.",
+      "Semantic-only failures remain owned by semantic or admission validators rather than being misclassified as structural schema failures.",
+      "No candidate evaluation may grant merge, release, deployment, or team_available authority."
+    ],
+    "decision_options": ["reject", "revise", "continue_shadow", "scoped_canary"]
+  },
+  "ownership": {
+    "owner": "repository_maintainer",
+    "human_approval_required": true
+  },
+  "rollback": {
+    "trigger": "Any critical false-ready, authority drift, private-to-public leakage, or valid-case regression attributable to the challenger.",
+    "action": "Discard the session-local challenger and restore the incumbent verification path for the affected scope.",
+    "revalidation": "Rerun the target, representative, hard, counterexample, and reserved critical evaluations before any later canary decision."
+  },
+  "promotion_boundary": {
+    "automatic_promotion_allowed": false,
+    "team_available_allowed": false,
+    "human_owner_required": true,
+    "min_distinct_case_types": 2,
+    "reserved_non_regression_required": true,
+    "live_case_required_before_team_available": true
+  },
+  "evidence_refs": ["EV-001", "EV-002", "EV-003"]
+}
