@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import shutil
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -66,6 +69,37 @@ class EvidenceWayfindingCase0Tests(unittest.TestCase):
         candidate = outcome["failure_point_candidate"]
         self.assertTrue(candidate["eligible_for_harness_candidate"])
         self.assertEqual("none_from_this_case", candidate["promotion_authority"])
+
+    def mutate_case(self, filename: str, mutator) -> list[str]:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            copied = Path(temp_dir) / "case"
+            shutil.copytree(CASE_DIR, copied)
+            path = copied / filename
+            record = json.loads(path.read_text(encoding="utf-8"))
+            mutator(record)
+            path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+            return CASE_VALIDATOR.validate_case(copied)
+
+    def test_ready_admission_cannot_waive_mandatory_check(self) -> None:
+        errors = self.mutate_case(
+            "admission-receipt.json",
+            lambda record: record["mandatory_checks"].pop(),
+        )
+        self.assertTrue(any("missing mandatory checks" in error for error in errors))
+
+    def test_receipt_cannot_reference_unknown_case_evidence(self) -> None:
+        def add_unknown(record):
+            record["options"][0]["evidence_refs"].append("EV-NOT-IN-PACK")
+
+        errors = self.mutate_case("decision-card.json", add_unknown)
+        self.assertTrue(any("unknown evidence" in error for error in errors))
+
+    def test_single_replay_cannot_grant_promotion_authority(self) -> None:
+        def promote(record):
+            record["failure_point_candidate"]["promotion_authority"] = "team_available"
+
+        errors = self.mutate_case("outcome-receipt.json", promote)
+        self.assertTrue(any("must not grant promotion authority" in error for error in errors))
 
 
 if __name__ == "__main__":
