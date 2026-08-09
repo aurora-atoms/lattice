@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/harness-mutation-candidate.v1.schema.json",
+  "title": "Harness Mutation Candidate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "candidate_id",
+    "version",
+    "status",
+    "source_case_id",
+    "mission_anchor_ref",
+    "source_outcome_ref",
+    "created_at",
+    "expires_at",
+    "simulation_status",
+    "downstream_adoption_status",
+    "data_classification",
+    "failure_point",
+    "mutation",
+    "scope",
+    "evaluation_plan",
+    "ownership",
+    "rollback",
+    "promotion_boundary",
+    "evidence_refs"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.harness_mutation_candidate.v1"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"const": "session_local_candidate"},
+    "source_case_id": {"type": "string", "minLength": 1},
+    "mission_anchor_ref": {"const": "lat.goal.verified-decision-yield.v1"},
+    "source_outcome_ref": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "simulation_status": {"const": "synthetic_reference"},
+    "downstream_adoption_status": {"const": "not_observed"},
+    "data_classification": {"const": "public"},
+    "failure_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "stage", "statement", "evidence_refs"],
+      "properties": {
+        "category": {
+          "enum": [
+            "context_selection_gap",
+            "low_value_attention_request",
+            "routing_or_tool_selection_error",
+            "no_new_evidence_loop",
+            "verification_gap",
+            "knowledge_freshness_gap",
+            "recurring_skill_rule_gap",
+            "evaluator_too_permissive"
+          ]
+        },
+        "stage": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanism", "primary_delta", "hypothesis", "incumbent", "challenger"],
+      "properties": {
+        "mechanism": {
+          "enum": [
+            "context_selection_change",
+            "attention_gate_change",
+            "routing_change",
+            "tool_surface_change",
+            "stop_rule_change",
+            "verifier_change",
+            "knowledge_freshness_change",
+            "skill_or_rule_candidate",
+            "eval_change"
+          ]
+        },
+        "primary_delta": {"type": "string", "minLength": 1},
+        "hypothesis": {"type": "string", "minLength": 1},
+        "incumbent": {"$ref": "#/$defs/variant"},
+        "challenger": {"$ref": "#/$defs/variant"}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in", "out"],
+      "properties": {
+        "in": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "out": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "evaluation_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "target_frozen",
+        "evaluator_version",
+        "blindness",
+        "case_allocations",
+        "primary_metric",
+        "protected_metrics",
+        "non_regression_constraints",
+        "decision_options"
+      ],
+      "properties": {
+        "status": {"enum": ["planned", "blocked_pending_reserved_oracle", "ready_for_blind_eval"]},
+        "target_frozen": {"const": true},
+        "evaluator_version": {"type": "string", "minLength": 1},
+        "blindness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["variant_labels_blinded_to_evaluator", "candidate_author_can_view_reserved_outcome"],
+          "properties": {
+            "variant_labels_blinded_to_evaluator": {"const": true},
+            "candidate_author_can_view_reserved_outcome": {"const": false}
+          }
+        },
+        "case_allocations": {
+          "type": "array",
+          "minItems": 3,
+          "items": {"$ref": "#/$defs/caseAllocation"}
+        },
+        "primary_metric": {"type": "string", "minLength": 1},
+        "protected_metrics": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "critical_false_ready",
+              "authority_drift",
+              "private_to_public_leakage",
+              "unsupported_claim",
+              "conflict_escape"
+            ]
+          }
+        },
+        "non_regression_constraints": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "decision_options": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["reject", "revise", "continue_shadow", "scoped_canary"]}
+        }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "human_approval_required"],
+      "properties": {
+        "owner": {"type": "string", "minLength": 1},
+        "human_approval_required": {"const": true}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger", "action", "revalidation"],
+      "properties": {
+        "trigger": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "revalidation": {"type": "string", "minLength": 1}
+      }
+    },
+    "promotion_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatic_promotion_allowed",
+        "team_available_allowed",
+        "human_owner_required",
+        "min_distinct_case_types",
+        "reserved_non_regression_required",
+        "live_case_required_before_team_available"
+      ],
+      "properties": {
+        "automatic_promotion_allowed": {"const": false},
+        "team_available_allowed": {"const": false},
+        "human_owner_required": {"const": true},
+        "min_distinct_case_types": {"type": "integer", "minimum": 2},
+        "reserved_non_regression_required": {"const": true},
+        "live_case_required_before_team_available": {"const": true}
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant_id", "behavior"],
+      "properties": {
+        "variant_id": {"type": "string", "minLength": 1},
+        "behavior": {"type": "string", "minLength": 1}
+      }
+    },
+    "caseAllocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "class", "case_ref", "availability", "oracle_visibility"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "class": {"enum": ["representative", "hard", "counterexample", "reserved"]},
+        "case_ref": {"type": "string", "minLength": 1},
+        "availability": {"enum": ["public_fixture", "external_required"]},
+        "oracle_visibility": {"enum": ["visible_to_evaluator", "evaluator_only"]},
+        "oracle_ref": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
