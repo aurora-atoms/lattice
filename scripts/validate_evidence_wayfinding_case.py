@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 """Validate cross-file invariants for a public Evidence Wayfinding replay case.
 
-This validator intentionally does not replace the Portable Case Pack JSON Schema
-or semantic validator. It validates the case spine: identity, admission,
-Decision Card projection, verification evidence, and observed outcome lineage.
+Portable Case Pack, Attention Admission, and Outcome Receipt each retain their
+own structural/semantic validators. This validator only composes those contracts
+and checks the remaining case-spine projection lineage.
 """
 
 from __future__ import annotations
@@ -14,6 +14,9 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+
+from validate_attention_admission import validate_admission
+from validate_outcome_receipt import validate_outcome
 
 REQUIRED_FILES = {
     "case_contract": "case-contract.json",
@@ -28,14 +31,6 @@ PUBLIC_MARKERS = {
     "simulation_status": "synthetic_reference",
     "downstream_adoption_status": "not_observed",
     "data_classification": "public",
-}
-
-MANDATORY_ADMISSION_CHECKS = {
-    "bounded_decision",
-    "evidence",
-    "counterevidence",
-    "authority",
-    "delivery_state_change",
 }
 
 FORBIDDEN_KEYS = {
@@ -154,7 +149,7 @@ def validate_case(case_dir: Path) -> list[str]:
     if not evidence_ids:
         errors.append("portable-case-pack.json must expose evidence ids")
 
-    for name in ["admission_receipt", "decision_card", "verification_receipt", "outcome_receipt"]:
+    for name in ["decision_card", "verification_receipt"]:
         unknown = collect_evidence_refs(records[name]) - evidence_ids
         if unknown:
             errors.append(
@@ -162,29 +157,9 @@ def validate_case(case_dir: Path) -> list[str]:
                 + ", ".join(sorted(unknown))
             )
 
+    errors.extend(validate_admission(admission, pack, contract))
     if admission.get("status") != "READY":
-        errors.append("Case 0 admission status must be READY")
-    checks = admission.get("mandatory_checks", [])
-    if not isinstance(checks, list):
-        checks = []
-        errors.append("admission-receipt.json mandatory_checks must be a list")
-    seen_checks: set[str] = set()
-    for index, check in enumerate(checks):
-        if not isinstance(check, dict):
-            errors.append(f"admission-receipt.json mandatory_checks[{index}] must be an object")
-            continue
-        check_id = str(check.get("id", ""))
-        if check_id in seen_checks:
-            errors.append(f"duplicate admission check: {check_id}")
-        seen_checks.add(check_id)
-        if check.get("status") != "pass":
-            errors.append(f"READY admission cannot contain non-pass check: {check_id}")
-    missing_checks = MANDATORY_ADMISSION_CHECKS - seen_checks
-    if missing_checks:
-        errors.append(
-            "admission-receipt.json missing mandatory checks: "
-            + ", ".join(sorted(missing_checks))
-        )
+        errors.append("Case 0 replay requires READY admission")
 
     if card.get("projection_of") != "portable-case-pack.json":
         errors.append("decision-card.json must remain a projection of portable-case-pack.json")
@@ -223,6 +198,7 @@ def validate_case(case_dir: Path) -> list[str]:
                     f"verification-receipt.json checks[{index}] must record a passing check"
                 )
 
+    errors.extend(validate_outcome(outcome, pack))
     decision_record = outcome.get("decision", {})
     selected_option = (
         str(decision_record.get("selected_option", ""))
@@ -233,14 +209,6 @@ def validate_case(case_dir: Path) -> list[str]:
         errors.append("outcome-receipt.json selected_option must name a Decision Card option")
     if outcome.get("delivery_state_changed") is not True:
         errors.append("Case 0 outcome must record an observed delivery state change")
-    if outcome.get("state_before") == outcome.get("state_after"):
-        errors.append("outcome-receipt.json state_before and state_after must differ")
-    if not str(outcome.get("earliest_failure_point", "")).strip():
-        errors.append("outcome-receipt.json earliest_failure_point is required")
-
-    candidate = outcome.get("failure_point_candidate", {})
-    if isinstance(candidate, dict) and candidate.get("promotion_authority") != "none_from_this_case":
-        errors.append("Case 0 must not grant promotion authority from a single replay case")
 
     return errors
 
