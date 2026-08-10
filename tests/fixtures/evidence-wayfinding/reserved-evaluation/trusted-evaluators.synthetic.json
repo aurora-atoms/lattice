@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "evaluators": [
+    {
+      "evaluator_id": "synthetic-reserved-evaluator",
+      "key_id": "synthetic-ed25519-2026-01",
+      "algorithm": "ed25519",
+      "public_key_base64": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+      "status": "active",
+      "not_before": "2026-01-01T00:00:00Z",
+      "not_after": "2027-01-01T00:00:00Z",
+      "allowed_evaluator_versions": [
+        "case0-contract-parity-eval-protocol@0.1.0"
+      ],
+      "allowed_mission_anchor_refs": [
+        "lat.goal.verified-decision-yield.v1"
+      ],
+      "allowed_reserved_case_ids": [
+        "reserved.contract-parity-001"
+      ]
+    }
+  ]
+}

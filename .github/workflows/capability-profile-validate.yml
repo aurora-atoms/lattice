@@ -32,6 +32,8 @@ jobs:
           python -m json.tool schemas/capability/harness-mutation-candidate.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/blind-challenge-execution.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/reserved-evaluation-handoff-record.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/reserved-evaluation-handoff-record.v2.schema.json >/dev/null
+          python -m json.tool tests/fixtures/evidence-wayfinding/reserved-evaluation/trusted-evaluators.synthetic.json >/dev/null
           find examples/capability-profiles -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
@@ -92,7 +94,7 @@ jobs:
           python scripts/validate_blind_challenge_execution.py \
             tests/fixtures/evidence-wayfinding/blind-challenge/evaluated.synthetic-conformance.json \
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
-      - name: Validate reserved evaluation handoff
+      - name: Validate reserved evaluation handoff v1 compatibility
         run: |
           python scripts/validate_reserved_evaluation_handoff.py \
             examples/evidence-wayfinding/case-0-schema-parity/reserved-evaluation-handoff.request.jsonl \
@@ -104,6 +106,20 @@ jobs:
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
             examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
             --schema schemas/capability/reserved-evaluation-handoff-record.v1.schema.json
+      - name: Validate trusted reserved evaluation handoff v2
+        run: |
+          python scripts/validate_reserved_evaluation_handoff_v2.py \
+            examples/evidence-wayfinding/case-0-schema-parity/reserved-evaluation-handoff.request.v2.synthetic.jsonl \
+            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
+            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
+            --schema schemas/capability/reserved-evaluation-handoff-record.v2.schema.json
+          python scripts/validate_reserved_evaluation_handoff_v2.py \
+            tests/fixtures/evidence-wayfinding/reserved-evaluation/handoff.synthetic-complete.v2.jsonl \
+            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
+            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
+            --schema schemas/capability/reserved-evaluation-handoff-record.v2.schema.json \
+            --trust-store tests/fixtures/evidence-wayfinding/reserved-evaluation/trusted-evaluators.synthetic.json \
+            --consumed-nonces tests/fixtures/evidence-wayfinding/reserved-evaluation/consumed-nonces.empty.txt
       - name: Validate Evidence Wayfinding Case 0 spine
         run: python scripts/validate_evidence_wayfinding_case.py examples/evidence-wayfinding/case-0-schema-parity
       - name: Test capability profile boundaries
@@ -116,8 +132,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_harness_mutation_candidate.py' -v
       - name: Test Blind Challenge execution
         run: python -m unittest discover -s tests -p 'test_blind_challenge_execution.py' -v
-      - name: Test reserved evaluation handoff
+      - name: Test reserved evaluation handoff v1 compatibility
         run: python -m unittest discover -s tests -p 'test_reserved_evaluation_handoff.py' -v
+      - name: Test reserved attestation trust boundary
+        run: python -m unittest discover -s tests -p 'test_reserved_attestation_trust_boundary.py' -v
       - name: Test Evidence Wayfinding Case 0
         run: python -m unittest discover -s tests -p 'test_evidence_wayfinding_case0.py' -v
       - name: Test evidence wayfinding contracts
