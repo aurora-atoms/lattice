@@ -22,6 +22,22 @@ jobs:
       - name: Rebuild canonical manifest and projections
         run: |
           python scripts/migrate_legacy_capabilities.py --root . --force
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('registry/capability-manifest.json')
+          manifest = json.loads(path.read_text(encoding='utf-8'))
+          target = 'skill:domain-context-pack@1.1.0'
+          matches = [item for item in manifest['capabilities'] if item['capability_id'] == target]
+          if len(matches) != 1:
+              raise SystemExit(f'expected one {target} record, found {len(matches)}')
+          legacy = matches[0]['projection']['legacy_record']
+          legacy['uses_scripts'] = True
+          legacy['trigger_eval'] = 'present'
+          legacy['output_eval'] = 'present'
+          path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
           python scripts/generate_capability_registry_projections.py --root .
       - name: Commit deterministic outputs
         run: |
