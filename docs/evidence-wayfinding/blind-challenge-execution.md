@@ -2,7 +2,7 @@
 
 ## Decision
 
-`lat.blind_challenge_execution.v1` is the next governed boundary after `lat.harness_mutation_candidate.v1`.
+`lat.blind_challenge_execution.v1` is the governed boundary after `lat.harness_mutation_candidate.v1`.
 
 It exists to answer one question:
 
@@ -31,6 +31,7 @@ Outcome Receipt
 -> frozen target + frozen case allocation
 -> anonymous variant A / B evaluation
 -> externally supplied reserved oracle
+-> authenticated reserved attestation
 -> post-evaluation mapping reveal
 -> governed verdict
 -> human-controlled next step
@@ -102,7 +103,20 @@ status = unavailable
 
 No public file contains the oracle answer.
 
-A separate test-only `synthetic_reference` evaluated fixture exercises the completed-state contract. It is conformance evidence only; it is not a real blind benchmark, downstream adoption signal, or promotion signal.
+`lat.reserved_evaluation_handoff.v2` is the trust-bearing transport for a real reserved result. It binds the frozen request to:
+
+```text
+request_nonce
+variant_bundle_ref
+variant_bundle_digest
+evaluator_identity / key_id
+attestation_canonical_digest
+Ed25519 signature
+```
+
+The Blind Challenge validator does not reimplement cryptography. For a real observed execution or `scoped_canary`, it invokes the v2 handoff validator and requires the authenticated attestation to match the reserved result projected into the execution receipt.
+
+A separate test-only `synthetic_reference` evaluated fixture still exercises the basic completed-state contract. It is conformance evidence only; it is not a real blind benchmark, downstream adoption signal, or promotion signal.
 
 ## Evaluated state
 
@@ -127,7 +141,36 @@ evaluated_by
 evaluated_at
 ```
 
-A private downstream implementation may keep the oracle and detailed evaluator evidence locally while emitting only the permitted receipt projection.
+For an execution that claims `downstream_observed`, those four values must match a successfully authenticated v2 attestation. The reserved `case_result` must also exactly match the attestation's public-safe `reserved_case_result` projection.
+
+## Observed Evidence Gate
+
+A syntactically valid `downstream_observed` label is not evidence.
+
+When:
+
+```text
+simulation_status = downstream_observed
+```
+
+semantic validation additionally requires:
+
+```text
+status = evaluated
+downstream_adoption_status = observed_once | reused
+execution.evidence_refs != []
+each case_result.evidence_refs != []
+each variant_outcome.evidence_refs != []
+each protected_metric.evidence_refs != []
+all evidence refs are URI-like
+authenticated Reserved Evaluation Handoff v2 is supplied and verifies
+```
+
+This closes the audit mutation in which a synthetic execution could be relabeled as observed while retaining empty evidence arrays.
+
+The gate is deliberately semantic rather than a breaking structural rewrite of `blind-challenge-execution.v1`: synthetic conformance fixtures may still use empty evidence arrays because they explicitly do not claim observed downstream facts.
+
+The public/private boundary remains unchanged. Real private evidence stays in the downstream repository; public-safe projections may use refs such as `attestation://`, `digest://`, `redacted://`, `artifact://`, or another URI-like evidence locator permitted by the owning downstream policy.
 
 ## Protected metrics
 
@@ -163,6 +206,9 @@ It requires:
 - a valid post-evaluation challenger identity;
 - challenger passes the reserved target;
 - reserved comparison is not inconclusive;
+- a successfully authenticated Reserved Evaluation Handoff v2 attestation;
+- the execution's reserved result and attestation metadata exactly match that authenticated attestation;
+- the authenticated `attestation_ref` appears in execution evidence;
 - later human approval.
 
 Even after these checks:
@@ -213,6 +259,8 @@ This contract cannot:
 - grant `team_available`;
 - convert synthetic evidence into private adoption evidence.
 
+`synthetic_reference` is additionally forbidden from claiming `observed_once` or `reused` downstream adoption.
+
 ## Relationship to Feature Delivery Case
 
 The Feature Delivery Case remains the primary user-value and evidence boundary.
@@ -241,6 +289,8 @@ The contract can be structurally and semantically verified without pretending th
 
 ## Validation
 
+Basic blocked/synthetic conformance remains:
+
 ```bash
 python scripts/validate_json_schema_instance.py \
   schemas/capability/blind-challenge-execution.v1.schema.json \
@@ -249,7 +299,24 @@ python scripts/validate_json_schema_instance.py \
 python scripts/validate_blind_challenge_execution.py \
   examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
   examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
+```
 
+A downstream-observed execution or `scoped_canary` must additionally provide the authenticated v2 trust context:
+
+```bash
+python scripts/validate_blind_challenge_execution.py \
+  <evaluated-execution.json> \
+  <candidate.json> \
+  --reserved-handoff-v2 <request-plus-attestation.jsonl> \
+  --blocked-execution <blocked-source-execution.json> \
+  --handoff-schema-v2 schemas/capability/reserved-evaluation-handoff-record.v2.schema.json \
+  --trust-store <trusted-evaluators.json> \
+  --consumed-nonces <consumed-nonces.txt>
+```
+
+Tests:
+
+```bash
 python -m unittest discover -s tests -p 'test_blind_challenge_execution.py' -v
 ```
 
@@ -257,6 +324,6 @@ python -m unittest discover -s tests -p 'test_blind_challenge_execution.py' -v
 
 Do not build automatic promotion next.
 
-The next evidence-bearing step is a **private/controlled reserved evaluation adapter** that can consume the public candidate contract, keep oracle contents private, run the frozen blind comparison, and return only a conforming Blind Challenge receipt.
+After this evidence gate, the next public hardening step is to provide one authoritative Case bundle validation entrypoint so downstream consumers do not have to infer structural/semantic/integrity validator ordering themselves.
 
-Only after a real reserved result exists should Lattice decide whether the next repository change should be a scoped-canary contract, a revised candidate, or no further investment.
+Deterministic attestation ingestion and a real private Case 0B remain separate later gates. No synthetic fixture should be used to claim that either has happened.

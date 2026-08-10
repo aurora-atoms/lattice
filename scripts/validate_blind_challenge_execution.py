@@ -4,7 +4,8 @@
 
 The JSON Schema owns structure. This validator owns cross-file lineage, frozen-plan
 parity, reserved-oracle blindness, complete case allocation coverage, protected-metric
-gates, post-evaluation variant reveal, and the promotion firewall.
+gates, post-evaluation variant reveal, the observed-evidence gate, and the promotion
+firewall.
 """
 
 from __future__ import annotations
@@ -16,6 +17,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+import validate_blind_challenge_observed_evidence as OBSERVED
+import validate_reserved_evaluation_handoff_v2 as HANDOFF_V2
 
 CONTRACT = "lat.blind_challenge_execution.v1"
 MISSION = "lat.goal.verified-decision-yield.v1"
@@ -111,7 +115,16 @@ def _result_map(execution: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-def validate_execution(execution: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+def validate_execution(
+    execution: dict[str, Any],
+    candidate: dict[str, Any],
+    *,
+    handoff_records: list[dict[str, Any]] | None = None,
+    blocked_execution: dict[str, Any] | None = None,
+    handoff_schema: dict[str, Any] | None = None,
+    trust_store: dict[str, Any] | None = None,
+    consumed_nonces: set[str] | None = None,
+) -> list[str]:
     errors: list[str] = []
 
     if execution.get("contract") != CONTRACT:
@@ -348,6 +361,17 @@ def validate_execution(execution: dict[str, Any], candidate: dict[str, Any]) -> 
         if promotion.get("scoped_canary_requires_human_approval") is not True:
             errors.append("scoped canary requires human approval")
 
+    errors.extend(
+        OBSERVED.validate_observed_evidence(
+            execution,
+            candidate,
+            handoff_records=handoff_records,
+            blocked_execution=blocked_execution,
+            handoff_schema=handoff_schema,
+            trust_store=trust_store,
+            consumed_nonces=consumed_nonces,
+        )
+    )
     return errors
 
 
@@ -355,12 +379,59 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("execution", help="Blind Challenge Execution JSON path")
     parser.add_argument("candidate", help="Harness Mutation Candidate JSON path")
+    parser.add_argument(
+        "--reserved-handoff-v2",
+        help="Authenticated Reserved Evaluation Handoff v2 JSONL; required for downstream_observed/scoped_canary",
+    )
+    parser.add_argument(
+        "--blocked-execution",
+        help="Blocked source Blind Challenge Execution used to create the reserved request",
+    )
+    parser.add_argument(
+        "--handoff-schema-v2",
+        help="Reserved Evaluation Handoff v2 JSON Schema path",
+    )
+    parser.add_argument(
+        "--trust-store",
+        help="Trusted evaluator public-key store",
+    )
+    parser.add_argument(
+        "--consumed-nonces",
+        help="Consumed request nonce ledger",
+    )
     args = parser.parse_args()
 
     try:
         execution = load_json(Path(args.execution))
         candidate = load_json(Path(args.candidate))
-        errors = validate_execution(execution, candidate)
+        handoff_records = (
+            HANDOFF_V2.load_jsonl(Path(args.reserved_handoff_v2))
+            if args.reserved_handoff_v2
+            else None
+        )
+        blocked_execution = (
+            load_json(Path(args.blocked_execution)) if args.blocked_execution else None
+        )
+        handoff_schema = (
+            load_json(Path(args.handoff_schema_v2)) if args.handoff_schema_v2 else None
+        )
+        trust_store = (
+            load_json(Path(args.trust_store)) if args.trust_store else None
+        )
+        consumed_nonces = (
+            HANDOFF_V2.load_consumed_nonces(Path(args.consumed_nonces))
+            if args.consumed_nonces
+            else None
+        )
+        errors = validate_execution(
+            execution,
+            candidate,
+            handoff_records=handoff_records,
+            blocked_execution=blocked_execution,
+            handoff_schema=handoff_schema,
+            trust_store=trust_store,
+            consumed_nonces=consumed_nonces,
+        )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         errors = [str(exc)]
 
