@@ -2,16 +2,16 @@
   "$schema": "../../../schemas/runtime-adapters/google-workspace-adapter-manifest.v1.schema.json",
   "contract": "lat.google_workspace_senior_attention_adapter.v1",
   "adapter_id": "google-workspace-senior-attention",
-  "adapter_version": "1.0.0",
+  "adapter_version": "1.1.0",
   "status": "contract_validated",
   "purpose": "Project the public Senior Attention workflow into bounded Google Workspace runtime guidance without creating a second fact system, a Google-specific task Skill, or a private execution plane.",
   "direction_fit": {
     "primary_value_path": "current_product_delivery",
     "direction_verdict": "bind_to_delivery",
     "beneficiary": "a downstream Senior Attention pilot integrator and accountable engineering owner using approved Google Workspace surfaces",
-    "observable_state_change": "one canonical public adapter contract makes Gem, Workspace Studio, and Notebook boundaries explicit before any private source binding or runtime-specific rendering",
-    "verification": "Draft 2020-12 schema validation plus deterministic semantic tests for target coverage, candidate authority, product assumptions, and public/private boundaries",
-    "existing_capability_gap": "the Senior Attention workflow and profile define task semantics, but no public contract currently constrains Google runtime surfaces, authority ceilings, source binding, or account-specific availability assumptions",
+    "observable_state_change": "one canonical public adapter contract deterministically renders copy-ready Gem, Workspace Studio, and Notebook projections before any private source binding",
+    "verification": "Draft 2020-12 schema validation plus deterministic renderer drift checks, semantic tests, and public/private boundary validation",
+    "existing_capability_gap": "the Senior Attention workflow and profile define task semantics and GW-1 constrains Google runtime boundaries, but no deterministic copy-ready projections exist for the three supported runtime surfaces",
     "current_evidence": "public Lattice contracts and the Google Workspace adapter research guide; no private runtime observation is represented by this manifest",
     "unknowns": [
       "which Gem surfaces are enabled in a specific downstream Workspace account",
@@ -19,7 +19,7 @@
       "whether a private pilot reduces Senior reconstruction or review time",
       "whether the three Google surfaces preserve citations and source coverage consistently in the target account"
     ],
-    "next_use": "render bounded Gem, Workspace Studio, and Notebook projections, then bind them only inside a private manual or shadow pilot",
+    "next_use": "install or copy the generated projections into a private manual or shadow pilot, then measure correction load and Senior attention cost",
     "maintenance_owner": "Lattice capability governance owner"
   },
   "canonical_refs": {
