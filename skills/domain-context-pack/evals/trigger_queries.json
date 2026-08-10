@@ -1,0 +1,44 @@
+[
+  {
+    "id": "dcp-trigger-001",
+    "query": "Build the smallest authorized context pack for this feature using current requirements, code constraints, decisions, and owner metadata.",
+    "should_trigger": true,
+    "category": "positive_direct",
+    "reason": "bounded task-specific context assembly from a larger authorized inventory"
+  },
+  {
+    "id": "dcp-trigger-002",
+    "query": "Before coding, select only the current and authoritative sources we are allowed to use, preserve conflicts and unknowns, and stay under a 2k-token context budget.",
+    "should_trigger": true,
+    "category": "positive_implicit",
+    "reason": "least-privilege, freshness-aware, budgeted context selection"
+  },
+  {
+    "id": "dcp-trigger-003",
+    "query": "Prepare a context pack, but abstain if the required architecture decision is stale or access is not authorized.",
+    "should_trigger": true,
+    "category": "positive_boundary",
+    "reason": "context assembly with explicit freshness and authorization stop behavior"
+  },
+  {
+    "id": "dcp-trigger-004",
+    "query": "Dump the entire repository and every knowledge-base document into the prompt so nothing is missed.",
+    "should_trigger": false,
+    "category": "negative_dump",
+    "reason": "the capability explicitly rejects raw warehouse-style context dumping"
+  },
+  {
+    "id": "dcp-trigger-005",
+    "query": "Approve this source as the company source of truth and grant the team access to it.",
+    "should_trigger": false,
+    "category": "negative_authority",
+    "reason": "source authority approval and access grants are outside the assembly capability"
+  },
+  {
+    "id": "dcp-trigger-006",
+    "query": "Implement a new vector database and retrieval service for all company knowledge.",
+    "should_trigger": false,
+    "category": "negative_adjacent",
+    "reason": "retrieval-system implementation belongs to the existing retrieval-builder capability"
+  }
+]

@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+  "title": "Domain Context Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type",
+    "pack_id",
+    "scope_id",
+    "as_of_at",
+    "task",
+    "authorization",
+    "context_budget",
+    "sources",
+    "context_items",
+    "unknowns",
+    "conflicts",
+    "activation_plan",
+    "answerability",
+    "evidence_summary"
+  ],
+  "properties": {
+    "record_type": {"const": "lat.domain_context_pack.v1"},
+    "pack_id": {"type": "string", "minLength": 1},
+    "scope_id": {"type": "string", "minLength": 1},
+    "as_of_at": {"type": "string", "format": "date-time"},
+    "simulation_status": {
+      "type": "string",
+      "enum": ["synthetic_reference", "downstream_observed"]
+    },
+    "downstream_adoption_status": {
+      "type": "string",
+      "enum": ["not_observed", "imported", "task_scoped", "used_once", "reused", "team_available", "deprecated"]
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objective", "expected_output", "caller_role", "permission_boundary_ref"],
+      "properties": {
+        "objective": {"type": "string", "minLength": 1},
+        "expected_output": {"type": "string", "minLength": 1},
+        "caller_role": {"type": "string", "minLength": 1},
+        "permission_boundary_ref": {"$ref": "#/$defs/addressable_ref"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "policy_ref", "caller_authority_ref", "data_classification"],
+      "properties": {
+        "decision": {"type": "string", "enum": ["allow", "partial", "deny"]},
+        "policy_ref": {"$ref": "#/$defs/addressable_ref"},
+        "caller_authority_ref": {"$ref": "#/$defs/addressable_ref"},
+        "data_classification": {
+          "type": "string",
+          "enum": ["public", "internal", "confidential", "restricted", "unknown"]
+        }
+      }
+    },
+    "context_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_tokens", "selected_tokens"],
+      "properties": {
+        "max_tokens": {"type": "integer", "minimum": 1},
+        "selected_tokens": {"type": "integer", "minimum": 0}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "context_items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/context_item"}
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unknown"}
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/conflict"}
+    },
+    "activation_plan": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/activation"}
+    },
+    "answerability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason", "next_action"],
+      "properties": {
+        "status": {"type": "string", "enum": ["answerable", "partial", "abstain", "blocked"]},
+        "reason": {"type": "string", "minLength": 1},
+        "next_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["facts", "inference_summary", "citations", "uncertainty", "unknown_refs", "assumptions"],
+      "properties": {
+        "facts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/fact"}
+        },
+        "inference_summary": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "citations": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/addressable_ref"}
+        },
+        "uncertainty": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "unknown_refs": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}},
+        "required": ["simulation_status"]
+      },
+      "then": {
+        "required": ["downstream_adoption_status"],
+        "properties": {"downstream_adoption_status": {"const": "not_observed"}}
+      }
+    }
+  ],
+  "$defs": {
+    "addressable_ref": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*://\\S+$"
+    },
+    "information_class": {
+      "type": "string",
+      "enum": [
+        "business_rule",
+        "system_constraint",
+        "historical_decision",
+        "accountable_role",
+        "code",
+        "example",
+        "negative_knowledge",
+        "research",
+        "runtime_evidence"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "source_type",
+        "locator",
+        "access_status",
+        "authority_for",
+        "observed_at",
+        "expires_at",
+        "freshness_status",
+        "selection_status",
+        "selection_reason"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "source_type": {
+          "type": "string",
+          "enum": ["document", "code", "schema", "decision", "incident", "directory", "skill", "knowledge_pack", "research", "runtime", "other"]
+        },
+        "locator": {"$ref": "#/$defs/addressable_ref"},
+        "owner_ref": {"$ref": "#/$defs/addressable_ref"},
+        "access_status": {"type": "string", "enum": ["authorized", "denied", "unknown"]},
+        "authority_for": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/information_class"}
+        },
+        "observed_at": {"type": "string", "format": "date-time"},
+        "expires_at": {
+          "oneOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "freshness_status": {"type": "string", "enum": ["current", "stale", "unknown"]},
+        "selection_status": {"type": "string", "enum": ["selected", "conditional", "excluded"]},
+        "selection_reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "context_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "information_class",
+        "statement",
+        "source_id",
+        "evidence_refs",
+        "token_estimate",
+        "applicability",
+        "evidence_status",
+        "confidence"
+      ],
+      "properties": {
+        "item_id": {"type": "string", "minLength": 1},
+        "information_class": {"$ref": "#/$defs/information_class"},
+        "statement": {"type": "string", "minLength": 1},
+        "source_id": {"type": "string", "minLength": 1},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/addressable_ref"}
+        },
+        "token_estimate": {"type": "integer", "minimum": 1},
+        "applicability": {"type": "string", "minLength": 1},
+        "evidence_status": {"type": "string", "enum": ["observed", "derived"]},
+        "confidence": {"type": "string", "enum": ["high", "medium", "low"]}
+      }
+    },
+    "unknown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_id", "question", "impact", "blocking", "owner_role", "next_action"],
+      "properties": {
+        "unknown_id": {"type": "string", "minLength": 1},
+        "question": {"type": "string", "minLength": 1},
+        "impact": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"},
+        "owner_role": {"type": "string", "minLength": 1},
+        "next_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conflict_id", "item_refs", "source_refs", "summary", "blocking", "status", "next_action"],
+      "properties": {
+        "conflict_id": {"type": "string", "minLength": 1},
+        "item_refs": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "summary": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"},
+        "status": {"type": "string", "enum": ["unresolved", "resolved"]},
+        "next_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "action", "target_ref", "condition"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "action": {
+          "type": "string",
+          "enum": ["load_now", "load_on_condition", "request_permission", "request_refresh", "human_review", "exclude"]
+        },
+        "target_ref": {"type": "string", "minLength": 1},
+        "condition": {"type": "string", "minLength": 1}
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fact_id", "statement", "evidence_refs"],
+      "properties": {
+        "fact_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/addressable_ref"}
+        }
+      }
+    }
+  }
+}
