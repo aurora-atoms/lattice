@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import copy
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -155,6 +156,17 @@ class GoogleWorkspaceAdapterTests(unittest.TestCase):
         self.assertIn("automatic_actions: false", studio_flow)
         self.assertIn("authority_ceiling: candidate", studio_flow)
         self.assertIn("coverage_claim: bounded_not_complete", studio_flow)
+
+    def test_renderer_cli_check_succeeds(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, str(SCRIPTS / "render_google_workspace_senior_attention_adapters.py"), "--check"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertIn("deterministic projection", completed.stdout)
 
     def test_renderer_detects_projection_drift(self) -> None:
         outputs = build_outputs(self.manifest)
