@@ -97,7 +97,7 @@
       "uri": "repo://.github/workflows/capability-profile-validate.yml@6d8365c6ef1ca8cf82a220e5c87b9b25fada8fd7",
       "date": "2026-08-08T13:56:25Z",
       "access": "public",
-      "content_hash": "git:pre-parity-workflow"
+      "content_hash": "git:4e194dfa76d2e990d07a1fbf8cc349704cc60638"
     },
     {
       "id": "EV-003",
