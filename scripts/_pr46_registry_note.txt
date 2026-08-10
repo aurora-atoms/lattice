@@ -1,1 +1,0 @@
-Temporary branch-only helper marker for deterministic Senior Attention registry projection generation.
