@@ -141,6 +141,20 @@ templates
 
 The initial logical families are Experience-to-Asset, Feature Understanding, Manager Evidence Projection, and Reusable Asset Review. They compose existing capabilities and preserve the boundaries of Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, and DeliveryYield. DeliveryYield may provide evidence signals; it does not approve delivery or asset promotion.
 
+### Senior Attention
+
+For a bounded engineering task where evidence is scattered, impact is uncertain, error cost is material, or an accountable human must make a value or risk judgment, use the canonical [Senior Attention reference workflow](docs/senior-attention.md).
+
+The registered public profile is:
+
+```text
+workspaces/templates/senior-attention-runtime-profile.v1.json
+```
+
+It covers five task families—feature requirement/work-ready, risk preflight, bug/delivery rescue, decision support, and management translation—by progressively selecting existing capabilities. The profile is an allowlist, not an eager bundle: native runtime discovery remains first, full Skill bodies load only on demand, and the deterministic router is fallback/evaluation infrastructure.
+
+Real company context, ACL decisions, owners, live outcomes, attention measurements, adoption observations, and manager-ready artifacts remain in the private downstream repository. Public Senior Attention conformance does not prove private value or ROI.
+
 ## Repository Navigation
 
 ```text
