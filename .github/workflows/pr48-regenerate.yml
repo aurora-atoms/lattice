@@ -19,10 +19,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Rebuild canonical manifest and projections
+      - name: Update canonical Delivery Rescue metadata
         run: |
-          python scripts/migrate_legacy_capabilities.py --root . --force
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("registry/capability-manifest.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          matches = [
+              record
+              for record in payload.get("capabilities", [])
+              if record.get("record_type") == "skill" and record.get("family_name") == "delivery-rescue"
+          ]
+          if len(matches) != 1:
+              raise SystemExit(f"expected one delivery-rescue capability, found {len(matches)}")
+          record = matches[0]
+          record["capability_id"] = "skill:delivery-rescue@1.1.0"
+          record["version"] = "1.1.0"
+          legacy = record["projection"]["legacy_record"]
+          legacy["side_effects"] = "repo_write"
+          legacy["uses_scripts"] = True
+          legacy["trigger_eval"] = "present"
+          legacy["output_eval"] = "present"
+          path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+          PY
           python scripts/generate_capability_registry_projections.py --root .
+      - name: Verify legacy rebuild parity
+        run: |
+          python scripts/migrate_legacy_capabilities.py --root . --out /tmp/capability-manifest-rebuilt.json --force
+          cmp registry/capability-manifest.json /tmp/capability-manifest-rebuilt.json
       - name: Commit deterministic outputs
         run: |
           if git diff --quiet; then
