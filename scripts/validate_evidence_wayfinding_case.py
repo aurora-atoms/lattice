@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Validate cross-file invariants for a public Evidence Wayfinding replay case.
+"""Validate the cross-file Case Spine component of a public Evidence Wayfinding replay.
 
-Portable Case Pack, Attention Admission, and Outcome Receipt each retain their
-own structural/semantic validators. This validator only composes those contracts
-and checks the remaining case-spine projection lineage.
+This compatibility entrypoint is intentionally not the authoritative bundle validator.
+It checks Case Spine lineage and selected semantic invariants, but it does not execute
+every child JSON Schema. Use validate_evidence_wayfinding_case_bundle.py when deciding
+whether a complete case bundle is valid.
 """
 
 from __future__ import annotations
@@ -226,7 +227,10 @@ def main() -> int:
         for error in errors:
             print(f"error: {error}", file=sys.stderr)
         return 1
-    print(f"validated Evidence Wayfinding case spine: {case_dir}")
+    print(
+        "validated Evidence Wayfinding cross-file Case Spine component: "
+        f"{case_dir}; use validate_evidence_wayfinding_case_bundle.py for bundle authority"
+    )
     return 0
 
 
