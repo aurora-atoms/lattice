@@ -1,0 +1,32 @@
+# generated_from: runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json
+# adapter_version: 1.1.0
+# adapter_source_hash: sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4
+contract: lat.google_workspace_manual_shadow_flow_template.v1
+target: workspace_studio
+mode: manual_shadow
+automatic_actions: false
+authority_ceiling: candidate
+steps:
+  - id: intake
+    action: capture_bounded_target
+  - id: source_scope
+    action: record_selected_unavailable_excluded_unknown
+  - id: evidence
+    action: gather_minimum_authorized_sources
+  - id: synthesize
+    action: separate_claims_inference_unknowns_conflicts_counterevidence
+  - id: candidate
+    action: draft_candidate_artifact
+  - id: human_gate
+    action: stop_for_human_confirmation
+forbidden_defaults:
+  - automatic_send
+  - automatic_share
+  - automatic_delete
+  - ticket_write
+  - file_write
+  - manager_post
+  - irreversible_action
+  - silent_permission_expansion
+private_source_binding: downstream_only
+coverage_claim: bounded_not_complete
