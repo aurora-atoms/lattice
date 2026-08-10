@@ -137,6 +137,7 @@
   "non_goals": [
     "create a Google-specific Senior Attention mega Skill",
     "create a new Agent or active module",
+    "create a private execution plane or private data bridge inside public Lattice",
     "treat a Gem as the only Google Workspace entry",
     "treat Workspace Studio skills as Lattice Skill packages",
     "treat Notebook synthesis as verified system truth",
