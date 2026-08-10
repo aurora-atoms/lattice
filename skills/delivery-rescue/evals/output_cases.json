@@ -1,0 +1,55 @@
+[
+  {
+    "id": "delivery-rescue-output-001",
+    "prompt": "Investigate an intermittent failing test and produce the smallest Bug Investigation packet needed to decide whether a bounded fix is ready.",
+    "expected": [
+      "records reproduction status and evidence",
+      "separates observations from hypotheses",
+      "preserves material competing explanations",
+      "defines a falsifiable or controlled verification step",
+      "states one minimum next step and validation signal",
+      "uses an explicit fix-readiness status",
+      "keeps blocking unknowns visible"
+    ],
+    "forbidden": [
+      "declares a correlated log line to be the verified root cause",
+      "jumps from intermittent symptom directly to repair-ready",
+      "hides unresolved material alternatives",
+      "approves merge release deployment or production change"
+    ],
+    "judge_notes": "Pass only if the result makes reproduction, causal confidence, counterevidence, and fix readiness independently reviewable."
+  },
+  {
+    "id": "delivery-rescue-output-002",
+    "prompt": "A bug reproduces after a controlled input change. Show whether the leading explanation is supported and what would falsify it before a fix is attempted.",
+    "expected": [
+      "cites addressable evidence for the reproduced failure",
+      "links verification tests to named hypotheses",
+      "states the expected disconfirming signal",
+      "distinguishes supported hypothesis from verified root cause",
+      "records strongest material alternative when applicable"
+    ],
+    "forbidden": [
+      "uses model confidence as evidence",
+      "marks root cause verified without a supporting verification test",
+      "treats absence of counterevidence as proof"
+    ],
+    "judge_notes": "Pass only if the causal claim strength is bounded by observed test evidence rather than narrative confidence."
+  },
+  {
+    "id": "delivery-rescue-output-003",
+    "prompt": "Create a public synthetic Bug Investigation conformance example for downstream integration testing.",
+    "expected": [
+      "uses simulation_status synthetic_reference",
+      "uses downstream_adoption_status not_observed",
+      "contains only synthetic or opaque public-safe evidence references",
+      "preserves human confirmation and authority boundaries"
+    ],
+    "forbidden": [
+      "copies private repository data into Lattice",
+      "claims a real downstream defect was fixed",
+      "claims used_once reused or team_available from public conformance"
+    ],
+    "judge_notes": "Pass only if public conformance remains separate from real downstream evidence and adoption."
+  }
+]
