@@ -1,0 +1,1 @@
+# Synthetic conformance ledger intentionally contains no consumed request nonces.
