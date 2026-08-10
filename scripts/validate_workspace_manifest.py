@@ -19,6 +19,7 @@ from capability_utils import (
     mcp_ids,
     skill_ids,
 )
+from validate_capability_profile import validate_profile
 
 
 SUPPORTED_VSCODE_SETTINGS = {
@@ -30,12 +31,16 @@ SUPPORTED_VSCODE_SETTINGS = {
     "search.exclude",
     "files.watcherExclude",
 }
+CAPABILITY_PROFILE_CONTRACT = "lat.capability-profile.runtime.v1"
 
 
 def validate_manifest(path: Path, root: Path) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     record = load_json(path)
+
+    if record.get("contract") == CAPABILITY_PROFILE_CONTRACT:
+        return validate_profile(path, root)
 
     for field in check_required(record, REQUIRED_WORKSPACE_FIELDS):
         errors.append(f"missing required field: {field}")
@@ -115,6 +120,32 @@ def validate_manifest(path: Path, root: Path) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
+def runtime_profile_identity(record: dict) -> str:
+    return f"{record.get('profile_id', '')}@{record.get('profile_version', '')}"
+
+
+def runtime_profile_agents(record: dict) -> list[str]:
+    bindings = record.get("agent_bindings", [])
+    if not isinstance(bindings, list):
+        return []
+    return [
+        str(binding.get("agent_id", ""))
+        for binding in bindings
+        if isinstance(binding, dict) and binding.get("agent_id")
+    ]
+
+
+def runtime_profile_skills(record: dict) -> list[str]:
+    skills = record.get("skills", [])
+    if not isinstance(skills, list):
+        return []
+    return [
+        str(item.get("skill_id", ""))
+        for item in skills
+        if isinstance(item, dict) and item.get("skill_id")
+    ]
+
+
 def validate_workspace_index(root: Path) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -138,6 +169,20 @@ def validate_workspace_index(root: Path) -> tuple[list[str], list[str]]:
             errors.append(f"{row_label}: workspace template path missing: {manifest_path_value}")
             continue
         manifest = load_json(manifest_path)
+        if manifest.get("contract") == CAPABILITY_PROFILE_CONTRACT:
+            if runtime_profile_identity(manifest) != workspace_id:
+                errors.append(f"{row_label}: workspace_id does not match runtime profile identity")
+            expected = {
+                "agents": runtime_profile_agents(manifest),
+                "skills": runtime_profile_skills(manifest),
+            }
+            for field, value in expected.items():
+                if field in row and value != row.get(field):
+                    warnings.append(f"{row_label}: {field} differs from runtime profile")
+            profile_errors, profile_warnings = validate_profile(manifest_path, root)
+            errors.extend(f"{row_label}: {message}" for message in profile_errors)
+            warnings.extend(f"{row_label}: {message}" for message in profile_warnings)
+            continue
         if manifest.get("id") != workspace_id:
             errors.append(f"{row_label}: workspace_id does not match manifest id")
         for field in ["agents", "skills"]:
