@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/runtime-adapters/google-workspace-adapter-manifest.v1.schema.json",
+  "title": "Google Workspace Senior Attention Adapter Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "adapter_id",
+    "adapter_version",
+    "status",
+    "purpose",
+    "direction_fit",
+    "canonical_refs",
+    "task_families",
+    "targets",
+    "authority",
+    "privacy",
+    "source_binding",
+    "progressive_disclosure",
+    "handoff",
+    "product_assumptions",
+    "non_goals"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract": {
+      "const": "lat.google_workspace_senior_attention_adapter.v1"
+    },
+    "adapter_id": {
+      "const": "google-workspace-senior-attention"
+    },
+    "adapter_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "enum": ["draft", "contract_validated"]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 40
+    },
+    "direction_fit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_value_path",
+        "direction_verdict",
+        "beneficiary",
+        "observable_state_change",
+        "verification",
+        "existing_capability_gap",
+        "current_evidence",
+        "unknowns",
+        "next_use",
+        "maintenance_owner"
+      ],
+      "properties": {
+        "primary_value_path": {"const": "current_product_delivery"},
+        "direction_verdict": {"const": "bind_to_delivery"},
+        "beneficiary": {"type": "string", "minLength": 1},
+        "observable_state_change": {"type": "string", "minLength": 1},
+        "verification": {"type": "string", "minLength": 1},
+        "existing_capability_gap": {"type": "string", "minLength": 1},
+        "current_evidence": {"type": "string", "minLength": 1},
+        "unknowns": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "next_use": {"type": "string", "minLength": 1},
+        "maintenance_owner": {"type": "string", "minLength": 1}
+      }
+    },
+    "canonical_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["senior_attention_workflow", "capability_profile"],
+      "properties": {
+        "senior_attention_workflow": {"const": "docs/senior-attention.md"},
+        "capability_profile": {"const": "workspaces/templates/senior-attention-runtime-profile.v1.json"}
+      }
+    },
+    "task_families": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "feature_requirement",
+          "risk",
+          "bug",
+          "decision",
+          "management"
+        ]
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/target"}
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_ceiling",
+        "human_confirmation_required",
+        "public_writeback_allowed",
+        "authoritative_case_write_allowed",
+        "delivery_verdict_allowed",
+        "automatic_action_default"
+      ],
+      "properties": {
+        "authority_ceiling": {"const": "candidate"},
+        "human_confirmation_required": {"const": true},
+        "public_writeback_allowed": {"const": false},
+        "authoritative_case_write_allowed": {"const": false},
+        "delivery_verdict_allowed": {"const": false},
+        "automatic_action_default": {"const": false}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_content_in_public_repo",
+        "real_company_data_in_public_fixtures",
+        "public_fixture_classification",
+        "private_results_location"
+      ],
+      "properties": {
+        "private_content_in_public_repo": {"const": "forbidden"},
+        "real_company_data_in_public_fixtures": {"const": false},
+        "public_fixture_classification": {"const": "public_synthetic_only"},
+        "private_results_location": {"const": "downstream_only"}
+      }
+    },
+    "source_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "public_repository_sources",
+        "private_workspace_sources",
+        "account_availability_verification",
+        "coverage_claim"
+      ],
+      "properties": {
+        "public_repository_sources": {"const": "public_only"},
+        "private_workspace_sources": {"const": "downstream_only"},
+        "account_availability_verification": {"const": "downstream_required"},
+        "coverage_claim": {"const": "bounded_not_complete"}
+      }
+    },
+    "progressive_disclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "load_all_skills",
+        "task_scoped_sources",
+        "runtime_specific_projection",
+        "minimum_capability_selection"
+      ],
+      "properties": {
+        "load_all_skills": {"const": false},
+        "task_scoped_sources": {"const": true},
+        "runtime_specific_projection": {"const": "generated_in_later_adapter_stage"},
+        "minimum_capability_selection": {"const": true}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_class",
+        "downstream_verification_required",
+        "required_sections",
+        "unsupported_claim_behavior"
+      ],
+      "properties": {
+        "output_class": {"const": "source_synthesis_candidate"},
+        "downstream_verification_required": {"const": true},
+        "required_sections": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "target",
+              "source_scope",
+              "claims",
+              "unknowns",
+              "conflicts",
+              "strongest_counterevidence",
+              "proposals",
+              "authority",
+              "privacy"
+            ]
+          }
+        },
+        "unsupported_claim_behavior": {"const": "downgrade_to_unknown_or_block"}
+      }
+    },
+    "product_assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uniform_workspace_surface_assumed",
+        "complete_enterprise_search_assumed",
+        "notebook_dynamic_global_search_assumed",
+        "experimental_features_required",
+        "availability_state_source"
+      ],
+      "properties": {
+        "uniform_workspace_surface_assumed": {"const": false},
+        "complete_enterprise_search_assumed": {"const": false},
+        "notebook_dynamic_global_search_assumed": {"const": false},
+        "experimental_features_required": {"const": false},
+        "availability_state_source": {"const": "downstream_observation"}
+      }
+    },
+    "non_goals": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "availability",
+        "role",
+        "authority_ceiling",
+        "allowed_modes",
+        "forbidden_actions"
+      ],
+      "properties": {
+        "target": {
+          "enum": ["gem", "workspace_studio", "notebook"]
+        },
+        "availability": {
+          "enum": ["verified", "unknown", "disabled"]
+        },
+        "role": {
+          "enum": [
+            "interactive_intake_and_scouting",
+            "manual_or_shadow_workflow",
+            "source_grounded_synthesis"
+          ]
+        },
+        "authority_ceiling": {"const": "candidate"},
+        "allowed_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "forbidden_actions": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
