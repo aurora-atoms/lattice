@@ -2978,7 +2978,7 @@
           ],
           "risk_tier": "medium",
           "auto_invocation": true,
-          "side_effects": "repo_write",
+          "side_effects": "none",
           "uses_scripts": true,
           "uses_network": false,
           "contains_private_context": false,
