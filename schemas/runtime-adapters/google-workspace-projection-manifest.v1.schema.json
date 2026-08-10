@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/runtime-adapters/google-workspace-projection-manifest.v1.schema.json",
+  "title": "Google Workspace Senior Attention Projection Set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "adapter_id",
+    "adapter_version",
+    "adapter_source",
+    "adapter_source_hash",
+    "render_hash",
+    "generated",
+    "authority_ceiling",
+    "coverage_claim",
+    "files"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.google_workspace_adapter_projection_set.v1"},
+    "adapter_id": {"const": "google-workspace-senior-attention"},
+    "adapter_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "adapter_source": {"const": "runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json"},
+    "adapter_source_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "render_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "generated": {"const": true},
+    "authority_ceiling": {"const": "candidate"},
+    "coverage_claim": {"const": "bounded_not_complete"},
+    "files": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "target"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^runtime-adapters/google-workspace/senior-attention/(gem|workspace-studio|notebook)/.+$"
+          },
+          "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "target": {"enum": ["gem", "workspace_studio", "notebook"]}
+        }
+      }
+    }
+  }
+}
