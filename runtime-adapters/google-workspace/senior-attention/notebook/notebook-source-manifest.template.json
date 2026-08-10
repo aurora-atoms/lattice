@@ -1,0 +1,32 @@
+{
+  "contract": "lat.notebook_source_manifest_template.v1",
+  "adapter_id": "google-workspace-senior-attention",
+  "adapter_version": "1.1.0",
+  "adapter_source_hash": "sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4",
+  "scope": {
+    "case_ref": "DOWNSTREAM_CASE_REF",
+    "task_family": "feature_requirement|risk|bug|decision|management",
+    "evidence_cutoff": "DOWNSTREAM_TIMESTAMP"
+  },
+  "sources": [
+    {
+      "source_id": "DOWNSTREAM_SOURCE_ID",
+      "locator": "DOWNSTREAM_PRIVATE_LOCATOR",
+      "source_type": "document|mail|chat|code|ticket|other",
+      "authority_for_claim_types": [
+        "DOWNSTREAM_CLAIM_TYPE"
+      ],
+      "access": "authorized|conditional|denied|unknown",
+      "data_classification": "DOWNSTREAM_CLASSIFICATION",
+      "sharing": "DOWNSTREAM_SHARING_POLICY",
+      "last_sync": "DOWNSTREAM_TIMESTAMP",
+      "freshness": "current|stale|unknown",
+      "expiry": "DOWNSTREAM_TIMESTAMP_OR_NONE",
+      "status": "active|stale|inaccessible|excluded",
+      "selection_reason": "DOWNSTREAM_REASON",
+      "excluded_reason": "DOWNSTREAM_REASON_OR_NONE"
+    }
+  ],
+  "public_template_only": true,
+  "private_values_must_remain_downstream": true
+}

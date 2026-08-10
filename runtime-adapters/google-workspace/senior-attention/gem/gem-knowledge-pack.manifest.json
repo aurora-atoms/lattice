@@ -1,0 +1,27 @@
+{
+  "contract": "lat.google_gem_knowledge_pack_template.v1",
+  "adapter_id": "google-workspace-senior-attention",
+  "adapter_version": "1.1.0",
+  "adapter_source_hash": "sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4",
+  "target": "gem",
+  "public_refs": [
+    "docs/senior-attention.md",
+    "workspaces/templates/senior-attention-runtime-profile.v1.json",
+    "docs/runtime-adapters/google-workspace-senior-attention.md"
+  ],
+  "knowledge_policy": {
+    "stable_prefix_only": true,
+    "load_all_skills": false,
+    "private_workspace_content_in_public_pack": false,
+    "private_sources": "downstream_only",
+    "coverage_claim": "bounded_not_complete"
+  },
+  "authority": {
+    "authority_ceiling": "candidate",
+    "human_confirmation_required": true,
+    "public_writeback_allowed": false,
+    "authoritative_case_write_allowed": false,
+    "delivery_verdict_allowed": false,
+    "automatic_action_default": false
+  }
+}
