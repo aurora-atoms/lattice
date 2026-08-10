@@ -23,6 +23,10 @@
     "non_goals"
   ],
   "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
     "contract": {
       "const": "lat.google_workspace_senior_attention_adapter.v1"
     },
