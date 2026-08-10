@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
-import json
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -34,8 +32,42 @@ SCHEMA_VALIDATOR = load_module(
 CASE_DIR = ROOT / "examples" / "evidence-wayfinding" / "case-0-schema-parity"
 CANDIDATE = CASE_DIR / "harness-mutation-candidate.json"
 BLOCKED = CASE_DIR / "blind-challenge-execution.blocked.json"
-EVALUATED = ROOT / "tests" / "fixtures" / "evidence-wayfinding" / "blind-challenge" / "evaluated.synthetic-conformance.json"
+EVALUATED = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "evidence-wayfinding"
+    / "blind-challenge"
+    / "evaluated.synthetic-conformance.json"
+)
 SCHEMA = ROOT / "schemas" / "capability" / "blind-challenge-execution.v1.schema.json"
+HANDOFF_V2 = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "evidence-wayfinding"
+    / "reserved-evaluation"
+    / "handoff.synthetic-complete.v2.jsonl"
+)
+HANDOFF_SCHEMA_V2 = (
+    ROOT / "schemas" / "capability" / "reserved-evaluation-handoff-record.v2.schema.json"
+)
+TRUST_STORE = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "evidence-wayfinding"
+    / "reserved-evaluation"
+    / "trusted-evaluators.synthetic.json"
+)
+CONSUMED_NONCES = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "evidence-wayfinding"
+    / "reserved-evaluation"
+    / "consumed-nonces.empty.txt"
+)
 
 
 class BlindChallengeExecutionTests(unittest.TestCase):
@@ -43,9 +75,71 @@ class BlindChallengeExecutionTests(unittest.TestCase):
         self.candidate = BLIND.load_json(CANDIDATE)
         self.blocked = BLIND.load_json(BLOCKED)
         self.evaluated = BLIND.load_json(EVALUATED)
+        self.handoff_records = BLIND.HANDOFF_V2.load_jsonl(HANDOFF_V2)
+        self.handoff_schema = BLIND.load_json(HANDOFF_SCHEMA_V2)
+        self.trust_store = BLIND.load_json(TRUST_STORE)
+        self.consumed_nonces = BLIND.HANDOFF_V2.load_consumed_nonces(CONSUMED_NONCES)
 
-    def validate(self, execution):
-        return BLIND.validate_execution(copy.deepcopy(execution), copy.deepcopy(self.candidate))
+    def validate(self, execution, *, trusted: bool = False):
+        kwargs = {}
+        if trusted:
+            kwargs = {
+                "handoff_records": copy.deepcopy(self.handoff_records),
+                "blocked_execution": copy.deepcopy(self.blocked),
+                "handoff_schema": copy.deepcopy(self.handoff_schema),
+                "trust_store": copy.deepcopy(self.trust_store),
+                "consumed_nonces": set(self.consumed_nonces),
+            }
+        return BLIND.validate_execution(
+            copy.deepcopy(execution),
+            copy.deepcopy(self.candidate),
+            **kwargs,
+        )
+
+    def attested_execution(self, *, downstream_observed: bool = False):
+        execution = copy.deepcopy(self.evaluated)
+        attestation = self.handoff_records[1]["payload"]
+        execution["execution_id"] = self.blocked["execution_id"]
+        execution["completed_at"] = attestation["evaluated_at"]
+        execution["variant_mapping"]["revealed_at"] = "2026-08-09T04:21:00Z"
+        execution["case_results"][-1] = copy.deepcopy(attestation["reserved_case_result"])
+        execution["reserved_oracle"] = {
+            "case_id": attestation["reserved_case_result"]["case_id"],
+            "status": "available",
+            "oracle_visibility": "evaluator_only",
+            "oracle_content_included": False,
+            "attestation_ref": attestation["attestation_ref"],
+            "attestation_hash": attestation["attestation_canonical_digest"],
+            "evaluated_by": attestation["evaluator_identity"]["evaluator_id"],
+            "evaluated_at": attestation["evaluated_at"],
+        }
+        execution["evidence_refs"] = [attestation["attestation_ref"]]
+        execution["decision"] = {
+            "verdict": "scoped_canary",
+            "rationale": "Synthetic conformance exercise for the verified-attestation gate.",
+            "human_approval_required": True,
+            "team_available_allowed": False,
+            "scoped_canary_scope": ["public contract audit shadow path"],
+        }
+
+        if downstream_observed:
+            execution["simulation_status"] = "downstream_observed"
+            execution["downstream_adoption_status"] = "observed_once"
+            for result in execution["case_results"]:
+                case_slug = result["case_id"].replace(".", "-")
+                if not result["evidence_refs"]:
+                    result["evidence_refs"] = [f"artifact://synthetic/{case_slug}/result"]
+                for variant in result["variant_outcomes"]:
+                    if not variant["evidence_refs"]:
+                        variant["evidence_refs"] = [
+                            f"artifact://synthetic/{case_slug}/variant-{variant['label'].lower()}"
+                        ]
+                for metric in result["protected_metrics"]:
+                    if not metric.get("evidence_refs"):
+                        metric["evidence_refs"] = [
+                            f"artifact://synthetic/{case_slug}/metric-{metric['metric']}"
+                        ]
+        return execution
 
     def test_blocked_public_preflight_is_structurally_valid(self) -> None:
         self.assertEqual([], SCHEMA_VALIDATOR.validate_instance(SCHEMA, BLOCKED))
@@ -117,20 +211,57 @@ class BlindChallengeExecutionTests(unittest.TestCase):
         errors = self.validate(execution)
         self.assertTrue(any("critical protected-metric failure" in error for error in errors))
 
+    def test_scoped_canary_requires_verified_attestation_context(self) -> None:
+        execution = self.attested_execution()
+        errors = self.validate(execution)
+        self.assertTrue(any("requires verified reserved attestation context" in error for error in errors))
+
+    def test_scoped_canary_accepts_matching_verified_attestation(self) -> None:
+        execution = self.attested_execution()
+        self.assertEqual([], self.validate(execution, trusted=True))
+
     def test_scoped_canary_requires_reserved_challenger_pass_and_scope(self) -> None:
-        execution = copy.deepcopy(self.evaluated)
-        execution["decision"] = {
-            "verdict": "scoped_canary",
-            "rationale": "synthetic gate exercise only",
-            "human_approval_required": True,
-            "team_available_allowed": False,
-            "scoped_canary_scope": ["public contract audit shadow path"],
-        }
-        self.assertEqual([], self.validate(execution))
+        execution = self.attested_execution()
+        self.assertEqual([], self.validate(execution, trusted=True))
 
         execution["case_results"][-1]["variant_outcomes"][1]["target_result"] = "fail"
-        errors = self.validate(execution)
+        errors = self.validate(execution, trusted=True)
         self.assertTrue(any("challenger to pass the reserved target" in error for error in errors))
+
+    def test_downstream_observed_rejects_empty_evidence_even_with_trusted_attestation(self) -> None:
+        execution = self.attested_execution()
+        execution["simulation_status"] = "downstream_observed"
+        execution["downstream_adoption_status"] = "observed_once"
+        errors = self.validate(execution, trusted=True)
+        self.assertTrue(any("requires non-empty evidence_refs" in error for error in errors))
+
+    def test_downstream_observed_accepts_evidence_complete_verified_execution(self) -> None:
+        execution = self.attested_execution(downstream_observed=True)
+        self.assertEqual([], self.validate(execution, trusted=True))
+
+    def test_downstream_observed_requires_uri_like_evidence(self) -> None:
+        execution = self.attested_execution(downstream_observed=True)
+        execution["case_results"][0]["evidence_refs"] = ["opaque-string-without-scheme"]
+        errors = self.validate(execution, trusted=True)
+        self.assertTrue(any("URI-like evidence references" in error for error in errors))
+
+    def test_authenticated_attestation_must_match_reserved_result(self) -> None:
+        execution = self.attested_execution()
+        execution["case_results"][-1]["comparison"] = "tie"
+        errors = self.validate(execution, trusted=True)
+        self.assertTrue(any("exactly match authenticated attestation projection" in error for error in errors))
+
+    def test_authenticated_attestation_metadata_must_match_reserved_oracle(self) -> None:
+        execution = self.attested_execution()
+        execution["reserved_oracle"]["evaluated_by"] = "arbitrary-evaluator"
+        errors = self.validate(execution, trusted=True)
+        self.assertTrue(any("evaluated_by must match authenticated attestation" in error for error in errors))
+
+    def test_synthetic_reference_cannot_claim_downstream_adoption(self) -> None:
+        execution = copy.deepcopy(self.evaluated)
+        execution["downstream_adoption_status"] = "observed_once"
+        errors = self.validate(execution)
+        self.assertTrue(any("cannot claim downstream adoption" in error for error in errors))
 
     def test_blind_challenge_cannot_grant_team_available(self) -> None:
         execution = copy.deepcopy(self.evaluated)
