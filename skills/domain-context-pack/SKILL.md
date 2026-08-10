@@ -23,7 +23,7 @@ Require a bounded task, expected output, caller role, knowledge and capability i
 
 ## Outputs
 
-Produce `domain-context-pack.v1.json` conforming to `schemas/domain-context-pack.v1.schema.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
+Produce the version-1 Domain Context Pack JSON artifact conforming to `schemas/domain-context-pack.v1.schema.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
 
 Default writeback:
 
@@ -82,9 +82,9 @@ When blocking unknowns, unresolved material conflicts, denied required sources, 
 ## Workflow
 
 1. Bound the task, output contract, caller role, permissions, and token budget.
-2. Query compact knowledge and capability metadata before source bodies.
+2. Query ConPort MCP before loading or searching full Skill text when ConPort is available; otherwise use targeted repository reads. Then query compact knowledge and capability metadata before source bodies.
 3. Identify required information classes: rules, constraints, decisions, accountable roles, code, examples, negative knowledge, research, or runtime evidence.
-4. Select the smallest authorized sources and Skills by relevance, authority, freshness, and expected information gain.
+4. Select the smallest authorized sources and Skills by relevance, authority, freshness, expected information gain, and quality-adjusted token ROI.
 5. Load only bounded excerpts, symbols, line ranges, records, or governed summaries needed now.
 6. Record source access, authority scope, observation time, expiry, selection state, and the evidence-linked context items actually admitted.
 7. Record unknowns, conflicts, applicability limits, and material sources intentionally excluded or held conditional.
@@ -92,7 +92,7 @@ When blocking unknowns, unresolved material conflicts, denied required sources, 
 9. Compute selected-token accounting and set answerability from the remaining evidence, permission, freshness, unknown, and conflict state.
 10. Validate the JSON artifact with `scripts/validate_domain_context_pack.py`; perform at most one bounded corrective retry.
 11. Route source authority to team-knowledge-plane-governor, retrieval implementation to hybrid-knowledge-retrieval-builder, repeated profile evaluation to knowledge-profile-evaluator, and conflicts to knowledge-integrity.
-12. Keep invariant policy stable and task content dynamic.
+12. Keep invariant policy, schema, and validation guidance in the stable prefix; keep current task evidence, source selections, conflicts, unknowns, and activation state in the dynamic suffix.
 
 ## Rules
 
