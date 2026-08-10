@@ -2978,8 +2978,8 @@
           ],
           "risk_tier": "medium",
           "auto_invocation": true,
-          "side_effects": "none",
-          "uses_scripts": false,
+          "side_effects": "repo_write",
+          "uses_scripts": true,
           "uses_network": false,
           "contains_private_context": false,
           "public_export_allowed": true,
@@ -2987,8 +2987,8 @@
             "skills/lattice-governor"
           ],
           "last_validated_at": "pending",
-          "trigger_eval": "missing",
-          "output_eval": "missing",
+          "trigger_eval": "present",
+          "output_eval": "present",
           "release_channel": "experimental",
           "notes": "Category A capabilities A01-A04."
         },
