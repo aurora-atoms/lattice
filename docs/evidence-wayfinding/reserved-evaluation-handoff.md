@@ -2,146 +2,167 @@
 
 ## Decision
 
-Blind Challenge v1 deliberately stops when its reserved oracle is unavailable to the public repository. The next boundary is therefore not another evaluator inside the public Harness. It is a narrow handoff protocol between two trust zones:
+Blind Challenge v1 deliberately stops when its reserved oracle is unavailable to the public repository. The handoff between the public repository and a controlled private evaluator therefore has two distinct contract generations:
+
+```text
+v1 = compatibility / transport shape
+v2 = trusted-attestation boundary required for real reserved evidence
+```
+
+New real reserved evaluations must use:
+
+```text
+lat.reserved_evaluation_handoff.v2
+schemas/capability/reserved-evaluation-handoff-record.v2.schema.json
+```
+
+The v1 schema and validator remain available so existing synthetic fixtures and downstream experiments do not break silently. A v1 attestation is **not** sufficient evidence for a real Blind Challenge decision because it does not authenticate evaluator identity or bind the attestation cryptographically to its content and blinded bundle.
+
+This protocol is not a new Lattice module, Agent, Skill, or second delivery lifecycle. It remains a JSONL handoff around the existing Harness Mutation Candidate and Blind Challenge Execution contracts.
+
+## Trust zones
 
 ```text
 public repository
-  owns candidate + frozen plan + public preflight
+  candidate + frozen plan + public preflight
         |
-        | eval.reserved_request
+        | eval.reserved_request v2
         v
 controlled private evaluator
-  owns reserved case + oracle + blinded execution
+  reserved case + oracle + blinded A/B execution
         |
-        | eval.reserved_attestation
+        | signed eval.reserved_attestation v2
         v
 public repository
-  receives only a safe attestation projection
+  verifies safe attestation projection only
 ```
 
-The protocol is **not** a new Lattice module, Agent, Skill, or second delivery lifecycle. It is a JSONL + JSON Schema handoff around the existing Harness Mutation Candidate and Blind Challenge Execution contracts.
+The public repository may know candidate identity, frozen target/allocation hashes, evaluator protocol version, metrics, an opaque `controlled://` bundle reference, and the SHA-256 digest of the exact blinded bundle bytes.
 
-Contract:
+It must not receive raw reserved input, oracle content, private source artifacts, the A/B-to-incumbent/challenger mapping, private signing keys, or a promotion decision produced by the evaluator.
 
-```text
-lat.reserved_evaluation_handoff.v1
-```
+## Why v2 is required
 
-Schema:
+V1 verified shape and lineage but allowed an attestation to contain any non-empty evaluator string and any SHA-256-looking attestation hash. That meant a record could be structurally valid without proving:
 
-```text
-schemas/capability/reserved-evaluation-handoff-record.v1.schema.json
-```
+- which authorized evaluator signed it;
+- whether the attestation hash was actually derived from the record;
+- whether the result referred to the exact blinded bundle frozen at request time;
+- whether the request was still valid;
+- whether the same request nonce had already been consumed.
 
-Each line is one authoritative handoff record with the standard fields:
+V2 closes those gaps without moving the oracle or private evidence into the public repository.
 
-```text
-type
-id
-schema
-source
-target
-scope
-payload
-constraints
-```
+## Request v2
 
-## Why a separate trust boundary is required
-
-A reserved case is useful only while the proposal path cannot inspect its oracle before the comparison is complete. Putting the reserved input, expected answer, private evidence, or A/B mapping into the same public repository as the candidate destroys the holdout.
-
-The public repository can safely know:
-
-- which candidate and version are under test;
-- the blocked Blind Challenge execution id;
-- the opaque reserved case id;
-- frozen target and case-allocation hashes;
-- evaluator protocol version;
-- primary and protected metrics;
-- an opaque `controlled://` blinded variant-bundle reference.
-
-It must not receive during evaluation:
-
-- raw reserved input or oracle content;
-- private source artifacts;
-- the incumbent/challenger mapping behind A/B;
-- a promotion decision produced by the evaluator;
-- credentials or access tokens.
-
-## Request record
-
-A request uses:
+A v2 request carries the frozen lineage plus:
 
 ```text
-type = eval.reserved_request
-source.boundary = public_repository
-target.boundary = controlled_private_evaluator
-```
-
-The request is a deterministic projection of the frozen Harness Mutation Candidate and blocked Blind Challenge Execution.
-
-It carries:
-
-```text
-candidate_id / version
-execution_id
-reserved_case_id
-mission_anchor_ref
-target_hash
-case_allocations_hash
-
-evaluator_version
-primary_metric
-protected_metrics
+issued_at
+expires_at
+request_nonce
 variant_bundle_ref
-variant_labels = [A, B]
+variant_bundle_digest
 ```
 
-`variant_bundle_ref` is intentionally opaque. The public request builder only accepts `controlled://...`. The trusted coordinator is responsible for constructing the actual blinded execution bundle outside the public repository.
+`variant_bundle_digest` is the SHA-256 digest of the exact blinded bundle bytes. The coordinator may compute it directly from a local bundle file with:
 
-Case 0 publishes only the request:
+```text
+scripts/prepare_reserved_evaluation_request_v2.py
+```
+
+The request nonce is supplied by the trusted coordinator and must be unique for the intended evaluation attempt. The public repository does not generate or store the private bundle itself.
+
+The current Case 0 v2 request remains explicitly synthetic:
 
 ```text
 examples/evidence-wayfinding/case-0-schema-parity/
-  reserved-evaluation-handoff.request.jsonl
+  reserved-evaluation-handoff.request.v2.synthetic.jsonl
 ```
 
-That is the correct current state because no real controlled reserved evaluator has supplied an attestation.
+It demonstrates the contract only. It is not a real reserved evaluation.
 
-## Attestation record
+## Attestation v2
 
-A completed evaluator returns:
+A completed attestation must include:
 
 ```text
-type = eval.reserved_attestation
-source.boundary = controlled_private_evaluator
-target.boundary = public_repository
+evaluator_identity:
+  evaluator_id
+  key_id
+  algorithm = ed25519
+
+evaluated_at
+request_nonce
+variant_bundle_ref
+variant_bundle_digest
+reserved_case_result
+attestation_ref
+attestation_canonical_digest
+signature
 ```
 
-The safe attestation may expose only post-evaluation anonymous results:
+The evaluator identity is accepted only when the `(evaluator_id, key_id)` pair exists in a caller-supplied trusted public-key store, is active for the evaluation timestamp, and is authorized for the evaluator version, mission anchor, and reserved case.
+
+The trusted key store contains public keys only. Private signing keys stay in the controlled evaluator boundary.
+
+## Canonical digest and signature
+
+The validator creates canonical JSON from the complete attestation record after removing only:
 
 ```text
-A target result
-B target result
-A/B comparison
-protected metric statuses
-safe evidence digests / attestation refs
-evaluator identity/version/time
-attestation ref/hash
+payload.attestation_canonical_digest
+payload.signature
 ```
 
-It explicitly states:
+Canonicalization uses sorted keys, compact JSON separators, UTF-8 encoding, and no hidden reasoning fields. It then:
 
 ```text
-oracle_used = true
-oracle_content_included = false
-variant_mapping_included = false
-governed_verdict_included = false
+canonical attestation bytes
+  -> SHA-256
+  -> compare with attestation_canonical_digest
+
+canonical attestation bytes
+  + trusted evaluator Ed25519 public key
+  + detached signature
+  -> verify
 ```
 
-The evaluator may use the oracle privately. The public receipt never contains that oracle.
+Changing evaluator identity, result content, evidence references, bundle digest, scope, timestamps, or constraints after signing therefore invalidates the attestation.
 
-Safe evidence references are restricted to public projections such as:
+## Bundle binding
+
+Both request and attestation must carry exactly the same:
+
+```text
+variant_bundle_ref
+variant_bundle_digest
+request_nonce
+```
+
+The opaque reference identifies the controlled object. The digest binds the evaluation result to the exact bytes that the coordinator froze before evaluation.
+
+A reference string alone is not sufficient evidence of bundle identity.
+
+## Replay and expiry boundary
+
+A real attestation validation requires a consumed-nonce ledger. The v2 validator rejects an attestation when its request nonce is already present in that ledger.
+
+It also requires:
+
+```text
+issued_at < evaluated_at <= expires_at
+```
+
+The validator is intentionally read-only: it checks the supplied nonce ledger but does not mutate operational state. The controlled coordinator is responsible for recording the nonce after accepting an attestation transactionally with its own downstream state change.
+
+This separation avoids turning the public reference repository into a private execution database.
+
+## Safe returned evidence
+
+The private evaluator may use the reserved oracle internally. The public attestation still cannot serialize that oracle.
+
+Safe evidence references remain limited to projections such as:
 
 ```text
 attestation://...
@@ -149,31 +170,7 @@ digest://...
 redacted://...
 ```
 
-They identify evidence without copying private evidence into the public repository.
-
-## Blindness lifecycle
-
-The intended sequence is:
-
-```text
-1. candidate target and allocations freeze
-2. Blind Challenge becomes blocked_pending_reserved_oracle
-3. trusted coordinator creates opaque A/B execution bundle
-4. public request is emitted
-5. controlled evaluator receives reserved case + private oracle
-6. evaluator judges anonymous A/B outputs
-7. evaluator freezes attestation
-8. safe attestation returns to public boundary
-9. only after evaluation may the coordinator reveal A/B mapping
-10. Blind Challenge produces reject | revise | continue_shadow | scoped_canary
-11. human approval is still required for scoped_canary
-```
-
-The candidate author must not see the reserved oracle or mapping while evaluation is running. A safe aggregate attestation may become visible after the evaluator has frozen its result; that does not expose the raw oracle.
-
-## Promotion Firewall
-
-Both request and attestation hard-code:
+The handoff continues to hard-code:
 
 ```text
 oracle_visibility = evaluator_only
@@ -185,81 +182,72 @@ automatic_promotion_allowed = false
 team_available_allowed = false
 ```
 
-Therefore the private evaluator cannot grant promotion through this handoff.
+Authentication does not grant promotion authority.
 
-The handoff answers only:
+## Validation
 
-> What did anonymous A and B do on the controlled reserved case, under the frozen metrics?
-
-The existing Blind Challenge contract remains responsible for combining representative, hard, counterexample, and reserved results into a governed verdict. Human ownership remains outside both contracts.
-
-## Deterministic validation
-
-Validator:
+V1 compatibility remains available through:
 
 ```text
 scripts/validate_reserved_evaluation_handoff.py
 ```
 
-It checks:
+Trusted v2 validation uses:
 
-- every JSONL line against Draft 2020-12 JSON Schema;
-- exactly one request and at most one attestation;
-- request-before-attestation order;
+```text
+scripts/validate_reserved_evaluation_handoff_v2.py
+```
+
+Request-only validation needs no trust store because no evaluator claim has yet been made.
+
+Any stream containing an attestation requires both:
+
+```text
+--trust-store <trusted-public-keys.json>
+--consumed-nonces <nonce-ledger.txt>
+```
+
+The v2 validator checks:
+
+- Draft 2020-12 record structure;
 - candidate/version/execution/mission lineage;
-- exact frozen `target_hash` and `case_allocations_hash` parity;
-- exact evaluator version, primary metric, and protected metrics;
-- exactly one external evaluator-only reserved allocation;
-- anonymous A/B result shape;
-- no unsafe evidence references in returned projection;
-- no raw oracle, A/B mapping, governed verdict, auto-promotion, or team-availability authority.
+- frozen target and case-allocation hashes;
+- request expiry and nonce shape;
+- exact blinded bundle reference and digest parity;
+- evaluator authorization and key validity window;
+- canonical SHA-256 attestation digest;
+- Ed25519 detached signature;
+- replay against the consumed nonce ledger;
+- anonymous A/B result shape and protected metrics;
+- safe evidence-reference schemes;
+- no oracle, mapping, governed verdict, auto-promotion, or team-availability authority.
 
-Request builder:
+## Synthetic conformance only
 
-```text
-scripts/prepare_reserved_evaluation_request.py
-```
+The repository contains a synthetic blinded bundle, public key, signed attestation, and empty nonce ledger only under `tests/fixtures/` so CI can prove the cryptographic verification path.
 
-It creates only the public-safe request projection. It cannot ingest an oracle or emit a verdict.
+The synthetic private key is intentionally not stored in the repository. The committed signature was generated offline from a deterministic test key and only the corresponding public key is retained for verification.
 
-## Synthetic conformance versus real evidence
-
-The repository contains a synthetic completed JSONL fixture solely to prove that the protocol and validator can represent a completed handoff:
-
-```text
-tests/fixtures/evidence-wayfinding/reserved-evaluation/
-  handoff.synthetic-complete.jsonl
-```
-
-It is **not** a real reserved evaluation and must not be cited as evidence that the Case 0 challenger wins.
-
-The public Case 0 request remains request-only until a controlled private evaluator returns a real attestation.
+These fixtures prove contract behavior, not evaluator trust in production and not that the Case 0 challenger wins a real reserved case.
 
 ## Module and authority boundaries
 
 Existing boundaries remain unchanged:
 
 - `feature_delivery_case` remains the primary delivery/value lifecycle;
-- Helixion may use settled multi-case evidence to propose candidates but cannot promote from this handoff;
-- AegisFlow may orchestrate a future controlled evaluation but does not own the oracle truth;
-- FlowGuard may enforce boundary and permission policy but does not choose the verdict;
-- Memexa may retain approved high-signal lineage, not raw private oracle material;
-- DeliveryYield may analyze evaluation/delivery economics only after quality settlement;
+- Helixion may consume settled evidence but cannot promote from this handoff;
+- AegisFlow may coordinate controlled evaluation but does not own oracle truth;
+- FlowGuard may enforce permission and boundary rules but does not choose the verdict;
+- Memexa may retain approved high-signal lineage, never raw oracle material;
+- DeliveryYield may analyze economics only after quality settlement;
 - OpenClaw remains within its existing execution boundary.
 
 No active module is replaced or reclassified.
 
 ## Next gate
 
-After this protocol is merged, the next evidence requirement is external to the public repository:
+PR 42 intentionally stops after establishing a trustworthy attestation boundary.
 
-```text
-one controlled reserved case
-+ one evaluator-only oracle
-+ one opaque A/B bundle
-+ one valid eval.reserved_attestation
-```
+The next public change may strengthen the **observed evidence gate** so a `downstream_observed` Blind Challenge cannot reach `scoped_canary` eligibility with empty evidence or an unverified attestation.
 
-Only after that real attestation exists should the public side implement or exercise the ingestion step that completes `lat.blind_challenge_execution.v1` and selects one governed verdict.
-
-Do not create another synthetic PR merely to simulate that evidence.
+A real reserved evaluation is still external to the public repository. No synthetic fixture in Lattice should be promoted as real Case 0B evidence.
