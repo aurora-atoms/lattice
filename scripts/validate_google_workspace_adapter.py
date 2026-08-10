@@ -38,11 +38,23 @@ EXPECTED_HANDOFF_SECTIONS = {
     "privacy",
 }
 
+FORBIDDEN_GOOGLE_LOCATOR_PREFIXES = (
+    "http://drive.google.com/",
+    "https://drive.google.com/",
+    "http://docs.google.com/",
+    "https://docs.google.com/",
+    "http://chat.google.com/",
+    "https://chat.google.com/",
+    "http://mail.google.com/",
+    "https://mail.google.com/",
+    "http://gmail.google.com/",
+    "https://gmail.google.com/",
+)
+
 FORBIDDEN_PUBLIC_LOCATOR_PATTERNS = (
-    re.compile(r"https?://(?:drive|docs|chat|mail|gmail)\\.google\\.com/", re.IGNORECASE),
-    re.compile(r"(?:^|[\\s\"'])/[A-Za-z0-9_.-]+/(?:Users|home|workspace|repo)/"),
-    re.compile(r"[A-Za-z]:\\\\(?:Users|workspace|repo)\\\\", re.IGNORECASE),
-    re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"),
+    re.compile(r"(?:^|[\s\"'])/[A-Za-z0-9_.-]+/(?:Users|home|workspace|repo)/"),
+    re.compile(r"[A-Za-z]:\\(?:Users|workspace|repo)\\", re.IGNORECASE),
+    re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"),
 )
 
 
@@ -61,6 +73,13 @@ def _all_strings(value: Any) -> list[str]:
         for item in value:
             result.extend(_all_strings(item))
     return result
+
+
+def _contains_private_locator(value: str) -> bool:
+    lowered = value.lower()
+    if any(prefix in lowered for prefix in FORBIDDEN_GOOGLE_LOCATOR_PREFIXES):
+        return True
+    return any(pattern.search(value) for pattern in FORBIDDEN_PUBLIC_LOCATOR_PATTERNS)
 
 
 def validate_adapter(manifest_path: Path, root: Path, schema_path: Path | None = None) -> list[str]:
@@ -156,10 +175,8 @@ def validate_adapter(manifest_path: Path, root: Path, schema_path: Path | None =
             errors.append(f"semantic:canonical ref {label} does not exist: {relative_path}")
 
     for value in _all_strings(manifest):
-        for pattern in FORBIDDEN_PUBLIC_LOCATOR_PATTERNS:
-            if pattern.search(value):
-                errors.append("semantic:public adapter source contains a private/account-specific locator or email-like value")
-                break
+        if _contains_private_locator(value):
+            errors.append("semantic:public adapter source contains a private/account-specific locator or email-like value")
 
     joined_non_goals = "\n".join(manifest["non_goals"]).lower()
     required_non_goal_signals = (
