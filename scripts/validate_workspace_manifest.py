@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Validate Lattice workspace manifests and template references."""
+"""Validate Lattice workspace manifests, capability profiles, and workflow references."""
 
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ SUPPORTED_VSCODE_SETTINGS = {
     "files.watcherExclude",
 }
 CAPABILITY_PROFILE_CONTRACT = "lat.capability-profile.runtime.v1"
+REFERENCE_WORKFLOW_ROLE = "reference_workflow"
 
 
 def validate_manifest(path: Path, root: Path) -> tuple[list[str], list[str]]:
@@ -168,6 +169,14 @@ def validate_workspace_index(root: Path) -> tuple[list[str], list[str]]:
         if not manifest_path.exists():
             errors.append(f"{row_label}: workspace template path missing: {manifest_path_value}")
             continue
+
+        if row.get("capability_role") == REFERENCE_WORKFLOW_ROLE:
+            if manifest_path.suffix.lower() not in {".md", ".markdown"}:
+                errors.append(f"{row_label}: reference workflow must point to a Markdown document")
+            if not manifest_path.read_text(encoding="utf-8").strip():
+                errors.append(f"{row_label}: reference workflow document is empty")
+            continue
+
         manifest = load_json(manifest_path)
         if manifest.get("contract") == CAPABILITY_PROFILE_CONTRACT:
             if runtime_profile_identity(manifest) != workspace_id:
