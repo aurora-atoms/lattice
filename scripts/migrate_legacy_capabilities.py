@@ -256,6 +256,52 @@ def base_capability(
     }
 
 
+def workspace_capability_metadata(record: dict[str, Any]) -> dict[str, Any]:
+    """Derive canonical workspace/workflow metadata from the generated legacy row."""
+    task_type = str(record["task_type"])
+    role = str(record.get("capability_role", "capability_profile"))
+    status = str(record.get("public_package_status", "contract_validated"))
+    description = str(
+        record.get("description")
+        or (
+            f"Public reference workflow for {task_type} tasks."
+            if role == "reference_workflow"
+            else f"Public workspace profile for {task_type} tasks."
+        )
+    )
+    trigger = str(
+        record.get("trigger")
+        or (
+            f"a {task_type} reference workflow is requested"
+            if role == "reference_workflow"
+            else f"a {task_type} workspace profile is requested"
+        )
+    )
+    if role == "reference_workflow":
+        return {
+            "role": role,
+            "status": status,
+            "description": description,
+            "changes": "a bounded task family into an ordered public reference workflow",
+            "primary_user": "downstream workflow integrator",
+            "secondary_audience": ["delivery owners", "runtime adapter authors"],
+            "trigger": trigger,
+            "minimum_inputs": ["task type", "scope", "expected visible output"],
+            "outputs": ["bounded public reference workflow"],
+        }
+    return {
+        "role": role,
+        "status": status,
+        "description": description,
+        "changes": "a bounded task type into a least-privilege workspace capability profile",
+        "primary_user": "downstream workspace maintainer",
+        "secondary_audience": ["developers", "security reviewers"],
+        "trigger": trigger,
+        "minimum_inputs": ["task type", "repository scope", "runtime target"],
+        "outputs": ["bounded workspace capability profile"],
+    }
+
+
 def build_manifest(root: Path) -> dict[str, Any]:
     policy = load_json(root / "registry" / "capability-context-policy.json")
     skill_context, context_sources = context_entries(root)
@@ -372,22 +418,23 @@ def build_manifest(root: Path) -> dict[str, Any]:
 
     for record in load_jsonl(root / "registry" / "workspace_templates.index.jsonl"):
         family, version = split_versioned_id(str(record["workspace_id"]))
+        metadata = workspace_capability_metadata(record)
         capabilities.append(
             base_capability(
                 prefix="workspace",
                 record_type="workspace_template",
                 family=family,
                 version=version,
-                role="capability_profile",
-                status="contract_validated",
+                role=str(metadata["role"]),
+                status=str(metadata["status"]),
                 path=str(record["path"]),
-                description=f"Public workspace profile for {record['task_type']} tasks.",
-                changes="a bounded task type into a least-privilege workspace capability profile",
-                primary_user="downstream workspace maintainer",
-                secondary_audience=["developers", "security reviewers"],
-                trigger=f"a {record['task_type']} workspace profile is requested",
-                minimum_inputs=["task type", "repository scope", "runtime target"],
-                outputs=["bounded workspace capability profile"],
+                description=str(metadata["description"]),
+                changes=str(metadata["changes"]),
+                primary_user=str(metadata["primary_user"]),
+                secondary_audience=list(metadata["secondary_audience"]),
+                trigger=str(metadata["trigger"]),
+                minimum_inputs=list(metadata["minimum_inputs"]),
+                outputs=list(metadata["outputs"]),
                 source_registry="registry/workspace_templates.index.jsonl",
                 legacy_record=strip_generated_fields(dict(record)),
             )
@@ -419,15 +466,12 @@ def main() -> int:
     root = Path(args.root).resolve()
     out = root / args.out
     if out.exists() and not args.force:
-        print(f"{out}: already exists; refuse legacy overwrite without --force", file=sys.stderr)
-        return 2
+        print(f"refusing to overwrite existing manifest without --force: {out}", file=sys.stderr)
+        return 1
     try:
         manifest = build_manifest(root)
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(
-            json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
-        )
+        out.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         print(str(exc), file=sys.stderr)
         return 1

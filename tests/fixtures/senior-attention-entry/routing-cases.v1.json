@@ -1,0 +1,39 @@
+{
+  "contract": "lat.senior-attention.entry-routing-fixture.v1",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "positive": [
+    {
+      "family": "feature_requirement",
+      "request": "Before coding, make this requirement work ready and produce an implementation plan with explicit unknowns.",
+      "expected_skill": "delivery-artifact-builder"
+    },
+    {
+      "family": "risk_preflight",
+      "request": "Before we commit, identify the single most material failure mechanism and prepare a risk preflight.",
+      "expected_skill": "risk-ahead"
+    },
+    {
+      "family": "bug_delivery_rescue",
+      "request": "Turn this failing test into a stable reproduction before proposing a fix.",
+      "expected_skill": "delivery-rescue"
+    },
+    {
+      "family": "decision_support",
+      "request": "Compare the bounded options and prepare one decision question for the accountable owner.",
+      "expected_skill": "decision-question-builder"
+    },
+    {
+      "family": "management_translation",
+      "request": "Translate the validated case state into a manager brief with a clear decision request.",
+      "expected_skill": "management-translation"
+    }
+  ],
+  "negative": [
+    {"request": "Format this JSON with two-space indentation."},
+    {"request": "Summarize this public article in three bullets."},
+    {"request": "Write a short README paragraph describing the command."},
+    {"request": "Rename this local variable from x to count."},
+    {"request": "Fix punctuation in this email without changing its meaning."}
+  ]
+}

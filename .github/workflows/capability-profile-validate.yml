@@ -35,6 +35,8 @@ jobs:
           python -m json.tool schemas/capability/reserved-evaluation-handoff-record.v2.schema.json >/dev/null
           python -m json.tool schemas/capability/reserved-evaluation-ingest-result.v1.schema.json >/dev/null
           python -m json.tool tests/fixtures/evidence-wayfinding/reserved-evaluation/trusted-evaluators.synthetic.json >/dev/null
+          python -m json.tool workspaces/templates/senior-attention-runtime-profile.v1.json >/dev/null
+          python -m json.tool tests/fixtures/senior-attention-entry/routing-cases.v1.json >/dev/null
           find examples/capability-profiles -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
@@ -85,12 +87,26 @@ jobs:
             /tmp/reserved-evaluation-ingest-result.json
       - name: Validate capability profile semantics
         run: python scripts/validate_capability_profile.py --root .
+      - name: Validate canonical Senior Attention profile
+        run: |
+          python scripts/validate_json_schema_instance.py \
+            schemas/capability/capability-profile-runtime.v1.schema.json \
+            workspaces/templates/senior-attention-runtime-profile.v1.json
+          python scripts/validate_capability_profile.py \
+            workspaces/templates/senior-attention-runtime-profile.v1.json \
+            --root .
+          python scripts/validate_capability_manifest.py --root .
+          python scripts/generate_capability_registry_projections.py --root . --check
+          python scripts/validate_capability_routing.py --root .
+          python scripts/validate_public_private_boundary.py --root .
       - name: Validate Evidence Wayfinding Case 0 bundle
         run: |
           python scripts/validate_evidence_wayfinding_case_bundle.py \
             examples/evidence-wayfinding/case-0-schema-parity
       - name: Test capability profile boundaries
         run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
+      - name: Test Senior Attention canonical entry
+        run: python -m unittest discover -s tests -p 'test_senior_attention_entrypoint.py' -v
       - name: Test portable case pack schema parity
         run: python -m unittest discover -s tests -p 'test_portable_case_pack_schema.py' -v
       - name: Test attention and outcome contracts

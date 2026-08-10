@@ -6988,6 +6988,189 @@
           "public_export_allowed": true
         }
       }
+    },
+    {
+      "capability_id": "workspace:senior-attention-runtime@1.0.0",
+      "record_type": "workspace_template",
+      "family_name": "senior-attention-runtime",
+      "version": "1.0.0",
+      "capability_role": "capability_profile",
+      "public_package_status": "contract_validated",
+      "path": "workspaces/templates/senior-attention-runtime-profile.v1.json",
+      "description": "Contract-validated Senior Attention runtime profile that exposes the smallest task-scoped public capability set progressively.",
+      "changes": "a bounded task type into a least-privilege workspace capability profile",
+      "primary_user": "downstream workspace maintainer",
+      "secondary_audience": [
+        "developers",
+        "security reviewers"
+      ],
+      "trigger": "a Senior Attention runtime profile is selected for a bounded downstream task",
+      "minimum_inputs": [
+        "task type",
+        "repository scope",
+        "runtime target"
+      ],
+      "outputs": [
+        "bounded workspace capability profile"
+      ],
+      "evidence_contract": {
+        "required_sections": [
+          "facts",
+          "inference_summary",
+          "citations",
+          "uncertainty",
+          "unknowns",
+          "assumptions"
+        ],
+        "policy": "Separate source-supported facts from inference and preserve uncertainty, unknowns, and assumptions."
+      },
+      "success_signals": [
+        "declared outputs are visible and validated",
+        "evidence and authority boundaries remain satisfied"
+      ],
+      "stop_conditions": [
+        "goal_reached",
+        "stage_gate_reached",
+        "missing_permission",
+        "missing_required_input",
+        "source_unavailable",
+        "insufficient_evidence",
+        "high_risk_boundary",
+        "human_decision_required",
+        "failed_validation"
+      ],
+      "authority_boundary": "Provides public capability behavior or artifacts only; grants no private business conclusion, adoption, asset-promotion, manager-wording, merge, release, deployment, or production authority.",
+      "compatibility": {
+        "semantic_versioning": true,
+        "legacy_status_field": "experimental",
+        "migration": "Legacy status remains a compatibility field; use public_package_status for public dependency readiness."
+      },
+      "deprecated_by": null,
+      "projection": {
+        "source_registry": "registry/workspace_templates.index.jsonl",
+        "legacy_record": {
+          "workspace_id": "senior-attention-runtime@1.0.0",
+          "path": "workspaces/templates/senior-attention-runtime-profile.v1.json",
+          "status": "experimental",
+          "task_type": "senior_attention",
+          "agents": [
+            "delivery-capability-conductor@1.0.0"
+          ],
+          "skills": [
+            "delivery-capability-conductor",
+            "feature-understanding-loop",
+            "context-mastery",
+            "domain-context-pack",
+            "delivery-rescue",
+            "risk-ahead",
+            "decision-question-builder",
+            "unasked-questions-generator",
+            "contradiction-adjudication",
+            "delivery-artifact-builder",
+            "management-translation",
+            "senior-attention-queue",
+            "feature-outcome-review"
+          ],
+          "runtime_targets": [
+            "chatgpt",
+            "codex",
+            "github-copilot",
+            "vscode"
+          ],
+          "install_scopes": [
+            "project"
+          ],
+          "public_export_allowed": true
+        }
+      }
+    },
+    {
+      "capability_id": "workspace:senior-attention-workflow@1.0.0",
+      "record_type": "workspace_template",
+      "family_name": "senior-attention-workflow",
+      "version": "1.0.0",
+      "capability_role": "reference_workflow",
+      "public_package_status": "contract_validated",
+      "path": "docs/senior-attention.md",
+      "description": "Public Senior Attention reference workflow for bounded requirement, risk, bug, decision, and management tasks.",
+      "changes": "a bounded task family into an ordered public reference workflow",
+      "primary_user": "downstream workflow integrator",
+      "secondary_audience": [
+        "delivery owners",
+        "runtime adapter authors"
+      ],
+      "trigger": "a Senior Attention task needs a bounded public workflow before private evidence is attached",
+      "minimum_inputs": [
+        "task type",
+        "scope",
+        "expected visible output"
+      ],
+      "outputs": [
+        "bounded public reference workflow"
+      ],
+      "evidence_contract": {
+        "required_sections": [
+          "facts",
+          "inference_summary",
+          "citations",
+          "uncertainty",
+          "unknowns",
+          "assumptions"
+        ],
+        "policy": "Separate source-supported facts from inference and preserve uncertainty, unknowns, and assumptions."
+      },
+      "success_signals": [
+        "declared outputs are visible and validated",
+        "evidence and authority boundaries remain satisfied"
+      ],
+      "stop_conditions": [
+        "goal_reached",
+        "stage_gate_reached",
+        "missing_permission",
+        "missing_required_input",
+        "source_unavailable",
+        "insufficient_evidence",
+        "high_risk_boundary",
+        "human_decision_required",
+        "failed_validation"
+      ],
+      "authority_boundary": "Provides public capability behavior or artifacts only; grants no private business conclusion, adoption, asset-promotion, manager-wording, merge, release, deployment, or production authority.",
+      "compatibility": {
+        "semantic_versioning": true,
+        "legacy_status_field": "experimental",
+        "migration": "Legacy status remains a compatibility field; use public_package_status for public dependency readiness."
+      },
+      "deprecated_by": null,
+      "projection": {
+        "source_registry": "registry/workspace_templates.index.jsonl",
+        "legacy_record": {
+          "workspace_id": "senior-attention-workflow@1.0.0",
+          "path": "docs/senior-attention.md",
+          "status": "experimental",
+          "task_type": "senior_attention",
+          "agents": [
+            "delivery-capability-conductor@1.0.0"
+          ],
+          "skills": [
+            "feature-understanding-loop",
+            "context-mastery",
+            "delivery-rescue",
+            "risk-ahead",
+            "decision-question-builder",
+            "management-translation"
+          ],
+          "runtime_targets": [
+            "chatgpt",
+            "codex",
+            "github-copilot",
+            "vscode"
+          ],
+          "install_scopes": [
+            "project"
+          ],
+          "public_export_allowed": true
+        }
+      }
     }
   ]
 }
