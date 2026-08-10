@@ -1,0 +1,36 @@
+name: pr47-regenerate
+
+on:
+  push:
+    branches:
+      - agent/domain-context-contract
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/domain-context-contract
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Rebuild canonical manifest and projections
+        run: |
+          python scripts/migrate_legacy_capabilities.py --root . --force
+          python scripts/generate_capability_registry_projections.py --root .
+      - name: Commit deterministic outputs
+        run: |
+          if git diff --quiet; then
+            echo "registry already canonical"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry/capability-manifest.json registry/capability-context-policy.json registry/skill-context.catalog.json registry/agent-context.catalog.json registry/skills.index.jsonl registry/agents.index.jsonl registry/mcp_servers.index.jsonl registry/knowledge_packs.index.jsonl registry/workspace_templates.index.jsonl registry/capabilities.index.jsonl
+          git commit -m "regenerate Domain Context Pack registry projections"
+          git push origin HEAD:agent/domain-context-contract
