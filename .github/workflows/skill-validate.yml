@@ -69,7 +69,7 @@ jobs:
       - name: Test incremental Skill CI contracts
         run: python -m unittest discover -s tests -p 'test_skill_ci_contracts.py' -v
       - name: Compile Python validation scripts
-        run: python -m compileall -q scripts tests skills/domain-context-pack/scripts skills/domain-context-pack/evals
+        run: python -m compileall -q scripts tests skills/domain-context-pack/scripts skills/domain-context-pack/evals skills/delivery-rescue/scripts skills/delivery-rescue/evals
       - name: Test capability context catalogs
         run: python -m unittest discover -s tests -p 'test_capability_context.py' -v
       - name: Validate capability context schema
@@ -110,6 +110,11 @@ jobs:
           python -m json.tool skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json >/dev/null
           python skills/domain-context-pack/scripts/validate_domain_context_pack.py skills/domain-context-pack/evals/fixtures/valid-domain-context-pack.synthetic.json
           python -m unittest discover -s skills/domain-context-pack/evals -p 'test_*.py' -v
+      - name: Test Bug Investigation contract
+        run: |
+          python -m json.tool skills/delivery-rescue/schemas/bug-investigation.v1.schema.json >/dev/null
+          python skills/delivery-rescue/scripts/validate_bug_investigation.py skills/delivery-rescue/evals/fixtures/valid-bug-investigation.synthetic.json
+          python -m unittest discover -s skills/delivery-rescue/evals -p 'test_*.py' -v
       - name: Test unasked questions generator
         run: |
           python skills/unasked-questions-generator/scripts/validate_unasked_questions.py skills/unasked-questions-generator/evals/fixtures/valid-unasked-questions.json

@@ -1,0 +1,194 @@
+{
+  "record_type": "lat.bug_investigation.v1",
+  "investigation_id": "synthetic-checkout-ordering-001",
+  "case_ref": "case://synthetic/bug-investigation-001",
+  "target": {
+    "summary": "Determine why a synthetic checkout contract test produces an order-dependent total.",
+    "included": [
+      "synthetic checkout total calculation",
+      "synthetic contract-test reproduction",
+      "bounded ordering behavior"
+    ],
+    "excluded": [
+      "production deployment",
+      "real customer data",
+      "unrelated payment behavior"
+    ],
+    "evidence_cutoff": "2026-08-10T13:00:00Z"
+  },
+  "blocker": {
+    "kind": "failing_test",
+    "observed_failure": "The synthetic total differs when the same discount identifiers are supplied in a different order.",
+    "expected_behavior": "The synthetic total remains stable for equivalent discount sets regardless of input order.",
+    "evidence_refs": [
+      "fixture://delivery-rescue/synthetic/failure-001"
+    ]
+  },
+  "reproduction": {
+    "status": "reproduced",
+    "attempts": 2,
+    "last_attempt_at": "2026-08-10T12:45:00Z",
+    "steps": [
+      "Run the synthetic contract fixture with discount identifiers in ascending order.",
+      "Run the same fixture with the identical identifiers in reverse order.",
+      "Compare the resulting synthetic totals."
+    ],
+    "environment_refs": [
+      "env://synthetic/python-3.14"
+    ],
+    "evidence_refs": [
+      "test://delivery-rescue/repro/ascending-pass",
+      "test://delivery-rescue/repro/reverse-fail"
+    ]
+  },
+  "observations": [
+    {
+      "observation_id": "OBS-001",
+      "statement": "The failure reproduces when the synthetic identifiers are reversed while the data values remain unchanged.",
+      "relationship": "direct_observation",
+      "observed_at": "2026-08-10T12:40:00Z",
+      "evidence_refs": [
+        "test://delivery-rescue/repro/reverse-fail"
+      ]
+    },
+    {
+      "observation_id": "OBS-002",
+      "statement": "A slower synthetic run also failed, so elapsed time initially correlated with the symptom.",
+      "relationship": "correlation",
+      "observed_at": "2026-08-10T12:41:00Z",
+      "evidence_refs": [
+        "trace://synthetic/timing-correlation-001"
+      ]
+    },
+    {
+      "observation_id": "OBS-003",
+      "statement": "Canonicalizing identifier order removes the failure while all synthetic values remain constant.",
+      "relationship": "controlled_change_result",
+      "observed_at": "2026-08-10T12:44:00Z",
+      "evidence_refs": [
+        "test://delivery-rescue/controlled-change/order-normalized-pass"
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "hypothesis_id": "H-ORDER",
+      "statement": "The synthetic aggregation path is order-sensitive because identifiers are consumed without canonical ordering.",
+      "status": "supported",
+      "material": true,
+      "evidence_for": [
+        "test://delivery-rescue/repro/reverse-fail",
+        "test://delivery-rescue/controlled-change/order-normalized-pass"
+      ],
+      "evidence_against": [],
+      "unknowns": []
+    },
+    {
+      "hypothesis_id": "H-TIMING",
+      "statement": "Execution timing causes the synthetic total mismatch.",
+      "status": "falsified",
+      "material": true,
+      "evidence_for": [
+        "trace://synthetic/timing-correlation-001"
+      ],
+      "evidence_against": [
+        "test://delivery-rescue/isolation/timing-held-constant"
+      ],
+      "unknowns": []
+    }
+  ],
+  "verification_tests": [
+    {
+      "test_id": "VT-ORDER",
+      "target_hypothesis_id": "H-ORDER",
+      "method": "controlled_change",
+      "procedure": "Hold the synthetic values constant and canonicalize only identifier ordering before aggregation.",
+      "expected_disconfirming_signal": "The total mismatch persists after canonical ordering is applied.",
+      "outcome": "supports",
+      "evidence_refs": [
+        "test://delivery-rescue/controlled-change/order-normalized-pass"
+      ]
+    },
+    {
+      "test_id": "VT-TIMING",
+      "target_hypothesis_id": "H-TIMING",
+      "method": "test_isolation",
+      "procedure": "Hold identifier ordering constant while varying the synthetic execution delay.",
+      "expected_disconfirming_signal": "The failure follows delay changes even when ordering is fixed.",
+      "outcome": "falsifies",
+      "evidence_refs": [
+        "test://delivery-rescue/isolation/timing-held-constant"
+      ]
+    }
+  ],
+  "root_cause": {
+    "status": "verified",
+    "hypothesis_id": "H-ORDER",
+    "rationale": "The failure follows input ordering and disappears under a controlled ordering-only change; the timing alternative was independently falsified.",
+    "evidence_refs": [
+      "test://delivery-rescue/repro/reverse-fail",
+      "test://delivery-rescue/controlled-change/order-normalized-pass"
+    ],
+    "strongest_alternative_hypothesis_id": "H-TIMING",
+    "alternative_disposition": "falsified"
+  },
+  "minimum_next_step": {
+    "kind": "repair",
+    "action": "Apply a bounded synthetic fix that canonicalizes identifier order before aggregation without changing calculation semantics.",
+    "validation": "Run the existing synthetic contract fixture in both identifier orders plus the ordering-isolation regression.",
+    "expected_signal": "Both orderings produce the same expected synthetic total and the regression remains green.",
+    "stop_condition": "Stop and request owner review if the repair requires broader contract or business-semantic changes."
+  },
+  "fix_readiness": {
+    "status": "ready_for_bounded_fix",
+    "proposed_fix_scope": [
+      "canonicalize synthetic identifier ordering before aggregation"
+    ],
+    "acceptance_observer": "downstream test owner",
+    "validation_commands": [
+      "python -m unittest synthetic_checkout_contract_test -v"
+    ],
+    "rationale": "The failure is reproducible, the ordering hypothesis has controlled verification evidence, and the material timing alternative is falsified.",
+    "evidence_refs": [
+      "test://delivery-rescue/controlled-change/order-normalized-pass",
+      "test://delivery-rescue/isolation/timing-held-constant"
+    ]
+  },
+  "evidence_summary": {
+    "facts": [
+      "OBS-001",
+      "OBS-003"
+    ],
+    "inference_summary": [
+      "The ordering hypothesis is the bounded causal explanation supported by the current synthetic evidence."
+    ],
+    "citations": [
+      "fixture://delivery-rescue/synthetic/failure-001",
+      "test://delivery-rescue/repro/reverse-fail",
+      "test://delivery-rescue/controlled-change/order-normalized-pass",
+      "test://delivery-rescue/isolation/timing-held-constant"
+    ],
+    "counterevidence": [
+      "trace://synthetic/timing-correlation-001"
+    ],
+    "uncertainty": [
+      "No production behavior or real downstream system was evaluated."
+    ],
+    "unknowns": [
+      {
+        "unknown_id": "UNK-001",
+        "statement": "Whether any private downstream implementation has the same ordering behavior is unknown.",
+        "blocking": false
+      }
+    ],
+    "assumptions": [
+      "The synthetic contract fixture represents only the public conformance scenario described here."
+    ]
+  },
+  "human_confirmation_points": [
+    "A downstream owner must confirm real product semantics before applying any private implementation change.",
+    "Merge, release, deployment, and production authority remain outside this packet."
+  ],
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed"
+}

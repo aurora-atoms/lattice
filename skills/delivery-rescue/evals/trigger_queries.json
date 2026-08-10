@@ -1,0 +1,58 @@
+[
+  {
+    "id": "delivery-rescue-trigger-001",
+    "query": "This test fails only sometimes and I cannot reproduce it reliably. Build the smallest evidence-grounded investigation path before we change code.",
+    "should_trigger": true,
+    "category": "positive_bug_repro",
+    "reason": "intermittent failing test and reproducibility gap require Delivery Rescue"
+  },
+  {
+    "id": "delivery-rescue-trigger-002",
+    "query": "The CI job is red after this change. Separate observed facts from hypotheses and tell me the minimum validation step.",
+    "should_trigger": true,
+    "category": "positive_ci",
+    "reason": "CI failure is an existing Delivery Rescue trigger"
+  },
+  {
+    "id": "delivery-rescue-trigger-003",
+    "query": "We have a bug report and a suspicious log line, but no verified root cause. Produce a reproduction and falsification plan.",
+    "should_trigger": true,
+    "category": "positive_root_cause",
+    "reason": "bug-to-repro work requires evidence and falsification rather than correlation"
+  },
+  {
+    "id": "delivery-rescue-trigger-004",
+    "query": "The local environment differs from CI and the failure disappears on another machine. Diagnose the blocker without changing global state.",
+    "should_trigger": true,
+    "category": "positive_environment",
+    "reason": "environment diagnosis remains within Delivery Rescue"
+  },
+  {
+    "id": "delivery-rescue-trigger-005",
+    "query": "A consumer test broke after a schema change. Identify whether the contract was broken and the smallest safe next step.",
+    "should_trigger": true,
+    "category": "positive_contract",
+    "reason": "contract-break diagnosis remains within Delivery Rescue"
+  },
+  {
+    "id": "delivery-rescue-trigger-006",
+    "query": "Plan the next customer-facing feature and write the implementation roadmap.",
+    "should_trigger": false,
+    "category": "negative_feature_planning",
+    "reason": "feature planning belongs to other delivery capabilities"
+  },
+  {
+    "id": "delivery-rescue-trigger-007",
+    "query": "Approve this release and deploy the fix to production.",
+    "should_trigger": false,
+    "category": "negative_authority",
+    "reason": "release and deployment approval are outside Delivery Rescue authority"
+  },
+  {
+    "id": "delivery-rescue-trigger-008",
+    "query": "Summarize this log file into five bullets without diagnosing the failure.",
+    "should_trigger": false,
+    "category": "negative_summary",
+    "reason": "generic summarization is not a delivery blocker investigation"
+  }
+]
