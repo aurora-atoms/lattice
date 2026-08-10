@@ -13,9 +13,12 @@ Case Contract
 -> Decision Card
 -> Verification Receipt
 -> Outcome Receipt
+-> Harness Mutation Candidate
+-> Blind Challenge preflight
+-> Reserved Evaluation request
 ```
 
-It does not prove private downstream adoption, team reuse, manager value, or self-evolving Harness quality.
+It does not prove private downstream adoption, team reuse, manager value, real reserved-evaluation performance, or Senior Attention value.
 
 ## Case identity
 
@@ -32,6 +35,33 @@ The public fixture lives at:
 ```text
 examples/evidence-wayfinding/case-0-schema-parity/
 ```
+
+The Feature Delivery Case remains the primary user-value and evidence boundary. The Case 0 JSON files are public replay projections and governed evaluation artifacts; they do not create a second delivery lifecycle.
+
+## Current implementation status
+
+The original Case 0 document stopped at a future-looking description of Attention Admission and Outcome Receipt. That is no longer current. The repository now contains executable contracts for:
+
+```text
+Portable Case Pack structural schema + semantic validator
+Attention Admission mandatory gate
+Outcome Receipt settlement
+Harness Mutation Candidate
+Blind Challenge preflight
+Reserved Evaluation Handoff v1 compatibility
+Reserved Evaluation Handoff v2 authenticated-attestation trust boundary
+Observed Evidence Gate for downstream_observed/scoped_canary claims
+```
+
+The public Case 0 remains correctly blocked before a real reserved oracle:
+
+```text
+Blind Challenge status = blocked_pending_reserved_oracle
+simulation_status = synthetic_reference
+downstream_adoption_status = not_observed
+```
+
+No public fixture is evidence of a real reserved evaluation or live Senior Attention outcome.
 
 ## Before state
 
@@ -92,23 +122,9 @@ The repository outcome selected Option A through merged PR 36.
 
 ## Attention Admission
 
-Case 0 records the future mandatory-gate shape without promoting it into a general authoritative contract yet.
+Attention Admission is now an executable contract rather than a future proposal. Case 0 requires every mandatory invariant to pass before it can be `READY`; there is no `4-of-5` waiver.
 
-The replay requires all five conditions to pass:
-
-1. `bounded_decision` — one explicit decision exists;
-2. `evidence` — addressable repository evidence exists;
-3. `counterevidence` — the compatibility risk of strict schema execution is explicit;
-4. `authority` — repository maintainers retain the contract decision;
-5. `delivery_state_change` — the decision changes executable CI behavior.
-
-Result:
-
-```text
-READY
-```
-
-There is no `4-of-5` waiver in this replay.
+The gate preserves bounded decision, traceable evidence, strongest counterevidence, authority/risk, and delivery consequence. Any mandatory failure blocks or escalates instead of relying on an average score.
 
 ## Evidence Map
 
@@ -117,13 +133,18 @@ The Portable Case Pack preserves three evidence anchors:
 ```text
 EV-001
   Portable Case Pack v1 schema before the parity fix
+  git blob = 31dbb1d1e720ee42da864203727ce06a2ad85ecf
 
 EV-002
   pre-fix capability-profile validation workflow
+  git blob = 4e194dfa76d2e990d07a1fbf8cc349704cc60638
 
 EV-003
   merged parity repair commit from PR 36
+  commit = 863ceb307416975ddb43ec3fba2606648b2c0c59
 ```
+
+`EV-002` previously carried a placeholder hash. The bundle-validation change replaces it with the actual Git blob SHA and verifies `repo://<path>@<commit>` references against the repository object database.
 
 Key claims:
 
@@ -152,7 +173,7 @@ The strongest counterevidence is compatibility: a closed schema can reject shape
 
 ## Verification Receipt
 
-The replay target is limited to the known false-ready mutations:
+The replay target remains limited to the known false-ready mutations:
 
 ```text
 valid Portable Case Pack              -> PASS
@@ -167,7 +188,7 @@ This does not establish complete semantic correctness. It establishes the Case 0
 
 ## Outcome Receipt
 
-Observed state transition:
+Outcome Receipt is now an executable contract and records the observed repository transition:
 
 ```text
 BEFORE
@@ -175,7 +196,7 @@ published structural contract not executed against instances
 
 AFTER
 published structural contract executes before semantic validation
-and four negative mutation anchors protect the repaired boundary
+and negative mutation anchors protect the repaired boundary
 ```
 
 Earliest failure point:
@@ -184,7 +205,7 @@ Earliest failure point:
 CI validated schema-document syntax but did not execute schema-instance conformance.
 ```
 
-The accepted repository artifact is merged commit:
+The accepted repository artifact remains merged commit:
 
 ```text
 863ceb307416975ddb43ec3fba2606648b2c0c59
@@ -193,13 +214,52 @@ The accepted repository artifact is merged commit:
 Remaining unknowns are preserved rather than filled in:
 
 - whether future Portable Case Pack semantics should require evidence for every derived claim;
-- whether Evidence Wayfinding improves scarce Senior Attention in a private live case.
+- whether Evidence Wayfinding improves scarce Senior Attention in a private live case;
+- whether a real controlled reserved evaluator confirms the candidate without protected-metric regression.
+
+## Governed evolution state
+
+Case 0 has progressed beyond Outcome Receipt, but only into governed candidate/evaluation preparation:
+
+```text
+Outcome Receipt
+-> session_local Harness Mutation Candidate
+-> frozen Blind Challenge target/allocation
+-> blocked public preflight
+-> controlled Reserved Evaluation request
+```
+
+The trust boundary now requires authenticated v2 attestations for real downstream-observed or scoped-canary claims. Authentication does not grant promotion authority. The public repository still cannot manufacture a hidden reserved oracle or claim a real observed result.
+
+## Authoritative bundle validation
+
+Do not use `scripts/validate_evidence_wayfinding_case.py` as the only validation command. It is retained as the cross-file Case Spine component for compatibility, but it does not execute every child JSON Schema.
+
+The authoritative Case 0 entrypoint is:
+
+```bash
+python scripts/validate_evidence_wayfinding_case_bundle.py \
+  examples/evidence-wayfinding/case-0-schema-parity
+```
+
+The bundle validator executes, in one ordered entrypoint:
+
+```text
+structural JSON Schemas
+-> semantic validators
+-> cross-file Case Spine lineage
+-> repo:// evidence Git-object integrity
+-> Harness Mutation Candidate validation when present
+-> Blind Challenge validation when present
+-> Reserved Evaluation handoff validation when present
+-> deterministic summary
+```
+
+This prevents a downstream consumer from obtaining a false green by calling only the cross-file validator while skipping child structural schemas.
 
 ## What Case 0 proves
 
-Case 0 provides public evidence that the workflow can preserve one bounded decision, evidence, counterevidence, verification, human authority, and an observed repository state change in one linked case spine.
-
-It also provides one failure point that is eligible to become a Harness mutation candidate.
+Case 0 provides public evidence that the repository can preserve one bounded decision, evidence, counterevidence, verification, human authority, observed repository state change, a local mutation candidate, and a blocked blind-evaluation handoff without pretending synthetic evidence is real adoption.
 
 It does **not** grant promotion authority from this single replay.
 
@@ -213,13 +273,21 @@ Do not use this replay to justify:
 - team-wide capability promotion;
 - Portable Case Pack v2 without a separate compatibility decision;
 - claims of measured Senior Attention ROI;
-- claims of private downstream adoption.
+- claims of private downstream adoption;
+- claims that Reserved Evaluation has executed in a real controlled environment.
 
 ## Next gate
 
-The next implementation step may formalize the two contracts whose need is now visible in an executed case:
+After authoritative bundle validation is in place, the next bounded public implementation step is deterministic authenticated-attestation ingestion/state transition:
 
-1. a deterministic **Attention Admission** contract with mandatory invariants and `READY | BLOCKED | ESCALATE` outcomes;
-2. an **Outcome Receipt** contract that preserves before/after state, human correction, claim outcomes, earliest failure point, and remaining unknowns.
+```text
+validated v2 request
++ authenticated attestation
+-> deterministic ingest
+-> public-safe reserved-result projection
+-> evaluated Blind Challenge eligibility
+```
 
-Those contracts should remain projections around the Feature Delivery Case rather than becoming a second canonical lifecycle object.
+That step must still stop before human verdict/canary authority. It must not create `team_available`, auto-promotion, merge, release, or deploy authority.
+
+After that protocol boundary is executable, the evidence-bearing product milestone moves to a private Case 0B/live Senior case with actual attention minutes, review/correction minutes, accepted artifact, state change, and `critical_false_ready = 0`.
