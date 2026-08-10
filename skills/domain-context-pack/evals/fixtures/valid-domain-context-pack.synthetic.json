@@ -1,0 +1,172 @@
+{
+  "record_type": "lat.domain_context_pack.v1",
+  "pack_id": "dcp-synthetic-checkout-001",
+  "scope_id": "synthetic-checkout-requirement",
+  "as_of_at": "2026-08-10T12:00:00Z",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "task": {
+    "objective": "Prepare a synthetic checkout requirement for bounded implementation planning.",
+    "expected_output": "A minimum context pack that supports Work Ready review without loading unrelated sources.",
+    "caller_role": "synthetic senior engineer",
+    "permission_boundary_ref": "policy://synthetic/context-access-v1"
+  },
+  "authorization": {
+    "decision": "partial",
+    "policy_ref": "policy://synthetic/context-access-v1",
+    "caller_authority_ref": "role://synthetic/senior-engineer",
+    "data_classification": "internal"
+  },
+  "context_budget": {
+    "max_tokens": 400,
+    "selected_tokens": 200
+  },
+  "sources": [
+    {
+      "source_id": "SRC-REQ",
+      "source_type": "document",
+      "locator": "source://synthetic/checkout-requirement-v1",
+      "owner_ref": "role://synthetic/product-owner",
+      "access_status": "authorized",
+      "authority_for": ["business_rule"],
+      "observed_at": "2026-08-09T16:00:00Z",
+      "expires_at": "2026-09-10T00:00:00Z",
+      "freshness_status": "current",
+      "selection_status": "selected",
+      "selection_reason": "Defines the bounded user-visible checkout behavior for this synthetic task."
+    },
+    {
+      "source_id": "SRC-SCHEMA",
+      "source_type": "schema",
+      "locator": "repo://synthetic/contracts/order-event-v3",
+      "owner_ref": "role://synthetic/schema-owner",
+      "access_status": "authorized",
+      "authority_for": ["system_constraint"],
+      "observed_at": "2026-08-10T09:30:00Z",
+      "expires_at": null,
+      "freshness_status": "current",
+      "selection_status": "selected",
+      "selection_reason": "Constrains the event field shape touched by the requirement."
+    },
+    {
+      "source_id": "SRC-OLD-ADR",
+      "source_type": "decision",
+      "locator": "source://synthetic/adr-2025-rollback",
+      "owner_ref": "role://synthetic/architecture-owner",
+      "access_status": "authorized",
+      "authority_for": ["historical_decision"],
+      "observed_at": "2025-11-01T10:00:00Z",
+      "expires_at": "2026-06-01T00:00:00Z",
+      "freshness_status": "stale",
+      "selection_status": "conditional",
+      "selection_reason": "Potentially relevant rollback history, but it is expired and must be refreshed before activation."
+    },
+    {
+      "source_id": "SRC-PRIVATE",
+      "source_type": "incident",
+      "locator": "source://synthetic/restricted-incident",
+      "owner_ref": "role://synthetic/security-owner",
+      "access_status": "denied",
+      "authority_for": ["runtime_evidence"],
+      "observed_at": "2026-08-08T18:00:00Z",
+      "expires_at": "2026-08-20T00:00:00Z",
+      "freshness_status": "current",
+      "selection_status": "conditional",
+      "selection_reason": "Could answer a runtime-risk question only if the accountable owner grants access."
+    }
+  ],
+  "context_items": [
+    {
+      "item_id": "CTX-001",
+      "information_class": "business_rule",
+      "statement": "A retry must not create a second customer-visible order.",
+      "source_id": "SRC-REQ",
+      "evidence_refs": ["source://synthetic/checkout-requirement-v1#idempotency"],
+      "token_estimate": 110,
+      "applicability": "Applies only to the synthetic checkout retry path in this task.",
+      "evidence_status": "observed",
+      "confidence": "high"
+    },
+    {
+      "item_id": "CTX-002",
+      "information_class": "system_constraint",
+      "statement": "The synthetic order event contract exposes one stable idempotency key field.",
+      "source_id": "SRC-SCHEMA",
+      "evidence_refs": ["repo://synthetic/contracts/order-event-v3#idempotency-key"],
+      "token_estimate": 90,
+      "applicability": "Applies to the synthetic event contract used by the bounded implementation surface.",
+      "evidence_status": "observed",
+      "confidence": "high"
+    }
+  ],
+  "unknowns": [
+    {
+      "unknown_id": "U-001",
+      "question": "Does the synthetic legacy client retry after a network timeout?",
+      "impact": "May change the test matrix but does not block the bounded requirement interpretation.",
+      "blocking": false,
+      "owner_role": "synthetic client owner",
+      "next_action": "Confirm retry behavior before implementation test planning."
+    }
+  ],
+  "conflicts": [],
+  "activation_plan": [
+    {
+      "sequence": 1,
+      "action": "load_now",
+      "target_ref": "SRC-REQ",
+      "condition": "Load the bounded requirement evidence needed for the current task."
+    },
+    {
+      "sequence": 2,
+      "action": "load_now",
+      "target_ref": "SRC-SCHEMA",
+      "condition": "Load only the schema surface referenced by the requirement."
+    },
+    {
+      "sequence": 3,
+      "action": "request_refresh",
+      "target_ref": "SRC-OLD-ADR",
+      "condition": "Refresh only if rollback design becomes material to the current implementation decision."
+    },
+    {
+      "sequence": 4,
+      "action": "request_permission",
+      "target_ref": "SRC-PRIVATE",
+      "condition": "Request access only if runtime incident evidence is required to answer a named risk question."
+    }
+  ],
+  "answerability": {
+    "status": "answerable",
+    "reason": "The selected authorized and current sources are sufficient for the bounded requirement interpretation.",
+    "next_action": "Use only the selected context items to prepare the next Work Ready review artifact."
+  },
+  "evidence_summary": {
+    "facts": [
+      {
+        "fact_id": "F-001",
+        "statement": "The synthetic requirement states that retries must not duplicate an order.",
+        "evidence_refs": ["source://synthetic/checkout-requirement-v1#idempotency"]
+      },
+      {
+        "fact_id": "F-002",
+        "statement": "The synthetic schema contains an idempotency key field.",
+        "evidence_refs": ["repo://synthetic/contracts/order-event-v3#idempotency-key"]
+      }
+    ],
+    "inference_summary": [
+      "The bounded implementation path should preserve the idempotency key across retry handling."
+    ],
+    "citations": [
+      "source://synthetic/checkout-requirement-v1#idempotency",
+      "repo://synthetic/contracts/order-event-v3#idempotency-key"
+    ],
+    "uncertainty": [
+      "Synthetic legacy-client retry behavior is not yet confirmed."
+    ],
+    "unknown_refs": ["U-001"],
+    "assumptions": [
+      "The synthetic schema is the active contract for the bounded task."
+    ]
+  }
+}
