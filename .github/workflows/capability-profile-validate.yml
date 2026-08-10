@@ -38,81 +38,30 @@ jobs:
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
-      - name: Validate portable case pack structural contract
+      - name: Validate portable case pack reference fixture
         run: |
           python scripts/validate_json_schema_instance.py \
             schemas/capability/portable-case-pack.v1.schema.json \
-            examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json \
-            examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json
-      - name: Validate attention and outcome structural contracts
-        run: |
-          python scripts/validate_json_schema_instance.py \
-            schemas/capability/attention-admission-receipt.v1.schema.json \
-            examples/evidence-wayfinding/case-0-schema-parity/admission-receipt.json
-          python scripts/validate_json_schema_instance.py \
-            schemas/capability/outcome-receipt.v1.schema.json \
-            examples/evidence-wayfinding/case-0-schema-parity/outcome-receipt.json
-      - name: Validate Harness mutation structural contract
-        run: |
-          python scripts/validate_json_schema_instance.py \
-            schemas/capability/harness-mutation-candidate.v1.schema.json \
-            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
-      - name: Validate Blind Challenge structural contract
+            examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
+          python scripts/validate_portable_case_pack.py \
+            examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
+      - name: Validate Blind Challenge completed synthetic fixture
         run: |
           python scripts/validate_json_schema_instance.py \
             schemas/capability/blind-challenge-execution.v1.schema.json \
-            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
             tests/fixtures/evidence-wayfinding/blind-challenge/evaluated.synthetic-conformance.json
-      - name: Validate capability profile semantics
-        run: python scripts/validate_capability_profile.py --root .
-      - name: Validate portable case pack semantics
-        run: |
-          python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/portable-case-pack.synthetic.v1.json
-          python scripts/validate_portable_case_pack.py examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json
-      - name: Validate attention admission semantics
-        run: |
-          python scripts/validate_attention_admission.py \
-            examples/evidence-wayfinding/case-0-schema-parity/admission-receipt.json \
-            examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json \
-            examples/evidence-wayfinding/case-0-schema-parity/case-contract.json
-      - name: Validate outcome receipt semantics
-        run: |
-          python scripts/validate_outcome_receipt.py \
-            examples/evidence-wayfinding/case-0-schema-parity/outcome-receipt.json \
-            examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json
-      - name: Validate Harness mutation candidate semantics
-        run: |
-          python scripts/validate_harness_mutation_candidate.py \
-            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
-            examples/evidence-wayfinding/case-0-schema-parity/outcome-receipt.json \
-            examples/evidence-wayfinding/case-0-schema-parity/portable-case-pack.json
-      - name: Validate Blind Challenge execution semantics
-        run: |
-          python scripts/validate_blind_challenge_execution.py \
-            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
-            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
           python scripts/validate_blind_challenge_execution.py \
             tests/fixtures/evidence-wayfinding/blind-challenge/evaluated.synthetic-conformance.json \
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json
-      - name: Validate reserved evaluation handoff v1 compatibility
+      - name: Validate reserved evaluation handoff v1 compatibility fixture
         run: |
-          python scripts/validate_reserved_evaluation_handoff.py \
-            examples/evidence-wayfinding/case-0-schema-parity/reserved-evaluation-handoff.request.jsonl \
-            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
-            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
-            --schema schemas/capability/reserved-evaluation-handoff-record.v1.schema.json
           python scripts/validate_reserved_evaluation_handoff.py \
             tests/fixtures/evidence-wayfinding/reserved-evaluation/handoff.synthetic-complete.jsonl \
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
             examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
             --schema schemas/capability/reserved-evaluation-handoff-record.v1.schema.json
-      - name: Validate trusted reserved evaluation handoff v2
+      - name: Validate trusted reserved evaluation handoff v2 fixture
         run: |
-          python scripts/validate_reserved_evaluation_handoff_v2.py \
-            examples/evidence-wayfinding/case-0-schema-parity/reserved-evaluation-handoff.request.v2.synthetic.jsonl \
-            examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
-            examples/evidence-wayfinding/case-0-schema-parity/blind-challenge-execution.blocked.json \
-            --schema schemas/capability/reserved-evaluation-handoff-record.v2.schema.json
           python scripts/validate_reserved_evaluation_handoff_v2.py \
             tests/fixtures/evidence-wayfinding/reserved-evaluation/handoff.synthetic-complete.v2.jsonl \
             examples/evidence-wayfinding/case-0-schema-parity/harness-mutation-candidate.json \
@@ -120,8 +69,12 @@ jobs:
             --schema schemas/capability/reserved-evaluation-handoff-record.v2.schema.json \
             --trust-store tests/fixtures/evidence-wayfinding/reserved-evaluation/trusted-evaluators.synthetic.json \
             --consumed-nonces tests/fixtures/evidence-wayfinding/reserved-evaluation/consumed-nonces.empty.txt
-      - name: Validate Evidence Wayfinding Case 0 spine
-        run: python scripts/validate_evidence_wayfinding_case.py examples/evidence-wayfinding/case-0-schema-parity
+      - name: Validate capability profile semantics
+        run: python scripts/validate_capability_profile.py --root .
+      - name: Validate Evidence Wayfinding Case 0 bundle
+        run: |
+          python scripts/validate_evidence_wayfinding_case_bundle.py \
+            examples/evidence-wayfinding/case-0-schema-parity
       - name: Test capability profile boundaries
         run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
       - name: Test portable case pack schema parity
@@ -138,6 +91,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_reserved_attestation_trust_boundary.py' -v
       - name: Test Evidence Wayfinding Case 0
         run: python -m unittest discover -s tests -p 'test_evidence_wayfinding_case0.py' -v
+      - name: Test authoritative Evidence Wayfinding case bundle
+        run: python -m unittest discover -s tests -p 'test_evidence_wayfinding_case_bundle.py' -v
       - name: Test evidence wayfinding contracts
         run: python -m unittest discover -s tests -p 'test_evidence_wayfinding.py' -v
       - name: Compile validators and tests
