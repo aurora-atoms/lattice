@@ -43,6 +43,12 @@ For newly created Skill packages, include the machine-checkable `## Direction Fi
 - Synthetic fixtures use `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`; they cannot prove real use, reuse, team adoption, manager acceptance, ROI, or business value.
 - Route downstream integration to `docs/downstream-private-repository-contract.md` and manager wording to `docs/manager-credibility-contract.md`.
 
+## Senior Attention Entry
+
+For a bounded feature-requirement, risk-preflight, bug/rescue, decision-support, or management-translation task that genuinely requires scarce expert judgment, start with [Senior Attention](docs/senior-attention.md) and the registered `workspaces/templates/senior-attention-runtime-profile.v1.json` profile. Treat that profile as an allowlist for progressive discovery, not an instruction to load every listed Skill. Keep real task evidence, owners, outcomes, attention measurements, and proprietary extensions in the private downstream repository.
+
+Do not create a parallel Senior Attention Skill, Agent, module, fact store, or always-on conductor. `senior-attention-queue` is only for multiple competing expert requests; a single decision follows the normal bounded decision path.
+
 ## Skill Authoring Gate
 
 Any change under `skills/<name>/` must follow:
