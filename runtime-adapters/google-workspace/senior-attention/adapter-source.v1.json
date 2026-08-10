@@ -1,0 +1,147 @@
+{
+  "$schema": "../../../schemas/runtime-adapters/google-workspace-adapter-manifest.v1.schema.json",
+  "contract": "lat.google_workspace_senior_attention_adapter.v1",
+  "adapter_id": "google-workspace-senior-attention",
+  "adapter_version": "1.0.0",
+  "status": "contract_validated",
+  "purpose": "Project the public Senior Attention workflow into bounded Google Workspace runtime guidance without creating a second fact system, a Google-specific task Skill, or a private execution plane.",
+  "direction_fit": {
+    "primary_value_path": "current_product_delivery",
+    "direction_verdict": "bind_to_delivery",
+    "beneficiary": "a downstream Senior Attention pilot integrator and accountable engineering owner using approved Google Workspace surfaces",
+    "observable_state_change": "one canonical public adapter contract makes Gem, Workspace Studio, and Notebook boundaries explicit before any private source binding or runtime-specific rendering",
+    "verification": "Draft 2020-12 schema validation plus deterministic semantic tests for target coverage, candidate authority, product assumptions, and public/private boundaries",
+    "existing_capability_gap": "the Senior Attention workflow and profile define task semantics, but no public contract currently constrains Google runtime surfaces, authority ceilings, source binding, or account-specific availability assumptions",
+    "current_evidence": "public Lattice contracts and the Google Workspace adapter research guide; no private runtime observation is represented by this manifest",
+    "unknowns": [
+      "which Gem surfaces are enabled in a specific downstream Workspace account",
+      "which Workspace Studio features and source scopes are enabled by downstream administrators",
+      "whether a private pilot reduces Senior reconstruction or review time",
+      "whether the three Google surfaces preserve citations and source coverage consistently in the target account"
+    ],
+    "next_use": "render bounded Gem, Workspace Studio, and Notebook projections, then bind them only inside a private manual or shadow pilot",
+    "maintenance_owner": "Lattice capability governance owner"
+  },
+  "canonical_refs": {
+    "senior_attention_workflow": "docs/senior-attention.md",
+    "capability_profile": "workspaces/templates/senior-attention-runtime-profile.v1.json"
+  },
+  "task_families": [
+    "feature_requirement",
+    "risk",
+    "bug",
+    "decision",
+    "management"
+  ],
+  "targets": [
+    {
+      "target": "gem",
+      "availability": "unknown",
+      "role": "interactive_intake_and_scouting",
+      "authority_ceiling": "candidate",
+      "allowed_modes": [
+        "manual_interactive",
+        "workspace_sidebar_when_available"
+      ],
+      "forbidden_actions": [
+        "claim_complete_search",
+        "confirm_system_fact_without_private_verification",
+        "execute_script",
+        "publish_or_approve_decision"
+      ]
+    },
+    {
+      "target": "workspace_studio",
+      "availability": "unknown",
+      "role": "manual_or_shadow_workflow",
+      "authority_ceiling": "candidate",
+      "allowed_modes": [
+        "manual_skill",
+        "manual_shadow_flow",
+        "ask_a_gem_when_available"
+      ],
+      "forbidden_actions": [
+        "automatic_send_by_default",
+        "cross_domain_or_irreversible_write_by_default",
+        "silent_permission_expansion",
+        "publish_or_approve_decision"
+      ]
+    },
+    {
+      "target": "notebook",
+      "availability": "unknown",
+      "role": "source_grounded_synthesis",
+      "authority_ceiling": "candidate",
+      "allowed_modes": [
+        "selected_source_synthesis",
+        "custom_chat",
+        "citation_grounded_followup"
+      ],
+      "forbidden_actions": [
+        "dynamic_enterprise_global_search_assumption",
+        "execute_code_or_scripts",
+        "execute_lattice_skills",
+        "publish_or_approve_decision"
+      ]
+    }
+  ],
+  "authority": {
+    "authority_ceiling": "candidate",
+    "human_confirmation_required": true,
+    "public_writeback_allowed": false,
+    "authoritative_case_write_allowed": false,
+    "delivery_verdict_allowed": false,
+    "automatic_action_default": false
+  },
+  "privacy": {
+    "private_content_in_public_repo": "forbidden",
+    "real_company_data_in_public_fixtures": false,
+    "public_fixture_classification": "public_synthetic_only",
+    "private_results_location": "downstream_only"
+  },
+  "source_binding": {
+    "public_repository_sources": "public_only",
+    "private_workspace_sources": "downstream_only",
+    "account_availability_verification": "downstream_required",
+    "coverage_claim": "bounded_not_complete"
+  },
+  "progressive_disclosure": {
+    "load_all_skills": false,
+    "task_scoped_sources": true,
+    "runtime_specific_projection": "generated_in_later_adapter_stage",
+    "minimum_capability_selection": true
+  },
+  "handoff": {
+    "output_class": "source_synthesis_candidate",
+    "downstream_verification_required": true,
+    "required_sections": [
+      "target",
+      "source_scope",
+      "claims",
+      "unknowns",
+      "conflicts",
+      "strongest_counterevidence",
+      "proposals",
+      "authority",
+      "privacy"
+    ],
+    "unsupported_claim_behavior": "downgrade_to_unknown_or_block"
+  },
+  "product_assumptions": {
+    "uniform_workspace_surface_assumed": false,
+    "complete_enterprise_search_assumed": false,
+    "notebook_dynamic_global_search_assumed": false,
+    "experimental_features_required": false,
+    "availability_state_source": "downstream_observation"
+  },
+  "non_goals": [
+    "create a Google-specific Senior Attention mega Skill",
+    "create a new Agent or active module",
+    "treat a Gem as the only Google Workspace entry",
+    "treat Workspace Studio skills as Lattice Skill packages",
+    "treat Notebook synthesis as verified system truth",
+    "copy company Gmail, Drive, Chat, code, people, or live cases into public Lattice",
+    "grant automatic send, write, merge, release, deploy, or promotion authority",
+    "claim real downstream adoption, attention savings, or business value from public conformance"
+  ]
+}
