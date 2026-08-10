@@ -107,7 +107,7 @@ DCP.008 | NEVER | context | dump the knowledge base repository or capability cat
 DCP.009 | NEVER | authority | treat a context pack index summary or model output as source authority
 DCP.010 | NEVER | privacy | invent accountable contacts or include unauthorized personal information
 DCP.011 | MUST | selection | selected sources are authorized current unexpired and authoritative for admitted information classes
-DCP.012 | MUST | budget | selected_tokens equals admitted context token sum and does not exceed max_tokens
+DCP.012 | MUST | budget | declared selected token count equals admitted context token sum and does not exceed the declared maximum token budget
 DCP.013 | MUST | uncertainty | preserve blocking unknowns and unresolved blocking conflicts and prevent answerable while either remains
 DCP.014 | NEVER | selection | admit denied stale unknown-access or authority-mismatched source content into selected context
 DCP.015 | MUST | validation | fail closed when schema or semantic validation does not pass after one bounded corrective retry
