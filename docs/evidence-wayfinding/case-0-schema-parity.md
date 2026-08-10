@@ -51,6 +51,8 @@ Blind Challenge preflight
 Reserved Evaluation Handoff v1 compatibility
 Reserved Evaluation Handoff v2 authenticated-attestation trust boundary
 Observed Evidence Gate for downstream_observed/scoped_canary claims
+Authoritative Case bundle validation
+Deterministic authenticated reserved-attestation ingestion
 ```
 
 The public Case 0 remains correctly blocked before a real reserved oracle:
@@ -59,6 +61,13 @@ The public Case 0 remains correctly blocked before a real reserved oracle:
 Blind Challenge status = blocked_pending_reserved_oracle
 simulation_status = synthetic_reference
 downstream_adoption_status = not_observed
+```
+
+The ingestion implementation can consume the signed synthetic v2 conformance fixture, but that does not change public Case 0 state. With no non-reserved preflight results in the blocked execution, the correct synthetic ingest projection remains:
+
+```text
+all_allocations_settled = false
+ready_for_governed_adjudication = false
 ```
 
 No public fixture is evidence of a real reserved evaluation or live Senior Attention outcome.
@@ -229,7 +238,9 @@ Outcome Receipt
 -> controlled Reserved Evaluation request
 ```
 
-The trust boundary now requires authenticated v2 attestations for real downstream-observed or scoped-canary claims. Authentication does not grant promotion authority. The public repository still cannot manufacture a hidden reserved oracle or claim a real observed result.
+The trust boundary requires authenticated v2 attestations for real downstream-observed or scoped-canary claims. The deterministic ingestion boundary can validate such an attestation, copy only its public-safe reserved result, calculate frozen-allocation settlement, and persist nonce consumption when requested.
+
+Authentication and ingestion do not grant promotion authority. They also do not reveal A/B mapping or produce a governed verdict.
 
 ## Authoritative bundle validation
 
@@ -257,9 +268,34 @@ structural JSON Schemas
 
 This prevents a downstream consumer from obtaining a false green by calling only the cross-file validator while skipping child structural schemas.
 
+## Reserved attestation ingestion boundary
+
+A completed v2 handoff is consumed through:
+
+```text
+scripts/ingest_reserved_evaluation_attestation.py
+```
+
+The script reuses the authenticated handoff validator and emits `lat.reserved_evaluation_ingest_result.v1` with:
+
+```text
+request nonce + bundle ref/digest
+authorized evaluator + attestation digest
+public-safe reserved case result
+safe evidence refs
+merged/missing frozen case ids
+ready_for_governed_adjudication
+canonical ingest digest
+fixed human/promotion firewall
+```
+
+The output contract deliberately contains no `decision` or `variant_mapping` field.
+
+A trusted reserved result is therefore treated as evidence that can unlock later adjudication, not as permission to adjudicate or promote.
+
 ## What Case 0 proves
 
-Case 0 provides public evidence that the repository can preserve one bounded decision, evidence, counterevidence, verification, human authority, observed repository state change, a local mutation candidate, and a blocked blind-evaluation handoff without pretending synthetic evidence is real adoption.
+Case 0 provides public evidence that the repository can preserve one bounded decision, evidence, counterevidence, verification, human authority, observed repository state change, a local mutation candidate, a blocked blind-evaluation handoff, and an authenticated-ingestion protocol without pretending synthetic evidence is real adoption.
 
 It does **not** grant promotion authority from this single replay.
 
@@ -278,16 +314,18 @@ Do not use this replay to justify:
 
 ## Next gate
 
-After authoritative bundle validation is in place, the next bounded public implementation step is deterministic authenticated-attestation ingestion/state transition:
+The public contract stack now covers the known Case 0A false-green and trust-boundary findings far enough to support a controlled downstream run.
+
+Do not add another generic public evolution layer merely because a next abstraction can be designed. The evidence-bearing milestone moves to private/downstream execution:
 
 ```text
-validated v2 request
+real representative/hard/counterexample results
++ real controlled reserved evaluation
 + authenticated attestation
 -> deterministic ingest
--> public-safe reserved-result projection
--> evaluated Blind Challenge eligibility
+-> human-controlled adjudication candidate
 ```
 
-That step must still stop before human verdict/canary authority. It must not create `team_available`, auto-promotion, merge, release, or deploy authority.
+That private Case 0B/live Senior case should record actual attention minutes, review/correction minutes, accepted artifact, real state change, correction count, and `critical_false_ready = 0`.
 
-After that protocol boundary is executable, the evidence-bearing product milestone moves to a private Case 0B/live Senior case with actual attention minutes, review/correction minutes, accepted artifact, state change, and `critical_false_ready = 0`.
+Only evidence from that execution should justify another public workflow or promotion-contract change.
