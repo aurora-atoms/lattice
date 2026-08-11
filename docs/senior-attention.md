@@ -300,6 +300,26 @@ Do not lead with PR count, commit count, token count, Agent activity, or generat
 7. `activation=on_demand` means the capability remains absent from active context until a named task gap justifies it.
 8. `activation=explicit` means a human-facing decision artifact is requested deliberately rather than inferred from weak signals.
 
+## Cross-Workspace Handoff
+
+Native workspaces execute and discover capabilities locally. Lattice standardizes the bounded handoff semantics, not how Google, Copilot, Gemini CLI, Codex, Claude Code, or another runtime discovers its Skills, Agents, tools, or repository instructions.
+
+The current Google-to-coding boundary is a human handoff:
+
+```text
+Google candidate evidence
+-> human source / authority / privacy confirmation
+-> Domain Context Pack + Portable Case Pack + required verification
+-> receiving workspace native discovery
+-> independent repository / runtime verification
+```
+
+Google summaries, citations, hypotheses, and recommendations remain candidate evidence. Claims about code, tests, reproduction, configuration, dependencies, runtime behavior, root cause, work readiness, or delivery readiness must be re-verified by the receiving coding workspace. Authority cannot increase during transfer; unknowns, unresolved conflicts, strongest counterevidence, evidence refs, privacy, and required verification cannot be compressed away.
+
+Human-readable and machine-readable views are projections of the same bounded case state, not independent fact stores. Automatic cross-runtime invocation, send, writeback, execution, or approval requires a separate Direction Investment Gate.
+
+The canonical rules, deterministic receipt, public/private ownership, and conformance commands are in [Cross-Workspace Handoff](cross-workspace-handoff.md).
+
 ## Attention Admission
 
 Before consuming scarce human judgment, verify all five invariants:
@@ -476,6 +496,7 @@ Use these public contracts rather than duplicating them here:
 - `docs/capability-profile-runtime-contract.md`
 - `docs/direction-investment-gate.md`
 - `docs/evidence-wayfinding.md`
+- `docs/cross-workspace-handoff.md`
 - `docs/downstream-private-repository-contract.md`
 - `docs/public-private-operating-model.md`
 - `docs/manager-credibility-contract.md`

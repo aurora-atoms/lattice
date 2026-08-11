@@ -2,7 +2,7 @@
   "$schema": "../../../schemas/runtime-adapters/google-workspace-adapter-manifest.v1.schema.json",
   "contract": "lat.google_workspace_senior_attention_adapter.v1",
   "adapter_id": "google-workspace-senior-attention",
-  "adapter_version": "1.1.0",
+  "adapter_version": "1.1.1",
   "status": "contract_validated",
   "purpose": "Project the public Senior Attention workflow into bounded Google Workspace runtime guidance without creating a second fact system, a Google-specific task Skill, or a private execution plane.",
   "direction_fit": {
@@ -143,6 +143,7 @@
     "treat Notebook synthesis as verified system truth",
     "copy company Gmail, Drive, Chat, code, people, or live cases into public Lattice",
     "grant automatic send, write, merge, release, deploy, or promotion authority",
+    "require receiving workspaces to share a Skill discovery mechanism or runtime-specific discovery projection",
     "claim real downstream adoption, attention savings, or business value from public conformance"
   ]
 }

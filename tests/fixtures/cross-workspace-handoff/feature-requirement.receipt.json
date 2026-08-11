@@ -1,0 +1,130 @@
+{
+  "$schema": "schemas/capability/workspace-handoff-verification-request.v1.schema.json",
+  "authority_ceiling": "candidate",
+  "capability_discovery": {
+    "owner": "receiving_workspace",
+    "shared_mechanism_required": false
+  },
+  "case_ref": "synthetic/cross-workspace-feature-001",
+  "claims_requiring_repo_verification": [
+    "FR-DER-001"
+  ],
+  "conflicts": [
+    {
+      "claim_refs": [
+        "FR-OBS-001",
+        "FR-OBS-002"
+      ],
+      "conflict_id": "FR-CONFLICT-001",
+      "evidence_ref_ids": [
+        "EV-FR-001",
+        "EV-FR-002"
+      ],
+      "status": "unresolved"
+    }
+  ],
+  "contract": "lat.workspace_handoff_verification_request.v1",
+  "downstream_adoption_status": "not_observed",
+  "evidence_confirmation_basis": "independent_repo_runtime_evidence_required",
+  "evidence_ref_ids": [
+    "EV-FR-001",
+    "EV-FR-002"
+  ],
+  "handoff_boundary": {
+    "automatic_orchestration_allowed": false,
+    "human_handoff_required": true
+  },
+  "incoming_claims": [
+    {
+      "claim_id": "FR-DER-001",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-FR-001",
+        "EV-FR-002"
+      ],
+      "incoming_status": "derived"
+    },
+    {
+      "claim_id": "FR-OBS-001",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-FR-001"
+      ],
+      "incoming_status": "observed"
+    },
+    {
+      "claim_id": "FR-OBS-002",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-FR-002"
+      ],
+      "incoming_status": "observed"
+    },
+    {
+      "claim_id": "FR-UNK-001",
+      "confirmation_state": "unknown",
+      "evidence_ref_ids": [],
+      "incoming_status": "unknown"
+    }
+  ],
+  "privacy_classification": "public",
+  "readiness": "verification_required",
+  "receipt_id": "synthetic/cross-workspace-feature-001/workspace-verification-request",
+  "required_coding_verification": [
+    {
+      "claim_refs": [
+        "FR-DER-001"
+      ],
+      "request": "Inspect the synthetic repository configuration and target tests; report which timeout is implemented without resolving the source conflict by assertion.",
+      "required_evidence": [
+        "addressable repository configuration reference",
+        "target test command and result",
+        "owner adjudication if repository evidence does not establish intent"
+      ],
+      "verification_id": "VER-FR-001",
+      "verification_kind": "repository_and_test"
+    }
+  ],
+  "required_output": {
+    "artifact_kind": "feature_verification_receipt",
+    "audience": "synthetic requirement owner",
+    "contract": "claim-by-claim repository and target-test verification with unresolved conflict preserved"
+  },
+  "simulation_status": "synthetic_reference",
+  "source_scope": {
+    "conditional_source_ids": [
+      "SRC-FEATURE-REPO"
+    ],
+    "coverage_claim": "bounded_not_complete",
+    "evidence_ref_ids": [
+      "EV-FR-001",
+      "EV-FR-002"
+    ],
+    "excluded_source_ids": [],
+    "selected_source_ids": [
+      "SRC-FEATURE-NOTE",
+      "SRC-FEATURE-REQ"
+    ],
+    "unavailable_or_unknown_source_ids": [
+      "SRC-FEATURE-REPO"
+    ]
+  },
+  "stop_conditions": [
+    "stop before implementation, approval, merge, release, or deployment",
+    "stop if repository access is unavailable",
+    "stop if the unresolved requirement conflict still blocks a safe implementation choice"
+  ],
+  "strongest_counterevidence": [
+    {
+      "evidence_ref_ids": [
+        "EV-FR-002"
+      ],
+      "impact": "It can reverse the proposed value, change the verification plan, and block work readiness.",
+      "statement": "The architecture note's five-second value directly contradicts the leading two-second interpretation."
+    }
+  ],
+  "target": "Which timeout behavior should the synthetic feature implement, and what repository evidence is required before work can be ready?",
+  "unknown_ids": [
+    "FR-UNK-001"
+  ]
+}

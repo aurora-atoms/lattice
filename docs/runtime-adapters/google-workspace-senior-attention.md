@@ -44,7 +44,7 @@ schemas/runtime-adapters/google-workspace-projection-manifest.v1.schema.json
 runtime-adapters/google-workspace/senior-attention/projection-manifest.v1.json
 ```
 
-The adapter source is now version `1.1.0`. GW-2 adds copy-ready public projections and drift detection only; it does not add a new task capability or private data plane.
+The adapter source is now version `1.1.1`. This patch clarifies that Google outputs remain candidate evidence for a human handoff and that the receiving coding workspace owns capability discovery and independent repository/runtime verification. It does not add a new task capability, private data plane, or handoff lifecycle.
 
 ## Direction Fit
 
@@ -68,6 +68,7 @@ Public conformance proves contract and projection consistency only. It does not 
 The adapter consumes public semantics only:
 
 - `docs/senior-attention.md` for the shared workflow and state machine;
+- `docs/cross-workspace-handoff.md` for runtime-independent handoff and verification semantics;
 - `workspaces/templates/senior-attention-runtime-profile.v1.json` for the task-scoped capability allowlist, permissions, budgets, and verification posture;
 - this canonical Google adapter source for provider-specific authority, source, privacy, and availability boundaries.
 
@@ -171,7 +172,7 @@ management
 
 The provider projections do not own another version of those semantics. Existing Lattice capabilities remain responsible for their bounded contracts.
 
-Typical downstream routing remains:
+The following public capability mapping is illustrative only:
 
 ```text
 feature requirement -> feature-understanding-loop + domain-context-pack as needed
@@ -180,6 +181,8 @@ bug                 -> delivery-rescue / Bug-to-Repro and target verification
 decision            -> decision-question-builder + Attention Admission
 management          -> management-translation consuming validated artifacts only
 ```
+
+It is not a cross-workspace routing contract. The receiving coding workspace uses its own native Skill/Agent/tool discovery and may implement the same bounded verification semantics without exposing or sharing that discovery mechanism.
 
 ## Authority Firewall
 
@@ -242,6 +245,25 @@ privacy
 Unsupported material claims are downgraded to `UNKNOWN` or the run stops for more evidence. Compression must not delete a conflict or counterevidence that could reverse the recommendation.
 
 The full runtime-neutral Source Synthesis Candidate schema remains a separate bounded gate; it is not introduced implicitly through these templates.
+
+## Cross-Workspace Consumption
+
+Google is an evidence surface, not the receiving coding workspace's fact or discovery authority.
+
+```text
+Google candidate evidence
+-> human acceptance for handoff
+-> Domain Context Pack + Portable Case Pack + required verification
+-> receiving workspace
+-> workspace-native discovery
+-> independent repository / runtime verification
+```
+
+The human gate confirms target, source scope, unresolved state, strongest counterevidence, authority, privacy, and the required coding verification. Acceptance for handoff does not confirm a claim or make the case work-ready.
+
+Receiving workspaces must independently verify code, test, reproduction, dependency, configuration, runtime, root-cause, and readiness claims. A source-grounded Google claim can tell the receiver what selected organizational material says; it cannot prove how the repository or runtime behaves.
+
+The public deterministic reference consumer is documented in [Cross-Workspace Handoff](../cross-workspace-handoff.md). It produces a verification request without choosing a receiver Skill, executing code, invoking MCP, writing back, or increasing authority.
 
 ## Deterministic Projection Contract
 
@@ -340,6 +362,8 @@ GW-2 does not:
 - claim a particular Google feature is enabled in a private account;
 - execute or authorize Google Workspace writes;
 - define the full Source Synthesis Candidate contract;
+- require a receiving workspace to use Lattice Skill discovery or any runtime-specific discovery projection;
+- automate Google-to-coding handoff, writeback, execution, or approval;
 - change existing Senior Attention task-family semantics;
 - claim downstream adoption, attention savings, or business value.
 

@@ -2,57 +2,57 @@
   "$schema": "../../../schemas/runtime-adapters/google-workspace-projection-manifest.v1.schema.json",
   "contract": "lat.google_workspace_adapter_projection_set.v1",
   "adapter_id": "google-workspace-senior-attention",
-  "adapter_version": "1.1.0",
+  "adapter_version": "1.1.1",
   "adapter_source": "runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json",
-  "adapter_source_hash": "sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4",
-  "render_hash": "sha256:676fb0491bc29363f3a6d75bf167a726feb5e4cf84c3f5840c8b50bcaa32b704",
+  "adapter_source_hash": "sha256:1a2f0a73c4f6a3dc755755f87f9ac0a851c216f25d5cbcddb95cdc2faa0c6cdb",
+  "render_hash": "sha256:296d9fc79468525612e77eced650dc5da665e2f0bdc5f1aa65e58906ec52052b",
   "generated": true,
   "authority_ceiling": "candidate",
   "coverage_claim": "bounded_not_complete",
   "files": [
     {
       "path": "runtime-adapters/google-workspace/senior-attention/gem/gem-instructions.template.md",
-      "sha256": "sha256:029e3f4bf4e78bed01258429d2d1ca8b9816000678eff44d2bc07a130244e072",
+      "sha256": "sha256:f279f42a0583bb028aefc85ff087f3315a34f66d955bdc83ff979af16a745f33",
       "target": "gem"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/gem/gem-knowledge-pack.manifest.json",
-      "sha256": "sha256:36a16eae9443bac88532bb9649a64aa375cf58ea4a672eae88cb63333008a82c",
+      "sha256": "sha256:fd3dd9c2292be4e5974088e294329e65b541c5c6070ec60a370e0be0e7421be0",
       "target": "gem"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/gem/starter-prompts.md",
-      "sha256": "sha256:c6f5a3cb5d2cb687bb17b702239bf51d77dfd50f8027dc569e8b3b9431dc6125",
+      "sha256": "sha256:ff6b24ea11bb665033b576b6f86ace0ebfeafdaef44ff14d22cfff25055b29ed",
       "target": "gem"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/notebook/notebook-custom-chat.template.md",
-      "sha256": "sha256:9590a4c66d842cf9dc70a9d236770fef63dcd4179114ae7f23b205e43d03aef7",
+      "sha256": "sha256:1f1a69f34f173f3ac5bf7024c99f4bbb5ebd55340dfb4acf8582d3dd1179b74a",
       "target": "notebook"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/notebook/notebook-setup.md",
-      "sha256": "sha256:69d5772620637b0b74fc963685dcab7ede8a99717468a61cd5ba5b164db3cce9",
+      "sha256": "sha256:1eb3d661fd4192dcc1f0f0be1f7015ea57aa4784d0119b648c677576882374c4",
       "target": "notebook"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/notebook/notebook-source-manifest.template.json",
-      "sha256": "sha256:95fe85ae1f93b1e8113fd2890dd13591965f49a78136a873e4392de3e6ce5d8c",
+      "sha256": "sha256:1bf9e4a440301e3e0de0ce68d26f9dc565b3b22cc743ee86573848fa23c91667",
       "target": "notebook"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/notebook/prompt-cards.md",
-      "sha256": "sha256:a7fdf79e4400ca2bd096279655a5b397ae638ec610b905eedc4a9613951912fb",
+      "sha256": "sha256:08c8e3cb42db0d10eb737f5545a4b1cef33619ca061ebeb7cca784c129476745",
       "target": "notebook"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/workspace-studio/manual-shadow-flow.template.yaml",
-      "sha256": "sha256:f938586bf867db569af622b6da75dde3f1d7bd17685adfc5234261aba84cd2b8",
+      "sha256": "sha256:ef6b7eab537c4fb72a60907b22bcd2365164367df77944fe7f02bc00b4a77932",
       "target": "workspace_studio"
     },
     {
       "path": "runtime-adapters/google-workspace/senior-attention/workspace-studio/skill-instructions.template.md",
-      "sha256": "sha256:de51d6c93dfc6338b01e4e6e7829a7b8529318eb5977e2289d3083eecae2bae7",
+      "sha256": "sha256:06ce5d93b0021e8f8f9daa90a23e8a347606a99961da9e530a967875dad39c1b",
       "target": "workspace_studio"
     }
   ]

@@ -53,7 +53,7 @@ class GoogleWorkspaceAdapterTests(unittest.TestCase):
         )
         self.assertEqual([], [error.message for error in structural])
         self.assertEqual([], validate_adapter(MANIFEST, ROOT, SCHEMA))
-        self.assertEqual("1.1.0", self.manifest["adapter_version"])
+        self.assertEqual("1.1.1", self.manifest["adapter_version"])
 
     def test_contract_is_one_source_for_three_candidate_only_targets(self) -> None:
         self.assertEqual("lat.google_workspace_senior_attention_adapter.v1", self.manifest["contract"])
@@ -153,9 +153,12 @@ class GoogleWorkspaceAdapterTests(unittest.TestCase):
             self.assertIn("UNKNOWN", text)
             self.assertIn("counterevidence", text.lower())
             self.assertIn("complete enterprise search", text.lower())
+            self.assertIn("receiving coding workspace owns capability discovery", text.lower())
+            self.assertIn("independently verify", text.lower())
         self.assertIn("automatic_actions: false", studio_flow)
         self.assertIn("authority_ceiling: candidate", studio_flow)
         self.assertIn("coverage_claim: bounded_not_complete", studio_flow)
+        self.assertIn("draft_candidate_and_required_verification", studio_flow)
 
     def test_renderer_cli_check_succeeds(self) -> None:
         completed = subprocess.run(

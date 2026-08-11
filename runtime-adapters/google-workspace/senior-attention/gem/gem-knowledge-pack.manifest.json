@@ -1,8 +1,8 @@
 {
   "contract": "lat.google_gem_knowledge_pack_template.v1",
   "adapter_id": "google-workspace-senior-attention",
-  "adapter_version": "1.1.0",
-  "adapter_source_hash": "sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4",
+  "adapter_version": "1.1.1",
+  "adapter_source_hash": "sha256:1a2f0a73c4f6a3dc755755f87f9ac0a851c216f25d5cbcddb95cdc2faa0c6cdb",
   "target": "gem",
   "public_refs": [
     "docs/senior-attention.md",

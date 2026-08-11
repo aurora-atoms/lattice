@@ -27,6 +27,7 @@ jobs:
         run: |
           python -m json.tool schemas/capability/capability-profile-runtime.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/portable-case-pack.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/workspace-handoff-verification-request.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/attention-admission-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/outcome-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/harness-mutation-candidate.v1.schema.json >/dev/null
@@ -39,6 +40,8 @@ jobs:
           python -m json.tool workspaces/templates/senior-attention-runtime-profile.v1.json >/dev/null
           python -m json.tool runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json >/dev/null
           python -m json.tool tests/fixtures/senior-attention-entry/routing-cases.v1.json >/dev/null
+          find tests/fixtures/cross-workspace-handoff -name '*.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
           find examples/capability-profiles -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
@@ -119,6 +122,15 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_senior_attention_entrypoint.py' -v
       - name: Test Google Workspace Senior Attention adapter
         run: python -m unittest discover -s tests -p 'test_google_workspace_adapter.py' -v
+      - name: Validate cross-workspace handoff conformance
+        run: |
+          python scripts/validate_cross_workspace_handoff.py \
+            tests/fixtures/cross-workspace-handoff/feature-requirement.synthetic.json \
+            --receipt tests/fixtures/cross-workspace-handoff/feature-requirement.receipt.json
+          python scripts/validate_cross_workspace_handoff.py \
+            tests/fixtures/cross-workspace-handoff/bug-investigation.synthetic.json \
+            --receipt tests/fixtures/cross-workspace-handoff/bug-investigation.receipt.json
+          python -m unittest discover -s tests -p 'test_cross_workspace_handoff_conformance.py' -v
       - name: Test portable case pack schema parity
         run: python -m unittest discover -s tests -p 'test_portable_case_pack_schema.py' -v
       - name: Test attention and outcome contracts

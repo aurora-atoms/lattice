@@ -1,0 +1,299 @@
+{
+  "fixture_type": "cross_workspace_handoff_conformance_case",
+  "fixture_id": "synthetic/cross-workspace-feature-001",
+  "scenario": "feature_requirement",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "handoff_policy": {
+    "source_surface": "google_workspace_candidate",
+    "authority_ceiling": "candidate",
+    "coverage_claim": "bounded_not_complete",
+    "human_handoff_required": true,
+    "automatic_orchestration_allowed": false,
+    "capability_discovery_owner": "receiving_workspace",
+    "shared_discovery_mechanism_required": false
+  },
+  "domain_context_pack": {
+    "record_type": "lat.domain_context_pack.v1",
+    "pack_id": "DCP-SYNTHETIC-FEATURE-001",
+    "scope_id": "synthetic/cross-workspace-feature-001",
+    "as_of_at": "2026-08-11T14:00:00Z",
+    "simulation_status": "synthetic_reference",
+    "downstream_adoption_status": "not_observed",
+    "task": {
+      "objective": "Which timeout behavior should the synthetic feature implement, and what repository evidence is required before work can be ready?",
+      "expected_output": "Workspace handoff verification request",
+      "caller_role": "synthetic evidence curator",
+      "permission_boundary_ref": "policy://synthetic/public-handoff"
+    },
+    "authorization": {
+      "decision": "allow",
+      "policy_ref": "policy://synthetic/public-handoff",
+      "caller_authority_ref": "role://synthetic/evidence-curator",
+      "data_classification": "public"
+    },
+    "context_budget": {
+      "max_tokens": 500,
+      "selected_tokens": 56
+    },
+    "sources": [
+      {
+        "source_id": "SRC-FEATURE-REQ",
+        "source_type": "document",
+        "locator": "source://synthetic/google/feature-requirement#timeout",
+        "owner_ref": "role://synthetic/requirement-owner",
+        "access_status": "authorized",
+        "authority_for": ["business_rule"],
+        "observed_at": "2026-08-11T13:00:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "selected",
+        "selection_reason": "The selected synthetic requirement states the requested timeout behavior."
+      },
+      {
+        "source_id": "SRC-FEATURE-NOTE",
+        "source_type": "decision",
+        "locator": "source://synthetic/google/architecture-note#timeout",
+        "owner_ref": "role://synthetic/architecture-owner",
+        "access_status": "authorized",
+        "authority_for": ["business_rule"],
+        "observed_at": "2026-08-11T13:05:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "selected",
+        "selection_reason": "The selected synthetic note provides a conflicting timeout statement."
+      },
+      {
+        "source_id": "SRC-FEATURE-REPO",
+        "source_type": "code",
+        "locator": "repo://synthetic/feature-timeout",
+        "owner_ref": "role://synthetic/repository-owner",
+        "access_status": "unknown",
+        "authority_for": ["code", "system_constraint", "runtime_evidence"],
+        "observed_at": "2026-08-11T13:10:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "conditional",
+        "selection_reason": "The receiving coding workspace must inspect this synthetic repository surface independently."
+      }
+    ],
+    "context_items": [
+      {
+        "item_id": "FR-OBS-001",
+        "information_class": "business_rule",
+        "statement": "The selected requirement source states a two-second timeout.",
+        "source_id": "SRC-FEATURE-REQ",
+        "evidence_refs": ["source://synthetic/google/feature-requirement#timeout"],
+        "token_estimate": 28,
+        "applicability": "Candidate requirement evidence only; it does not prove repository behavior.",
+        "evidence_status": "observed",
+        "confidence": "high"
+      },
+      {
+        "item_id": "FR-OBS-002",
+        "information_class": "business_rule",
+        "statement": "The selected architecture note states a five-second timeout.",
+        "source_id": "SRC-FEATURE-NOTE",
+        "evidence_refs": ["source://synthetic/google/architecture-note#timeout"],
+        "token_estimate": 28,
+        "applicability": "Candidate design evidence only; it does not prove repository behavior.",
+        "evidence_status": "observed",
+        "confidence": "high"
+      }
+    ],
+    "unknowns": [
+      {
+        "unknown_id": "FR-UNK-001",
+        "question": "Which timeout is implemented and covered by the current target tests?",
+        "impact": "The answer can change the implementation plan and blocks work readiness.",
+        "blocking": true,
+        "owner_role": "synthetic repository owner",
+        "next_action": "Inspect configuration and target tests in the receiving coding workspace."
+      }
+    ],
+    "conflicts": [
+      {
+        "conflict_id": "FR-CONFLICT-001",
+        "item_refs": ["FR-OBS-001", "FR-OBS-002"],
+        "source_refs": ["SRC-FEATURE-REQ", "SRC-FEATURE-NOTE"],
+        "summary": "The two selected sources specify different timeout values.",
+        "blocking": true,
+        "status": "unresolved",
+        "next_action": "Use repository and target-test evidence, then obtain owner adjudication if intent remains ambiguous."
+      }
+    ],
+    "activation_plan": [
+      {
+        "sequence": 1,
+        "action": "load_now",
+        "target_ref": "SRC-FEATURE-REQ",
+        "condition": "Load the selected requirement statement."
+      },
+      {
+        "sequence": 2,
+        "action": "load_now",
+        "target_ref": "SRC-FEATURE-NOTE",
+        "condition": "Load the conflicting design statement."
+      },
+      {
+        "sequence": 3,
+        "action": "request_permission",
+        "target_ref": "SRC-FEATURE-REPO",
+        "condition": "The receiving coding workspace independently opens the repository and test evidence."
+      }
+    ],
+    "answerability": {
+      "status": "partial",
+      "reason": "Google-side sources establish a candidate conflict but cannot establish current repository behavior or work readiness.",
+      "next_action": "Hand off the bounded candidate for repository and target-test verification."
+    },
+    "evidence_summary": {
+      "facts": [
+        {
+          "fact_id": "FR-SOURCE-FACT-001",
+          "statement": "The selected requirement source contains a two-second timeout statement.",
+          "evidence_refs": ["source://synthetic/google/feature-requirement#timeout"]
+        },
+        {
+          "fact_id": "FR-SOURCE-FACT-002",
+          "statement": "The selected architecture note contains a five-second timeout statement.",
+          "evidence_refs": ["source://synthetic/google/architecture-note#timeout"]
+        }
+      ],
+      "inference_summary": [
+        "The receiving workspace must verify repository configuration and tests before selecting an implementation value."
+      ],
+      "citations": [
+        "source://synthetic/google/feature-requirement#timeout",
+        "source://synthetic/google/architecture-note#timeout"
+      ],
+      "uncertainty": [
+        "Current repository behavior and owner intent are not verified by the selected Google-side sources."
+      ],
+      "unknown_refs": ["FR-UNK-001"],
+      "assumptions": [
+        "The synthetic source statements are represented faithfully for conformance testing only."
+      ]
+    }
+  },
+  "portable_case_pack": {
+    "$schema": "../../../schemas/capability/portable-case-pack.v1.schema.json",
+    "contract": "lat.portable_case_pack.v1",
+    "case_id": "synthetic/cross-workspace-feature-001",
+    "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+    "decision_requested": "Which timeout behavior should the synthetic feature implement, and what repository evidence is required before work can be ready?",
+    "audience": "receiving_coding_workspace",
+    "scope": {
+      "in": [
+        "synthetic requirement statements",
+        "synthetic repository configuration and target tests"
+      ],
+      "out": [
+        "automatic implementation",
+        "automatic approval",
+        "private company data"
+      ]
+    },
+    "evidence_cutoff": "2026-08-11T14:00:00Z",
+    "claims": {
+      "observed": [
+        {
+          "claim_id": "FR-OBS-001",
+          "statement": "The selected requirement source states a two-second timeout.",
+          "evidence_refs": ["EV-FR-001"],
+          "uncertainty": "This observes what the source states, not what the repository implements."
+        },
+        {
+          "claim_id": "FR-OBS-002",
+          "statement": "The selected architecture note states a five-second timeout.",
+          "evidence_refs": ["EV-FR-002"],
+          "uncertainty": "This observes what the source states, not what the repository implements."
+        }
+      ],
+      "derived": [
+        {
+          "claim_id": "FR-DER-001",
+          "statement": "Repository configuration and target tests may contradict either source and must be independently verified before implementation.",
+          "evidence_refs": ["EV-FR-001", "EV-FR-002"],
+          "uncertainty": "No repository, configuration, or test evidence has been inspected by the Google-side source surface."
+        }
+      ],
+      "judged": [],
+      "unknown": [
+        {
+          "claim_id": "FR-UNK-001",
+          "statement": "Which timeout is implemented and covered by current target tests remains unknown.",
+          "evidence_refs": [],
+          "uncertainty": "Requires receiving-workspace repository and test evidence."
+        }
+      ]
+    },
+    "conflicts": [
+      {
+        "conflict_id": "FR-CONFLICT-001",
+        "claim_refs": ["FR-OBS-001", "FR-OBS-002"],
+        "evidence_refs": ["EV-FR-001", "EV-FR-002"],
+        "adjudicator": "synthetic requirement owner after coding verification"
+      }
+    ],
+    "strongest_counterevidence": [
+      {
+        "statement": "The architecture note's five-second value directly contradicts the leading two-second interpretation.",
+        "evidence_refs": ["EV-FR-002"],
+        "impact": "It can reverse the proposed value, change the verification plan, and block work readiness."
+      }
+    ],
+    "rejected_directions": [
+      {
+        "direction": "Treat the latest Google summary as the implemented timeout",
+        "reason": "A source synthesis cannot establish repository or runtime truth.",
+        "evidence_refs": ["EV-FR-001", "EV-FR-002"]
+      }
+    ],
+    "evidence_refs": [
+      {
+        "id": "EV-FR-001",
+        "uri": "source://synthetic/google/feature-requirement#timeout",
+        "date": "2026-08-11T13:00:00Z",
+        "access": "public",
+        "content_hash": "synthetic-reference:feature-requirement-timeout"
+      },
+      {
+        "id": "EV-FR-002",
+        "uri": "source://synthetic/google/architecture-note#timeout",
+        "date": "2026-08-11T13:05:00Z",
+        "access": "public",
+        "content_hash": "synthetic-reference:architecture-note-timeout"
+      }
+    ],
+    "source_gaps": [
+      "No repository configuration, target test, runtime evidence, or owner adjudication is included."
+    ],
+    "next_tool_task": "Use the receiving workspace's native repository and test tools to verify the timeout behavior.",
+    "required_output": {
+      "artifact_kind": "feature_verification_receipt",
+      "audience": "synthetic requirement owner",
+      "contract": "claim-by-claim repository and target-test verification with unresolved conflict preserved"
+    },
+    "falsification": "Reject the leading source interpretation if repository configuration, target tests, or owner adjudication support the competing timeout value.",
+    "data_classification": "public"
+  },
+  "required_coding_verification": [
+    {
+      "verification_id": "VER-FR-001",
+      "claim_refs": ["FR-DER-001"],
+      "verification_kind": "repository_and_test",
+      "request": "Inspect the synthetic repository configuration and target tests; report which timeout is implemented without resolving the source conflict by assertion.",
+      "required_evidence": [
+        "addressable repository configuration reference",
+        "target test command and result",
+        "owner adjudication if repository evidence does not establish intent"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    "stop if repository access is unavailable",
+    "stop if the unresolved requirement conflict still blocks a safe implementation choice",
+    "stop before implementation, approval, merge, release, or deployment"
+  ]
+}

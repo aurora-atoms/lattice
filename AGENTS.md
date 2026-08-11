@@ -19,6 +19,8 @@ native name and description
 
 5. Use `scripts/route_capabilities.py` only as a compatibility/evaluation fallback when native selection is unavailable, ambiguous, or explicitly under test.
 
+Native workspaces own capability discovery. Cross-workspace handoffs standardize bounded evidence, unknowns, conflicts, counterevidence, authority, privacy, and verification requirements; they must not require a shared or runtime-specific discovery projection.
+
 ## Direction Before Capability
 
 Before creating a new Skill, Agent, capability profile, reference workflow, governance surface, or internal platform—or materially expanding an existing one—apply the [Direction Investment Gate](docs/direction-investment-gate.md).

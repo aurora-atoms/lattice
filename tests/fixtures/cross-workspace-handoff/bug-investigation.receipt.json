@@ -1,0 +1,140 @@
+{
+  "$schema": "schemas/capability/workspace-handoff-verification-request.v1.schema.json",
+  "authority_ceiling": "candidate",
+  "capability_discovery": {
+    "owner": "receiving_workspace",
+    "shared_mechanism_required": false
+  },
+  "case_ref": "synthetic/cross-workspace-bug-001",
+  "claims_requiring_repo_verification": [
+    "BUG-ALT-001",
+    "BUG-ROOT-HYP-001"
+  ],
+  "conflicts": [
+    {
+      "claim_refs": [
+        "BUG-OBS-001",
+        "BUG-OBS-002"
+      ],
+      "conflict_id": "BUG-CONFLICT-001",
+      "evidence_ref_ids": [
+        "EV-BUG-001",
+        "EV-BUG-002"
+      ],
+      "status": "unresolved"
+    }
+  ],
+  "contract": "lat.workspace_handoff_verification_request.v1",
+  "downstream_adoption_status": "not_observed",
+  "evidence_confirmation_basis": "independent_repo_runtime_evidence_required",
+  "evidence_ref_ids": [
+    "EV-BUG-001",
+    "EV-BUG-002"
+  ],
+  "handoff_boundary": {
+    "automatic_orchestration_allowed": false,
+    "human_handoff_required": true
+  },
+  "incoming_claims": [
+    {
+      "claim_id": "BUG-ALT-001",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-BUG-002"
+      ],
+      "incoming_status": "derived"
+    },
+    {
+      "claim_id": "BUG-OBS-001",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-BUG-001"
+      ],
+      "incoming_status": "observed"
+    },
+    {
+      "claim_id": "BUG-OBS-002",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-BUG-002"
+      ],
+      "incoming_status": "observed"
+    },
+    {
+      "claim_id": "BUG-ROOT-HYP-001",
+      "confirmation_state": "candidate_only",
+      "evidence_ref_ids": [
+        "EV-BUG-001"
+      ],
+      "incoming_status": "derived"
+    },
+    {
+      "claim_id": "BUG-UNK-001",
+      "confirmation_state": "unknown",
+      "evidence_ref_ids": [],
+      "incoming_status": "unknown"
+    }
+  ],
+  "privacy_classification": "public",
+  "readiness": "verification_required",
+  "receipt_id": "synthetic/cross-workspace-bug-001/workspace-verification-request",
+  "required_coding_verification": [
+    {
+      "claim_refs": [
+        "BUG-ROOT-HYP-001",
+        "BUG-ALT-001"
+      ],
+      "request": "Attempt a target-version reproduction and collect runtime, configuration, dependency, and target-test evidence for both competing explanations.",
+      "required_evidence": [
+        "reproduction command and result",
+        "bounded runtime evidence reference",
+        "configuration or dependency comparison",
+        "target test result"
+      ],
+      "verification_id": "VER-BUG-001",
+      "verification_kind": "reproduction_and_runtime"
+    }
+  ],
+  "required_output": {
+    "artifact_kind": "bug_verification_receipt",
+    "audience": "synthetic incident owner",
+    "contract": "reproduction and runtime verification with competing explanations and fix-readiness stop"
+  },
+  "simulation_status": "synthetic_reference",
+  "source_scope": {
+    "conditional_source_ids": [
+      "SRC-BUG-RUNTIME"
+    ],
+    "coverage_claim": "bounded_not_complete",
+    "evidence_ref_ids": [
+      "EV-BUG-001",
+      "EV-BUG-002"
+    ],
+    "excluded_source_ids": [],
+    "selected_source_ids": [
+      "SRC-BUG-HISTORY",
+      "SRC-BUG-SUPPORT-NOTE"
+    ],
+    "unavailable_or_unknown_source_ids": [
+      "SRC-BUG-RUNTIME"
+    ]
+  },
+  "stop_conditions": [
+    "stop before changing code or declaring ready_for_fix",
+    "stop if competing explanations remain unresolved and evidence is insufficient",
+    "stop if target-version reproduction or runtime access is unavailable"
+  ],
+  "strongest_counterevidence": [
+    {
+      "evidence_ref_ids": [
+        "EV-BUG-002"
+      ],
+      "impact": "It can reopen the leading hypothesis, change the reproduction plan, and block fix readiness.",
+      "statement": "Successful retries after an upstream timeout provide a concrete alternative to the deployment-causality hypothesis."
+    }
+  ],
+  "target": "What should the receiving coding workspace verify before treating the synthetic 502 symptom as ready for a fix?",
+  "unknown_ids": [
+    "BUG-UNK-001"
+  ]
+}

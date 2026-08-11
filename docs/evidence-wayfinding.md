@@ -116,6 +116,8 @@ Cross-Agent and cross-runtime handoff uses `lat.portable_case_pack.v1` rather th
 
 The schema is `schemas/capability/portable-case-pack.v1.schema.json`. A public synthetic example is under `examples/evidence-wayfinding/`.
 
+Capability discovery remains native to each receiving workspace. The Portable Case Pack preserves shared semantics; it does not require two runtimes to share a Skill directory, Agent configuration, or discovery mechanism. Google-to-coding conservation and independent verification rules are defined in [Cross-Workspace Handoff](cross-workspace-handoff.md).
+
 ### Structural and semantic validation authority
 
 The published Draft 2020-12 schema is the authoritative structural gate for Portable Case Pack v1. It owns required fields, types, enums/constants, `additionalProperties`, nested shape, and declared formats such as `date-time`.
