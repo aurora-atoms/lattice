@@ -1,6 +1,6 @@
 <!-- generated_from: runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json -->
-<!-- adapter_version: 1.1.0 -->
-<!-- adapter_source_hash: sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4 -->
+<!-- adapter_version: 1.1.1 -->
+<!-- adapter_source_hash: sha256:1a2f0a73c4f6a3dc755755f87f9ac0a851c216f25d5cbcddb95cdc2faa0c6cdb -->
 <!-- target: notebook -->
 
 # NotebookLM Setup — Source-Grounded Synthesis Station
@@ -23,7 +23,7 @@ Recommended source set is intentionally small: the minimum approved documents ne
 4. Use the prompt cards for the selected Senior Attention task family.
 5. Require citations for source-supported claims.
 6. If a material claim is unsupported, mark it UNKNOWN or request another approved source.
-7. Export only a candidate synthesis to the private downstream verification step.
+7. Export only a candidate synthesis and explicit repository/runtime verification request to the private human-handoff step. The receiving coding workspace chooses capabilities through its own native discovery.
 
 ## Stop conditions
 

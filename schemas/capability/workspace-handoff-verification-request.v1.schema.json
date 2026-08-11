@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/capability/workspace-handoff-verification-request.v1.schema.json",
+  "title": "Workspace Handoff Verification Request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "receipt_id",
+    "case_ref",
+    "target",
+    "source_scope",
+    "incoming_claims",
+    "claims_requiring_repo_verification",
+    "unknown_ids",
+    "conflicts",
+    "strongest_counterevidence",
+    "evidence_ref_ids",
+    "authority_ceiling",
+    "privacy_classification",
+    "required_coding_verification",
+    "evidence_confirmation_basis",
+    "required_output",
+    "stop_conditions",
+    "handoff_boundary",
+    "capability_discovery",
+    "readiness",
+    "simulation_status",
+    "downstream_adoption_status"
+  ],
+  "properties": {
+    "$schema": {"const": "schemas/capability/workspace-handoff-verification-request.v1.schema.json"},
+    "contract": {"const": "lat.workspace_handoff_verification_request.v1"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "case_ref": {"type": "string", "minLength": 1},
+    "target": {"type": "string", "minLength": 1},
+    "source_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected_source_ids",
+        "conditional_source_ids",
+        "excluded_source_ids",
+        "unavailable_or_unknown_source_ids",
+        "coverage_claim",
+        "evidence_ref_ids"
+      ],
+      "properties": {
+        "selected_source_ids": {"$ref": "#/$defs/unique_ids"},
+        "conditional_source_ids": {"$ref": "#/$defs/unique_ids"},
+        "excluded_source_ids": {"$ref": "#/$defs/unique_ids"},
+        "unavailable_or_unknown_source_ids": {"$ref": "#/$defs/unique_ids"},
+        "coverage_claim": {"const": "bounded_not_complete"},
+        "evidence_ref_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_ids"},
+            {"minItems": 1}
+          ]
+        }
+      }
+    },
+    "incoming_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/incoming_claim"}
+    },
+    "claims_requiring_repo_verification": {"$ref": "#/$defs/unique_ids"},
+    "unknown_ids": {"$ref": "#/$defs/unique_ids"},
+    "conflicts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/conflict"}
+    },
+    "strongest_counterevidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/counterevidence"}
+    },
+    "evidence_ref_ids": {
+      "allOf": [
+        {"$ref": "#/$defs/unique_ids"},
+        {"minItems": 1}
+      ]
+    },
+    "authority_ceiling": {"const": "candidate"},
+    "privacy_classification": {"enum": ["public", "private", "restricted"]},
+    "required_coding_verification": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/verification_request"}
+    },
+    "evidence_confirmation_basis": {"const": "independent_repo_runtime_evidence_required"},
+    "required_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_kind", "audience", "contract"],
+      "properties": {
+        "artifact_kind": {"type": "string", "minLength": 1},
+        "audience": {"type": "string", "minLength": 1},
+        "contract": {"type": "string", "minLength": 1}
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "handoff_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["human_handoff_required", "automatic_orchestration_allowed"],
+      "properties": {
+        "human_handoff_required": {"const": true},
+        "automatic_orchestration_allowed": {"const": false}
+      }
+    },
+    "capability_discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "shared_mechanism_required"],
+      "properties": {
+        "owner": {"const": "receiving_workspace"},
+        "shared_mechanism_required": {"const": false}
+      }
+    },
+    "readiness": {"const": "verification_required"},
+    "simulation_status": {"enum": ["synthetic_reference", "downstream_observed"]},
+    "downstream_adoption_status": {
+      "enum": ["not_observed", "imported", "task_scoped", "used_once", "reused", "team_available", "deprecated"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}},
+        "required": ["simulation_status"]
+      },
+      "then": {
+        "properties": {"downstream_adoption_status": {"const": "not_observed"}}
+      }
+    }
+  ],
+  "$defs": {
+    "unique_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "incoming_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "incoming_status", "evidence_ref_ids", "confirmation_state"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "incoming_status": {"enum": ["observed", "derived", "judged", "unknown"]},
+        "evidence_ref_ids": {"$ref": "#/$defs/unique_ids"},
+        "confirmation_state": {"enum": ["candidate_only", "unknown"]}
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conflict_id", "status", "claim_refs", "evidence_ref_ids"],
+      "properties": {
+        "conflict_id": {"type": "string", "minLength": 1},
+        "status": {"const": "unresolved"},
+        "claim_refs": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_ids"},
+            {"minItems": 2}
+          ]
+        },
+        "evidence_ref_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_ids"},
+            {"minItems": 1}
+          ]
+        }
+      }
+    },
+    "counterevidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "evidence_ref_ids", "impact"],
+      "properties": {
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_ref_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_ids"},
+            {"minItems": 1}
+          ]
+        },
+        "impact": {"type": "string", "minLength": 1}
+      }
+    },
+    "verification_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verification_id", "claim_refs", "verification_kind", "request", "required_evidence"],
+      "properties": {
+        "verification_id": {"type": "string", "minLength": 1},
+        "claim_refs": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_ids"},
+            {"minItems": 1}
+          ]
+        },
+        "verification_kind": {
+          "enum": [
+            "repository",
+            "runtime",
+            "reproduction",
+            "test",
+            "configuration",
+            "dependency",
+            "repository_and_test",
+            "reproduction_and_runtime"
+          ]
+        },
+        "request": {"type": "string", "minLength": 1},
+        "required_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

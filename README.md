@@ -155,6 +155,8 @@ It covers five task families—feature requirement/work-ready, risk preflight, b
 
 Real company context, ACL decisions, owners, live outcomes, attention measurements, adoption observations, and manager-ready artifacts remain in the private downstream repository. Public Senior Attention conformance does not prove private value or ROI.
 
+For Google-to-coding or other cross-runtime transfer, use the [Cross-Workspace Handoff contract](docs/cross-workspace-handoff.md). Native workspaces own capability discovery; the shared contract preserves evidence, unknowns, conflicts, counterevidence, authority, privacy, and required verification without imposing a common runtime discovery mechanism.
+
 ## Repository Navigation
 
 ```text

@@ -1,6 +1,6 @@
 # generated_from: runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json
-# adapter_version: 1.1.0
-# adapter_source_hash: sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4
+# adapter_version: 1.1.1
+# adapter_source_hash: sha256:1a2f0a73c4f6a3dc755755f87f9ac0a851c216f25d5cbcddb95cdc2faa0c6cdb
 contract: lat.google_workspace_manual_shadow_flow_template.v1
 target: workspace_studio
 mode: manual_shadow
@@ -16,7 +16,7 @@ steps:
   - id: synthesize
     action: separate_claims_inference_unknowns_conflicts_counterevidence
   - id: candidate
-    action: draft_candidate_artifact
+    action: draft_candidate_and_required_verification
   - id: human_gate
     action: stop_for_human_confirmation
 forbidden_defaults:

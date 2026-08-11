@@ -1,0 +1,306 @@
+{
+  "fixture_type": "cross_workspace_handoff_conformance_case",
+  "fixture_id": "synthetic/cross-workspace-bug-001",
+  "scenario": "bug_investigation",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "handoff_policy": {
+    "source_surface": "google_workspace_candidate",
+    "authority_ceiling": "candidate",
+    "coverage_claim": "bounded_not_complete",
+    "human_handoff_required": true,
+    "automatic_orchestration_allowed": false,
+    "capability_discovery_owner": "receiving_workspace",
+    "shared_discovery_mechanism_required": false
+  },
+  "domain_context_pack": {
+    "record_type": "lat.domain_context_pack.v1",
+    "pack_id": "DCP-SYNTHETIC-BUG-001",
+    "scope_id": "synthetic/cross-workspace-bug-001",
+    "as_of_at": "2026-08-11T14:30:00Z",
+    "simulation_status": "synthetic_reference",
+    "downstream_adoption_status": "not_observed",
+    "task": {
+      "objective": "What should the receiving coding workspace verify before treating the synthetic 502 symptom as ready for a fix?",
+      "expected_output": "Workspace handoff verification request",
+      "caller_role": "synthetic incident evidence curator",
+      "permission_boundary_ref": "policy://synthetic/public-handoff"
+    },
+    "authorization": {
+      "decision": "allow",
+      "policy_ref": "policy://synthetic/public-handoff",
+      "caller_authority_ref": "role://synthetic/incident-curator",
+      "data_classification": "public"
+    },
+    "context_budget": {
+      "max_tokens": 500,
+      "selected_tokens": 60
+    },
+    "sources": [
+      {
+        "source_id": "SRC-BUG-HISTORY",
+        "source_type": "incident",
+        "locator": "source://synthetic/google/incident-history#deploy-correlation",
+        "owner_ref": "role://synthetic/incident-owner",
+        "access_status": "authorized",
+        "authority_for": ["historical_decision"],
+        "observed_at": "2026-08-11T13:30:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "selected",
+        "selection_reason": "The synthetic history records when users reported the symptom."
+      },
+      {
+        "source_id": "SRC-BUG-SUPPORT-NOTE",
+        "source_type": "document",
+        "locator": "source://synthetic/google/support-note#upstream-timeout",
+        "owner_ref": "role://synthetic/support-owner",
+        "access_status": "authorized",
+        "authority_for": ["historical_decision"],
+        "observed_at": "2026-08-11T13:35:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "selected",
+        "selection_reason": "The synthetic note records an alternative explanation and retry outcome."
+      },
+      {
+        "source_id": "SRC-BUG-RUNTIME",
+        "source_type": "runtime",
+        "locator": "runtime://synthetic/bug-target",
+        "owner_ref": "role://synthetic/runtime-owner",
+        "access_status": "unknown",
+        "authority_for": ["runtime_evidence", "code", "system_constraint"],
+        "observed_at": "2026-08-11T13:40:00Z",
+        "expires_at": null,
+        "freshness_status": "current",
+        "selection_status": "conditional",
+        "selection_reason": "The receiving coding workspace must reproduce and inspect runtime behavior independently."
+      }
+    ],
+    "context_items": [
+      {
+        "item_id": "BUG-OBS-001",
+        "information_class": "historical_decision",
+        "statement": "The selected incident history says 502 reports began after a deployment.",
+        "source_id": "SRC-BUG-HISTORY",
+        "evidence_refs": ["source://synthetic/google/incident-history#deploy-correlation"],
+        "token_estimate": 30,
+        "applicability": "This is symptom chronology from a source, not verified runtime causality.",
+        "evidence_status": "observed",
+        "confidence": "high"
+      },
+      {
+        "item_id": "BUG-OBS-002",
+        "information_class": "historical_decision",
+        "statement": "The selected support note says retrying after an upstream timeout sometimes succeeded.",
+        "source_id": "SRC-BUG-SUPPORT-NOTE",
+        "evidence_refs": ["source://synthetic/google/support-note#upstream-timeout"],
+        "token_estimate": 30,
+        "applicability": "This is an alternative explanation from a source, not a reproduced runtime fact.",
+        "evidence_status": "observed",
+        "confidence": "high"
+      }
+    ],
+    "unknowns": [
+      {
+        "unknown_id": "BUG-UNK-001",
+        "question": "Can the 502 be reproduced against the target version and configuration?",
+        "impact": "Without reproduction or equivalent runtime evidence, the case is not ready for a fix.",
+        "blocking": true,
+        "owner_role": "synthetic runtime owner",
+        "next_action": "Run a bounded reproduction and capture target-version runtime evidence."
+      }
+    ],
+    "conflicts": [
+      {
+        "conflict_id": "BUG-CONFLICT-001",
+        "item_refs": ["BUG-OBS-001", "BUG-OBS-002"],
+        "source_refs": ["SRC-BUG-HISTORY", "SRC-BUG-SUPPORT-NOTE"],
+        "summary": "The deploy-correlation hypothesis competes with an upstream-timeout explanation.",
+        "blocking": true,
+        "status": "unresolved",
+        "next_action": "Reproduce the symptom and compare runtime/configuration evidence for both explanations."
+      }
+    ],
+    "activation_plan": [
+      {
+        "sequence": 1,
+        "action": "load_now",
+        "target_ref": "SRC-BUG-HISTORY",
+        "condition": "Load the selected symptom chronology."
+      },
+      {
+        "sequence": 2,
+        "action": "load_now",
+        "target_ref": "SRC-BUG-SUPPORT-NOTE",
+        "condition": "Load the selected alternative explanation."
+      },
+      {
+        "sequence": 3,
+        "action": "request_permission",
+        "target_ref": "SRC-BUG-RUNTIME",
+        "condition": "The receiving coding workspace independently obtains reproduction and runtime evidence."
+      }
+    ],
+    "answerability": {
+      "status": "partial",
+      "reason": "Google-side sources preserve symptom history and competing explanations but cannot verify root cause or fix readiness.",
+      "next_action": "Hand off the candidate for reproduction, runtime, configuration, and target-test verification."
+    },
+    "evidence_summary": {
+      "facts": [
+        {
+          "fact_id": "BUG-SOURCE-FACT-001",
+          "statement": "The selected incident history contains a post-deployment 502 report.",
+          "evidence_refs": ["source://synthetic/google/incident-history#deploy-correlation"]
+        },
+        {
+          "fact_id": "BUG-SOURCE-FACT-002",
+          "statement": "The selected support note contains an upstream-timeout alternative explanation.",
+          "evidence_refs": ["source://synthetic/google/support-note#upstream-timeout"]
+        }
+      ],
+      "inference_summary": [
+        "Deployment correlation and upstream timeout must remain competing hypotheses until coding-side verification."
+      ],
+      "citations": [
+        "source://synthetic/google/incident-history#deploy-correlation",
+        "source://synthetic/google/support-note#upstream-timeout"
+      ],
+      "uncertainty": [
+        "No target-version reproduction, runtime log, configuration diff, or target-test evidence has been inspected."
+      ],
+      "unknown_refs": ["BUG-UNK-001"],
+      "assumptions": [
+        "The synthetic source statements are represented faithfully for conformance testing only."
+      ]
+    }
+  },
+  "portable_case_pack": {
+    "$schema": "../../../schemas/capability/portable-case-pack.v1.schema.json",
+    "contract": "lat.portable_case_pack.v1",
+    "case_id": "synthetic/cross-workspace-bug-001",
+    "mission_anchor_ref": "lat.goal.verified-decision-yield.v1",
+    "decision_requested": "What should the receiving coding workspace verify before treating the synthetic 502 symptom as ready for a fix?",
+    "audience": "receiving_coding_workspace",
+    "scope": {
+      "in": [
+        "synthetic symptom history",
+        "synthetic reproduction, runtime, configuration, and target-test evidence"
+      ],
+      "out": [
+        "automatic fix",
+        "automatic root-cause confirmation",
+        "private company data"
+      ]
+    },
+    "evidence_cutoff": "2026-08-11T14:30:00Z",
+    "claims": {
+      "observed": [
+        {
+          "claim_id": "BUG-OBS-001",
+          "statement": "The selected incident history says 502 reports began after a deployment.",
+          "evidence_refs": ["EV-BUG-001"],
+          "uncertainty": "The source establishes chronology only, not causality."
+        },
+        {
+          "claim_id": "BUG-OBS-002",
+          "statement": "The selected support note says retrying after an upstream timeout sometimes succeeded.",
+          "evidence_refs": ["EV-BUG-002"],
+          "uncertainty": "The source statement has not been reproduced against the target runtime."
+        }
+      ],
+      "derived": [
+        {
+          "claim_id": "BUG-ROOT-HYP-001",
+          "statement": "A deployment configuration change is a candidate root-cause hypothesis for the 502 symptom.",
+          "evidence_refs": ["EV-BUG-001"],
+          "uncertainty": "Correlation is not root-cause verification; reproduction and runtime evidence are missing."
+        },
+        {
+          "claim_id": "BUG-ALT-001",
+          "statement": "An upstream timeout remains a viable alternative explanation.",
+          "evidence_refs": ["EV-BUG-002"],
+          "uncertainty": "The alternative has not been reproduced against the target runtime."
+        }
+      ],
+      "judged": [],
+      "unknown": [
+        {
+          "claim_id": "BUG-UNK-001",
+          "statement": "Whether the 502 can be reproduced against the target version and configuration remains unknown.",
+          "evidence_refs": [],
+          "uncertainty": "Requires receiving-workspace execution evidence."
+        }
+      ]
+    },
+    "conflicts": [
+      {
+        "conflict_id": "BUG-CONFLICT-001",
+        "claim_refs": ["BUG-OBS-001", "BUG-OBS-002"],
+        "evidence_refs": ["EV-BUG-001", "EV-BUG-002"],
+        "adjudicator": "synthetic incident owner after runtime verification"
+      }
+    ],
+    "strongest_counterevidence": [
+      {
+        "statement": "Successful retries after an upstream timeout provide a concrete alternative to the deployment-causality hypothesis.",
+        "evidence_refs": ["EV-BUG-002"],
+        "impact": "It can reopen the leading hypothesis, change the reproduction plan, and block fix readiness."
+      }
+    ],
+    "rejected_directions": [
+      {
+        "direction": "Declare the deployment the verified root cause from timing correlation",
+        "reason": "Google-side symptom history cannot substitute for target-version reproduction and runtime evidence.",
+        "evidence_refs": ["EV-BUG-001", "EV-BUG-002"]
+      }
+    ],
+    "evidence_refs": [
+      {
+        "id": "EV-BUG-001",
+        "uri": "source://synthetic/google/incident-history#deploy-correlation",
+        "date": "2026-08-11T13:30:00Z",
+        "access": "public",
+        "content_hash": "synthetic-reference:incident-deploy-correlation"
+      },
+      {
+        "id": "EV-BUG-002",
+        "uri": "source://synthetic/google/support-note#upstream-timeout",
+        "date": "2026-08-11T13:35:00Z",
+        "access": "public",
+        "content_hash": "synthetic-reference:support-upstream-timeout"
+      }
+    ],
+    "source_gaps": [
+      "No stable reproduction, runtime log, configuration diff, dependency state, or target-test result is included."
+    ],
+    "next_tool_task": "Use the receiving workspace's native runtime and repository tools to reproduce the symptom and falsify both explanations.",
+    "required_output": {
+      "artifact_kind": "bug_verification_receipt",
+      "audience": "synthetic incident owner",
+      "contract": "reproduction and runtime verification with competing explanations and fix-readiness stop"
+    },
+    "falsification": "Reject the deployment-causality hypothesis if target-version reproduction or runtime/configuration evidence supports the upstream-timeout explanation or another mechanism.",
+    "data_classification": "public"
+  },
+  "required_coding_verification": [
+    {
+      "verification_id": "VER-BUG-001",
+      "claim_refs": ["BUG-ROOT-HYP-001", "BUG-ALT-001"],
+      "verification_kind": "reproduction_and_runtime",
+      "request": "Attempt a target-version reproduction and collect runtime, configuration, dependency, and target-test evidence for both competing explanations.",
+      "required_evidence": [
+        "reproduction command and result",
+        "bounded runtime evidence reference",
+        "configuration or dependency comparison",
+        "target test result"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    "stop if target-version reproduction or runtime access is unavailable",
+    "stop if competing explanations remain unresolved and evidence is insufficient",
+    "stop before changing code or declaring ready_for_fix"
+  ]
+}

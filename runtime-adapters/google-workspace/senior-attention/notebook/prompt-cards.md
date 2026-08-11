@@ -1,13 +1,13 @@
 <!-- generated_from: runtime-adapters/google-workspace/senior-attention/adapter-source.v1.json -->
-<!-- adapter_version: 1.1.0 -->
-<!-- adapter_source_hash: sha256:6fc5f81a456459995172e8eb25638d6f6fe78c8af056610c33675191222b1eb4 -->
+<!-- adapter_version: 1.1.1 -->
+<!-- adapter_source_hash: sha256:1a2f0a73c4f6a3dc755755f87f9ac0a851c216f25d5cbcddb95cdc2faa0c6cdb -->
 <!-- target: notebook -->
 
 # NotebookLM Prompt Cards
 
 ## Feature Requirement
 
-"Using only the selected notebook sources, identify the supported requirement, constraints, unresolved questions, conflicts, and strongest counterevidence. Cite each material claim and produce a candidate work-ready synthesis, not a final approval."
+"Using only the selected notebook sources, identify the supported requirement, constraints, unresolved questions, conflicts, and strongest counterevidence. Cite each material claim and produce candidate context plus required repository/test verification; do not declare work readiness."
 
 ## Risk
 
@@ -15,7 +15,7 @@
 
 ## Bug
 
-"Build a cited bug investigation candidate: reproduction evidence, observations, hypotheses, competing explanations, falsification evidence, unknowns, and the smallest next verification step. Do not assert root cause without sufficient evidence."
+"Build a cited bug investigation candidate from source-reported symptoms and history: hypotheses, competing explanations, falsification evidence, unknowns, and required receiving-workspace reproduction/runtime verification. Do not assert root cause or fix readiness."
 
 ## Decision
 
