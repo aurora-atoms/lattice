@@ -1,7 +1,7 @@
 ---
 name: Recurrence Guard
 description: Review the current change for evidence-backed known failure patterns. Read-only: report what should not be repeated; do not recommend an implementation or approve quality.
-tools: ['search/codebase', 'search/usages']
+tools: ['read', 'search']
 user-invocable: true
 disable-model-invocation: true
 ---
