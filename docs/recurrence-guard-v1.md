@@ -58,25 +58,43 @@ It never returns `PASS`, `SAFE`, or `READY`.
 
 `NO_KNOWN_MATCH` means only that the inspected change did not match a loaded known-failure guard. It is not a quality approval.
 
-## GitHub Copilot and VS Code
+## Native GitHub Copilot usage
 
-The repository custom agent lives in `.github/agents`, and the reusable skill lives in `.github/skills`. Current GitHub Copilot and VS Code agent surfaces can discover these locations natively.
+The repository custom agent lives in `.github/agents`, and the reusable skill lives in `.github/skills`. These are native GitHub Copilot customization surfaces. Lattice does not provide a separate agent runtime for Recurrence Guard.
 
-### VS Code / Agent Host
+The agent profile intentionally exposes only the portable `read` and `search` tool aliases, so the native host retains repository-reading and search capabilities without an edit or shell capability.
 
-Open the repository in VS Code, open the Agents or Chat view, and choose **Recurrence Guard** from the agent picker. A minimal starting request is:
+### GitHub Copilot app
+
+Open the repository as a project in the GitHub Copilot app. Repository skills are available to the app automatically. In a session, use `/agent` and choose **Recurrence Guard**, then ask:
 
 ```text
 Review my current changes for known recurrence risks.
 ```
 
-The custom agent is read-only by tool configuration. It uses the native agent host for repository context and search; no separate Lattice runtime is required.
+Because `disable-model-invocation: true`, the custom agent is manually selected rather than silently inferred for unrelated tasks.
 
-### GitHub Copilot cloud agent
+### VS Code / Agent Host
 
-After the custom agent is merged into the repository default branch, it can appear in the custom-agent selector for Copilot cloud agent on GitHub. Select **Recurrence Guard** instead of the default agent and ask it to review a branch, pull request context, or issue task for known recurrence risk.
+Open the repository in VS Code and choose **Recurrence Guard** from the agent picker. The `.github/agents/recurrence-guard.agent.md` profile is the configuration; the built-in Agent Host is the runtime that supplies session management, repository context, and the allowed tools.
 
-For V1, prefer interactive review rather than assigning this agent to implement an issue: the role is intentionally non-editing and non-implementing.
+A minimal starting request is:
+
+```text
+Review my current changes for known recurrence risks.
+```
+
+No Lattice router, service, MCP server, or separate UI is required.
+
+### Copilot cloud agent on GitHub.com
+
+After the custom agent profile is available in the target repository and branch, choose **Recurrence Guard** from the custom-agent selector for Copilot cloud agent. The same profile can therefore be reused rather than reimplemented as a separate cloud service.
+
+For V1, use it as a review/investigation role. Do not assign it an implementation expectation: the role is intentionally non-editing and non-implementing.
+
+## Validation
+
+The public repository includes a small CI workflow that validates the synthetic catalog and replay set whenever the Recurrence Guard package changes. Downstream teams can keep the same deterministic validator and replace only the example catalog and replay evidence.
 
 ## Promotion path
 
