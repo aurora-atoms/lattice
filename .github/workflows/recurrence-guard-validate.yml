@@ -1,0 +1,29 @@
+name: recurrence-guard-validate
+
+on:
+  pull_request:
+    paths:
+      - ".github/agents/recurrence-guard.agent.md"
+      - ".github/skills/recurrence-guard/**"
+      - ".github/workflows/recurrence-guard-validate.yml"
+  push:
+    paths:
+      - ".github/agents/recurrence-guard.agent.md"
+      - ".github/skills/recurrence-guard/**"
+      - ".github/workflows/recurrence-guard-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate synthetic catalog and replay cases
+        run: python .github/skills/recurrence-guard/scripts/validate_catalog.py
+      - name: Compile validator
+        run: python -m compileall -q .github/skills/recurrence-guard/scripts
