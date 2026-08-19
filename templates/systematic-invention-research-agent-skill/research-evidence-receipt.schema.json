@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/templates/systematic-invention-research-agent-skill/research-evidence-receipt.schema.json",
+  "title": "Systematic Invention Research Evidence Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type",
+    "run_id",
+    "runtime",
+    "research_question",
+    "public_scope_confirmed",
+    "sources",
+    "claims",
+    "artifacts",
+    "challenge_tasks",
+    "limitations",
+    "stop_reason"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "research.evidence_receipt"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "type": "string",
+      "minLength": 1
+    },
+    "research_question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "public_scope_confirmed": {
+      "type": "boolean"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_ref", "source_type", "locator"],
+        "properties": {
+          "source_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "patent",
+              "paper",
+              "standard",
+              "public_product",
+              "public_repo",
+              "other_public"
+            ]
+          },
+          "family_id": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["statement", "status", "source_refs", "confidence"],
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["FACT", "INFERENCE", "HYPOTHESIS", "UNKNOWN"]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low", "not_evaluated"]
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "challenge_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "eval_case_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stop_reason": {
+      "type": "string",
+      "enum": [
+        "goal_reached",
+        "stage_gate_reached",
+        "public_scope_failed",
+        "source_unavailable",
+        "insufficient_evidence",
+        "family_resolution_failed",
+        "claims_unavailable",
+        "challenge_pending",
+        "legal_judgment_boundary",
+        "critical_eval_failure",
+        "human_review_required",
+        "explicit_user_stop"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "public_scope_confirmed": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "stop_reason": {
+            "const": "public_scope_failed"
+          }
+        }
+      }
+    }
+  ]
+}
