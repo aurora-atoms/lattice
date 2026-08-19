@@ -51,6 +51,22 @@ For a bounded feature-requirement, risk-preflight, bug/rescue, decision-support,
 
 Do not create a parallel Senior Attention Skill, Agent, module, fact store, or always-on conductor. `senior-attention-queue` is only for multiple competing expert requests; a single decision follows the normal bounded decision path.
 
+## Public Research and Invention Learning Entry
+
+For public-only patent learning, technique mining, systematic invention training, or creation of a portable research Agent Skill, start with [Systematic Invention Research Stack](docs/systematic-invention-research-stack.md).
+
+- Treat the workflow as evidence-first research, not a patentability, FTO, infringement, or novelty opinion.
+- Accept only published/public sources, user-confirmed public material, or fully synthetic examples.
+- Stop concrete analysis for employer/client confidential material, internal source code or architecture, private experiments/data, or an unpublished real invention; do not bypass the boundary by anonymizing or paraphrasing.
+- Preserve `FACT`, `INFERENCE`, `HYPOTHESIS`, and `UNKNOWN` separately; every load-bearing fact needs a source reference.
+- De-duplicate by patent family and inspect independent claims for high-value samples.
+- Challenge apparent gaps before retaining them.
+- Keep large corpora and examples outside `SKILL.md`; use progressive disclosure and deterministic scripts for normalization, validation, statistics, and report scaffolding where practical.
+- Use `templates/systematic-invention-research-agent-skill/` as a portable downstream Skill template for GitHub Copilot, Gemini CLI, and other Agent-Skills-compatible runtimes. Re-verify current vendor documentation before installation.
+- Store compact evidence receipts and structured artifacts rather than raw transcripts or hidden chain-of-thought.
+
+This reference workflow does not create a new active Lattice module or automatically promote a downstream Skill to `team_available`.
+
 ## Skill Authoring Gate
 
 Any change under `skills/<name>/` must follow:
