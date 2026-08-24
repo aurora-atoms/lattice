@@ -24,14 +24,23 @@ jobs:
       - name: Validate contract syntax
         run: |
           python -m json.tool schemas/capability/adversarial-innovation-handoff.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/capability-composition.v1.schema.json >/dev/null
           find examples/adversarial-innovation -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
+          find concepts -name 'concept.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
+      - name: Validate agent-readable composition
+        run: |
+          python scripts/generate_capability_composition_registry.py --root . --check
+          python scripts/validate_capability_compositions.py --root .
       - name: Validate reference handoff
         run: |
           python scripts/validate_adversarial_innovation_handoff.py \
             examples/adversarial-innovation/synthetic-target-binding.innovation-handoff.v1.json
-      - name: Test anti-premature-promotion semantics
-        run: python -m unittest discover -s tests -p 'test_adversarial_innovation_handoff.py' -v
+      - name: Test composition discovery and handoff semantics
+        run: |
+          python -m unittest discover -s tests -p 'test_capability_composition.py' -v
+          python -m unittest discover -s tests -p 'test_adversarial_innovation_handoff.py' -v
       - name: Check Python syntax and whitespace
         run: |
           python -m compileall -q scripts tests
