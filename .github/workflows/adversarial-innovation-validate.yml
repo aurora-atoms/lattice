@@ -1,0 +1,39 @@
+name: adversarial-innovation-validate
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adversarial-innovation-validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adversarial-innovation-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-validation.txt
+      - name: Validate contract syntax
+        run: |
+          python -m json.tool schemas/capability/adversarial-innovation-handoff.v1.schema.json >/dev/null
+          find examples/adversarial-innovation -name '*.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
+      - name: Validate reference handoff
+        run: |
+          python scripts/validate_adversarial_innovation_handoff.py \
+            examples/adversarial-innovation/synthetic-target-binding.innovation-handoff.v1.json
+      - name: Test anti-premature-promotion semantics
+        run: python -m unittest discover -s tests -p 'test_adversarial_innovation_handoff.py' -v
+      - name: Check Python syntax and whitespace
+        run: |
+          python -m compileall -q scripts tests
+          git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}" HEAD || \
+            git diff --check "$(git rev-list --max-parents=0 HEAD)" HEAD
