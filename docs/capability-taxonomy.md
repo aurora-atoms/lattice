@@ -45,6 +45,29 @@ Agent is a packaging/runtime record type, not a substitute for `capability_role`
 - A template and synthetic fixture prove shape only.
 - A governance contract preserves human authority and cannot become a new control module.
 
+## Capability Composition Layer
+
+Capability identity and multi-stage concept composition are separate contracts.
+
+`registry/capability-manifest.json` remains the canonical identity source. It answers what a public capability is, its version, role, package status, compatibility, and authority boundary.
+
+`concepts/<concept-id>/concept.json` answers a different question: how already-existing workflows, schemas, validators, templates, examples, tests, and CI form one agent-readable concept. It may reference multiple capability roles and repository layers without creating a new module or changing any referenced capability's identity.
+
+The compact discovery projection is `registry/capability-compositions.index.jsonl`. Consuming agents use it only when a task spans multiple stages or when upstream/downstream relationships are otherwise ambiguous.
+
+Composition activation semantics are:
+
+```text
+always            stable concept routing only when explicitly justified
+task_scoped       load for the selected current stage
+reference_only    load only when the current output requires it
+never_by_default  do not load into ordinary model context
+```
+
+A deterministic validator may be marked `never_by_default` with action `execute`: the agent should run it when required without treating its implementation source as task knowledge. Tests and CI remain maintainer evidence and are never normal task context.
+
+Composition metadata cannot promote a Skill template to an active capability, alter a release or safety verdict, increase evidence strength, or grant human authority.
+
 ## Agent and Capability Profile Boundary
 
 An Agent and a Capability Profile are composed at runtime but own different concerns.
@@ -160,5 +183,3 @@ deprecated_by
 ```
 
 Current registries are deterministic compatibility projections. `scripts/validate_capability_manifest.py` rejects missing roles, status or version drift, missing paths, native-description drift, description/trigger conflict, adoption state in public records, and deprecated capabilities referenced by active routing or profiles.
-
-The initial PR 2 assignments are documented in `docs/migrations/canonical-manifest-pr2.md`. Later role changes and public-package lifecycle promotion require human review; they are not silently inferred from path names.
