@@ -51,6 +51,18 @@ For a bounded feature-requirement, risk-preflight, bug/rescue, decision-support,
 
 Do not create a parallel Senior Attention Skill, Agent, module, fact store, or always-on conductor. `senior-attention-queue` is only for multiple competing expert requests; a single decision follows the normal bounded decision path.
 
+## Safety-Critical Product Review Entry
+
+For a safety-critical or consequential cyber-physical product requirement, architecture/code review, runtime-evidence review, adversarial test, failure classification, or release recommendation, start with [Safety-Critical Product Review](docs/safety-critical-product-review.md). Use the Senior Attention profile as the runtime allowlist and select only the smallest existing capability for the current evidence gap; do not create a parallel safety Skill, Agent, module, or automated release authority.
+
+- Evaluate and normalize the source requirement before tracing it.
+- Preserve the complete `Requirement -> Invariant -> Enforcement -> Runtime Evidence -> Adversarial Test -> Failure Classification -> Release Gate` chain.
+- Keep severity, evidence status, reproducibility, finding status, and release impact separate.
+- Treat missing load-bearing evidence and every non-closed S0/S1 finding as release-blocking.
+- Run adversarial tests only in explicitly authorized, isolated environments.
+- Treat `pass_candidate` as a recommendation only; humans retain safety, regulatory, architecture, deployment, and release authority.
+- Keep real product requirements, code, telemetry, incidents, owners, and release decisions in the private downstream repository.
+
 ## Public Research and Invention Learning Entry
 
 For public-only patent learning, technique mining, systematic invention training, or creation of a portable research Agent Skill, start with [Systematic Invention Research Stack](docs/systematic-invention-research-stack.md).

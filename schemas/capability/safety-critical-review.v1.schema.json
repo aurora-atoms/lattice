@@ -1,0 +1,547 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/capability/safety-critical-review.v1.schema.json",
+  "title": "Safety-Critical Product Review v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "review_id",
+    "revision",
+    "scope",
+    "assurance_boundary",
+    "requirements",
+    "review_chains",
+    "review_verdict",
+    "evidence",
+    "simulation_status",
+    "downstream_adoption_status"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "schemas/capability/safety-critical-review.v1.schema.json"
+    },
+    "contract": {
+      "const": "lat.safety-critical-review.v1"
+    },
+    "review_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "scope": {"$ref": "#/$defs/scope"},
+    "assurance_boundary": {"$ref": "#/$defs/assurance_boundary"},
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/requirement"}
+    },
+    "review_chains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/review_chain"}
+    },
+    "review_verdict": {"$ref": "#/$defs/review_verdict"},
+    "evidence": {"$ref": "#/$defs/evidence_ledger"},
+    "simulation_status": {
+      "enum": ["synthetic_reference", "real_downstream"]
+    },
+    "downstream_adoption_status": {
+      "enum": [
+        "not_observed",
+        "imported",
+        "task_scoped",
+        "used_once",
+        "reused",
+        "team_available",
+        "deprecated"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"simulation_status": {"const": "synthetic_reference"}},
+        "required": ["simulation_status"]
+      },
+      "then": {
+        "properties": {
+          "downstream_adoption_status": {"const": "not_observed"},
+          "review_verdict": {
+            "properties": {
+              "human_release_decision": {"const": "not_recorded"}
+            }
+          },
+          "assurance_boundary": {
+            "properties": {
+              "contract_grants_live_harmful_testing_authority": {"const": false}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "non_empty_string": {"type": "string", "minLength": 1},
+    "unique_non_empty_strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/non_empty_string"}
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:.+"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_ref",
+        "product_or_feature",
+        "consequential_action",
+        "operating_context",
+        "intended_use",
+        "excluded_uses",
+        "decision_owner_role",
+        "release_authority_role",
+        "evidence_cutoff"
+      ],
+      "properties": {
+        "case_ref": {"$ref": "#/$defs/source_ref"},
+        "product_or_feature": {"$ref": "#/$defs/non_empty_string"},
+        "consequential_action": {"$ref": "#/$defs/non_empty_string"},
+        "operating_context": {"$ref": "#/$defs/non_empty_string"},
+        "intended_use": {"$ref": "#/$defs/non_empty_string"},
+        "excluded_uses": {"$ref": "#/$defs/unique_non_empty_strings"},
+        "decision_owner_role": {"$ref": "#/$defs/non_empty_string"},
+        "release_authority_role": {"$ref": "#/$defs/non_empty_string"},
+        "evidence_cutoff": {"type": "string", "format": "date-time"}
+      }
+    },
+    "assurance_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_review_only",
+        "certification_claimed",
+        "test_environment",
+        "contract_grants_live_harmful_testing_authority",
+        "applicable_external_obligations"
+      ],
+      "properties": {
+        "internal_review_only": {"const": true},
+        "certification_claimed": {"const": false},
+        "test_environment": {
+          "enum": ["synthetic", "sandbox", "test_bench", "digital_twin", "controlled_field_test"]
+        },
+        "contract_grants_live_harmful_testing_authority": {"const": false},
+        "applicable_external_obligations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/external_obligation"}
+        }
+      }
+    },
+    "external_obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obligation_id",
+        "source_ref",
+        "version_or_date",
+        "applicability",
+        "owner_role",
+        "rationale"
+      ],
+      "properties": {
+        "obligation_id": {"$ref": "#/$defs/id"},
+        "source_ref": {"$ref": "#/$defs/source_ref"},
+        "version_or_date": {"$ref": "#/$defs/non_empty_string"},
+        "applicability": {"enum": ["mapped", "pending", "not_applicable"]},
+        "owner_role": {"$ref": "#/$defs/non_empty_string"},
+        "rationale": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "source_ref",
+        "source_status",
+        "source_statement",
+        "evaluation",
+        "normalized_requirement"
+      ],
+      "properties": {
+        "requirement_id": {"$ref": "#/$defs/id"},
+        "source_ref": {"$ref": "#/$defs/source_ref"},
+        "source_status": {"enum": ["draft", "approved", "implemented", "superseded", "unknown"]},
+        "source_statement": {"$ref": "#/$defs/non_empty_string"},
+        "evaluation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["verdict", "defects", "rationale", "evidence_status"],
+          "properties": {
+            "verdict": {"enum": ["accept", "amend", "reject", "unknown"]},
+            "defects": {"$ref": "#/$defs/unique_non_empty_strings"},
+            "rationale": {"$ref": "#/$defs/non_empty_string"},
+            "evidence_status": {"$ref": "#/$defs/evidence_status"}
+          }
+        },
+        "normalized_requirement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "when",
+            "given",
+            "shall",
+            "before_until",
+            "shall_emit",
+            "shall_not",
+            "safe_state",
+            "acceptance_observer",
+            "authority_owner_role"
+          ],
+          "properties": {
+            "status": {"enum": ["candidate", "approved", "rejected"]},
+            "when": {"$ref": "#/$defs/non_empty_string"},
+            "given": {"$ref": "#/$defs/non_empty_string"},
+            "shall": {"$ref": "#/$defs/non_empty_string"},
+            "before_until": {"$ref": "#/$defs/non_empty_string"},
+            "shall_emit": {"$ref": "#/$defs/non_empty_string"},
+            "shall_not": {
+              "allOf": [
+                {"$ref": "#/$defs/unique_non_empty_strings"},
+                {"minItems": 1}
+              ]
+            },
+            "safe_state": {"$ref": "#/$defs/non_empty_string"},
+            "acceptance_observer": {"$ref": "#/$defs/non_empty_string"},
+            "authority_owner_role": {"$ref": "#/$defs/non_empty_string"}
+          }
+        }
+      }
+    },
+    "review_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chain_id",
+        "requirement_id",
+        "invariant",
+        "enforcement_points",
+        "runtime_evidence",
+        "adversarial_tests",
+        "failure_classification",
+        "release_gate"
+      ],
+      "properties": {
+        "chain_id": {"$ref": "#/$defs/id"},
+        "requirement_id": {"$ref": "#/$defs/id"},
+        "invariant": {"$ref": "#/$defs/invariant"},
+        "enforcement_points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/enforcement_point"}
+        },
+        "runtime_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/runtime_evidence"}
+        },
+        "adversarial_tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/adversarial_test"}
+        },
+        "failure_classification": {"$ref": "#/$defs/failure_classification"},
+        "release_gate": {"$ref": "#/$defs/release_gate"}
+      }
+    },
+    "invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invariant_id",
+        "statement",
+        "harm_prevented",
+        "applicability",
+        "rationale"
+      ],
+      "properties": {
+        "invariant_id": {"$ref": "#/$defs/id"},
+        "statement": {"$ref": "#/$defs/non_empty_string"},
+        "harm_prevented": {"$ref": "#/$defs/non_empty_string"},
+        "applicability": {"enum": ["applicable", "not_applicable", "unknown"]},
+        "rationale": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "enforcement_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "point_id",
+        "kind",
+        "locator",
+        "version_ref",
+        "mechanism",
+        "predicate",
+        "verification_status",
+        "authority_owner_role",
+        "failure_behavior"
+      ],
+      "properties": {
+        "point_id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["architecture", "code", "interface", "configuration", "policy"]},
+        "locator": {"$ref": "#/$defs/source_ref"},
+        "version_ref": {"$ref": "#/$defs/non_empty_string"},
+        "mechanism": {"$ref": "#/$defs/non_empty_string"},
+        "predicate": {"$ref": "#/$defs/non_empty_string"},
+        "verification_status": {"enum": ["verified", "planned", "missing", "contradicted"]},
+        "authority_owner_role": {"$ref": "#/$defs/non_empty_string"},
+        "failure_behavior": {
+          "enum": ["HOLD", "DENY", "REBIND", "REAUTHORIZE", "VERIFY", "TRANSFER", "ESCALATE"]
+        }
+      }
+    },
+    "runtime_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "evidence_type",
+        "source_ref",
+        "producer",
+        "time_and_version_semantics",
+        "expected_signal",
+        "observation_status",
+        "integrity_and_retention",
+        "independence_and_common_mode"
+      ],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/id"},
+        "evidence_type": {
+          "enum": [
+            "enforcement_decision",
+            "state_transition",
+            "authorization_decision",
+            "command_receipt",
+            "physical_postcondition",
+            "outcome_attribution",
+            "reconciliation"
+          ]
+        },
+        "source_ref": {"$ref": "#/$defs/source_ref"},
+        "producer": {"$ref": "#/$defs/non_empty_string"},
+        "time_and_version_semantics": {"$ref": "#/$defs/non_empty_string"},
+        "expected_signal": {"$ref": "#/$defs/non_empty_string"},
+        "observation_status": {"enum": ["observed", "planned", "missing", "contradicted", "stale"]},
+        "integrity_and_retention": {"$ref": "#/$defs/non_empty_string"},
+        "independence_and_common_mode": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "adversarial_test": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "level",
+        "environment",
+        "competent_baseline",
+        "preconditions",
+        "mutation",
+        "wrong_world_outcome",
+        "oracle",
+        "expected_safe_response",
+        "result",
+        "result_evidence_ref",
+        "replay_ref",
+        "execution_safety"
+      ],
+      "properties": {
+        "test_id": {"$ref": "#/$defs/id"},
+        "level": {"enum": ["L0", "L1", "L2", "L3", "L4"]},
+        "environment": {"enum": ["synthetic", "sandbox", "test_bench", "digital_twin", "controlled_field_test"]},
+        "competent_baseline": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_non_empty_strings"},
+            {"minItems": 1}
+          ]
+        },
+        "preconditions": {
+          "allOf": [
+            {"$ref": "#/$defs/unique_non_empty_strings"},
+            {"minItems": 1}
+          ]
+        },
+        "mutation": {"$ref": "#/$defs/non_empty_string"},
+        "wrong_world_outcome": {"$ref": "#/$defs/non_empty_string"},
+        "oracle": {"$ref": "#/$defs/non_empty_string"},
+        "expected_safe_response": {
+          "enum": ["HOLD", "DENY", "REBIND", "REAUTHORIZE", "VERIFY", "TRANSFER", "ESCALATE"]
+        },
+        "result": {"enum": ["passed", "failed", "not_run", "blocked"]},
+        "result_evidence_ref": {"$ref": "#/$defs/source_ref"},
+        "replay_ref": {"$ref": "#/$defs/source_ref"},
+        "execution_safety": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "evidence_status": {
+      "enum": ["OBSERVED", "DERIVED", "JUDGED", "UNKNOWN"]
+    },
+    "failure_classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_mode",
+        "severity",
+        "evidence_status",
+        "reproducibility",
+        "finding_status",
+        "rationale"
+      ],
+      "properties": {
+        "failure_mode": {"$ref": "#/$defs/non_empty_string"},
+        "severity": {"enum": ["S0", "S1", "S2", "S3", "S4"]},
+        "evidence_status": {"$ref": "#/$defs/evidence_status"},
+        "reproducibility": {"enum": ["deterministic", "intermittent", "not_reproduced", "unknown"]},
+        "finding_status": {"enum": ["open", "contained_pending_verification", "verified_closed", "accepted_exception"]},
+        "rationale": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "conditional_control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control", "owner_role", "expires_at", "retest_ref", "observability"],
+      "properties": {
+        "control": {"$ref": "#/$defs/non_empty_string"},
+        "owner_role": {"$ref": "#/$defs/non_empty_string"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "retest_ref": {"$ref": "#/$defs/source_ref"},
+        "observability": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "mandatory_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_approved",
+        "invariant_explicit",
+        "enforcement_verified",
+        "runtime_evidence_observed",
+        "adversarial_test_passed",
+        "no_open_s0_s1",
+        "unknowns_nonblocking",
+        "external_obligations_mapped",
+        "test_execution_safe"
+      ],
+      "properties": {
+        "requirement_approved": {"type": "boolean"},
+        "invariant_explicit": {"type": "boolean"},
+        "enforcement_verified": {"type": "boolean"},
+        "runtime_evidence_observed": {"type": "boolean"},
+        "adversarial_test_passed": {"type": "boolean"},
+        "no_open_s0_s1": {"type": "boolean"},
+        "unknowns_nonblocking": {"type": "boolean"},
+        "external_obligations_mapped": {"type": "boolean"},
+        "test_execution_safe": {"type": "boolean"}
+      }
+    },
+    "release_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommended_decision",
+        "mandatory_checks",
+        "blocking_reasons",
+        "conditional_controls",
+        "owner_role",
+        "retest_ref",
+        "human_decision_required"
+      ],
+      "properties": {
+        "recommended_decision": {"enum": ["block", "conditional", "pass_candidate"]},
+        "mandatory_checks": {"$ref": "#/$defs/mandatory_checks"},
+        "blocking_reasons": {"$ref": "#/$defs/unique_non_empty_strings"},
+        "conditional_controls": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/conditional_control"}
+        },
+        "owner_role": {"$ref": "#/$defs/non_empty_string"},
+        "retest_ref": {"$ref": "#/$defs/source_ref"},
+        "human_decision_required": {"const": true}
+      }
+    },
+    "review_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommendation",
+        "rationale",
+        "blocking_chain_ids",
+        "human_release_decision"
+      ],
+      "properties": {
+        "recommendation": {"enum": ["block", "conditional", "pass_candidate"]},
+        "rationale": {"$ref": "#/$defs/non_empty_string"},
+        "blocking_chain_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "human_release_decision": {"enum": ["not_recorded", "approved", "rejected", "deferred"]}
+      }
+    },
+    "evidence_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "source_refs"],
+      "properties": {
+        "statement": {"$ref": "#/$defs/non_empty_string"},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/source_ref"}
+        }
+      }
+    },
+    "evidence_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["facts", "inference_summary", "citations", "uncertainty", "unknowns", "assumptions"],
+      "properties": {
+        "facts": {"type": "array", "items": {"$ref": "#/$defs/evidence_item"}},
+        "inference_summary": {"type": "array", "items": {"$ref": "#/$defs/evidence_item"}},
+        "citations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/source_ref"}
+        },
+        "uncertainty": {"type": "array", "items": {"$ref": "#/$defs/evidence_item"}},
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["unknown_id", "statement", "blocking", "owner_role"],
+            "properties": {
+              "unknown_id": {"$ref": "#/$defs/id"},
+              "statement": {"$ref": "#/$defs/non_empty_string"},
+              "blocking": {"type": "boolean"},
+              "owner_role": {"$ref": "#/$defs/non_empty_string"}
+            }
+          }
+        },
+        "assumptions": {"type": "array", "items": {"$ref": "#/$defs/evidence_item"}}
+      }
+    }
+  }
+}

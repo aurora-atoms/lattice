@@ -6990,6 +6990,103 @@
       }
     },
     {
+      "capability_id": "workspace:safety-critical-product-review@1.0.0",
+      "record_type": "workspace_template",
+      "family_name": "safety-critical-product-review",
+      "version": "1.0.0",
+      "capability_role": "reference_workflow",
+      "public_package_status": "contract_validated",
+      "path": "docs/safety-critical-product-review.md",
+      "description": "Public reference workflow for requirement-to-release-gate traceability in safety-critical and consequential cyber-physical product reviews.",
+      "changes": "a bounded consequential action and evidence into a fail-closed requirement-to-release-gate review record",
+      "primary_user": "downstream safety-critical feature owner",
+      "secondary_audience": [
+        "safety reviewers",
+        "architects",
+        "developers",
+        "test owners",
+        "release authorities"
+      ],
+      "trigger": "a safety-critical or consequential product requirement architecture code runtime test or release review needs cross-system invariant evidence",
+      "minimum_inputs": [
+        "bounded consequential action",
+        "source requirement and authority",
+        "authorized architecture code runtime and test evidence",
+        "safety and release owner roles",
+        "applicable external-obligation mapping"
+      ],
+      "outputs": [
+        "validated safety-critical review record and fail-closed release recommendation"
+      ],
+      "evidence_contract": {
+        "required_sections": [
+          "facts",
+          "inference_summary",
+          "citations",
+          "uncertainty",
+          "unknowns",
+          "assumptions"
+        ],
+        "policy": "Separate source-supported facts from inference; preserve severity, evidence status, reproducibility, disposition, unknowns, and human authority."
+      },
+      "success_signals": [
+        "every load-bearing requirement has a complete validated review chain",
+        "missing evidence and non-closed S0 or S1 findings deterministically block",
+        "adversarial testing remains authorized and isolated",
+        "the result remains a recommendation rather than certification or release authority"
+      ],
+      "stop_conditions": [
+        "goal_reached",
+        "stage_gate_reached",
+        "missing_permission",
+        "missing_required_input",
+        "source_unavailable",
+        "insufficient_evidence",
+        "unsafe_test_boundary",
+        "high_risk_boundary",
+        "human_decision_required",
+        "failed_validation"
+      ],
+      "authority_boundary": "Provides a public review contract and deterministic recommendation only; grants no safety, regulatory, certification, architecture, risk-acceptance, merge, release, deployment, or production authority.",
+      "compatibility": {
+        "semantic_versioning": true,
+        "legacy_status_field": "experimental",
+        "migration": "Version the workflow and schema together; downstream records remain pinned to the contract version used for their review."
+      },
+      "deprecated_by": null,
+      "projection": {
+        "source_registry": "registry/workspace_templates.index.jsonl",
+        "legacy_record": {
+          "workspace_id": "safety-critical-product-review@1.0.0",
+          "path": "docs/safety-critical-product-review.md",
+          "status": "experimental",
+          "task_type": "safety_critical_product_review",
+          "agents": [
+            "delivery-capability-conductor@1.0.0"
+          ],
+          "skills": [
+            "feature-understanding-loop",
+            "domain-context-pack",
+            "unasked-questions-generator",
+            "contradiction-adjudication",
+            "risk-ahead",
+            "decision-question-builder",
+            "feature-delivery-case"
+          ],
+          "runtime_targets": [
+            "chatgpt",
+            "codex",
+            "github-copilot",
+            "vscode"
+          ],
+          "install_scopes": [
+            "project"
+          ],
+          "public_export_allowed": true
+        }
+      }
+    },
+    {
       "capability_id": "workspace:senior-attention-runtime@1.0.0",
       "record_type": "workspace_template",
       "family_name": "senior-attention-runtime",
