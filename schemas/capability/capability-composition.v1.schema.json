@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/capability-composition.v1.schema.json",
+  "title": "Lattice Capability Composition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract",
+    "contract_version",
+    "concept_id",
+    "display_name",
+    "status",
+    "public_only",
+    "purpose",
+    "trigger",
+    "entrypoint",
+    "first_stage",
+    "stages",
+    "handoffs",
+    "stop_conditions",
+    "authority_boundary"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "contract": {"const": "lat.capability-composition.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "concept_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "display_name": {"type": "string", "minLength": 3},
+    "status": {
+      "type": "string",
+      "enum": ["draft", "contract_validated", "conformance_validated", "released", "deprecated"]
+    },
+    "public_only": {"const": true},
+    "purpose": {"type": "string", "minLength": 20},
+    "trigger": {"type": "string", "minLength": 20},
+    "entrypoint": {"$ref": "#/$defs/repo_path"},
+    "first_stage": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"},
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/stage"}
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/handoff"}
+    },
+    "stop_conditions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 3}
+    },
+    "authority_boundary": {"type": "string", "minLength": 20}
+  },
+  "$defs": {
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+    },
+    "activation": {
+      "type": "string",
+      "enum": ["always", "task_scoped", "reference_only", "never_by_default"]
+    },
+    "artifact_role": {
+      "type": "string",
+      "enum": [
+        "reference_workflow",
+        "portable_skill_template",
+        "machine_contract",
+        "validator",
+        "synthetic_example",
+        "maintainer_test",
+        "ci_enforcement"
+      ]
+    },
+    "artifact_action": {
+      "type": "string",
+      "enum": ["read", "execute", "none"]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "role", "activation", "action", "purpose"],
+      "properties": {
+        "path": {"$ref": "#/$defs/repo_path"},
+        "role": {"$ref": "#/$defs/artifact_role"},
+        "activation": {"$ref": "#/$defs/activation"},
+        "action": {"$ref": "#/$defs/artifact_action"},
+        "purpose": {"type": "string", "minLength": 8}
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_id",
+        "display_name",
+        "purpose",
+        "entrypoint",
+        "entry_conditions",
+        "consumes",
+        "produces",
+        "next_stages",
+        "artifacts"
+      ],
+      "properties": {
+        "stage_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"},
+        "display_name": {"type": "string", "minLength": 3},
+        "purpose": {"type": "string", "minLength": 12},
+        "entrypoint": {"$ref": "#/$defs/repo_path"},
+        "entry_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 5}
+        },
+        "consumes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 3}
+        },
+        "produces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 3}
+        },
+        "next_stages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"}
+        },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/artifact"}
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_stage", "to_stage", "artifact_contract", "condition", "required_evidence"],
+      "properties": {
+        "from_stage": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"},
+        "to_stage": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"},
+        "artifact_contract": {"type": "string", "minLength": 3},
+        "condition": {"type": "string", "minLength": 12},
+        "required_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 5}
+        }
+      }
+    }
+  }
+}
