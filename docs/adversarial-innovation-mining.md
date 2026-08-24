@@ -1,5 +1,21 @@
 # Adversarial Innovation Mining
 
+## Agent Entry Point
+
+If you arrived at this file without prior Lattice context, do not infer the surrounding workflow from repository folders. Start with the compact composition record in `registry/capability-compositions.index.jsonl`, then open `concepts/safety-critical-adversarial-innovation/README.md`.
+
+The logical concept is:
+
+```text
+Safety-Critical Product Review
+  -> Adversarial Innovation Mining
+  -> Systematic Invention Research
+```
+
+Select only the stage supported by the evidence already available. For this stage, read this workflow as task context. Load the handoff schema only when emitting or checking a structured handoff. Execute the deterministic validator when required, but do not load validator source, tests, or CI YAML into ordinary task context. The machine-readable stage graph, artifact roles, activation scopes, and handoff conditions are in `concepts/safety-critical-adversarial-innovation/concept.json`.
+
+This composition metadata is navigation only. It does not change capability identity, safety/release authority, or IP/legal conclusions.
+
 ## Decision
 
 Use a **separate public-only bridge** between safety-critical product review and systematic invention research.
