@@ -24,6 +24,8 @@ from validate_capability_compositions import (  # noqa: E402
 
 CONCEPT_PATH = ROOT / "concepts" / "safety-critical-adversarial-innovation" / "concept.json"
 REGISTRY_PATH = ROOT / "registry" / "capability-compositions.index.jsonl"
+DISCOVERY_REGISTRY = "registry/capability-compositions.index.jsonl"
+CONCEPT_ENTRYPOINT = "concepts/safety-critical-adversarial-innovation/README.md"
 
 
 class CapabilityCompositionTests(unittest.TestCase):
@@ -36,6 +38,14 @@ class CapabilityCompositionTests(unittest.TestCase):
 
     def test_reference_concept_is_valid(self) -> None:
         self.assertEqual([], validate_all(ROOT))
+
+    def test_repository_root_exposes_composition_discovery(self) -> None:
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(DISCOVERY_REGISTRY, agents)
+        self.assertIn(DISCOVERY_REGISTRY, readme)
+        self.assertIn(CONCEPT_ENTRYPOINT, agents)
+        self.assertIn(CONCEPT_ENTRYPOINT, readme)
 
     def test_agent_can_discover_expected_stage_chain(self) -> None:
         stages = {stage["stage_id"]: stage for stage in self.concept["stages"]}
