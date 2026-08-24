@@ -38,13 +38,14 @@ Do not discover Lattice through a hand-maintained shortlist of Skills. Use nativ
 | Portfolio view | Capability type | Version source | Status source | Entry |
 |---|---|---|---|---|
 | Canonical portfolio | Atomic, selector, workflow, profile, projection, validator, template, or governance contract | `registry/capability-manifest.json` | `registry/capability-manifest.json` | `registry/capability-manifest.json` |
+| Concept composition | Multi-stage logical concept spanning existing artifacts | Owning `concept.json` contract | Owning `concept.json` status | `registry/capability-compositions.index.jsonl` |
 | Skill context projection | Public Skill packages | Canonical manifest | Canonical manifest | `registry/skill-context.catalog.json` |
 | Agent context projection | Public Agent packages | Canonical manifest | Canonical manifest | `registry/agent-context.catalog.json` |
 | Cross-runtime projection | Agent, Skill, MCP, knowledge pack, or workspace template | Canonical manifest | Canonical manifest | `registry/capabilities.index.jsonl` |
 | Fallback routing | Selector compatibility entry | Referenced Skill version | Routing policy | `registry/capability-routing.index.jsonl` |
 | Workflow/Profile extensions | Reference workflow or capability profile | Owning public capability version | Owning public capability status | `registry/skill-context.extensions/` |
 
-The role definitions are normative in [Capability Taxonomy](docs/capability-taxonomy.md). Registry files are deterministic compatibility projections generated from the canonical manifest; legacy `status` fields remain for compatibility while `public_package_status` controls dependency readiness.
+The role definitions are normative in [Capability Taxonomy](docs/capability-taxonomy.md). Registry files are deterministic compatibility projections generated from their owning contracts. The canonical capability manifest remains the identity authority; `registry/capability-compositions.index.jsonl` is only a compact graph for discovering how existing artifacts form a multi-stage concept. Legacy `status` fields remain for compatibility while `public_package_status` controls capability dependency readiness.
 
 Current inventory and context validation:
 
@@ -54,6 +55,8 @@ python scripts/validate_skill_package.py --root skills
 python scripts/validate_capability_context.py --root .
 python scripts/generate_capability_registry_projections.py --root . --check
 python scripts/validate_capability_manifest.py --root .
+python scripts/generate_capability_composition_registry.py --root . --check
+python scripts/validate_capability_compositions.py --root .
 python scripts/validate_public_private_boundary.py --root .
 python scripts/validate_capability_routing.py --root .
 ```
@@ -141,6 +144,22 @@ templates
 
 The initial logical families are Experience-to-Asset, Feature Understanding, Manager Evidence Projection, and Reusable Asset Review. They compose existing capabilities and preserve the boundaries of Helixion, AegisFlow, Memexa, FlowGuard, OpenClaw, and DeliveryYield. DeliveryYield may provide evidence signals; it does not approve delivery or asset promotion.
 
+### Agent Concept Discovery
+
+Repository folders are implementation boundaries, not the agent's mental model. When a user goal spans several workflow stages, consult `registry/capability-compositions.index.jsonl`, open the selected concept entrypoint, and load only the current stage.
+
+The first composition is [Safety-Critical Adversarial Innovation](concepts/safety-critical-adversarial-innovation/README.md):
+
+```text
+Safety-Critical Product Review
+  -> Adversarial Innovation Mining
+  -> Systematic Invention Research
+```
+
+Its machine-readable `concept.json` records stage entry conditions, consumes/produces contracts, handoff evidence, artifact roles, and activation scopes. The consuming agent reads current-stage workflow content, loads schemas/examples only when required, executes validators without treating their source as normal context, and leaves tests/CI unloaded by default.
+
+This composition layer does not create a new active Skill or module and does not replace `registry/capability-manifest.json` as the capability identity authority.
+
 ### Senior Attention
 
 For a bounded engineering task where evidence is scattered, impact is uncertain, error cost is material, or an accountable human must make a value or risk judgment, use the canonical [Senior Attention reference workflow](docs/senior-attention.md).
@@ -168,8 +187,10 @@ For Google-to-coding or other cross-runtime transfer, use the [Cross-Workspace H
 ```text
 skills/                         public capability packages
 agents/                         public Agent packages
+concepts/                       agent-readable multi-stage composition sources
 registry/                       discovery and compatibility projections
 registry/capability-manifest.json canonical public capability identity source
+registry/capability-compositions.index.jsonl compact multi-stage concept discovery projection
 schemas/                        public machine contracts
 feature-delivery-harness-mvp/   Feature Delivery Case conformance testbed
 templates/                      public-safe authoring templates
