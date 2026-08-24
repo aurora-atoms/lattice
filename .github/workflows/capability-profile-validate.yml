@@ -28,6 +28,7 @@ jobs:
           python -m json.tool schemas/capability/capability-profile-runtime.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/portable-case-pack.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/workspace-handoff-verification-request.v1.schema.json >/dev/null
+          python -m json.tool schemas/capability/safety-critical-review.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/attention-admission-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/outcome-receipt.v1.schema.json >/dev/null
           python -m json.tool schemas/capability/harness-mutation-candidate.v1.schema.json >/dev/null
@@ -45,6 +46,8 @@ jobs:
           find examples/capability-profiles -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
           find examples/evidence-wayfinding -name '*.json' -print0 |
+            xargs -0 -n1 python -m json.tool >/dev/null
+          find examples/safety-critical-review -name '*.json' -print0 |
             xargs -0 -n1 python -m json.tool >/dev/null
       - name: Validate portable case pack reference fixture
         run: |
@@ -120,6 +123,11 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_capability_profile_runtime.py' -v
       - name: Test Senior Attention canonical entry
         run: python -m unittest discover -s tests -p 'test_senior_attention_entrypoint.py' -v
+      - name: Validate safety-critical product review contract
+        run: |
+          python scripts/validate_safety_critical_review.py \
+            examples/safety-critical-review/synthetic-target-binding.review.v1.json
+          python -m unittest discover -s tests -p 'test_safety_critical_review.py' -v
       - name: Test Google Workspace Senior Attention adapter
         run: python -m unittest discover -s tests -p 'test_google_workspace_adapter.py' -v
       - name: Validate cross-workspace handoff conformance

@@ -1,0 +1,221 @@
+{
+  "$schema": "../../schemas/capability/capability-composition.v1.schema.json",
+  "contract": "lat.capability-composition.v1",
+  "contract_version": "1.0.0",
+  "concept_id": "safety-critical-adversarial-innovation",
+  "display_name": "Safety-Critical Adversarial Innovation",
+  "status": "contract_validated",
+  "public_only": true,
+  "purpose": "Connect safety-critical product review, adversarial mechanism mining, and bounded public prior-art research without collapsing their separate authority boundaries.",
+  "trigger": "Use when a public or fully synthetic safety-critical product analysis must move from a consequential claim through a reproducible hard case into a technical mechanism candidate and bounded prior-art challenge.",
+  "entrypoint": "concepts/safety-critical-adversarial-innovation/README.md",
+  "first_stage": "safety_review",
+  "stages": [
+    {
+      "stage_id": "safety_review",
+      "display_name": "Safety-Critical Product Review",
+      "purpose": "Establish the requirement-to-release-gate chain and reproduce a competent-baseline hard case.",
+      "entrypoint": "docs/safety-critical-product-review.md",
+      "entry_conditions": [
+        "No validated safety-critical review record exists for the bounded consequential claim.",
+        "The task must establish whether a wrong-world consequence survives a competent baseline."
+      ],
+      "consumes": [
+        "bounded consequential claim",
+        "public or fully synthetic requirement, architecture, runtime, and test evidence"
+      ],
+      "produces": [
+        "lat.safety-critical-review.v1",
+        "reproducibility and release-gate evidence"
+      ],
+      "next_stages": ["innovation_mining"],
+      "artifacts": [
+        {
+          "path": "docs/safety-critical-product-review.md",
+          "role": "reference_workflow",
+          "activation": "task_scoped",
+          "action": "read",
+          "purpose": "Authoritative review workflow for the current stage."
+        },
+        {
+          "path": "schemas/capability/safety-critical-review.v1.schema.json",
+          "role": "machine_contract",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Load only when emitting or checking the structured review record."
+        },
+        {
+          "path": "scripts/validate_safety_critical_review.py",
+          "role": "validator",
+          "activation": "never_by_default",
+          "action": "execute",
+          "purpose": "Execute deterministically; do not load validator source into normal agent context."
+        },
+        {
+          "path": "examples/safety-critical-review/synthetic-target-binding.review.v1.json",
+          "role": "synthetic_example",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Use only when a concrete public-safe example is needed."
+        },
+        {
+          "path": "tests/test_safety_critical_review.py",
+          "role": "maintainer_test",
+          "activation": "never_by_default",
+          "action": "none",
+          "purpose": "Maintainer conformance evidence, not runtime task context."
+        }
+      ]
+    },
+    {
+      "stage_id": "innovation_mining",
+      "display_name": "Adversarial Innovation Mining",
+      "purpose": "Convert a reproduced hard case into a falsifiable reusable technical mechanism and commercial-value research candidate.",
+      "entrypoint": "docs/adversarial-innovation-mining.md",
+      "entry_conditions": [
+        "A competent-baseline hard case is reproduced or otherwise evidenced strongly enough to preserve a bounded mechanism gap.",
+        "The task asks whether the gap supports a reusable technical mechanism candidate rather than only a product fix."
+      ],
+      "consumes": [
+        "lat.safety-critical-review.v1 or equivalent public Product Attack Card",
+        "replay or hard-case evidence",
+        "customer pain and measurable consequence"
+      ],
+      "produces": [
+        "lat.adversarial-innovation-handoff.v1",
+        "retain, revise, reject, challenged, or prior-art-pending research state"
+      ],
+      "next_stages": ["prior_art_research"],
+      "artifacts": [
+        {
+          "path": "docs/adversarial-innovation-mining.md",
+          "role": "reference_workflow",
+          "activation": "task_scoped",
+          "action": "read",
+          "purpose": "Authoritative bridge workflow for failure-to-mechanism reasoning."
+        },
+        {
+          "path": "templates/adversarial-innovation-mining-agent-skill/SKILL.md",
+          "role": "portable_skill_template",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Optional runtime-neutral Skill template for Agent-Skills-compatible downstream runtimes."
+        },
+        {
+          "path": "schemas/capability/adversarial-innovation-handoff.v1.schema.json",
+          "role": "machine_contract",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Load only when emitting or checking the innovation handoff."
+        },
+        {
+          "path": "scripts/validate_adversarial_innovation_handoff.py",
+          "role": "validator",
+          "activation": "never_by_default",
+          "action": "execute",
+          "purpose": "Execute deterministic anti-premature-promotion checks without loading source into normal context."
+        },
+        {
+          "path": "examples/adversarial-innovation/synthetic-target-binding.innovation-handoff.v1.json",
+          "role": "synthetic_example",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Use only when an example of the handoff contract is needed."
+        },
+        {
+          "path": "tests/test_adversarial_innovation_handoff.py",
+          "role": "maintainer_test",
+          "activation": "never_by_default",
+          "action": "none",
+          "purpose": "Maintainer conformance evidence, not runtime task context."
+        },
+        {
+          "path": ".github/workflows/adversarial-innovation-validate.yml",
+          "role": "ci_enforcement",
+          "activation": "never_by_default",
+          "action": "none",
+          "purpose": "Repository enforcement only; consuming agents should not load CI YAML as concept knowledge."
+        }
+      ]
+    },
+    {
+      "stage_id": "prior_art_research",
+      "display_name": "Systematic Invention Research",
+      "purpose": "Challenge the retained mechanism candidate against public prior art and neighboring technical mechanisms.",
+      "entrypoint": "docs/systematic-invention-research-stack.md",
+      "entry_conditions": [
+        "The innovation handoff is valid and the candidate requires bounded public prior-art challenge.",
+        "Public-source coverage and research cutoff can be stated explicitly."
+      ],
+      "consumes": [
+        "lat.adversarial-innovation-handoff.v1",
+        "public patent and technical-source search scope"
+      ],
+      "produces": [
+        "bounded prior-art challenge",
+        "retain, revise, or reject research candidate with strongest counterevidence and coverage gaps"
+      ],
+      "next_stages": [],
+      "artifacts": [
+        {
+          "path": "docs/systematic-invention-research-stack.md",
+          "role": "reference_workflow",
+          "activation": "task_scoped",
+          "action": "read",
+          "purpose": "Authoritative public prior-art research workflow for this stage."
+        },
+        {
+          "path": "templates/systematic-invention-research-agent-skill/SKILL.md",
+          "role": "portable_skill_template",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Optional portable research Skill template for compatible downstream runtimes."
+        },
+        {
+          "path": "templates/systematic-invention-research-agent-skill/research-evidence-receipt.schema.json",
+          "role": "machine_contract",
+          "activation": "reference_only",
+          "action": "read",
+          "purpose": "Load only when producing or checking the public research receipt."
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {
+      "from_stage": "safety_review",
+      "to_stage": "innovation_mining",
+      "artifact_contract": "lat.safety-critical-review.v1",
+      "condition": "Advance only when the hard case survives a competent baseline and the mechanism gap is reproduced or explicitly evidenced.",
+      "required_evidence": [
+        "load-bearing invariant",
+        "replay or equivalent hard-case evidence",
+        "wrong-world consequence",
+        "reproducibility state"
+      ]
+    },
+    {
+      "from_stage": "innovation_mining",
+      "to_stage": "prior_art_research",
+      "artifact_contract": "lat.adversarial-innovation-handoff.v1",
+      "condition": "Advance only when the mechanism survives the simpler-control kill test and requires bounded public prior-art challenge.",
+      "required_evidence": [
+        "missing technical mechanism",
+        "customer pain and measurable value",
+        "strongest counter-control",
+        "kill criterion and current result",
+        "prior-art challenge state"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    "public-only boundary fails",
+    "bounded consequential claim cannot be established",
+    "hard case does not survive a competent baseline",
+    "simpler existing control kills the mechanism candidate",
+    "commercial value remains generic or unmeasurable",
+    "prior-art coverage is insufficient for the requested research state",
+    "human safety, release, legal, IP, or business authority is required"
+  ],
+  "authority_boundary": "This composition provides public workflow navigation only. It does not create a new module, certify safety or release, establish patentability or novelty, or grant private business, merge, deployment, or production authority."
+}

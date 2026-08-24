@@ -1,0 +1,206 @@
+{
+  "$schema": "schemas/capability/safety-critical-review.v1.schema.json",
+  "contract": "lat.safety-critical-review.v1",
+  "review_id": "SCR-SYN-001",
+  "revision": 1,
+  "scope": {
+    "case_ref": "synthetic://feature-delivery-case/target-binding-001",
+    "product_or_feature": "Synthetic dual-node target action broker",
+    "consequential_action": "Issue a simulated action to one selected physical-target lineage",
+    "operating_context": "Two simulated targets and two simulated execution nodes with asynchronous binding updates",
+    "intended_use": "Demonstrate fail-closed target binding after node handoff",
+    "excluded_uses": [
+      "live actuation",
+      "operational targeting",
+      "certification evidence"
+    ],
+    "decision_owner_role": "synthetic feature owner",
+    "release_authority_role": "synthetic release authority",
+    "evidence_cutoff": "2026-08-23T18:00:00Z"
+  },
+  "assurance_boundary": {
+    "internal_review_only": true,
+    "certification_claimed": false,
+    "test_environment": "synthetic",
+    "contract_grants_live_harmful_testing_authority": false,
+    "applicable_external_obligations": [
+      {
+        "obligation_id": "OBL-SYN-001",
+        "source_ref": "synthetic://assurance-plan/system-safety-001",
+        "version_or_date": "v1",
+        "applicability": "mapped",
+        "owner_role": "synthetic safety owner",
+        "rationale": "The fixture maps to a synthetic assurance plan only and makes no certification claim."
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "requirement_id": "REQ-SYN-001",
+      "source_ref": "synthetic://requirements/target-binding#REQ-SYN-001",
+      "source_status": "draft",
+      "source_statement": "The system shall act on the selected target after handoff.",
+      "evaluation": {
+        "verdict": "amend",
+        "defects": [
+          "selected target has no identity domain",
+          "handoff does not invalidate the prior binding",
+          "no observable fail-closed result is required"
+        ],
+        "rationale": "The draft can be satisfied while a stale node-local handle identifies a different simulated target.",
+        "evidence_status": "DERIVED"
+      },
+      "normalized_requirement": {
+        "status": "approved",
+        "when": "the execution node changes after approval",
+        "given": "an approved physical-target lineage and binding version observed before handoff",
+        "shall": "invalidate the old node-local handle and require a verified binding to the approved physical-target lineage",
+        "before_until": "before any simulated consequential command is dispatched and until the new binding is current",
+        "shall_emit": "a structured HOLD or REBIND decision containing the approved and current binding versions",
+        "shall_not": [
+          "reuse the old node-local handle",
+          "transfer the approval to a new binding version",
+          "treat command acknowledgement as physical-target success"
+        ],
+        "safe_state": "HOLD until the current binding is verified",
+        "acceptance_observer": "synthetic integration-test oracle",
+        "authority_owner_role": "synthetic product and safety owner"
+      }
+    }
+  ],
+  "review_chains": [
+    {
+      "chain_id": "CHAIN-SYN-001",
+      "requirement_id": "REQ-SYN-001",
+      "invariant": {
+        "invariant_id": "INV-SYN-001",
+        "statement": "The physical-target lineage approved shall equal the lineage bound to the node-local handle at dispatch.",
+        "harm_prevented": "A valid approval is not applied to the wrong simulated physical target after node handoff.",
+        "applicability": "applicable",
+        "rationale": "The action crosses physical-track, fused-track, and node-local handle identity domains."
+      },
+      "enforcement_points": [
+        {
+          "point_id": "ENF-SYN-001",
+          "kind": "code",
+          "locator": "synthetic://repository/effect-broker#dispatch",
+          "version_ref": "synthetic-commit-001",
+          "mechanism": "The simulated effect broker compares the approved binding version and lineage with the current binding snapshot.",
+          "predicate": "approved_binding_version == current_binding_version and approved_lineage == current_lineage",
+          "verification_status": "verified",
+          "authority_owner_role": "synthetic effect-broker owner",
+          "failure_behavior": "HOLD"
+        }
+      ],
+      "runtime_evidence": [
+        {
+          "evidence_id": "EVD-SYN-001",
+          "evidence_type": "enforcement_decision",
+          "source_ref": "synthetic://runtime-events/dispatch-hold-001",
+          "producer": "synthetic effect broker",
+          "time_and_version_semantics": "Event sequence 42 records approved binding v10 and current binding v11 at dispatch.",
+          "expected_signal": "HOLD with reason code BINDING_VERSION_MISMATCH and no dispatch receipt",
+          "observation_status": "observed",
+          "integrity_and_retention": "Immutable synthetic replay fixture with canonical JSON comparison",
+          "independence_and_common_mode": "The oracle reads broker output and the simulated actuator inbox independently."
+        }
+      ],
+      "adversarial_tests": [
+        {
+          "test_id": "TEST-SYN-001",
+          "level": "L4",
+          "environment": "synthetic",
+          "competent_baseline": [
+            "typed identifiers",
+            "role-based approval",
+            "normal handoff",
+            "structured audit events"
+          ],
+          "preconditions": [
+            "Track-B is approved at binding version v10",
+            "the secondary node creates binding version v11",
+            "the stale v10 handle is locally well-formed"
+          ],
+          "mutation": "Deliver the v11 handoff event before dispatch while retaining the stale v10 node-local handle in the queued action.",
+          "wrong_world_outcome": "The queued approval would address the handle associated with simulated Track-A.",
+          "oracle": "No command reaches the simulated actuator inbox and the broker emits HOLD with both binding versions.",
+          "expected_safe_response": "HOLD",
+          "result": "passed",
+          "result_evidence_ref": "synthetic://test-results/target-binding-l4-001",
+          "replay_ref": "synthetic://replay-fixtures/target-binding-l4-001",
+          "execution_safety": "The fixture has no live device, credential, network, or physical actuator."
+        }
+      ],
+      "failure_classification": {
+        "failure_mode": "wrong-target after stale handoff binding",
+        "severity": "S0",
+        "evidence_status": "OBSERVED",
+        "reproducibility": "deterministic",
+        "finding_status": "verified_closed",
+        "rationale": "The synthetic baseline demonstrates a wrong-target path; the verified broker predicate blocks the same trace."
+      },
+      "release_gate": {
+        "recommended_decision": "pass_candidate",
+        "mandatory_checks": {
+          "requirement_approved": true,
+          "invariant_explicit": true,
+          "enforcement_verified": true,
+          "runtime_evidence_observed": true,
+          "adversarial_test_passed": true,
+          "no_open_s0_s1": true,
+          "unknowns_nonblocking": true,
+          "external_obligations_mapped": true,
+          "test_execution_safe": true
+        },
+        "blocking_reasons": [],
+        "conditional_controls": [],
+        "owner_role": "synthetic safety owner",
+        "retest_ref": "synthetic://test-results/target-binding-l4-001",
+        "human_decision_required": true
+      }
+    }
+  ],
+  "review_verdict": {
+    "recommendation": "pass_candidate",
+    "rationale": "The one synthetic load-bearing chain is complete and its S0 failure mechanism is verified closed in the simulator.",
+    "blocking_chain_ids": [],
+    "human_release_decision": "not_recorded"
+  },
+  "evidence": {
+    "facts": [
+      {
+        "statement": "The synthetic effect broker emitted HOLD and the simulated actuator inbox remained empty.",
+        "source_refs": ["synthetic://test-results/target-binding-l4-001"]
+      }
+    ],
+    "inference_summary": [
+      {
+        "statement": "The verified predicate prevents this bounded stale-binding trace from reaching dispatch.",
+        "source_refs": [
+          "synthetic://repository/effect-broker#dispatch",
+          "synthetic://test-results/target-binding-l4-001"
+        ]
+      }
+    ],
+    "citations": [
+      "synthetic://requirements/target-binding#REQ-SYN-001",
+      "synthetic://repository/effect-broker#dispatch",
+      "synthetic://test-results/target-binding-l4-001"
+    ],
+    "uncertainty": [
+      {
+        "statement": "The fixture does not establish behavior in a real distributed or physical environment.",
+        "source_refs": ["synthetic://assurance-plan/system-safety-001"]
+      }
+    ],
+    "unknowns": [],
+    "assumptions": [
+      {
+        "statement": "The simulator preserves the ordering and identity semantics asserted by the replay fixture.",
+        "source_refs": ["synthetic://replay-fixtures/target-binding-l4-001"]
+      }
+    ]
+  },
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed"
+}

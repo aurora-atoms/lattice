@@ -81,6 +81,72 @@ AUTHORITY_BOUNDARY = (
     "Provides public capability behavior or artifacts only; grants no private business conclusion, "
     "adoption, asset-promotion, manager-wording, merge, release, deployment, or production authority."
 )
+
+# This migration reconstructs the reviewed canonical manifest from compact legacy
+# projections. Most workspace metadata is intentionally generic. The safety-critical
+# reference workflow predates the composition layer and carries stricter evidence,
+# stop, and authority semantics in the canonical manifest; preserve those semantics
+# explicitly during the one-time legacy round-trip rather than weakening the parity
+# check or silently replacing them with generic workspace defaults.
+WORKSPACE_MIGRATION_OVERRIDES: dict[str, dict[str, Any]] = {
+    "safety-critical-product-review": {
+        "changes": "a bounded consequential action and evidence into a fail-closed requirement-to-release-gate review record",
+        "primary_user": "downstream safety-critical feature owner",
+        "secondary_audience": [
+            "safety reviewers",
+            "architects",
+            "developers",
+            "test owners",
+            "release authorities",
+        ],
+        "minimum_inputs": [
+            "bounded consequential action",
+            "source requirement and authority",
+            "authorized architecture code runtime and test evidence",
+            "safety and release owner roles",
+            "applicable external-obligation mapping",
+        ],
+        "outputs": [
+            "validated safety-critical review record and fail-closed release recommendation"
+        ],
+        "evidence_contract": {
+            "required_sections": [
+                "facts",
+                "inference_summary",
+                "citations",
+                "uncertainty",
+                "unknowns",
+                "assumptions",
+            ],
+            "policy": "Separate source-supported facts from inference; preserve severity, evidence status, reproducibility, disposition, unknowns, and human authority.",
+        },
+        "success_signals": [
+            "every load-bearing requirement has a complete validated review chain",
+            "missing evidence and non-closed S0 or S1 findings deterministically block",
+            "adversarial testing remains authorized and isolated",
+            "the result remains a recommendation rather than certification or release authority",
+        ],
+        "stop_conditions": [
+            "goal_reached",
+            "stage_gate_reached",
+            "missing_permission",
+            "missing_required_input",
+            "source_unavailable",
+            "insufficient_evidence",
+            "unsafe_test_boundary",
+            "high_risk_boundary",
+            "human_decision_required",
+            "failed_validation",
+        ],
+        "authority_boundary": "Provides a public review contract and deterministic recommendation only; grants no safety, regulatory, certification, architecture, risk-acceptance, merge, release, deployment, or production authority.",
+        "compatibility": {
+            "semantic_versioning": True,
+            "legacy_status_field": "experimental",
+            "migration": "Version the workflow and schema together; downstream records remain pinned to the contract version used for their review.",
+        },
+    }
+}
+
 CANONICAL_PROJECTION_FIELDS = {
     "version",
     "capability_role",
@@ -419,26 +485,27 @@ def build_manifest(root: Path) -> dict[str, Any]:
     for record in load_jsonl(root / "registry" / "workspace_templates.index.jsonl"):
         family, version = split_versioned_id(str(record["workspace_id"]))
         metadata = workspace_capability_metadata(record)
-        capabilities.append(
-            base_capability(
-                prefix="workspace",
-                record_type="workspace_template",
-                family=family,
-                version=version,
-                role=str(metadata["role"]),
-                status=str(metadata["status"]),
-                path=str(record["path"]),
-                description=str(metadata["description"]),
-                changes=str(metadata["changes"]),
-                primary_user=str(metadata["primary_user"]),
-                secondary_audience=list(metadata["secondary_audience"]),
-                trigger=str(metadata["trigger"]),
-                minimum_inputs=list(metadata["minimum_inputs"]),
-                outputs=list(metadata["outputs"]),
-                source_registry="registry/workspace_templates.index.jsonl",
-                legacy_record=strip_generated_fields(dict(record)),
-            )
+        capability = base_capability(
+            prefix="workspace",
+            record_type="workspace_template",
+            family=family,
+            version=version,
+            role=str(metadata["role"]),
+            status=str(metadata["status"]),
+            path=str(record["path"]),
+            description=str(metadata["description"]),
+            changes=str(metadata["changes"]),
+            primary_user=str(metadata["primary_user"]),
+            secondary_audience=list(metadata["secondary_audience"]),
+            trigger=str(metadata["trigger"]),
+            minimum_inputs=list(metadata["minimum_inputs"]),
+            outputs=list(metadata["outputs"]),
+            source_registry="registry/workspace_templates.index.jsonl",
+            legacy_record=strip_generated_fields(dict(record)),
         )
+        if family in WORKSPACE_MIGRATION_OVERRIDES:
+            capability.update(WORKSPACE_MIGRATION_OVERRIDES[family])
+        capabilities.append(capability)
 
     return {
         "contract": "lat.canonical-capability-manifest.v1",

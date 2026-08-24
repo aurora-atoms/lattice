@@ -21,6 +21,19 @@ native name and description
 
 Native workspaces own capability discovery. Cross-workspace handoffs standardize bounded evidence, unknowns, conflicts, counterevidence, authority, privacy, and verification requirements; they must not require a shared or runtime-specific discovery projection.
 
+## Concept Composition Discovery
+
+Capability identity and multi-stage composition are separate. Do not infer a concept from folder adjacency.
+
+- For one bounded atomic task, continue to use native discovery and `registry/capability-manifest.json`.
+- When a goal spans multiple workflow stages, or when the relationship among `docs/`, schemas, validators, templates, examples, tests, and CI is unclear, consult `registry/capability-compositions.index.jsonl`.
+- Each compact row points to a concept entrypoint. `concepts/<concept-id>/concept.json` is authoritative only for stage composition, handoff conditions, artifact roles, and activation scopes; it is not a second capability identity source.
+- Load `task_scoped` artifacts only for the current stage. Load `reference_only` artifacts only when the current output requires them. Do not load `never_by_default` artifacts into ordinary model context.
+- A validator may be `never_by_default` with action `execute`: run it when required without reading its implementation as task knowledge. Tests and CI are maintainer evidence, not runtime context.
+- Composition metadata never changes evidence strength, capability package status, safety/release verdicts, IP/legal conclusions, or human authority.
+
+For public or fully synthetic safety-critical innovation work, start with `concepts/safety-critical-adversarial-innovation/README.md`. The concept explicitly connects Safety-Critical Product Review -> Adversarial Innovation Mining -> Systematic Invention Research and tells the agent when to enter or stop each stage.
+
 ## Direction Before Capability
 
 Before creating a new Skill, Agent, capability profile, reference workflow, governance surface, or internal platform—or materially expanding an existing one—apply the [Direction Investment Gate](docs/direction-investment-gate.md).
@@ -51,6 +64,19 @@ For a bounded feature-requirement, risk-preflight, bug/rescue, decision-support,
 
 Do not create a parallel Senior Attention Skill, Agent, module, fact store, or always-on conductor. `senior-attention-queue` is only for multiple competing expert requests; a single decision follows the normal bounded decision path.
 
+## Safety-Critical Product Review Entry
+
+For a safety-critical or consequential cyber-physical product requirement, architecture/code review, runtime-evidence review, adversarial test, failure classification, or release recommendation, start with [Safety-Critical Product Review](docs/safety-critical-product-review.md). Use the Senior Attention profile as the runtime allowlist and select only the smallest existing capability for the current evidence gap; do not create a parallel safety Skill, Agent, module, or automated release authority.
+
+- Evaluate and normalize the source requirement before tracing it.
+- Preserve the complete `Requirement -> Invariant -> Enforcement -> Runtime Evidence -> Adversarial Test -> Failure Classification -> Release Gate` chain.
+- Keep severity, evidence status, reproducibility, finding status, and release impact separate.
+- Treat missing load-bearing evidence and every non-closed S0/S1 finding as release-blocking.
+- Run adversarial tests only in explicitly authorized, isolated environments.
+- Treat `pass_candidate` as a recommendation only; humans retain safety, regulatory, architecture, deployment, and release authority.
+- Keep real product requirements, code, telemetry, incidents, owners, and release decisions in the private downstream repository.
+- When a reproduced public/synthetic hard case is being mined for a reusable technical mechanism or patent-research candidate, route through `concepts/safety-critical-adversarial-innovation/README.md` rather than jumping directly from a release finding to patent language.
+
 ## Public Research and Invention Learning Entry
 
 For public-only patent learning, technique mining, systematic invention training, or creation of a portable research Agent Skill, start with [Systematic Invention Research Stack](docs/systematic-invention-research-stack.md).
@@ -64,6 +90,7 @@ For public-only patent learning, technique mining, systematic invention training
 - Keep large corpora and examples outside `SKILL.md`; use progressive disclosure and deterministic scripts for normalization, validation, statistics, and report scaffolding where practical.
 - Use `templates/systematic-invention-research-agent-skill/` as a portable downstream Skill template for GitHub Copilot, Gemini CLI, and other Agent-Skills-compatible runtimes. Re-verify current vendor documentation before installation.
 - Store compact evidence receipts and structured artifacts rather than raw transcripts or hidden chain-of-thought.
+- When the candidate originates from a safety-critical hard case, preserve the `lat.adversarial-innovation-handoff.v1` boundary and enter through the matching concept composition instead of treating the safety finding itself as novelty evidence.
 
 This reference workflow does not create a new active Lattice module or automatically promote a downstream Skill to `team_available`.
 
@@ -101,7 +128,8 @@ Do not create a parallel governance Skill or a new control module. Extend `latti
 - Version changes to required inputs, permissions, outputs, evidence, success, stop behavior, authority, or behavior semantics under `docs/capability-context-contract.md`.
 - Public package status and private downstream adoption status are separate lifecycles.
 - Regenerate registry projections with `scripts/generate_capability_registry_projections.py`; never hand-edit a generated capability record.
-- Run `scripts/validate_capability_manifest.py` and `scripts/validate_public_private_boundary.py` before finalizing identity, role, status, profile, or fixture changes.
+- Regenerate concept composition projections with `scripts/generate_capability_composition_registry.py`; never treat a composition projection as capability identity.
+- Run `scripts/validate_capability_manifest.py`, `scripts/validate_capability_compositions.py`, and `scripts/validate_public_private_boundary.py` before finalizing identity, composition, role, status, profile, or fixture changes.
 - Preserve compatibility entrances or publish an explicit migration note; do not silently rename, remove, or reclassify a public capability.
 
 ## Required Result and Human Authority

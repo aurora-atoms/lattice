@@ -1,0 +1,143 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-08-23-safety-critical-product-review",
+  "status": "succeeded",
+  "artifacts": [
+    {
+      "artifact_id": "safety-critical-review-workflow",
+      "kind": "reference_workflow",
+      "format": "markdown",
+      "path": "docs/safety-critical-product-review.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "safety-critical-review-schema",
+      "kind": "machine_contract",
+      "format": "json_schema_draft_2020_12",
+      "path": "schemas/capability/safety-critical-review.v1.schema.json",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "safety-critical-review-validator",
+      "kind": "semantic_validator",
+      "format": "python",
+      "path": "scripts/validate_safety_critical_review.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "safety-critical-review-fixture",
+      "kind": "synthetic_conformance_fixture",
+      "format": "json",
+      "path": "examples/safety-critical-review/synthetic-target-binding.review.v1.json",
+      "visible": true,
+      "write_status": "written",
+      "notes": "simulation_status=synthetic_reference and downstream_adoption_status=not_observed"
+    },
+    {
+      "artifact_id": "safety-critical-review-tests",
+      "kind": "conformance_tests",
+      "format": "python_unittest",
+      "path": "tests/test_safety_critical_review.py",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "Both user-supplied drafts were evaluated without copying their local paths or private source material into the public contract.",
+        "source_refs": ["docs/safety-critical-product-review.md#source-evaluation"],
+        "confidence": "high"
+      },
+      {
+        "claim": "The committed synthetic record passes the JSON Schema and semantic validator, and the negative conformance suite passes.",
+        "source_refs": [
+          "schemas/capability/safety-critical-review.v1.schema.json",
+          "scripts/validate_safety_critical_review.py",
+          "tests/test_safety_critical_review.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Canonical registry, workspace, context, routing, and public-private validators pass after projection regeneration.",
+        "source_refs": [
+          "registry/capability-manifest.json",
+          "registry/workspace_templates.index.jsonl",
+          "registry/capabilities.index.jsonl"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "A reference workflow plus machine contract is the smallest sufficient public Lattice form because existing capabilities already own context, risk, contradiction, and human-decision work.",
+        "based_on": [
+          "docs/direction-investment-gate.md",
+          "docs/senior-attention.md",
+          "registry/skill-context.catalog.json"
+        ],
+        "uncertainty": "Real downstream usefulness and domain completeness remain unobserved."
+      }
+    ],
+    "citations": [
+      "docs/safety-critical-product-review.md",
+      "schemas/capability/safety-critical-review.v1.schema.json",
+      "scripts/validate_safety_critical_review.py",
+      "examples/safety-critical-review/synthetic-target-binding.review.v1.json",
+      "tests/test_safety_critical_review.py"
+    ],
+    "uncertainty": [
+      "No real downstream safety-critical product review was performed.",
+      "Applicable regulatory and certification obligations remain product, jurisdiction, and domain specific."
+    ],
+    "unknowns": [
+      "Independent safety-reviewer acceptance and operational value are not observed.",
+      "No downstream adoption state beyond not_observed is established."
+    ],
+    "assumptions": [
+      "The supplied standards may be used as local source material but must not be copied into public Lattice.",
+      "The next real use will occur in a private downstream repository with accountable safety and release owners."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested governance change is represented in the owned contract",
+      "result": "met",
+      "evidence_refs": ["docs/safety-critical-product-review.md"]
+    },
+    {
+      "signal": "schema, validator, registry, routing, public-private, and regression checks pass",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/validate_safety_critical_review.py",
+        "tests/test_safety_critical_review.py",
+        "registry/capability-manifest.json"
+      ]
+    },
+    {
+      "signal": "behavior, safety, evidence, stop, and human-authority boundaries are explicit",
+      "result": "met",
+      "evidence_refs": [
+        "docs/safety-critical-product-review.md",
+        "schemas/capability/safety-critical-review.v1.schema.json"
+      ]
+    },
+    {
+      "signal": "real downstream use and independent safety-owner acceptance are established",
+      "result": "not_evaluated",
+      "evidence_refs": []
+    }
+  ],
+  "stop": {
+    "reason": "goal_reached",
+    "condition": "The public reference workflow, machine contract, validator, synthetic fixture, CI entry, and registry projections are complete and locally validated.",
+    "retry_count": 1,
+    "retry_allowed": false,
+    "next_step": "Apply the pinned contract to one authorized private downstream feature_delivery_case and obtain accountable safety and release review."
+  },
+  "generated_at": "2026-08-24T03:35:43Z"
+}
