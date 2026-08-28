@@ -56,15 +56,15 @@ class DomainContextPackContractTests(unittest.TestCase):
                 "unusable_conditions": ["fanout changes event counts", "tenant scope cannot be preserved"]
             },
             "modeling_questions": [
-                {"question_id": "MQ-ENTITY", "dimension": "entity_boundary", "question": "What is one event?", "status": "supported", "blocking": true, "evidence_needed": "bounded requirement and event contract"},
-                {"question_id": "MQ-GRAIN", "dimension": "grain", "question": "What is the required row grain?", "status": "supported", "blocking": true, "evidence_needed": "consumer contract and live counts"},
-                {"question_id": "MQ-KEY", "dimension": "key", "question": "Is event_id stable and unique?", "status": "supported", "blocking": true, "evidence_needed": "targeted duplicate check"},
-                {"question_id": "MQ-JOIN", "dimension": "join_cardinality", "question": "Does account enrichment preserve event grain?", "status": "supported", "blocking": true, "evidence_needed": "two-sided cardinality check"},
-                {"question_id": "MQ-AUTH", "dimension": "source_authority", "question": "Which source owns identity and event time?", "status": "resolved", "blocking": true, "evidence_needed": "source ownership evidence"},
-                {"question_id": "MQ-TIME", "dimension": "temporal_semantics", "question": "Which timestamp is business event time?", "status": "supported", "blocking": true, "evidence_needed": "requirement plus observed timestamps"},
-                {"question_id": "MQ-DEDUP", "dimension": "deduplication", "question": "How are retries reconciled?", "status": "supported", "blocking": true, "evidence_needed": "duplicate/replay evidence"},
-                {"question_id": "MQ-SCHEMA", "dimension": "schema_scope", "question": "Which versions are covered?", "status": "supported", "blocking": true, "evidence_needed": "version-bounded evidence"},
-                {"question_id": "MQ-GOLD", "dimension": "gold_fit", "question": "Can the candidate satisfy the consumer?", "status": "supported", "blocking": true, "evidence_needed": "consumer-fit check"}
+                {"question_id": "MQ-ENTITY", "dimension": "entity_boundary", "question": "What is one event?", "status": "supported", "blocking": True, "evidence_needed": "bounded requirement and event contract"},
+                {"question_id": "MQ-GRAIN", "dimension": "grain", "question": "What is the required row grain?", "status": "supported", "blocking": True, "evidence_needed": "consumer contract and live counts"},
+                {"question_id": "MQ-KEY", "dimension": "key", "question": "Is event_id stable and unique?", "status": "supported", "blocking": True, "evidence_needed": "targeted duplicate check"},
+                {"question_id": "MQ-JOIN", "dimension": "join_cardinality", "question": "Does account enrichment preserve event grain?", "status": "supported", "blocking": True, "evidence_needed": "two-sided cardinality check"},
+                {"question_id": "MQ-AUTH", "dimension": "source_authority", "question": "Which source owns identity and event time?", "status": "resolved", "blocking": True, "evidence_needed": "source ownership evidence"},
+                {"question_id": "MQ-TIME", "dimension": "temporal_semantics", "question": "Which timestamp is business event time?", "status": "supported", "blocking": True, "evidence_needed": "requirement plus observed timestamps"},
+                {"question_id": "MQ-DEDUP", "dimension": "deduplication", "question": "How are retries reconciled?", "status": "supported", "blocking": True, "evidence_needed": "duplicate/replay evidence"},
+                {"question_id": "MQ-SCHEMA", "dimension": "schema_scope", "question": "Which versions are covered?", "status": "supported", "blocking": True, "evidence_needed": "version-bounded evidence"},
+                {"question_id": "MQ-GOLD", "dimension": "gold_fit", "question": "Can the candidate satisfy the consumer?", "status": "supported", "blocking": True, "evidence_needed": "consumer-fit check"}
             ],
             "source_roles": [
                 {
@@ -97,7 +97,7 @@ class DomainContextPackContractTests(unittest.TestCase):
                     "repo://synthetic/contracts/order-event-v3#idempotency-key"
                 ],
                 "unknown_refs": [],
-                "production_approved": false
+                "production_approved": False
             }
         }
         return value
