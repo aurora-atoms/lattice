@@ -23,7 +23,7 @@ Require a bounded system or task objective, source locations, permissions, and a
 
 ## Outputs
 
-Produce `system-map.v1.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
+Produce a System Map v1 JSON artifact, a concise Markdown companion, and `lat.capability.run_result.v1`.
 
 Default writeback:
 
@@ -63,7 +63,7 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 ## Workflow
 
 1. Bound the system, learner role, task, and time horizon.
-2. Query ConPort first when available; otherwise inspect compact metadata and targeted entry points.
+2. Query ConPort MCP before loading or searching full Skill text when available; otherwise inspect compact metadata and targeted entry points.
 3. State purpose, users, observable outcomes, and non-goals.
 4. Identify deployment/runtime units, trust boundaries, and ingress, scheduler, worker, event, CLI, UI, or API entry points.
 5. Trace one golden path and one representative failure path.

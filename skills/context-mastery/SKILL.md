@@ -1,6 +1,6 @@
 ---
 name: context-mastery
-description: Use for selecting and coordinating the smallest sufficient context-learning capability for system mental models, code-originated runtime-effect verification, layered learning, task-specific domain context, negative knowledge, similar work, expert decision-question preparation, and consequential missing-question discovery. Input is a bounded task, user role, repository or knowledge metadata, permissions, historical Delivery Cases, and current evidence; output is a routing decision plus an evidence-linked system map, learning path, domain context pack, negative-knowledge pack, analogous cases, decision-question packet, unasked-questions gap map, or teach-back checkpoint. Do not use as a raw repository dump, generic summarizer, retrieval implementation, blind live-system search, or substitute for personal understanding at critical control points; preserve behavior, provenance, uncertainty, validation, least privilege, and human authority.
+description: Use for selecting the smallest sufficient capability for system understanding, code-originated runtime-effect verification, layered learning, task context, negative knowledge, analogous work, expert questions, and missing-question discovery. Input is a bounded task, role, source metadata, permissions, evidence, and context budget; output is a routing decision plus the selected evidence-linked artifact. Do not use for raw dumps, generic summaries, retrieval implementation, blind live searches, or as a substitute for human understanding at critical controls; preserve provenance, uncertainty, least privilege, validation, and human authority.
 ---
 
 # Context Mastery
@@ -37,7 +37,7 @@ For missing-question discovery, also require the reviewed artifact, delivery sta
 
 ## Outputs
 
-Produce `context-mastery-selection.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
+Produce a Context Mastery Selection JSON artifact, a concise Markdown companion, and `lat.capability.run_result.v1`.
 
 Default writeback:
 
@@ -74,7 +74,7 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 ## Workflow
 
 1. Bound task, caller, output, decision or review gate, permissions, and budget.
-2. Query ConPort and compact capability or source metadata first.
+2. Query ConPort MCP before loading or searching full Skill text when available; otherwise inspect compact capability or source metadata first.
 3. Classify code-originated runtime verification versus data-originated discovery, then compare the task against B01-B07 and select one primary capability.
 4. Invoke B01-B04, B06, or B07 dedicated Skills when applicable.
 5. Add another capability only for a named dependency, independent check, conflict, or evidence gap.
@@ -83,7 +83,7 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 8. For B06, resolve discoverable facts before escalating and require two to four comparable options that unlock one action.
 9. For B07, remove generic or already-answered questions, rank retained gaps by impact and timing, and preserve human authority over blockers and accepted uncertainty.
 10. Record plausible capabilities and sources intentionally excluded.
-11. Keep routing rules stable and task evidence dynamic.
+11. Keep invariant routing rules in the stable prefix and task evidence in a bounded dynamic suffix.
 
 ## Rules
 
