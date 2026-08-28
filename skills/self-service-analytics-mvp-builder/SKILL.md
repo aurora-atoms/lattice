@@ -1,6 +1,6 @@
 ---
 name: self-service-analytics-mvp-builder
-description: Build or extend a commercial, scenario-specific self-service analytics MVP from input sources such as customer requirements, existing repo files, metric definitions, data contracts, and architecture constraints while preserving existing behavior, metric semantics, tenant isolation, validation, and safety. Use when a customer or use case is known and the user wants output such as a practical plan, repo scaffold, Fabric or Power BI architecture, semantic model, embedded analytics design, tenant security model, Gold layer contract, action loop, or delivery checklist. Do not use for broad platform surveys, raw-table exposure, unbounded BI transformation, production deployment without approval, or AI features before the semantic model is governed.
+description: Build or extend a commercial, scenario-specific self-service analytics MVP from input sources such as customer requirements, existing repo files, metric definitions, data contracts, and architecture constraints while preserving existing behavior, metric semantics, tenant isolation, validation, and safety. Use when a customer or use case is known, or when an existing dashboard interaction needs governed deeper analysis and a visible output or contract. Do not use for broad platform surveys, raw-table exposure, unbounded BI transformation, production deployment without approval, or AI features before the semantic model is governed.
 ---
 
 # Self-service analytics MVP builder
@@ -25,6 +25,7 @@ Use this skill when the target customer or use case is known and the request inv
 - Plan or scaffold a repo for Fabric, Power BI, embedded analytics, or a supporting product app.
 - Define Gold-layer, semantic-model, metric, tenant-security, action-loop, or delivery contracts.
 - Extend an existing MVP while preserving its established behavior and interfaces.
+- Govern analytics that originate from a dashboard click, selection, drill, or visual interaction.
 
 ## Do Not Use When
 
@@ -49,6 +50,20 @@ Produce only the artifacts required by the request, such as:
 - Concrete repo changes or a runnable scaffold.
 - Metric, Gold-layer, semantic-model, embedded-BI, tenant-security, telemetry, or action-loop contracts.
 - A validation summary with assumptions, unresolved risks, and next customization points.
+- An interaction snapshot, intent decision, reuse decision, projection contract, or validated result boundary.
+
+Default writeback paths are:
+
+```text
+artifacts/self-service-analytics-mvp-builder/<scope-id>/<run-id>/interaction-analytics-projection.json
+artifacts/capability-runs/self-service-analytics-mvp-builder/<run-id>/run-result.json
+```
+
+When write permission is unavailable, return the complete structured result inline with `write_status=returned_inline`.
+
+## Evidence
+
+Separate observed interaction state, inferred or clarified intent, implemented visual behavior, governed semantic context, live-data evidence, counterevidence, unknowns, assumptions, and permission limits. Classify each item as `FACT`, `INFERENCE`, or `UNKNOWN`, and preserve uncertainty explicitly. Every load-bearing metric, filter, relationship, security, cost, and result claim needs an addressable evidence reference. Do not treat model agreement, DataHub metadata, code alone, or successful SQL as verification.
 
 ## Priority Order
 
@@ -58,6 +73,7 @@ Produce only the artifacts required by the request, such as:
 4. Store workflow state in the product app/database, not only Power BI.
 5. Ship a useful embedded experience before adding broad self-service or AI.
 6. Track refresh, usage, actions, and metric changes.
+7. For interaction-originated analysis, reuse governed semantics before composing a temporary projection.
 
 ## Workflow
 
@@ -70,6 +86,7 @@ For any implementation or design request:
 5. Select only the references needed for the immediate design or implementation decision.
 6. Produce concrete repo changes or run the scaffold script when files are requested.
 7. Verify contracts, tenant isolation, metric semantics, runnable behavior, and the demo path before reporting completion.
+8. For a dashboard interaction, capture the bounded interaction snapshot, infer or clarify analytical intent, reconstruct the parent visual semantic contract, apply the reuse gate, and only then create a validated projection candidate when a named gap remains.
 
 Avoid long platform surveys. Explain alternatives only when they affect the immediate MVP decision.
 
@@ -120,6 +137,14 @@ SSAMVP.009 | MUST | quality | preserve existing behavior, metric semantics, tena
 SSAMVP.010 | MUST | tokens | optimize quality-adjusted token ROI and load only task-relevant references
 SSAMVP.011 | SHOULD | prompt | keep a stable prefix for shared rules and put scenario-specific inputs in the dynamic suffix
 SSAMVP.012 | NEVER | completion | claim completion without runnable evidence or a clearly identified documentation-only outcome
+SSAMVP.013 | MUST | interaction | treat a dashboard selection as intent evidence and preserve observed state separately from inferred intent
+SSAMVP.014 | MUST | reuse | check existing governed metrics dimensions drill paths and certified analyses before composing a projection
+SSAMVP.015 | MUST | continuity | preserve parent metric semantics material filters time behavior aggregation and authorization ceiling
+SSAMVP.016 | NEVER | projection | treat generated SQL or a temporary projection as the canonical semantic model or Gold asset
+SSAMVP.017 | MUST | validation | validate security scope grain fanout compute budget and result semantics before display
+SSAMVP.018 | NEVER | ambiguity | silently choose among materially different analytical intents
+SSAMVP.019 | MUST | promotion | keep interaction projections candidate-only and require human review before durable reuse
+SSAMVP.020 | NEVER | context | load DataHub or code context for a click without a named evidence gap
 
 ## Response template
 
@@ -139,6 +164,17 @@ Before returning:
 - Confirm embedded access maps app users to tenant and role boundaries without exposing raw source data.
 - Confirm assumptions, `TODO` placeholders, unresolved risks, and production actions requiring approval are explicit.
 - Run `python3 scripts/validate_skill_package.py --root skills/self-service-analytics-mvp-builder` after editing this skill package.
+
+## Success Signals
+
+- The interaction snapshot is bounded and observed state is separate from inferred intent; each signal is evaluated as `met`, `not met`, or `not evaluated`.
+- Existing governed semantics are checked before any projection is composed.
+- Parent metric, material filters, security scope, grain, compute budget, and result semantics are validated or explicitly blocked.
+- The structured result preserves evidence references, unknowns, conflicts, and the candidate-only promotion boundary.
+
+## Stop Conditions
+
+Stop when the interaction is ambiguous, permission or semantic evidence is missing, continuity or grain validation fails, the interactive compute budget is exceeded, result validation fails, or a reusable candidate requires human review. Stop at the requested artifact or next reviewable stage when a risk, security, privacy, compliance, or safety boundary is reached; never silently widen scope or claim production/Gold approval.
 
 ## Failure Modes
 
@@ -160,3 +196,5 @@ Load only the reference needed for the current request:
 - `references/semantic-model.md`: metric contract, Gold tables, DAX/model naming, AI-ready metadata.
 - `references/security-embedded.md`: Power BI Embedded, RLS, tenant isolation, workspace strategy.
 - `references/platform-decisions.md`: Fabric, storage mode, transformation, environment, and cost tradeoffs.
+- `references/interaction-driven-analytics.md`: interaction snapshots, intent, semantic reuse, temporary projections, continuity gates, compute bounds, and promotion.
+- `schemas/interaction-analytics-projection.v1.schema.json`: task-scoped machine contract for interaction-originated analytical decisions.

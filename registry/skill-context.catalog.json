@@ -639,17 +639,17 @@
     },
     {
       "name": "self-service-analytics-mvp-builder",
-      "changes": "a known analytics scenario into a governed runnable vertical slice",
+      "changes": "a known analytics scenario or governed visual interaction into a bounded validated analytics capability",
       "primary_user": "analytics MVP agent",
       "secondary_audience": [
         "product owners, analytics developers, and customer stakeholders"
       ],
-      "trigger": "a paid scenario or first use case is known",
+      "trigger": "a paid scenario or first use case is known, or an existing dashboard interaction requests governed deeper analysis",
       "minimum": [
-        "target user, recurring decision, and metric constraints"
+        "target user, recurring decision, metric constraints, or bounded interaction state"
       ],
       "outputs": [
-        "bounded MVP plan or scaffold"
+        "bounded MVP plan or scaffold, or interaction analytics decision contract"
       ],
       "runtime_targets": [
         "chatgpt",

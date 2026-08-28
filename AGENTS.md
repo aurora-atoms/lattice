@@ -83,6 +83,17 @@ modeling decision: "what evidence supports a Silver model candidate?"
   -> targeted live-data evidence and cross-source reconciliation
   -> adversarial challenge + Gold-fit check
   -> candidate / partial / blocked -> human review
+
+interaction-driven analytics: "a user selected an existing visual and wants deeper information"
+  -> self-service-analytics-mvp-builder
+  -> Interaction Snapshot + Analytical Intent
+  -> Parent Visual Semantic Contract
+  -> Existing Semantic Reuse Gate
+  -> named code/data gap only -> bounded context-mastery or DataHub/live evidence
+  -> Interaction-Scoped Analytical Projection
+  -> semantic/filter/security/grain/cost validation
+  -> compute plan + result validation
+  -> reusable candidate only -> human review
 ```
 
 The default rules are:
@@ -98,6 +109,9 @@ The default rules are:
 - for a modeling decision, start from the downstream consumer and named modeling questions; classify field-level source roles, verify grain/key/join/time/dedup assumptions against targeted live evidence, and keep the result candidate-scoped;
 - use `system-mental-model` in a modeling task only when bounded code inspection is needed to establish implemented semantics; source code does not automatically determine the route or desired business meaning;
 - treat DataHub relationships as candidate joins, profiling uniqueness as a hypothesis, and historical queries as usage evidence rather than business authority;
+- for an interaction-driven request, treat the click as intent evidence rather than a complete specification; reuse governed analytics before composing a temporary projection;
+- preserve the parent metric, material filters, authorization ceiling, time semantics, grain, and aggregation behavior; do not treat successful generated SQL as semantic validation;
+- use `self-service-analytics-mvp-builder` as the primary owner; use context capabilities only for a named evidence gap, and never promote an interaction projection directly to Gold or a durable metric;
 - use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only for an actual retrieval-build/evaluation task after an existing DataHub capability is shown insufficient;
 - keep real schemas, lineage, queries, samples, incidents, business semantics, credentials, and endpoints private downstream.
 
