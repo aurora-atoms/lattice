@@ -2,7 +2,7 @@
   "record_type": "lat.capability.run_result.v1",
   "capability_id": "skill:lattice-governor@1.2.0",
   "run_id": "2026-08-28-silver-modeling-guidance",
-  "status": "succeeded",
+  "status": "partial",
   "artifacts": [
     {
       "artifact_id": "silver-modeling-routing-map",
@@ -32,20 +32,20 @@
     {
       "artifact_id": "domain-context-pack-modeling-discipline",
       "kind": "skill_package",
-      "format": "markdown_and_json_evals",
+      "format": "markdown_json_schema_and_evals",
       "path": "skills/domain-context-pack",
       "visible": true,
       "write_status": "written",
-      "notes": "minor version 1.3.0; existing machine schema reused"
+      "notes": "minor version 1.3.0; existing lat.domain_context_pack.v1 contract extended with an optional typed modeling_decision section"
     },
     {
-      "artifact_id": "silver-modeling-replay",
-      "kind": "synthetic_behavioral_replay",
+      "artifact_id": "silver-modeling-conformance-replay",
+      "kind": "synthetic_deterministic_conformance_replay",
       "format": "python",
       "path": "scripts/replay_silver_modeling_guidance.py",
       "visible": true,
       "write_status": "written",
-      "notes": "simulation_status=synthetic_reference and downstream_adoption_status=not_observed"
+      "notes": "simulation_status=synthetic_reference; downstream_adoption_status=not_observed; agent_behavior_status=not_evaluated"
     },
     {
       "artifact_id": "silver-modeling-replay-tests",
@@ -67,43 +67,42 @@
   "evidence": {
     "facts": [
       {
-        "claim": "Scenario 2 is implemented by composing and versioning the existing context-mastery and domain-context-pack capabilities without creating a new Skill, active module, data platform, adapter, or modeling schema.",
+        "claim": "Scenario 2 remains implemented by composing the existing context-mastery and domain-context-pack capabilities without creating a new Skill, active module, data platform, adapter, or separate modeling schema.",
         "source_refs": [
           "skills/context-mastery/SKILL.md",
           "skills/domain-context-pack/SKILL.md",
-          "registry/capability-manifest.json"
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json"
         ],
         "confidence": "high"
       },
       {
-        "claim": "The synthetic replay covers clean candidate, false uniqueness, join fanout, temporal mismatch, conflicting authority, late or duplicate events, schema evolution, Gold mismatch, and insufficient evidence while never approving production.",
+        "claim": "The Domain Context Pack machine contract now requires a typed modeling_decision section whenever task.origin=modeling_decision and makes production approval structurally false for the Silver candidate.",
+        "source_refs": [
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+          "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+          "skills/domain-context-pack/evals/test_domain_context_pack.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The synthetic replay is classified as deterministic guidance conformance rather than native-agent behavioral proof and includes freshness, governance, and compound multi-failure cases.",
         "source_refs": [
           "scripts/replay_silver_modeling_guidance.py",
           "tests/test_silver_modeling_guidance_replay.py",
           "reports/datahub-silver-modeling-replay-2026-08-28.md"
         ],
         "confidence": "high"
-      },
-      {
-        "claim": "Canonical projections, manifest, context, composition, public-private, package, Domain Context Pack, Scenario 1 regression, Scenario 2 replay, and all 321 repository tests passed locally.",
-        "source_refs": [
-          "registry/capability-manifest.json",
-          "skills/domain-context-pack/evals/test_domain_context_pack.py",
-          "tests/test_operational_evidence_guidance_replay.py",
-          "tests/test_silver_modeling_guidance_replay.py"
-        ],
-        "confidence": "high"
       }
     ],
     "inference_summary": [
       {
-        "conclusion": "A modeling-decision route plus task-scoped contracts, evidence-class separation, adversarial checks, and a candidate-only boundary is the smallest sufficient hardening because DataHub and Unity Catalog already own the adjacent platform capabilities.",
+        "conclusion": "Making the modeling contracts machine-checkable and downgrading the synthetic replay claim closes the two review blockers without turning Lattice into a modeling runtime.",
         "based_on": [
-          "reports/datahub-context-architecture-research-2026-08-27.md",
-          "reports/datahub-agentic-data-scenarios-innovation-research-2026-08-28.md",
-          "docs/datahub-context-guidance.md"
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+          "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+          "reports/datahub-silver-modeling-replay-2026-08-28.md"
         ],
-        "uncertainty": "Real downstream usefulness and cross-model agent behavior remain unobserved."
+        "uncertainty": "Remote CI for the repaired head and context-isolated external-agent behavior remain unobserved at the time this run result was written."
       }
     ],
     "citations": [
@@ -111,21 +110,25 @@
       "docs/datahub-context-guidance.md",
       "skills/context-mastery/SKILL.md",
       "skills/domain-context-pack/SKILL.md",
+      "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+      "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+      "skills/domain-context-pack/evals/test_domain_context_pack.py",
       "reports/datahub-silver-modeling-replay-2026-08-28.md",
       "scripts/replay_silver_modeling_guidance.py",
       "tests/test_silver_modeling_guidance_replay.py"
     ],
     "uncertainty": [
       "No real DataHub, Unity Catalog, Databricks, database, or private Silver-modeling case was exercised.",
-      "Deterministic replay and repository tests do not establish external coding-agent behavior."
+      "No external context-isolated Codex, Copilot, Claude Code, Gemini CLI, or other model run was executed.",
+      "Remote CI results for the repaired PR head are not yet represented in this artifact."
     ],
     "unknowns": [
-      "Downstream field-level authority resolution, source permissions, and live-query interfaces remain environment specific.",
-      "ConPort was unavailable in this runtime, so authoritative repository files and generated registries were read directly."
+      "Downstream field/decision-level authority resolution, source permissions, and live-query interfaces remain environment specific.",
+      "Cross-model agent behavioral compliance remains not_evaluated."
     ],
     "assumptions": [
-      "The existing Domain Context Pack typed source and context-item records are sufficient for public task-scoped modeling guidance without a second permanent schema.",
-      "A real adoption trial will keep proprietary schemas, business rules, queries, samples, and decisions in a private downstream repository."
+      "The compact typed modeling_decision section is sufficient for public conformance while richer private modeling artifacts remain downstream.",
+      "The existing 1.3.0 minor version remains the unreleased Scenario 2 version because these changes repair the same open PR before merge."
     ]
   },
   "success_signals": [
@@ -140,42 +143,40 @@
       ]
     },
     {
-      "signal": "changed Skill packages have increased semantic versions and regenerated projections",
+      "signal": "Scenario 2 modeling requirements are machine-checkable in the existing Domain Context Pack contract",
       "result": "met",
       "evidence_refs": [
-        "registry/capability-manifest.json",
-        "registry/capability-context-policy.json",
-        "registry/skill-context.catalog.json"
+        "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+        "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+        "skills/domain-context-pack/evals/test_domain_context_pack.py"
       ]
     },
     {
-      "signal": "behavioral replay challenges the required failure modes and never grants production authority",
+      "signal": "deterministic replay includes freshness, governance, and compound-failure gates without claiming external-agent behavior",
       "result": "met",
       "evidence_refs": [
         "scripts/replay_silver_modeling_guidance.py",
-        "tests/test_silver_modeling_guidance_replay.py"
+        "tests/test_silver_modeling_guidance_replay.py",
+        "reports/datahub-silver-modeling-replay-2026-08-28.md"
       ]
     },
     {
-      "signal": "Scenario 1 regression and repository validation pass",
-      "result": "met",
-      "evidence_refs": [
-        "tests/test_operational_evidence_guidance_replay.py",
-        "tests/test_silver_modeling_guidance_replay.py"
-      ]
+      "signal": "remote validators and repository tests pass on the repaired PR head",
+      "result": "not_evaluated",
+      "evidence_refs": []
     },
     {
-      "signal": "real downstream use and accountable domain-owner acceptance are established",
+      "signal": "context-isolated external coding-agent behavior is established",
       "result": "not_evaluated",
       "evidence_refs": []
     }
   ],
   "stop": {
-    "reason": "goal_reached",
-    "condition": "Scenario 2 routing, modeling guidance, versioned Skill behavior, evals, synthetic replay, and local repository validation are complete.",
+    "reason": "stage_gate_reached",
+    "condition": "Review blockers are repaired in repository content; remote CI and final review remain the next evidence gates.",
     "retry_count": 0,
-    "retry_allowed": false,
-    "next_step": "Review and merge the PR, then apply the pinned capability versions to one authorized private downstream Silver-modeling case."
+    "retry_allowed": true,
+    "next_step": "Run GitHub Actions on the repaired PR head, inspect any failures, and only then update the PR validation claim."
   },
-  "generated_at": "2026-08-28T02:15:28Z"
+  "generated_at": "2026-08-28T03:52:00Z"
 }

@@ -39,7 +39,7 @@ When write permission is unavailable, return the complete structured result inli
 
 The pack must include task scope, caller authorization, context budget, source inventory and selection state, evidence-linked context items, unknowns, conflicts, activation order, answerability, evidence, and expiry or refresh conditions. Business rules, system constraints, historical decisions, accountable contacts or roles, selected Skills, documents, and code surfaces are represented through the typed source and context-item records rather than a raw source dump. For operational-evidence work, bind selection to an Evidence Question and, when code-originated, an Expected Effect Contract supplied by `system-mental-model`; do not treat a context pack as live evidence.
 
-For modeling work, reuse those typed source and context-item records to represent the Gold Consumer Contract, Modeling Question Contract, field-level source roles, targeted live evidence, counterevidence, and candidate assumptions. The visible companion may include an evidence-backed Silver Model Candidate covering entity/event boundary, grain, candidate keys, cardinality, time, deduplication, source reconciliation, quality, schema scope, known ambiguity, missing evidence, and Gold fit. It remains candidate-scoped and requires accountable human review.
+For modeling work, set `task.origin=modeling_decision` and use the optional typed `modeling_decision` section in the same version-1 pack. Keep the Gold Consumer Contract, Modeling Question Contract, field/decision-scoped source roles, and Silver Model Candidate machine-visible there while using the existing source and context-item records for evidence, live observations, counterevidence, and assumptions. This is an extension of the existing Domain Context Pack contract, not a second modeling schema. The candidate covers entity/event boundary, grain, candidate keys, relationships/cardinality, time, deduplication, source reconciliation, schema scope, known ambiguity, missing evidence, Gold fit, and `production_approved=false`. It remains candidate-scoped and requires accountable human review.
 
 ## Machine Contract
 
@@ -54,9 +54,12 @@ The validator must establish all of the following before the pack may report `an
 - every conditional source has an explicit activation action such as permission request, refresh, conditional load, or human review;
 - blocking unknowns and unresolved blocking conflicts remain visible and prevent `answerable`;
 - an authorization decision of `deny` cannot carry selected context and must stop as `blocked`;
-- public synthetic fixtures remain `synthetic_reference` with downstream adoption `not_observed`.
+- public synthetic fixtures remain `synthetic_reference` with downstream adoption `not_observed`;
+- `task.origin=modeling_decision` requires typed Gold Consumer and Modeling Question contracts, field/decision-scoped source roles, and a candidate/partial/unknown/blocked result;
+- a modeling candidate cannot be `candidate` while a blocking modeling question, unknown, or conflict remains, while Gold fit failed, or while no candidate key is identified;
+- modeling candidate state must remain consistent with pack answerability, and `production_approved` is always false.
 
-The contract does not grant source authority, access permission, private adoption, or human approval. It only proves that a context pack obeys the declared public shape and fail-closed semantics.
+The contract does not grant source authority, access permission, private adoption, semantic approval, architecture approval, or production approval. It only proves that a context pack obeys the declared public shape and fail-closed semantics.
 
 ## Evidence
 
@@ -77,9 +80,9 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 - selected-token accounting is deterministic and within the declared context budget;
 - the activation plan tells the runtime what to load now, later, after permission or refresh, or never;
 - the schema and semantic validator pass;
-- the pack supports the task without a raw dump.
-- a modeling pack starts from the Gold consumer, selects only context that changes a modeling question, classifies field-level source roles, and exposes targeted live-evidence needs;
-- a Silver Model Candidate is challenged for false uniqueness, fanout, time mismatch, duplicates, schema evolution, source conflict, and Gold mismatch before human review;
+- the pack supports the task without a raw dump;
+- a modeling pack starts from the Gold consumer, selects only context that changes a modeling question, classifies field/decision-scoped source roles, and exposes targeted live-evidence needs;
+- a Silver Model Candidate is challenged for false uniqueness, fanout, time mismatch, duplicates, schema evolution, source conflict, Gold mismatch, freshness, and governance mismatch before human review;
 - insufficient modeling evidence remains candidate, partial, unknown, or blocked and never becomes production approval.
 
 ## Stop Conditions
@@ -88,7 +91,7 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 
 When blocking unknowns, unresolved material conflicts, denied required sources, or stale required evidence prevent a reliable pack, preserve them and return `answerability.status=partial`, `abstain`, or `blocked` rather than converting them into factual context.
 
-For modeling, also stop before candidate review when grain, key, join cardinality, temporal semantics, source authority, deduplication, schema scope, or Gold fit lacks target-relevant evidence. Name the responsible role and the smallest live check or authority decision that can resume work.
+For modeling, also stop before candidate review when grain, key, join cardinality, temporal semantics, source authority, deduplication, schema scope, Gold fit, freshness, correctness, or governance lacks target-relevant evidence. Name the responsible role and the smallest live check or authority decision that can resume work.
 
 ## Workflow
 
@@ -102,7 +105,7 @@ For modeling, also stop before candidate review when grain, key, join cardinalit
 8. Produce an activation plan: load now, discover conditionally, request permission, request refresh, human review, or exclude.
 9. Compute selected-token accounting and set answerability from the remaining evidence, permission, freshness, unknown, and conflict state.
 10. Validate the JSON artifact with `scripts/validate_domain_context_pack.py`; perform at most one bounded corrective retry.
-11. For modeling, classify field-level source roles; test grain, keys, joins, temporal semantics, duplicates, and schema versions with the smallest authorized live evidence; reconcile without collapsing conflicts; challenge Gold fit; emit candidate/partial/unknown/blocked for human review.
+11. For modeling, classify field/decision-scoped source roles; test grain, keys, joins, temporal semantics, duplicates, schema versions, freshness, consumer correctness, and governance with the smallest authorized live evidence; reconcile without collapsing conflicts; challenge Gold fit; emit candidate/partial/unknown/blocked for human review.
 12. Route a named post-candidate consequential gap optionally to unasked-questions-generator. Route source authority to team-knowledge-plane-governor, retrieval implementation to hybrid-knowledge-retrieval-builder, repeated profile evaluation to knowledge-profile-evaluator, and conflicts to knowledge-integrity.
 13. Keep invariant policy, schema, and validation guidance in the stable prefix; keep current task evidence, source selections, conflicts, unknowns, and activation state in the dynamic suffix.
 
@@ -126,13 +129,14 @@ DCP.015 | MUST | validation | fail closed when schema or semantic validation doe
 DCP.016 | MUST | evidence-question | bind operational context selection to the current Evidence Question and Expected Effect Contract when code-originated
 DCP.017 | NEVER | runtime-truth | treat metadata lineage profiles historical queries or context documents as proof of a current runtime effect
 DCP.018 | MUST | stop | stop adding context when the next action is a bounded live query code/configuration check permission request or human decision
-DCP.019 | MUST | modeling-contract | bind modeling context to a Gold Consumer Contract and Modeling Question Contract
+DCP.019 | MUST | modeling-contract | bind modeling context to a machine-visible Gold Consumer Contract and Modeling Question Contract
 DCP.020 | MUST | source-role | classify source authority at the field or decision scope and keep authority freshness and observed behavior separate
-DCP.021 | MUST | challenge | test candidate grain key join cardinality time deduplication schema scope and Gold fit with target-relevant evidence
+DCP.021 | MUST | challenge | test candidate grain key join cardinality time deduplication schema scope Gold fit freshness and governance with target-relevant evidence
 DCP.022 | NEVER | modeling-proof | treat lineage profiling historical queries current distribution or code behavior as durable semantic proof
 DCP.023 | NEVER | conflict | resolve conflicting evidence classes by model vote or silent preference
 DCP.024 | MUST | candidate | keep Silver modeling output candidate partial unknown or blocked until accountable human review
 DCP.025 | NEVER | automation | automatically create ETL production Silver or Gold or approve architecture from the context pack
+DCP.026 | MUST | machine-contract | require the typed modeling_decision section whenever task.origin is modeling_decision
 
 ## References
 
@@ -172,10 +176,11 @@ python -m unittest discover -s skills/domain-context-pack/evals -p 'test_*.py' -
 - hidden source conflicts;
 - context selected without an activation condition;
 - modeling from Bronze shape without a Gold consumer;
+- prose-only modeling contract that the machine artifact cannot express;
 - profile uniqueness promoted to a durable key;
 - relationship metadata promoted to a join without cardinality evidence;
 - event ingest update and effective time collapsed;
 - source conflict resolved by majority vote;
-- technically tidy Silver candidate that fails Gold grain or history needs;
+- technically tidy Silver candidate that fails Gold grain history freshness or governance needs;
 - candidate promoted as production truth;
 - schema-green but semantic-invalid pack.

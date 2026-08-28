@@ -23,9 +23,11 @@ class SilverModelingGuidanceReplayTests(unittest.TestCase):
     def test_all_synthetic_scenarios_pass(self) -> None:
         self.assertTrue(self.replay["all_passed"], self.replay["passes"])
 
-    def test_replay_does_not_claim_real_systems_or_adoption(self) -> None:
+    def test_replay_is_explicitly_deterministic_not_agent_behavior(self) -> None:
         self.assertEqual("synthetic_reference", self.replay["simulation_status"])
         self.assertEqual("not_observed", self.replay["downstream_adoption_status"])
+        self.assertEqual("deterministic_guidance_conformance", self.replay["replay_kind"])
+        self.assertEqual("not_evaluated", self.replay["agent_behavior_status"])
         self.assertTrue(self.replay["limitations"])
 
     def test_consumer_and_modeling_questions_precede_context_and_live_evidence(self) -> None:
@@ -84,18 +86,38 @@ class SilverModelingGuidanceReplayTests(unittest.TestCase):
         self.assertEqual("unknown", result["SILVER_MODEL_CANDIDATE"]["status"])
         self.assertTrue(result["UNKNOWN"])
 
+    def test_freshness_and_governance_can_block_candidate(self) -> None:
+        freshness = self.replay["scenarios"]["freshness_mismatch"]
+        governance = self.replay["scenarios"]["governance_mismatch"]
+        self.assertEqual("BLOCKED_FRESHNESS_MISMATCH", freshness["STATUS"])
+        self.assertEqual("BLOCKED_GOVERNANCE_MISMATCH", governance["STATUS"])
+        self.assertEqual("failed", freshness["SILVER_MODEL_CANDIDATE"]["freshness_fit"])
+        self.assertEqual("failed", governance["SILVER_MODEL_CANDIDATE"]["governance_fit"])
+
+    def test_compound_failure_preserves_multiple_gate_results(self) -> None:
+        result = self.replay["scenarios"]["compound_failures"]
+        self.assertEqual("BLOCKED_MULTIPLE_MODELING_CONSTRAINTS", result["STATUS"])
+        failed = {
+            gate["gate"]
+            for gate in result["GATE_RESULTS"]
+            if gate["result"] == "failed"
+        }
+        self.assertTrue({"candidate_key", "join_fanout", "temporal_semantics", "schema_scope"}.issubset(failed))
+        self.assertIn("preserve_all_failed_gates_for_next_iteration", result["actions"])
+
     def test_no_scenario_approves_production(self) -> None:
         for result in self.replay["scenarios"].values():
             self.assertFalse(result["PRODUCTION_APPROVED"])
             self.assertTrue(result["SILVER_MODEL_CANDIDATE"]["candidate_only"])
 
-    def test_output_keeps_evidence_classes_separate(self) -> None:
+    def test_output_keeps_evidence_classes_and_gate_results_separate(self) -> None:
         required = {
             "actions",
             "FACT",
             "INFERENCE",
             "COUNTEREVIDENCE",
             "UNKNOWN",
+            "GATE_RESULTS",
             "SOURCE_ROLES",
             "SILVER_MODEL_CANDIDATE",
             "STATUS",

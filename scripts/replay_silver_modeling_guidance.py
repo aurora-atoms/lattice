@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Replay Pre-Silver/Silver guidance with public synthetic evidence.
+"""Deterministic conformance replay for Pre-Silver/Silver guidance.
 
-This deterministic conformance replay exercises modeling decisions only. It
-does not emulate DataHub, Databricks, Unity Catalog, or a production modeling
-runtime, and it does not create or approve a Silver table.
+This fixture exercises the documented decision gates with public synthetic
+inputs. It does not run an external coding agent and therefore does not prove
+agent behavior, DataHub integration, Databricks integration, or production
+modeling correctness.
 """
 
 from __future__ import annotations
@@ -21,6 +22,8 @@ class GoldConsumerContract:
     required_grain: str
     required_history: str
     required_identifier: str
+    freshness_expectation: str
+    security_governance_boundary: str
 
 
 @dataclass(frozen=True)
@@ -31,6 +34,22 @@ class ModelingQuestionContract:
     temporal_question: str
     dedup_question: str
     schema_scope_question: str
+
+
+BLOCKING_STATUS = {
+    "join_fanout": "BLOCKED_JOIN_FANOUT",
+    "temporal_semantics": "BLOCKED_TEMPORAL_SEMANTICS",
+    "authority_conflict": "BLOCKED_AUTHORITY_CONFLICT",
+    "gold_fit": "REJECTED_GOLD_MISMATCH",
+    "freshness": "BLOCKED_FRESHNESS_MISMATCH",
+    "governance": "BLOCKED_GOVERNANCE_MISMATCH",
+}
+
+PARTIAL_STATUS = {
+    "candidate_key": "PARTIAL_KEY_REJECTED",
+    "deduplication": "PARTIAL_DEDUP_REQUIRED",
+    "schema_scope": "PARTIAL_VERSION_SCOPED",
+}
 
 
 class SilverModelingInvestigator:
@@ -53,6 +72,8 @@ class SilverModelingInvestigator:
         ]
         facts = [
             f"Gold consumer requires grain={consumer.required_grain}",
+            f"Gold consumer requires freshness={consumer.freshness_expectation}",
+            f"Gold consumer governance boundary={consumer.security_governance_boundary}",
             f"candidate proposes grain={questions.candidate_grain} key={questions.candidate_key}",
         ]
         inferences = [
@@ -60,6 +81,7 @@ class SilverModelingInvestigator:
         ]
         counterevidence: list[str] = []
         unknowns: list[str] = []
+        gate_results: list[dict[str, str]] = []
         source_roles = evidence.get(
             "source_roles",
             {
@@ -79,6 +101,8 @@ class SilverModelingInvestigator:
             "schema_scope": evidence.get("schema_scope"),
             "source_roles": source_roles,
             "gold_fit": "not_checked",
+            "freshness_fit": "not_checked",
+            "governance_fit": "not_checked",
             "candidate_only": True,
         }
 
@@ -89,6 +113,9 @@ class SilverModelingInvestigator:
                     "join cardinality and temporal scope remain unverified",
                 ]
             )
+            gate_results.append(
+                {"gate": "live_evidence", "result": "unknown", "detail": "authorized live evidence unavailable"}
+            )
             candidate["status"] = "unknown"
             return _result(
                 actions + ["stop_for_missing_evidence"],
@@ -96,156 +123,166 @@ class SilverModelingInvestigator:
                 inferences,
                 counterevidence,
                 unknowns,
+                gate_results,
                 source_roles,
                 candidate,
                 "INSUFFICIENT_EVIDENCE",
             )
 
+        blocking_failures: list[str] = []
+        partial_failures: list[str] = []
+
         duplicate_keys = evidence.get("duplicate_key_count", 0)
         if duplicate_keys:
+            partial_failures.append("candidate_key")
             counterevidence.append(
                 f"targeted live evidence found {duplicate_keys} duplicate candidate-key values"
             )
-            candidate["candidate_key"] = None
-            candidate["status"] = "partial"
-            unknowns.append("a durable identifier or composite key remains unresolved")
-            return _result(
-                actions + ["reject_profiled_uniqueness"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "PARTIAL_KEY_REJECTED",
+            gate_results.append(
+                {"gate": "candidate_key", "result": "failed", "detail": "live duplicates defeated profiled uniqueness"}
             )
+            candidate["candidate_key"] = None
+            unknowns.append("a durable identifier or composite key remains unresolved")
+        else:
+            gate_results.append({"gate": "candidate_key", "result": "passed", "detail": "no duplicate key found in bounded scope"})
 
         fanout_ratio = evidence.get("join_fanout_ratio", 1.0)
         if fanout_ratio > 1.0:
+            blocking_failures.append("join_fanout")
             counterevidence.append(
                 f"targeted join multiplied rows by {fanout_ratio:g} at the required grain"
             )
-            candidate["status"] = "blocked"
-            return _result(
-                actions + ["reject_join_fanout"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "BLOCKED_JOIN_FANOUT",
+            gate_results.append(
+                {"gate": "join_fanout", "result": "failed", "detail": f"row multiplication={fanout_ratio:g}"}
             )
+        else:
+            gate_results.append({"gate": "join_fanout", "result": "passed", "detail": "required grain preserved"})
 
         if not evidence.get("temporal_semantics"):
+            blocking_failures.append("temporal_semantics")
             available = ", ".join(evidence.get("available_time_fields", []))
             counterevidence.append(
                 f"multiple timestamps are available without authority-backed semantics: {available}"
             )
             unknowns.append("event, ingest, update, and effective-time roles are unresolved")
-            candidate["status"] = "blocked"
-            return _result(
-                actions + ["block_temporal_ambiguity"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "BLOCKED_TEMPORAL_SEMANTICS",
+            gate_results.append(
+                {"gate": "temporal_semantics", "result": "failed", "detail": "available timestamps remain semantically ambiguous"}
             )
+        else:
+            gate_results.append({"gate": "temporal_semantics", "result": "passed", "detail": "business and ingest time roles are explicit"})
 
         authority_conflicts = evidence.get("authority_conflicts", [])
         if authority_conflicts:
+            blocking_failures.append("authority_conflict")
             counterevidence.extend(authority_conflicts)
             unknowns.append("accountable domain authority has not resolved the semantic conflict")
-            candidate["status"] = "blocked"
-            return _result(
-                actions + ["route_authority_conflict_to_human"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "BLOCKED_AUTHORITY_CONFLICT",
+            gate_results.append(
+                {"gate": "authority_conflict", "result": "failed", "detail": "conflicting evidence classes require accountable resolution"}
             )
+        else:
+            gate_results.append({"gate": "authority_conflict", "result": "passed", "detail": "no unresolved authority conflict in bounded scope"})
 
         duplicate_events = evidence.get("duplicate_event_count", 0)
         late_events = evidence.get("late_event_count", 0)
         if (duplicate_events or late_events) and not evidence.get("deduplication_semantics"):
+            partial_failures.append("deduplication")
             counterevidence.append(
                 f"observed duplicate_events={duplicate_events} late_events={late_events} without a reconciliation rule"
             )
             unknowns.append("retry, replay, late-arrival, and deduplication behavior is unresolved")
-            candidate["status"] = "partial"
-            return _result(
-                actions + ["require_dedup_and_late_arrival_decision"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "PARTIAL_DEDUP_REQUIRED",
+            gate_results.append(
+                {"gate": "deduplication", "result": "failed", "detail": "observed retries/late arrivals lack a reconciliation rule"}
             )
+        else:
+            gate_results.append({"gate": "deduplication", "result": "passed", "detail": "deduplication/late-arrival semantics are explicit or not triggered"})
 
         schema_versions = evidence.get("schema_versions", ["v1"])
         if len(schema_versions) > 1 and not evidence.get("schema_scope"):
+            partial_failures.append("schema_scope")
             counterevidence.append(
                 "current profile does not establish behavior across schema versions "
                 + ", ".join(schema_versions)
             )
             unknowns.append("candidate version or time scope is not bounded")
-            candidate["status"] = "partial"
-            return _result(
-                actions + ["require_schema_version_scope"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "PARTIAL_VERSION_SCOPED",
+            gate_results.append(
+                {"gate": "schema_scope", "result": "failed", "detail": "multiple schema versions lack an explicit supported scope"}
             )
+        else:
+            gate_results.append({"gate": "schema_scope", "result": "passed", "detail": "candidate version/time scope is bounded"})
+
+        freshness_met = evidence.get("freshness_met", True)
+        candidate["freshness_fit"] = "candidate_fit" if freshness_met else "failed"
+        if not freshness_met:
+            blocking_failures.append("freshness")
+            counterevidence.append("observed data freshness cannot satisfy the Gold consumer freshness expectation")
+            gate_results.append(
+                {"gate": "freshness", "result": "failed", "detail": "consumer freshness SLA is not met"}
+            )
+        else:
+            gate_results.append({"gate": "freshness", "result": "passed", "detail": "bounded evidence meets the consumer freshness expectation"})
+
+        governance_ok = evidence.get("security_scope_compatible", True)
+        candidate["governance_fit"] = "candidate_fit" if governance_ok else "failed"
+        if not governance_ok:
+            blocking_failures.append("governance")
+            counterevidence.append("candidate cannot preserve the Gold consumer security/governance boundary")
+            gate_results.append(
+                {"gate": "governance", "result": "failed", "detail": "candidate broadens or cannot enforce the required scope"}
+            )
+        else:
+            gate_results.append({"gate": "governance", "result": "passed", "detail": "candidate preserves the declared governance boundary"})
 
         actions.append("check_gold_consumer_fit")
-        if evidence.get("gold_fit") is not True:
+        gold_fit = evidence.get("gold_fit") is True
+        candidate["gold_fit"] = "candidate_fit" if gold_fit else "failed"
+        if not gold_fit:
+            blocking_failures.append("gold_fit")
             counterevidence.append(
                 "candidate cannot satisfy the Gold consumer's required grain or history"
             )
-            candidate["gold_fit"] = "failed"
-            candidate["status"] = "blocked"
-            return _result(
-                actions + ["reject_gold_mismatch"],
-                facts,
-                inferences,
-                counterevidence,
-                unknowns,
-                source_roles,
-                candidate,
-                "REJECTED_GOLD_MISMATCH",
+            gate_results.append(
+                {"gate": "gold_fit", "result": "failed", "detail": "consumer grain/history cannot be reproduced"}
             )
+        else:
+            gate_results.append({"gate": "gold_fit", "result": "passed", "detail": "candidate supports the bounded consumer need"})
 
-        facts.extend(
-            [
-                "targeted live evidence did not disprove the candidate key within the bounded scope",
-                "measured join cardinality preserved the required grain",
-                "temporal, deduplication, and schema scope are explicit",
-            ]
-        )
-        candidate["gold_fit"] = "candidate_fit"
-        candidate["status"] = "candidate"
-        unknowns.append("durability outside the tested version and time scope remains unproven")
+        if blocking_failures:
+            candidate["status"] = "blocked"
+            if len(blocking_failures) == 1 and not partial_failures:
+                status = BLOCKING_STATUS[blocking_failures[0]]
+            else:
+                status = "BLOCKED_MULTIPLE_MODELING_CONSTRAINTS"
+            actions.append("preserve_all_failed_gates_for_next_iteration")
+        elif partial_failures:
+            candidate["status"] = "partial"
+            if len(partial_failures) == 1:
+                status = PARTIAL_STATUS[partial_failures[0]]
+            else:
+                status = "PARTIAL_MULTIPLE_MODELING_CONSTRAINTS"
+            actions.append("preserve_all_partial_gates_for_next_iteration")
+        else:
+            facts.extend(
+                [
+                    "targeted live evidence did not disprove the candidate key within the bounded scope",
+                    "measured join cardinality preserved the required grain",
+                    "temporal, deduplication, schema, freshness, and governance scope are explicit",
+                ]
+            )
+            candidate["status"] = "candidate"
+            unknowns.append("durability outside the tested version and time scope remains unproven")
+            status = "CANDIDATE_FOR_HUMAN_REVIEW"
+            actions.append("request_accountable_human_review")
+
         return _result(
-            actions + ["request_accountable_human_review"],
+            actions,
             facts,
             inferences,
             counterevidence,
             unknowns,
+            gate_results,
             source_roles,
             candidate,
-            "CANDIDATE_FOR_HUMAN_REVIEW",
+            status,
         )
 
 
@@ -255,6 +292,7 @@ def _result(
     inferences: list[str],
     counterevidence: list[str],
     unknowns: list[str],
+    gate_results: list[dict[str, str]],
     source_roles: dict[str, str],
     candidate: dict[str, Any],
     status: str,
@@ -265,6 +303,7 @@ def _result(
         "INFERENCE": inferences,
         "COUNTEREVIDENCE": counterevidence,
         "UNKNOWN": unknowns,
+        "GATE_RESULTS": gate_results,
         "SOURCE_ROLES": source_roles,
         "SILVER_MODEL_CANDIDATE": candidate,
         "STATUS": status,
@@ -280,6 +319,8 @@ def run_replay() -> dict[str, Any]:
         required_grain="one row per synthetic service event",
         required_history="monthly event history",
         required_identifier="stable event identity",
+        freshness_expectation="complete within 30 minutes",
+        security_governance_boundary="synthetic tenant scope only",
     )
     questions = ModelingQuestionContract(
         candidate_grain="one row per synthetic service event",
@@ -293,12 +334,7 @@ def run_replay() -> dict[str, Any]:
         "live_evidence_authorized": True,
         "duplicate_key_count": 0,
         "join_fanout_ratio": 1.0,
-        "available_time_fields": [
-            "event_time",
-            "ingest_time",
-            "update_time",
-            "effective_from",
-        ],
+        "available_time_fields": ["event_time", "ingest_time", "update_time", "effective_from"],
         "temporal_semantics": "event_time drives the event; ingest_time measures arrival",
         "authority_conflicts": [],
         "duplicate_event_count": 0,
@@ -307,6 +343,8 @@ def run_replay() -> dict[str, Any]:
         "schema_versions": ["v2"],
         "schema_scope": "v2 events observed in the bounded synthetic window",
         "gold_fit": True,
+        "freshness_met": True,
+        "security_scope_compatible": True,
         "source_roles": {
             "identity": "authoritative source: synthetic event source",
             "event_time": "authoritative source: synthetic event source",
@@ -336,6 +374,15 @@ def run_replay() -> dict[str, Any]:
         "schema_evolution": scenario(schema_versions=["v1", "v2"], schema_scope=None),
         "gold_consumer_mismatch": scenario(gold_fit=False),
         "insufficient_evidence": scenario(live_evidence_authorized=False),
+        "freshness_mismatch": scenario(freshness_met=False),
+        "governance_mismatch": scenario(security_scope_compatible=False),
+        "compound_failures": scenario(
+            duplicate_key_count=2,
+            join_fanout_ratio=2.0,
+            temporal_semantics=None,
+            schema_versions=["v1", "v2"],
+            schema_scope=None,
+        ),
     }
     expected_statuses = {
         "clean_candidate": "CANDIDATE_FOR_HUMAN_REVIEW",
@@ -347,6 +394,9 @@ def run_replay() -> dict[str, Any]:
         "schema_evolution": "PARTIAL_VERSION_SCOPED",
         "gold_consumer_mismatch": "REJECTED_GOLD_MISMATCH",
         "insufficient_evidence": "INSUFFICIENT_EVIDENCE",
+        "freshness_mismatch": "BLOCKED_FRESHNESS_MISMATCH",
+        "governance_mismatch": "BLOCKED_GOVERNANCE_MISMATCH",
+        "compound_failures": "BLOCKED_MULTIPLE_MODELING_CONSTRAINTS",
     }
     passes = {
         name: result["STATUS"] == expected_statuses[name]
@@ -356,6 +406,8 @@ def run_replay() -> dict[str, Any]:
     return {
         "simulation_status": "synthetic_reference",
         "downstream_adoption_status": "not_observed",
+        "replay_kind": "deterministic_guidance_conformance",
+        "agent_behavior_status": "not_evaluated",
         "runtime_components": {
             "requirements": "synthetic Gold Consumer Contract",
             "context": "synthetic DataHub-shaped metadata and source-role signals",
@@ -364,8 +416,9 @@ def run_replay() -> dict[str, Any]:
         },
         "limitations": [
             "no real DataHub, Databricks, Unity Catalog, or database was started",
+            "no external Codex, Copilot, Claude Code, Gemini CLI, or other isolated agent was executed",
+            "this replay proves deterministic rule conformance, not agent behavioral compliance",
             "no table, ETL, pipeline, architecture decision, or production approval was created",
-            "deterministic conformance does not prove behavior across external coding-agent models",
         ],
         "scenarios": scenarios,
         "passes": passes,

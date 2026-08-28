@@ -36,8 +36,77 @@ class DomainContextPackContractTests(unittest.TestCase):
             f"expected error containing {fragment!r}; got: {errors}",
         )
 
+    def make_modeling_pack(self) -> dict:
+        value = copy.deepcopy(self.base)
+        value["task"]["origin"] = "modeling_decision"
+        value["task"]["objective"] = "Evaluate a synthetic Silver model candidate."
+        value["task"]["expected_output"] = "Evidence-backed candidate for accountable human review."
+        value["modeling_decision"] = {
+            "gold_consumer": {
+                "consumer": "synthetic reliability dashboard",
+                "workflow_or_question": "Compute monthly completed events by account without double counting.",
+                "entity_or_event": "service event",
+                "required_grain": "one row per service event",
+                "required_history": "monthly event history",
+                "required_identifiers": ["event_id", "account_ref"],
+                "dimensions_relationships": ["account_ref -> account"],
+                "freshness_expectation": "data complete within 30 minutes",
+                "correctness_expectation": "no duplicate event contribution",
+                "security_governance_boundary": "synthetic tenant scope only",
+                "unusable_conditions": ["fanout changes event counts", "tenant scope cannot be preserved"]
+            },
+            "modeling_questions": [
+                {"question_id": "MQ-ENTITY", "dimension": "entity_boundary", "question": "What is one event?", "status": "supported", "blocking": true, "evidence_needed": "bounded requirement and event contract"},
+                {"question_id": "MQ-GRAIN", "dimension": "grain", "question": "What is the required row grain?", "status": "supported", "blocking": true, "evidence_needed": "consumer contract and live counts"},
+                {"question_id": "MQ-KEY", "dimension": "key", "question": "Is event_id stable and unique?", "status": "supported", "blocking": true, "evidence_needed": "targeted duplicate check"},
+                {"question_id": "MQ-JOIN", "dimension": "join_cardinality", "question": "Does account enrichment preserve event grain?", "status": "supported", "blocking": true, "evidence_needed": "two-sided cardinality check"},
+                {"question_id": "MQ-AUTH", "dimension": "source_authority", "question": "Which source owns identity and event time?", "status": "resolved", "blocking": true, "evidence_needed": "source ownership evidence"},
+                {"question_id": "MQ-TIME", "dimension": "temporal_semantics", "question": "Which timestamp is business event time?", "status": "supported", "blocking": true, "evidence_needed": "requirement plus observed timestamps"},
+                {"question_id": "MQ-DEDUP", "dimension": "deduplication", "question": "How are retries reconciled?", "status": "supported", "blocking": true, "evidence_needed": "duplicate/replay evidence"},
+                {"question_id": "MQ-SCHEMA", "dimension": "schema_scope", "question": "Which versions are covered?", "status": "supported", "blocking": true, "evidence_needed": "version-bounded evidence"},
+                {"question_id": "MQ-GOLD", "dimension": "gold_fit", "question": "Can the candidate satisfy the consumer?", "status": "supported", "blocking": true, "evidence_needed": "consumer-fit check"}
+            ],
+            "source_roles": [
+                {
+                    "scope": "event identity",
+                    "source_id": "SRC-SCHEMA",
+                    "role": "authoritative",
+                    "status": "observed",
+                    "evidence_refs": ["repo://synthetic/contracts/order-event-v3#idempotency-key"]
+                },
+                {
+                    "scope": "consumer business rule",
+                    "source_id": "SRC-REQ",
+                    "role": "authoritative",
+                    "status": "verified",
+                    "evidence_refs": ["source://synthetic/checkout-requirement-v1#idempotency"]
+                }
+            ],
+            "candidate": {
+                "status": "candidate",
+                "entity_or_event": "service event",
+                "grain": "one row per service event",
+                "candidate_keys": ["event_id"],
+                "relationships": ["event.account_ref -> account.account_ref many-to-one"],
+                "temporal_semantics": "event_time is business time; ingest_time measures arrival",
+                "deduplication_semantics": "deduplicate retry copies by event_id within supported schema scope",
+                "schema_scope": "synthetic v3 contract in the bounded test window",
+                "gold_fit": "candidate_fit",
+                "evidence_refs": [
+                    "source://synthetic/checkout-requirement-v1#idempotency",
+                    "repo://synthetic/contracts/order-event-v3#idempotency-key"
+                ],
+                "unknown_refs": [],
+                "production_approved": false
+            }
+        }
+        return value
+
     def test_valid_synthetic_fixture_passes(self) -> None:
         self.assertEqual([], self.validate(copy.deepcopy(self.base)))
+
+    def test_valid_modeling_pack_passes(self) -> None:
+        self.assertEqual([], self.validate(self.make_modeling_pack()))
 
     def test_synthetic_fixture_cannot_claim_downstream_use(self) -> None:
         value = copy.deepcopy(self.base)
@@ -132,6 +201,59 @@ class DomainContextPackContractTests(unittest.TestCase):
         value = copy.deepcopy(self.base)
         value["private_raw_dump"] = "must not be accepted"
         self.assertInvalidContains(value, "Additional properties are not allowed")
+
+    def test_modeling_origin_requires_machine_contract(self) -> None:
+        value = copy.deepcopy(self.base)
+        value["task"]["origin"] = "modeling_decision"
+        self.assertInvalidContains(value, "modeling_decision")
+
+    def test_modeling_contract_requires_core_questions(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["modeling_questions"] = [
+            question
+            for question in value["modeling_decision"]["modeling_questions"]
+            if question["dimension"] != "temporal_semantics"
+        ]
+        self.assertInvalidContains(value, "core modeling questions")
+
+    def test_authoritative_source_role_cannot_be_inferred(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["source_roles"][0]["status"] = "inferred"
+        self.assertInvalidContains(value, "authoritative role cannot be merely inferred")
+
+    def test_candidate_cannot_hide_blocking_modeling_question(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["modeling_questions"][2]["status"] = "open"
+        self.assertInvalidContains(value, "blocking modeling question")
+
+    def test_candidate_status_must_match_answerability(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["candidate"]["status"] = "partial"
+        self.assertInvalidContains(value, "inconsistent with answerability")
+
+    def test_gold_fit_failure_requires_blocked_candidate(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["candidate"]["gold_fit"] = "failed"
+        self.assertInvalidContains(value, "gold_fit=failed")
+
+    def test_modeling_candidate_never_approves_production(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["candidate"]["production_approved"] = True
+        self.assertInvalidContains(value, "False was expected")
+
+    def test_modeling_candidate_unknown_refs_must_exist(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["candidate"]["unknown_refs"] = ["U-MISSING"]
+        self.assertInvalidContains(value, "must reference declared unknowns")
+
+    def test_relationship_requires_join_cardinality_question(self) -> None:
+        value = self.make_modeling_pack()
+        value["modeling_decision"]["modeling_questions"] = [
+            question
+            for question in value["modeling_decision"]["modeling_questions"]
+            if question["dimension"] != "join_cardinality"
+        ]
+        self.assertInvalidContains(value, "join_cardinality")
 
 
 if __name__ == "__main__":
