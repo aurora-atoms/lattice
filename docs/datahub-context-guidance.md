@@ -30,14 +30,23 @@ For ordinary code-only tasks, do not load this document.
 
 Do not create a separate DataHub Skill or new Lattice module by default.
 
-Use the existing capability path:
+Classify the evidence question before selecting a context path.
 
 ```text
-context-mastery
+code-originated: "did this code produce the expected runtime effect?"
+  -> context-mastery
+  -> system-mental-model
+  -> targeted code and configuration inspection
+  -> Expected Effect Contract
+  -> domain-context-pack and DataHub only for a named orientation gap
+  -> approved live-source interface
+  -> effect-path verification or falsification
+
+data-originated: "what data exists and where should I look?"
+  -> context-mastery
   -> domain-context-pack
-  -> authorized DataHub context, when relevant
-  -> native coding agent
-  -> live verification
+  -> authorized DataHub discovery
+  -> approved live-source interface when current evidence is required
 ```
 
 Use `skills/context-mastery/SKILL.md` to select the smallest understanding capability.
@@ -45,6 +54,27 @@ Use `skills/context-mastery/SKILL.md` to select the smallest understanding capab
 Use `skills/domain-context-pack/SKILL.md` to assemble only the context required for the current task.
 
 Use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only if the task is actually to build or evaluate retrieval and an existing DataHub capability has first been shown insufficient. Do not invoke it merely because DataHub is present.
+
+Seeing Elasticsearch, Kafka, a database, or another data-bearing system does not by itself make a question data-originated. If code declares the expected side effect, inspect the bounded code path first. Conversely, do not inspect unrelated code when the task is only asset discovery.
+
+## Expected Effect Before Retrieval
+
+For a code-originated runtime-verification task, state what exactly should have happened before selecting an asset or issuing a live query. Use a compact, task-scoped Expected Effect Contract rather than a new permanent schema.
+
+Capture only applicable fields:
+
+- emitter and evidence-linked code location;
+- trigger and branch conditions;
+- expected event, message, write, call, or metric;
+- level, status, or outcome semantics;
+- serialized fields and correlation identifiers;
+- service, component, deployment, environment, version, and destination;
+- expected time window, timezone, buffering, or delivery delay;
+- relevant feature flags, runtime configuration, sampling, throttling, and suppression conditions;
+- live interface and query needed to prove or falsify the effect;
+- facts, inferences, counterevidence, unknowns, and evidence references.
+
+The contract is a hypothesis derived from code and configuration until runtime evidence verifies it. A logger statement, producer call, database client call, or metric declaration proves intent or reachable behavior, not execution.
 
 ## DataHub-First Decision Rule
 
@@ -130,9 +160,9 @@ Prefer combined evidence from:
 
 Do not assume vector similarity alone is sufficient.
 
-### 5. Context first, live evidence second
+### 5. Evidence question first; context narrows; live evidence decides
 
-Preferred investigation sequence:
+For data-originated discovery, prefer:
 
 ```text
 orientation
@@ -144,6 +174,21 @@ orientation
 ```
 
 Avoid blind broad scans when existing context can narrow the search.
+
+For code-originated runtime verification, prefer:
+
+```text
+evidence question
+-> bounded code and configuration
+-> Expected Effect Contract
+-> named orientation gap
+-> minimum DataHub context, if needed
+-> narrow live query
+-> expected-versus-observed comparison
+-> verify, falsify, or preserve unknown
+```
+
+Do not call DataHub merely because the live destination is a data system.
 
 ### 6. Reuse native DataHub surfaces
 
@@ -172,7 +217,7 @@ If neither surface is available, use an approved DataHub API or UI only within t
 
 ## Minimum Context Rule
 
-The default is **not** to send an entire DataHub catalog or context graph to the model.
+The default is **not** to send an entire DataHub catalog or context graph to the model. Start from the Evidence Question and, for a code-originated task, the Expected Effect Contract. The ladder below is an escalation menu, not a mandatory sequence beginning at Level 0.
 
 Select the smallest context that can change the next decision or investigation step.
 
@@ -261,8 +306,9 @@ For every candidate context item, ask:
 ```text
 Will this item change dataset selection,
 query design,
-hypothesis confidence,
+hypothesis or cross-boundary mapping,
 verification,
+the next effect-path check,
 or a modeling decision?
 ```
 
@@ -276,6 +322,58 @@ Also exclude the item when:
 - it duplicates stronger context already selected;
 - its token cost is high relative to expected information gain;
 - it is raw data when metadata or an aggregate profile is sufficient.
+
+Stop expanding context when the next action is already a bounded live query, a specific code/configuration check, a permission request, or an accountable human decision.
+
+## Context Plane and Live Evidence Plane
+
+DataHub and a live source have different authority.
+
+| Plane | Can establish | Cannot establish by itself |
+| --- | --- | --- |
+| DataHub context | asset identity, schema, descriptions, ownership, lineage, usage, historical query patterns, profiling, quality/trust signals, likely field or deployment mapping | that a current event occurred, a current value exists, an exact current count, or a runtime path executed |
+| Live source | current events or values within the queried scope, exact observed fields, timestamps, counts, and correlation matches | why code should have produced the effect or whether an unqueried path was correct |
+| Code/configuration | intended effect, trigger, serialization, destination, suppression and routing logic | that a particular runtime execution or downstream storage actually occurred |
+
+Use only an approved source-native API, CLI, UI, MCP, or runtime tool for live verification. DataHub MCP availability is neither a live-query interface nor a source permission grant. Record the interface actually used; do not say a live source was checked when only metadata was inspected.
+
+A positive match must bind enough of the Expected Effect Contract to avoid correlation collision. Do not verify from a correlation identifier alone when that value can be reused across event types, environments, tenants, attempts, or time windows. A negative result is strong only to the extent that the query had the necessary field-level/document-level visibility, destination coverage, deployment-version mapping, retention, time completeness, and known sampling/drop behavior.
+
+## Cross-Boundary Evidence Mapping
+
+Build a temporary mapping only when names or identities cross boundaries:
+
+```text
+code symbol -> serialized field -> transformed/indexed field
+code component -> deployment -> destination index, stream, topic, table, or service
+correlation value -> runtime search key
+```
+
+For example, `requestId` may serialize or transform to `request.id`, `trace.id`, `labels.request_id`, or another indexed field. A message such as `Upload completed` may become a structured `event.action=upload_complete` record.
+
+Mark each mapping edge `OBSERVED`, `INFERRED`, `UNKNOWN`, or `VERIFIED` and attach an evidence reference. Keep it task-scoped. Do not promote a one-run mapping into durable truth without governed evidence, scope, review, version, and expiry.
+
+## Expected Effect Path
+
+An empty or mismatched live query is evidence about that query scope, not automatic proof that emission failed. Check the smallest next layer that can distinguish competing explanations:
+
+```text
+code path executed?
+-> trigger satisfied?
+-> emitter call executed?
+-> level / flag / runtime configuration allowed it?
+-> serialization or formatting produced the expected shape?
+-> transport / exporter accepted it?
+-> collector / consumer received it?
+-> ingest pipeline accepted or dropped it?
+-> transformation renamed or removed fields?
+-> correct destination, environment, deployment version, and tenant?
+-> correct event time, ingest time, timezone, buffer, and search window?
+-> query uses the correct field, value, syntax, and permissions?
+-> sampling, throttling, retention, deduplication, or delay affected it?
+```
+
+This path applies to logs, Kafka events, database writes, HTTP effects, metrics, and other external side effects. Skip inapplicable stages, but do not collapse `emitted`, `transported`, `ingested`, `stored`, and `found by this query` into one state.
 
 ## Privacy and IP Boundary
 
@@ -382,6 +480,16 @@ For a DataHub-backed context task, return a concise record of:
 - freshness / authority / permission limitations;
 - live evidence still required;
 - unsupported gaps, if any.
+
+For code-originated runtime verification, also report:
+
+- the Expected Effect Contract;
+- the task-scoped cross-boundary mapping;
+- live interface, environment, deployment version, time window, query, and result scope;
+- effect-path stages checked and the earliest supported failure boundary;
+- `FACT`, `INFERENCE`, `COUNTEREVIDENCE`, `UNKNOWN`, and `VERDICT` as separate sections.
+
+Use `VERIFIED` only when target-relevant live evidence supports the Expected Effect Contract. Use `FALSIFIED` only when evidence rules out the expected effect within the bounded scope. Otherwise return a narrower failure-boundary verdict or `UNKNOWN`; absence from one query is not a pipeline verdict.
 
 Do not claim that DataHub was used when it was only described conceptually.
 

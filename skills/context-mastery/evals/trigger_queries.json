@@ -1,0 +1,30 @@
+[
+  {
+    "id": "cm-trigger-001",
+    "query": "This code declares an upload-complete log. Determine whether the runtime effect occurred without assuming an empty Elastic query means logging failed.",
+    "should_trigger": true,
+    "category": "positive_code_originated",
+    "reason": "requires routing from bounded code understanding to external-effect verification"
+  },
+  {
+    "id": "cm-trigger-002",
+    "query": "I do not know which datasets or fields contain upload telemetry; assemble the smallest authorized discovery context.",
+    "should_trigger": true,
+    "category": "positive_data_originated",
+    "reason": "requires routing to task-specific data-context selection"
+  },
+  {
+    "id": "cm-trigger-003",
+    "query": "Search every Elasticsearch index and load the full DataHub catalog before looking at this logger call.",
+    "should_trigger": false,
+    "category": "negative_broad_search",
+    "reason": "the selector rejects blind live search and warehouse-style context loading"
+  },
+  {
+    "id": "cm-trigger-004",
+    "query": "Implement an Elasticsearch client and deploy a new logging pipeline.",
+    "should_trigger": false,
+    "category": "negative_implementation",
+    "reason": "runtime implementation is outside context-capability routing"
+  }
+]

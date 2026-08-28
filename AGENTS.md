@@ -62,20 +62,28 @@ For newly created Skill packages, include the machine-checkable `## Direction Fi
 
 For tasks that require understanding heterogeneous databases, Databricks, Parquet/data-lake assets, Elasticsearch/log data, BI models, lineage, query history, profiling, or pre-Silver/Gold data context, do **not** start by designing a new Lattice data platform.
 
-Use the existing context capabilities and the [DataHub Context Guidance](docs/datahub-context-guidance.md):
+First classify the question. Use the existing context capabilities and the [DataHub Context Guidance](docs/datahub-context-guidance.md):
 
 ```text
-context-mastery
-  -> domain-context-pack
-  -> authorized DataHub context when available
-  -> native coding agent
-  -> live source verification
+code-originated runtime question
+  -> context-mastery -> system-mental-model -> inspect code
+  -> expected effect contract
+  -> task-scoped DataHub orientation only when needed
+  -> approved live-source query -> verify or falsify
+
+data-originated discovery question
+  -> context-mastery -> domain-context-pack
+  -> authorized DataHub discovery
+  -> approved live-source query when current evidence is required
 ```
 
 The default rules are:
 
 - prefer existing DataHub metadata, lineage, usage, query-history, quality, search, MCP, and published Agent Skills before proposing custom retrieval, catalog, profiler, lineage, MCP, or generic data-agent infrastructure;
 - keep DataHub as prior orientation, not source truth; verify consequential claims against live source data or runtime evidence;
+- for a code-originated side-effect question, establish what the code should emit, write, publish, call, or measure before searching a data or observability system;
+- when expected evidence is absent, inspect the complete effect path, including trigger, configuration, serialization, transport, ingestion, transformation, destination, environment, time, and query correctness, before attributing failure;
+- tool or MCP availability does not grant source permission, and DataHub access does not grant permission to query a live source;
 - load context progressively: discovery -> relevant schema/lineage -> query/usage/quality signals only when they change the next decision -> raw values only for a named evidence gap and with permission;
 - never load the full catalog, graph, query history, logs, samples, or raw data by default;
 - use `skills/context-mastery/SKILL.md` to select the understanding path and `skills/domain-context-pack/SKILL.md` to enforce the smallest sufficient authorized context;

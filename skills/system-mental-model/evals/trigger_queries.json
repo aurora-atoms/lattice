@@ -1,0 +1,30 @@
+[
+  {
+    "id": "smm-trigger-001",
+    "query": "Trace what this Kafka producer call should publish and which runtime evidence can prove the effect occurred.",
+    "should_trigger": true,
+    "category": "positive_external_effect",
+    "reason": "requires a code-derived expected effect and effect-path model"
+  },
+  {
+    "id": "smm-trigger-002",
+    "query": "The expected log is absent. Check trigger, logger config, serialization, shipper, ingest transformation, destination, time window, and query correctness.",
+    "should_trigger": true,
+    "category": "positive_failure_path",
+    "reason": "requires end-to-end external-effect failure decomposition"
+  },
+  {
+    "id": "smm-trigger-003",
+    "query": "List every file and summarize every module in this repository.",
+    "should_trigger": false,
+    "category": "negative_dump",
+    "reason": "exhaustive repository summaries are outside the bounded mental-model capability"
+  },
+  {
+    "id": "smm-trigger-004",
+    "query": "Query production logs using credentials I have not been granted.",
+    "should_trigger": false,
+    "category": "negative_permission",
+    "reason": "the capability cannot grant or bypass live-source permission"
+  }
+]
