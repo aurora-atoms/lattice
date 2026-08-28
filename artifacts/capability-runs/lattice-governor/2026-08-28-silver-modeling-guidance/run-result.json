@@ -2,7 +2,7 @@
   "record_type": "lat.capability.run_result.v1",
   "capability_id": "skill:lattice-governor@1.2.0",
   "run_id": "2026-08-28-silver-modeling-guidance",
-  "status": "partial",
+  "status": "succeeded",
   "artifacts": [
     {
       "artifact_id": "silver-modeling-routing-map",
@@ -92,6 +92,17 @@
           "reports/datahub-silver-modeling-replay-2026-08-28.md"
         ],
         "confidence": "high"
+      },
+      {
+        "claim": "All five pull-request GitHub Actions workflows completed successfully on head 528be42fc311e89d85987a7e8b166fa4752a9c9b, including skill-validate, downstream-contract-validate, reusable-asset-validate, capability-profile-validate, and adversarial-innovation-validate.",
+        "source_refs": [
+          "github-actions://33140524024",
+          "github-actions://33140524087",
+          "github-actions://33140524052",
+          "github-actions://33140524028",
+          "github-actions://33140524079"
+        ],
+        "confidence": "high"
       }
     ],
     "inference_summary": [
@@ -102,7 +113,7 @@
           "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
           "reports/datahub-silver-modeling-replay-2026-08-28.md"
         ],
-        "uncertainty": "Remote CI for the repaired head and context-isolated external-agent behavior remain unobserved at the time this run result was written."
+        "uncertainty": "Context-isolated external-agent behavior remains unobserved."
       }
     ],
     "citations": [
@@ -115,12 +126,16 @@
       "skills/domain-context-pack/evals/test_domain_context_pack.py",
       "reports/datahub-silver-modeling-replay-2026-08-28.md",
       "scripts/replay_silver_modeling_guidance.py",
-      "tests/test_silver_modeling_guidance_replay.py"
+      "tests/test_silver_modeling_guidance_replay.py",
+      "github-actions://33140524024",
+      "github-actions://33140524087",
+      "github-actions://33140524052",
+      "github-actions://33140524028",
+      "github-actions://33140524079"
     ],
     "uncertainty": [
       "No real DataHub, Unity Catalog, Databricks, database, or private Silver-modeling case was exercised.",
-      "No external context-isolated Codex, Copilot, Claude Code, Gemini CLI, or other model run was executed.",
-      "Remote CI results for the repaired PR head are not yet represented in this artifact."
+      "No external context-isolated Codex, Copilot, Claude Code, Gemini CLI, or other model run was executed."
     ],
     "unknowns": [
       "Downstream field/decision-level authority resolution, source permissions, and live-query interfaces remain environment specific.",
@@ -161,9 +176,15 @@
       ]
     },
     {
-      "signal": "remote validators and repository tests pass on the repaired PR head",
-      "result": "not_evaluated",
-      "evidence_refs": []
+      "signal": "remote pull-request validators pass on the repaired PR head",
+      "result": "met",
+      "evidence_refs": [
+        "github-actions://33140524024",
+        "github-actions://33140524087",
+        "github-actions://33140524052",
+        "github-actions://33140524028",
+        "github-actions://33140524079"
+      ]
     },
     {
       "signal": "context-isolated external coding-agent behavior is established",
@@ -172,11 +193,11 @@
     }
   ],
   "stop": {
-    "reason": "stage_gate_reached",
-    "condition": "Review blockers are repaired in repository content; remote CI and final review remain the next evidence gates.",
+    "reason": "goal_reached",
+    "condition": "Review blockers are repaired and all pull-request GitHub Actions validation gates passed; external-agent behavior remains a separate future evidence gate.",
     "retry_count": 0,
-    "retry_allowed": true,
-    "next_step": "Run GitHub Actions on the repaired PR head, inspect any failures, and only then update the PR validation claim."
+    "retry_allowed": false,
+    "next_step": "Complete final human review before merge; validate one authorized private downstream Silver-modeling case after adoption."
   },
-  "generated_at": "2026-08-28T03:52:00Z"
+  "generated_at": "2026-08-28T04:06:00Z"
 }
