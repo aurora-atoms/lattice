@@ -1,0 +1,36 @@
+[
+  {
+    "id": "smm-output-001",
+    "prompt": "Code emits an upload-complete event with requestId, but the indexed field may be transformed.",
+    "expected": [
+      "states emitter location and trigger",
+      "captures expected event fields correlation identifier environment destination and time scope",
+      "maps code field to serialized and indexed fields with observed inferred unknown or verified status",
+      "uses a narrow live query only after the Expected Effect Contract",
+      "binds a positive match to event environment correlation and time identity rather than correlation alone"
+    ],
+    "forbidden": [
+      "treats the code statement as proof of execution",
+      "treats DataHub metadata as proof the event occurred",
+      "promotes the task mapping into permanent truth"
+    ],
+    "judge_notes": "Pass only if intent, mapping, and live occurrence remain distinct."
+  },
+  {
+    "id": "smm-output-002",
+    "prompt": "The first live query returns no matching event.",
+    "expected": [
+      "treats the result as evidence limited to the query scope",
+      "checks the smallest next effect-path boundary that distinguishes explanations",
+      "keeps emitted transported ingested stored and found-by-query states distinct",
+      "qualifies negative evidence by visibility destination version retention time completeness and sampling or drop behavior",
+      "returns the earliest supported failure boundary or unknown"
+    ],
+    "forbidden": [
+      "declares logging failed from one empty query",
+      "declares success without target-relevant live evidence",
+      "hides query or environment uncertainty"
+    ],
+    "judge_notes": "Pass only if absence triggers falsification of the query and path, not premature attribution."
+  }
+]

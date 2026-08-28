@@ -1,6 +1,6 @@
 ---
 name: context-mastery
-description: Use for selecting and coordinating the smallest sufficient context-learning capability for system mental models, layered learning, task-specific domain context, negative knowledge, similar work, expert decision-question preparation, and consequential missing-question discovery. Input is a bounded task, user role, repository or knowledge metadata, permissions, historical Delivery Cases, and current evidence; output is a routing decision plus an evidence-linked system map, learning path, domain context pack, negative-knowledge pack, analogous cases, decision-question packet, unasked-questions gap map, or teach-back checkpoint. Do not use as a raw repository dump, generic summarizer, retrieval implementation, or substitute for personal understanding at critical control points; preserve behavior, provenance, uncertainty, validation, least privilege, and human authority.
+description: Use for selecting the smallest sufficient capability for system understanding, code-originated runtime-effect verification, layered learning, task context, negative knowledge, analogous work, expert questions, and missing-question discovery. Input is a bounded task, role, source metadata, permissions, evidence, and context budget; output is a routing decision plus the selected evidence-linked artifact. Do not use for raw dumps, generic summaries, retrieval implementation, blind live searches, or as a substitute for human understanding at critical controls; preserve provenance, uncertainty, least privilege, validation, and human authority.
 ---
 
 # Context Mastery
@@ -21,6 +21,8 @@ Select one primary capability first:
 - B06 `decision-question-builder`: evidence-backed options and a minimum-response question for a scarce expert or accountable leader;
 - B07 `unasked-questions-generator`: impact-ranked questions missing from requirements, design, cross-system change, or release readiness.
 
+For a question that begins with code and asks whether a runtime side effect occurred, select B01 first. The system mental model must establish an Expected Effect Contract from bounded code and configuration before optional data-context assembly or live-source verification. For a question that begins with unknown data assets, select B03 first. A destination name such as Elasticsearch or Kafka does not determine the route.
+
 ## Do Not Use When
 
 Do not use for raw dumps, generic summaries, retrieval implementation, source-authority approval, exhaustive checklists, or unverified claims of understanding.
@@ -35,7 +37,7 @@ For missing-question discovery, also require the reviewed artifact, delivery sta
 
 ## Outputs
 
-Produce `context-mastery-selection.json`, a concise Markdown companion, and `lat.capability.run_result.v1`.
+Produce a Context Mastery Selection JSON artifact, a concise Markdown companion, and `lat.capability.run_result.v1`.
 
 Default writeback:
 
@@ -72,8 +74,8 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 ## Workflow
 
 1. Bound task, caller, output, decision or review gate, permissions, and budget.
-2. Query ConPort and compact capability or source metadata first.
-3. Compare the task against B01-B07 and select one primary capability.
+2. Query ConPort MCP before loading or searching full Skill text when available; otherwise inspect compact capability or source metadata first.
+3. Classify code-originated runtime verification versus data-originated discovery, then compare the task against B01-B07 and select one primary capability.
 4. Invoke B01-B04, B06, or B07 dedicated Skills when applicable.
 5. Add another capability only for a named dependency, independent check, conflict, or evidence gap.
 6. Keep B05 bounded and evidence-linked.
@@ -81,7 +83,7 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 8. For B06, resolve discoverable facts before escalating and require two to four comparable options that unlock one action.
 9. For B07, remove generic or already-answered questions, rank retained gaps by impact and timing, and preserve human authority over blockers and accepted uncertainty.
 10. Record plausible capabilities and sources intentionally excluded.
-11. Keep routing rules stable and task evidence dynamic.
+11. Keep invariant routing rules in the stable prefix and task evidence in a bounded dynamic suffix.
 
 ## Rules
 
@@ -98,6 +100,9 @@ BCAT.010 | NEVER | context | dump the full repository knowledge base or capabili
 BCAT.011 | NEVER | composition | activate several Skills because selection evidence is weak
 BCAT.012 | NEVER | escalation | send an expert a question answerable from already authorized evidence
 BCAT.013 | NEVER | checklist | treat generic question coverage as evidence of a missing consequential question
+BCAT.014 | MUST | runtime | route code-originated external-effect questions through system-mental-model before optional data-context assembly or live search
+BCAT.015 | MUST | discovery | route data-originated asset-discovery questions through domain-context-pack before broad source inspection
+BCAT.016 | NEVER | routing | infer the route solely from the destination technology name
 
 ## References
 

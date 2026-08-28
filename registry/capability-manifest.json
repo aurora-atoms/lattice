@@ -1805,20 +1805,20 @@
       }
     },
     {
-      "capability_id": "skill:context-mastery@1.3.0",
+      "capability_id": "skill:context-mastery@1.4.0",
       "record_type": "skill",
       "family_name": "context-mastery",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "capability_role": "selector",
       "public_package_status": "contract_validated",
       "path": "skills/context-mastery/SKILL.md",
-      "description": "Use for selecting and coordinating the smallest sufficient context-learning capability for system mental models, layered learning, task-specific domain context, negative knowledge, similar work, expert decision-question preparation, and consequential missing-question discovery. Input is a bounded task, user role, repository or knowledge metadata, permissions, historical Delivery Cases, and current evidence; output is a routing decision plus an evidence-linked system map, learning path, domain context pack, negative-knowledge pack, analogous cases, decision-question packet, unasked-questions gap map, or teach-back checkpoint. Do not use as a raw repository dump, generic summarizer, retrieval implementation, or substitute for personal understanding at critical control points; preserve behavior, provenance, uncertainty, validation, least privilege, and human authority.",
-      "changes": "task and learner needs into the smallest evidence-linked context-learning capability",
+      "description": "Use for selecting the smallest sufficient capability for system understanding, code-originated runtime-effect verification, layered learning, task context, negative knowledge, analogous work, expert questions, and missing-question discovery. Input is a bounded task, role, source metadata, permissions, evidence, and context budget; output is a routing decision plus the selected evidence-linked artifact. Do not use for raw dumps, generic summaries, retrieval implementation, blind live searches, or as a substitute for human understanding at critical controls; preserve provenance, uncertainty, least privilege, validation, and human authority.",
+      "changes": "task origin and learner needs into the smallest evidence-linked context-learning or runtime-effect verification capability",
       "primary_user": "context-mastery agent",
       "secondary_audience": [
         "coding agents, reviewers, learners, and domain owners"
       ],
-      "trigger": "system understanding, learning, task context, negative knowledge, similar work, expert questions, or missing-question discovery is required",
+      "trigger": "system understanding, code-originated runtime-effect verification, learning, task context, negative knowledge, similar work, expert questions, or missing-question discovery is required",
       "minimum_inputs": [
         "bounded task, caller or learner role, source metadata, permission boundary, and context budget"
       ],
@@ -1882,8 +1882,8 @@
             "skills/lattice-governor"
           ],
           "last_validated_at": "pending",
-          "trigger_eval": "missing",
-          "output_eval": "missing",
+          "trigger_eval": "present",
+          "output_eval": "present",
           "release_channel": "experimental",
           "notes": "Category B capabilities B01-B07."
         },
@@ -3081,22 +3081,22 @@
       }
     },
     {
-      "capability_id": "skill:domain-context-pack@1.1.0",
+      "capability_id": "skill:domain-context-pack@1.2.0",
       "record_type": "skill",
       "family_name": "domain-context-pack",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "capability_role": "atomic_capability",
       "public_package_status": "contract_validated",
       "path": "skills/domain-context-pack/SKILL.md",
       "description": "Use for assembling the smallest authorized task-specific context from a large knowledge base, Skills, documents, codebases, schemas, decisions, incidents, and governed owner directories. Input is a bounded task and output contract, caller role, knowledge inventory, access policy, context budget, and source metadata; output is an evidence-linked domain context pack containing business rules, system constraints, historical decisions, accountable contacts or roles, selected capabilities and sources, unknowns, conflicts, exclusions, and an activation plan. Do not use to dump the knowledge base, approve source authority, implement retrieval, expose restricted content, or load every related resource; preserve least privilege, provenance, freshness, uncertainty, validation behavior, and source-system authority.",
-      "changes": "large authorized knowledge inventory into a minimal task-activated domain context pack",
+      "changes": "an evidence question and large authorized knowledge inventory into a minimal task-activated domain context pack",
       "primary_user": "context-assembly agent",
       "secondary_audience": [
         "coding agents",
         "reviewers",
         "domain owners"
       ],
-      "trigger": "a task needs relevant Skills, documents, code, rules, decisions, accountable roles, and conflicts selected",
+      "trigger": "a task or Expected Effect Contract needs relevant Skills, documents, code, metadata, rules, decisions, accountable roles, and conflicts selected",
       "minimum_inputs": [
         "bounded task and output",
         "caller role",
@@ -6188,15 +6188,15 @@
       }
     },
     {
-      "capability_id": "skill:system-mental-model@1.0.0",
+      "capability_id": "skill:system-mental-model@1.1.0",
       "record_type": "skill",
       "family_name": "system-mental-model",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "capability_role": "atomic_capability",
       "public_package_status": "contract_validated",
       "path": "skills/system-mental-model/SKILL.md",
-      "description": "Use for rapidly understanding an unfamiliar software system, service, codebase, data platform, or operational workflow by building and validating its purpose, runtime topology, key entry points, core modules, workflows, data flows, control points, and impact boundaries. Input is bounded source code, configuration, schemas, tests, traces, official documentation, incidents, and authorized stakeholder explanations; output is an evidence-linked system map, open-question queue, validation plan, and teach-back check. Do not use for raw code summaries, exhaustive repository dumps, unsupported architecture claims, or implementation before critical unknowns are exposed; preserve provenance, uncertainty, validation behavior, security boundaries, and human authority.",
-      "changes": "unfamiliar system evidence into a verifiable runtime mental model",
+      "description": "Use for rapidly understanding an unfamiliar software system, service, codebase, data platform, or operational workflow by building and validating its purpose, runtime topology, key entry points, core modules, workflows, data flows, control points, impact boundaries, and code-declared external effects. Input is bounded source code, configuration, schemas, tests, traces, official documentation, incidents, and authorized stakeholder explanations; output is an evidence-linked system map, expected-effect contract when applicable, open-question queue, validation plan, and teach-back check. Do not use for raw code summaries, exhaustive repository dumps, unsupported architecture claims, blind live-system searches, or implementation before critical unknowns are exposed; preserve provenance, uncertainty, validation behavior, security boundaries, and human authority.",
+      "changes": "unfamiliar system and code-declared effect evidence into a verifiable runtime mental model and validation path",
       "primary_user": "system-understanding agent",
       "secondary_audience": [
         "developers",
@@ -6204,14 +6204,14 @@
         "incident responders",
         "learners"
       ],
-      "trigger": "runtime topology, entry points, workflows, data flow, controls, or change impact must be understood",
+      "trigger": "runtime topology, entry points, workflows, external effects, data flow, controls, or change impact must be understood",
       "minimum_inputs": [
         "bounded system or task",
         "authorized source access",
         "authoritative starting point"
       ],
       "outputs": [
-        "evidence-linked system map, validation plan, and teach-back check"
+        "evidence-linked system map, expected-effect contract when applicable, validation plan, and teach-back check"
       ],
       "evidence_contract": {
         "required_sections": [
@@ -6268,8 +6268,8 @@
           "public_export_allowed": true,
           "depends_on": [],
           "last_validated_at": "pending",
-          "trigger_eval": "missing",
-          "output_eval": "missing",
+          "trigger_eval": "present",
+          "output_eval": "present",
           "release_channel": "experimental",
           "notes": "unfamiliar system evidence into a verifiable runtime mental model"
         },

@@ -130,12 +130,12 @@
     },
     {
       "name": "context-mastery",
-      "changes": "task and learner needs into the smallest evidence-linked context-learning capability",
+      "changes": "task origin and learner needs into the smallest evidence-linked context-learning or runtime-effect verification capability",
       "primary_user": "context-mastery agent",
       "secondary_audience": [
         "coding agents, reviewers, learners, and domain owners"
       ],
-      "trigger": "system understanding, learning, task context, negative knowledge, similar work, expert questions, or missing-question discovery is required",
+      "trigger": "system understanding, code-originated runtime-effect verification, learning, task context, negative knowledge, similar work, expert questions, or missing-question discovery is required",
       "minimum": [
         "bounded task, caller or learner role, source metadata, permission boundary, and context budget"
       ],
@@ -344,14 +344,14 @@
     },
     {
       "name": "domain-context-pack",
-      "changes": "large authorized knowledge inventory into a minimal task-activated domain context pack",
+      "changes": "an evidence question and large authorized knowledge inventory into a minimal task-activated domain context pack",
       "primary_user": "context-assembly agent",
       "secondary_audience": [
         "coding agents",
         "reviewers",
         "domain owners"
       ],
-      "trigger": "a task needs relevant Skills, documents, code, rules, decisions, accountable roles, and conflicts selected",
+      "trigger": "a task or Expected Effect Contract needs relevant Skills, documents, code, metadata, rules, decisions, accountable roles, and conflicts selected",
       "minimum": [
         "bounded task and output",
         "caller role",
@@ -672,7 +672,7 @@
     },
     {
       "name": "system-mental-model",
-      "changes": "unfamiliar system evidence into a verifiable runtime mental model",
+      "changes": "unfamiliar system and code-declared effect evidence into a verifiable runtime mental model and validation path",
       "primary_user": "system-understanding agent",
       "secondary_audience": [
         "developers",
@@ -680,14 +680,14 @@
         "incident responders",
         "learners"
       ],
-      "trigger": "runtime topology, entry points, workflows, data flow, controls, or change impact must be understood",
+      "trigger": "runtime topology, entry points, workflows, external effects, data flow, controls, or change impact must be understood",
       "minimum": [
         "bounded system or task",
         "authorized source access",
         "authoritative starting point"
       ],
       "outputs": [
-        "evidence-linked system map, validation plan, and teach-back check"
+        "evidence-linked system map, expected-effect contract when applicable, validation plan, and teach-back check"
       ],
       "runtime_targets": [
         "chatgpt",

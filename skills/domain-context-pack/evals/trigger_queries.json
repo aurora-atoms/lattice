@@ -40,5 +40,19 @@
     "should_trigger": false,
     "category": "negative_adjacent",
     "reason": "retrieval-system implementation belongs to the existing retrieval-builder capability"
+  },
+  {
+    "id": "dcp-trigger-007",
+    "query": "Given this Expected Effect Contract, select only the metadata and mappings that can change the next live query or effect-path check.",
+    "should_trigger": true,
+    "category": "positive_operational_evidence",
+    "reason": "requires evidence-question-bound context selection for runtime verification"
+  },
+  {
+    "id": "dcp-trigger-008",
+    "query": "Use DataHub metadata to certify that today's upload-complete event occurred.",
+    "should_trigger": false,
+    "category": "negative_runtime_truth",
+    "reason": "context metadata cannot prove a current runtime occurrence"
   }
 ]

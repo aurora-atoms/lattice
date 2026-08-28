@@ -35,7 +35,7 @@ artifacts/capability-runs/domain-context-pack/<run-id>/run-result.json
 
 When write permission is unavailable, return the complete structured result inline with `write_status=returned_inline`.
 
-The pack must include task scope, caller authorization, context budget, source inventory and selection state, evidence-linked context items, unknowns, conflicts, activation order, answerability, evidence, and expiry or refresh conditions. Business rules, system constraints, historical decisions, accountable contacts or roles, selected Skills, documents, and code surfaces are represented through the typed source and context-item records rather than a raw source dump.
+The pack must include task scope, caller authorization, context budget, source inventory and selection state, evidence-linked context items, unknowns, conflicts, activation order, answerability, evidence, and expiry or refresh conditions. Business rules, system constraints, historical decisions, accountable contacts or roles, selected Skills, documents, and code surfaces are represented through the typed source and context-item records rather than a raw source dump. For operational-evidence work, bind selection to an Evidence Question and, when code-originated, an Expected Effect Contract supplied by `system-mental-model`; do not treat a context pack as live evidence.
 
 ## Machine Contract
 
@@ -81,11 +81,11 @@ When blocking unknowns, unresolved material conflicts, denied required sources, 
 
 ## Workflow
 
-1. Bound the task, output contract, caller role, permissions, and token budget.
+1. Bound the Evidence Question, task, output contract, caller role, permissions, and token budget. If the question is code-originated runtime verification, require the Expected Effect Contract or route to `system-mental-model` before broad context retrieval.
 2. Query ConPort MCP before loading or searching full Skill text when ConPort is available; otherwise use targeted repository reads. Then query compact knowledge and capability metadata before source bodies.
 3. Identify required information classes: rules, constraints, decisions, accountable roles, code, examples, negative knowledge, research, or runtime evidence.
 4. Select the smallest authorized sources and Skills by relevance, authority, freshness, expected information gain, and quality-adjusted token ROI.
-5. Load only bounded excerpts, symbols, line ranges, records, or governed summaries needed now.
+5. Load only bounded excerpts, symbols, line ranges, records, or governed summaries that can change asset selection, cross-boundary mapping, query design, hypothesis, verification, or the next effect-path check.
 6. Record source access, authority scope, observation time, expiry, selection state, and the evidence-linked context items actually admitted.
 7. Record unknowns, conflicts, applicability limits, and material sources intentionally excluded or held conditional.
 8. Produce an activation plan: load now, discover conditionally, request permission, request refresh, human review, or exclude.
@@ -111,6 +111,9 @@ DCP.012 | MUST | budget | declared selected token count equals admitted context 
 DCP.013 | MUST | uncertainty | preserve blocking unknowns and unresolved blocking conflicts and prevent answerable while either remains
 DCP.014 | NEVER | selection | admit denied stale unknown-access or authority-mismatched source content into selected context
 DCP.015 | MUST | validation | fail closed when schema or semantic validation does not pass after one bounded corrective retry
+DCP.016 | MUST | evidence-question | bind operational context selection to the current Evidence Question and Expected Effect Contract when code-originated
+DCP.017 | NEVER | runtime-truth | treat metadata lineage profiles historical queries or context documents as proof of a current runtime effect
+DCP.018 | MUST | stop | stop adding context when the next action is a bounded live query code/configuration check permission request or human decision
 
 ## References
 

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "cm-output-001",
+    "prompt": "A task asks whether a logger call in code produced an event in Elasticsearch.",
+    "expected": [
+      "classifies the task as code-originated runtime verification",
+      "selects system-mental-model before optional domain-context-pack",
+      "requires an Expected Effect Contract before live search",
+      "does not route by the Elasticsearch technology name alone"
+    ],
+    "forbidden": [
+      "starts with broad DataHub discovery",
+      "starts with an unbounded Elasticsearch scan",
+      "treats tool availability as permission"
+    ],
+    "judge_notes": "Pass only if origin and evidence question determine the route."
+  },
+  {
+    "id": "cm-output-002",
+    "prompt": "A task asks what datasets, schemas, and relationships exist in an unfamiliar estate, without naming code behavior.",
+    "expected": [
+      "classifies the task as data-originated discovery",
+      "selects domain-context-pack",
+      "uses authorized context progressively",
+      "records excluded broad context"
+    ],
+    "forbidden": [
+      "inspects unrelated code",
+      "loads the full catalog",
+      "claims metadata proves current runtime state"
+    ],
+    "judge_notes": "Pass only if asset discovery does not inherit the code-originated path."
+  }
+]
