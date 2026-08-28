@@ -58,6 +58,32 @@ For newly created Skill packages, include the machine-checkable `## Direction Fi
 - Synthetic fixtures use `simulation_status=synthetic_reference` and `downstream_adoption_status=not_observed`; they cannot prove real use, reuse, team adoption, manager acceptance, ROI, or business value.
 - Route downstream integration to `docs/downstream-private-repository-contract.md` and manager wording to `docs/manager-credibility-contract.md`.
 
+## Data Context / DataHub Entry
+
+For tasks that require understanding heterogeneous databases, Databricks, Parquet/data-lake assets, Elasticsearch/log data, BI models, lineage, query history, profiling, or pre-Silver/Gold data context, do **not** start by designing a new Lattice data platform.
+
+Use the existing context capabilities and the [DataHub Context Guidance](docs/datahub-context-guidance.md):
+
+```text
+context-mastery
+  -> domain-context-pack
+  -> authorized DataHub context when available
+  -> native coding agent
+  -> live source verification
+```
+
+The default rules are:
+
+- prefer existing DataHub metadata, lineage, usage, query-history, quality, search, MCP, and published Agent Skills before proposing custom retrieval, catalog, profiler, lineage, MCP, or generic data-agent infrastructure;
+- keep DataHub as prior orientation, not source truth; verify consequential claims against live source data or runtime evidence;
+- load context progressively: discovery -> relevant schema/lineage -> query/usage/quality signals only when they change the next decision -> raw values only for a named evidence gap and with permission;
+- never load the full catalog, graph, query history, logs, samples, or raw data by default;
+- use `skills/context-mastery/SKILL.md` to select the understanding path and `skills/domain-context-pack/SKILL.md` to enforce the smallest sufficient authorized context;
+- use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only for an actual retrieval-build/evaluation task after an existing DataHub capability is shown insufficient;
+- keep real schemas, lineage, queries, samples, incidents, business semantics, credentials, and endpoints private downstream.
+
+Do not create a new DataHub-specific Lattice module or duplicate DataHub Skill merely to expose these rules. The guidance is a task-scoped reference for existing context capabilities.
+
 ## Senior Attention Entry
 
 For a bounded feature-requirement, risk-preflight, bug/rescue, decision-support, or management-translation task that genuinely requires scarce expert judgment, start with [Senior Attention](docs/senior-attention.md) and the registered `workspaces/templates/senior-attention-runtime-profile.v1.json` profile. Treat that profile as an allowlist for progressive discovery, not an instruction to load every listed Skill. Keep real task evidence, owners, outcomes, attention measurements, and proprietary extensions in the private downstream repository.
