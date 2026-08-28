@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.github.io/lattice/schemas/interaction-analytics-projection.v1.schema.json",
+  "title": "Interaction Analytics Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "case_id",
+    "simulation_status",
+    "downstream_adoption_status",
+    "interaction_snapshot",
+    "analytical_intent",
+    "parent_semantic_contract",
+    "reuse_decision",
+    "projection_candidate",
+    "context_refs",
+    "security_scope",
+    "semantic_continuity",
+    "filter_continuity",
+    "grain_cardinality_validation",
+    "compute_budget",
+    "compute_plan",
+    "result_validation",
+    "promotion_boundary",
+    "status",
+    "unknowns",
+    "evidence_refs",
+    "production_approved"
+  ],
+  "properties": {
+    "contract": {"const": "lat.interaction_analytics_projection.v1"},
+    "contract_version": {"const": "1.0.0"},
+    "case_id": {"type": "string", "minLength": 1},
+    "simulation_status": {"enum": ["synthetic_reference", "downstream_case"]},
+    "downstream_adoption_status": {"enum": ["not_observed", "observed"]},
+    "interaction_snapshot": {"$ref": "#/$defs/interaction_snapshot"},
+    "analytical_intent": {"$ref": "#/$defs/analytical_intent"},
+    "parent_semantic_contract": {"$ref": "#/$defs/parent_semantic_contract"},
+    "reuse_decision": {
+      "enum": ["reuse_existing", "gap_requires_projection", "minimum_clarification", "deny_or_narrow", "unknown"]
+    },
+    "projection_candidate": {
+      "anyOf": [{"type": "null"}, {"$ref": "#/$defs/projection_candidate"}]
+    },
+    "context_refs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/context_ref"}
+    },
+    "security_scope": {"$ref": "#/$defs/security_scope"},
+    "semantic_continuity": {"$ref": "#/$defs/semantic_continuity"},
+    "filter_continuity": {"$ref": "#/$defs/filter_continuity"},
+    "grain_cardinality_validation": {"$ref": "#/$defs/grain_cardinality_validation"},
+    "compute_budget": {"$ref": "#/$defs/compute_budget"},
+    "compute_plan": {"$ref": "#/$defs/compute_plan"},
+    "result_validation": {"$ref": "#/$defs/result_validation"},
+    "promotion_boundary": {"$ref": "#/$defs/promotion_boundary"},
+    "status": {
+      "enum": ["reuse_existing", "projection_candidate", "partial", "ambiguous", "blocked", "async_required", "display_ready", "reusable_candidate"]
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unknown"}
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/addressable_ref"}
+    },
+    "production_approved": {"const": false}
+  },
+  "$defs": {
+    "addressable_ref": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*://\\S+$"
+    },
+    "nonempty_string_array": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "interaction_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dashboard_id",
+        "dashboard_version",
+        "visual_id",
+        "visual_type",
+        "selected_mark",
+        "metric_id",
+        "metric_version",
+        "current_drill_level",
+        "filters",
+        "time_range",
+        "security_scope_ref",
+        "semantic_model_version",
+        "interaction_timestamp"
+      ],
+      "properties": {
+        "dashboard_id": {"type": "string", "minLength": 1},
+        "dashboard_version": {"type": "string", "minLength": 1},
+        "visual_id": {"type": "string", "minLength": 1},
+        "visual_type": {"type": "string", "minLength": 1},
+        "selected_mark": {"type": "string", "minLength": 1},
+        "metric_id": {"type": "string", "minLength": 1},
+        "metric_version": {"type": "string", "minLength": 1},
+        "current_drill_level": {"type": "string", "minLength": 1},
+        "filters": {"type": "object", "additionalProperties": {"type": "string"}},
+        "time_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": "string", "minLength": 1},
+            "end": {"type": "string", "minLength": 1}
+          }
+        },
+        "security_scope_ref": {"type": "string", "minLength": 1},
+        "semantic_model_version": {"type": "string", "minLength": 1},
+        "interaction_timestamp": {"type": "string", "minLength": 1}
+      }
+    },
+    "analytical_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "intent_id", "evidence_refs", "options"],
+      "properties": {
+        "status": {"enum": ["observed", "inferred", "ambiguous", "unknown"]},
+        "intent_id": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/addressable_ref"}},
+        "options": {"$ref": "#/$defs/nonempty_string_array"}
+      }
+    },
+    "parent_semantic_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_id",
+        "metric_version",
+        "business_definition",
+        "calculation_rule",
+        "population",
+        "aggregation_semantics",
+        "filter_scope",
+        "time_semantics",
+        "unit",
+        "semantic_source_ref"
+      ],
+      "properties": {
+        "metric_id": {"type": "string", "minLength": 1},
+        "metric_version": {"type": "string", "minLength": 1},
+        "business_definition": {"type": "string", "minLength": 1},
+        "calculation_rule": {"type": "string", "minLength": 1},
+        "population": {"type": "string", "minLength": 1},
+        "aggregation_semantics": {"enum": ["additive", "semi_additive", "non_additive", "ratio", "distinct_count", "percentile", "rate", "average", "snapshot", "balance"]},
+        "filter_scope": {"type": "string", "minLength": 1},
+        "time_semantics": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "semantic_source_ref": {"$ref": "#/$defs/addressable_ref"}
+      }
+    },
+    "projection_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projection_id",
+        "question",
+        "parent_metric_ref",
+        "output_grain",
+        "dimensions",
+        "filters",
+        "relationships",
+        "source_refs",
+        "security_scope",
+        "freshness_requirement",
+        "expected_cardinality",
+        "compute_budget_ref",
+        "evidence_refs",
+        "assumptions",
+        "unknown_refs",
+        "production_approved"
+      ],
+      "properties": {
+        "projection_id": {"type": "string", "minLength": 1},
+        "question": {"type": "string", "minLength": 1},
+        "parent_metric_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["metric_id", "metric_version"],
+          "properties": {
+            "metric_id": {"type": "string", "minLength": 1},
+            "metric_version": {"type": "string", "minLength": 1}
+          }
+        },
+        "output_grain": {"type": "string", "minLength": 1},
+        "dimensions": {"$ref": "#/$defs/nonempty_string_array"},
+        "filters": {"type": "object", "additionalProperties": {"type": "string"}},
+        "relationships": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "source_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/addressable_ref"}},
+        "security_scope": {"type": "string", "minLength": 1},
+        "freshness_requirement": {"type": "string", "minLength": 1},
+        "expected_cardinality": {"type": "string", "minLength": 1},
+        "compute_budget_ref": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/addressable_ref"}},
+        "assumptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "unknown_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "production_approved": {"const": false}
+      }
+    },
+    "context_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "purpose"],
+      "properties": {
+        "kind": {"enum": ["interaction", "code", "governed_context", "live_data", "semantic"]},
+        "ref": {"$ref": "#/$defs/addressable_ref"},
+        "purpose": {"type": "string", "minLength": 1}
+      }
+    },
+    "security_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_scope", "role_class", "row_level_status", "requested_detail_level", "authority_ceiling", "expansion_detected"],
+      "properties": {
+        "tenant_scope": {"type": "string", "minLength": 1},
+        "role_class": {"type": "string", "minLength": 1},
+        "row_level_status": {"enum": ["authorized", "aggregate_only", "unknown", "denied"]},
+        "requested_detail_level": {"enum": ["aggregate", "grouped", "row", "restricted"]},
+        "authority_ceiling": {"type": "string", "minLength": 1},
+        "expansion_detected": {"type": "boolean"}
+      }
+    },
+    "semantic_continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "parent_metric_preserved", "metric_version_preserved", "calculation_rule_preserved", "time_semantics_preserved", "notes"],
+      "properties": {
+        "status": {"enum": ["passed", "failed", "unknown"]},
+        "parent_metric_preserved": {"type": "boolean"},
+        "metric_version_preserved": {"type": "boolean"},
+        "calculation_rule_preserved": {"type": "boolean"},
+        "time_semantics_preserved": {"type": "boolean"},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "filter_continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "material_filters_inherited", "scope_not_widened", "lost_filters", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["passed", "failed", "unknown"]},
+        "material_filters_inherited": {"type": "boolean"},
+        "scope_not_widened": {"type": "boolean"},
+        "lost_filters": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/addressable_ref"}}
+      }
+    },
+    "grain_cardinality_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "join_risk", "fanout_detected", "evidence_refs", "notes"],
+      "properties": {
+        "status": {"enum": ["passed", "failed", "unknown"]},
+        "join_risk": {"enum": ["none", "one_to_one", "one_to_many", "many_to_many", "unknown"]},
+        "fanout_detected": {"type": "boolean"},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/addressable_ref"}},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "compute_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "latency_budget_ms", "estimated_latency_ms", "estimated_scan_scope", "timeout_ms", "notes"],
+      "properties": {
+        "status": {"enum": ["interactive_ready", "async_required", "failed", "unknown"]},
+        "latency_budget_ms": {"type": "integer", "minimum": 0},
+        "estimated_latency_ms": {"type": "integer", "minimum": 0},
+        "estimated_scan_scope": {"type": "string", "minLength": 1},
+        "timeout_ms": {"type": "integer", "minimum": 0},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "compute_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "source_scope", "bounded", "timeout_ms"],
+      "properties": {
+        "mode": {"enum": ["reuse", "interactive", "async", "not_executable"]},
+        "source_scope": {"type": "string", "minLength": 1},
+        "bounded": {"type": "boolean"},
+        "timeout_ms": {"type": "integer", "minimum": 0}
+      }
+    },
+    "result_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checks", "notes"],
+      "properties": {
+        "status": {"enum": ["display_ready", "failed", "not_executed", "unknown"]},
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["check_id", "status", "evidence_refs"],
+            "properties": {
+              "check_id": {"type": "string", "minLength": 1},
+              "status": {"enum": ["passed", "failed", "unknown", "not_run"]},
+              "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/addressable_ref"}}
+            }
+          }
+        },
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "promotion_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "human_review_required", "production_approved", "gold_promotion_approved"],
+      "properties": {
+        "status": {"enum": ["interaction_only", "reusable_candidate", "human_review_required", "blocked"]},
+        "human_review_required": {"type": "boolean"},
+        "production_approved": {"const": false},
+        "gold_promotion_approved": {"const": false}
+      }
+    },
+    "unknown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_id", "statement", "blocking"],
+      "properties": {
+        "unknown_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"}
+      }
+    }
+  }
+}

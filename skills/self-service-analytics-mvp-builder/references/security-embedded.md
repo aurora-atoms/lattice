@@ -47,3 +47,9 @@ Keep token generation on the backend. Do not expose secrets or service principal
 - embed token lifetime and refresh behavior are understood
 - audit logs capture user/report/action events
 - sample customer demo data is partitioned the same way as production data
+
+## Interaction security continuity
+
+An interaction-driven drill inherits the current user's authorization ceiling. Seeing a tenant aggregate does not authorize raw contributing rows, customer identifiers, restricted columns, or another tenant's data. Metadata visibility, a DataHub relationship, and a generated query do not grant source permission.
+
+Before execution, carry forward tenant scope, row-level constraints, role scope, object or column restrictions, classification limits, and material hidden filters. If inheritance cannot be proven, return a bounded aggregate, ask for an authorized path, or deny the drill. Never silently widen the scope because a deeper query is technically possible.

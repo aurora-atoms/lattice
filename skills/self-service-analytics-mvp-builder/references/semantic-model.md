@@ -4,6 +4,22 @@
 
 The semantic model is the analytics API for business users, embedded reports, and AI summaries. Do not expose raw source tables.
 
+## Interaction-originated analysis
+
+An interaction with an existing visual is a bounded request signal, not a complete analytical specification. Capture the dashboard, visual, selected mark, metric and version, current filters, time range, authorization scope, and interaction time before deciding what analysis is intended.
+
+Reconstruct the parent visual's semantic contract before creating a child analysis. Preserve its metric identity, calculation rule, population, aggregation behavior, unit, time semantics, material filters, tenant scope, and semantic-model version. A syntactically valid query that changes any of these is not a valid drill result.
+
+Apply this order:
+
+```text
+interaction snapshot -> analytical intent -> parent semantic contract
+-> existing governed semantic reuse -> bounded projection only for a named gap
+-> semantic, filter, security, grain, cost, and result validation
+```
+
+Use `references/interaction-driven-analytics.md` and the task-scoped projection contract for the detailed boundary. The projection is an execution input, not SQL and not a durable Gold model.
+
 ## Metric contract
 
 Each metric must include:

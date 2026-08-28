@@ -5652,25 +5652,25 @@
       }
     },
     {
-      "capability_id": "skill:self-service-analytics-mvp-builder@1.0.0",
+      "capability_id": "skill:self-service-analytics-mvp-builder@1.1.0",
       "record_type": "skill",
       "family_name": "self-service-analytics-mvp-builder",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "capability_role": "atomic_capability",
       "public_package_status": "contract_validated",
       "path": "skills/self-service-analytics-mvp-builder/SKILL.md",
-      "description": "Build or extend a commercial, scenario-specific self-service analytics MVP from input sources such as customer requirements, existing repo files, metric definitions, data contracts, and architecture constraints while preserving existing behavior, metric semantics, tenant isolation, validation, and safety. Use when a customer or use case is known and the user wants output such as a practical plan, repo scaffold, Fabric or Power BI architecture, semantic model, embedded analytics design, tenant security model, Gold layer contract, action loop, or delivery checklist. Do not use for broad platform surveys, raw-table exposure, unbounded BI transformation, production deployment without approval, or AI features before the semantic model is governed.",
-      "changes": "a known analytics scenario into a governed runnable vertical slice",
+      "description": "Build or extend a commercial, scenario-specific self-service analytics MVP from input sources such as customer requirements, existing repo files, metric definitions, data contracts, and architecture constraints while preserving existing behavior, metric semantics, tenant isolation, validation, and safety. Use when a customer or use case is known, or when an existing dashboard interaction needs governed deeper analysis and a visible output or contract. Do not use for broad platform surveys, raw-table exposure, unbounded BI transformation, production deployment without approval, or AI features before the semantic model is governed.",
+      "changes": "a known analytics scenario or governed visual interaction into a bounded validated analytics capability",
       "primary_user": "analytics MVP agent",
       "secondary_audience": [
         "product owners, analytics developers, and customer stakeholders"
       ],
-      "trigger": "a paid scenario or first use case is known",
+      "trigger": "a paid scenario or first use case is known, or an existing dashboard interaction requests governed deeper analysis",
       "minimum_inputs": [
-        "target user, recurring decision, and metric constraints"
+        "target user, recurring decision, metric constraints, or bounded interaction state"
       ],
       "outputs": [
-        "bounded MVP plan or scaffold"
+        "bounded MVP plan or scaffold, or interaction analytics decision contract"
       ],
       "evidence_contract": {
         "required_sections": [
@@ -5729,7 +5729,7 @@
           "trigger_eval": "missing",
           "output_eval": "missing",
           "release_channel": "experimental",
-          "notes": "a known analytics scenario into a governed runnable vertical slice"
+          "notes": "a known analytics scenario or governed visual interaction into a bounded validated analytics capability"
         },
         "context_catalog": "registry/skill-context.catalog.json"
       }

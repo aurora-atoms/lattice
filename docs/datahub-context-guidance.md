@@ -58,6 +58,16 @@ modeling-decision-originated: "what Silver model candidate is supported?"
   -> cross-source reconciliation and adversarial checks
   -> candidate / partial / blocked
   -> accountable human review
+
+interaction-originated: "what governed deeper analysis is supported by this visual selection?"
+  -> self-service-analytics-mvp-builder
+  -> Interaction Snapshot + Analytical Intent
+  -> Parent Visual Semantic Contract + Existing Semantic Reuse Gate
+  -> named context gap only -> minimum code/DataHub/live evidence
+  -> Interaction-Scoped Analytical Projection
+  -> semantic/filter/security/grain/cost/result validation
+  -> bounded UI result or deeper asynchronous analysis
+  -> reusable candidate only -> human review
 ```
 
 Use `skills/context-mastery/SKILL.md` to select the smallest understanding capability.
@@ -69,6 +79,8 @@ Use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only if the task is act
 Seeing Elasticsearch, Kafka, a database, or another data-bearing system does not by itself make a question data-originated. If code declares the expected side effect, inspect the bounded code path first. Conversely, do not inspect unrelated code when the task is only asset discovery.
 
 A Silver-model request is modeling-decision-originated even when source code is available. Use `system-mental-model` only for a named uncertainty about implemented behavior; code behavior is evidence, not automatic desired business semantics.
+
+An existing dashboard selection is interaction-originated. The selection records what happened in the UI but does not fully specify the user's analytical question. Route it to `self-service-analytics-mvp-builder`, reuse an existing governed metric or drill path first, and consult DataHub or code only for a named semantic, relationship, version, or implementation gap. A temporary interaction projection must preserve parent semantics and authorization and must not become Gold automatically.
 
 ## Contracts Before Silver Modeling
 
