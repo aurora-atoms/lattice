@@ -54,5 +54,19 @@
     "should_trigger": false,
     "category": "negative_runtime_truth",
     "reason": "context metadata cannot prove a current runtime occurrence"
+  },
+  {
+    "id": "dcp-trigger-009",
+    "query": "Assemble only the requirement, DataHub, schema, profiling, lineage, and live evidence needed to test the grain, key, join, time, and Gold fit of this Silver candidate.",
+    "should_trigger": true,
+    "category": "positive_silver_modeling",
+    "reason": "requires question-bound modeling context and evidence separation"
+  },
+  {
+    "id": "dcp-trigger-010",
+    "query": "Use a near-unique DataHub profile and a historical join query to approve and deploy the Silver model.",
+    "should_trigger": false,
+    "category": "negative_model_promotion",
+    "reason": "profiling and historical queries cannot approve a production model"
   }
 ]

@@ -75,6 +75,14 @@ data-originated discovery question
   -> context-mastery -> domain-context-pack
   -> authorized DataHub discovery
   -> approved live-source query when current evidence is required
+
+modeling decision: "what evidence supports a Silver model candidate?"
+  -> context-mastery -> domain-context-pack
+  -> Gold Consumer Contract + Modeling Question Contract
+  -> minimum authorized DataHub context
+  -> targeted live-data evidence and cross-source reconciliation
+  -> adversarial challenge + Gold-fit check
+  -> candidate / partial / blocked -> human review
 ```
 
 The default rules are:
@@ -87,6 +95,9 @@ The default rules are:
 - load context progressively: discovery -> relevant schema/lineage -> query/usage/quality signals only when they change the next decision -> raw values only for a named evidence gap and with permission;
 - never load the full catalog, graph, query history, logs, samples, or raw data by default;
 - use `skills/context-mastery/SKILL.md` to select the understanding path and `skills/domain-context-pack/SKILL.md` to enforce the smallest sufficient authorized context;
+- for a modeling decision, start from the downstream consumer and named modeling questions; classify field-level source roles, verify grain/key/join/time/dedup assumptions against targeted live evidence, and keep the result candidate-scoped;
+- use `system-mental-model` in a modeling task only when bounded code inspection is needed to establish implemented semantics; source code does not automatically determine the route or desired business meaning;
+- treat DataHub relationships as candidate joins, profiling uniqueness as a hypothesis, and historical queries as usage evidence rather than business authority;
 - use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only for an actual retrieval-build/evaluation task after an existing DataHub capability is shown insufficient;
 - keep real schemas, lineage, queries, samples, incidents, business semantics, credentials, and endpoints private downstream.
 

@@ -1,0 +1,181 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-08-28-silver-modeling-guidance",
+  "status": "succeeded",
+  "artifacts": [
+    {
+      "artifact_id": "silver-modeling-routing-map",
+      "kind": "repository_guidance",
+      "format": "markdown",
+      "path": "AGENTS.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "datahub-silver-modeling-guidance",
+      "kind": "task_scoped_reference",
+      "format": "markdown",
+      "path": "docs/datahub-context-guidance.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "context-mastery-modeling-route",
+      "kind": "skill_package",
+      "format": "markdown_and_json_evals",
+      "path": "skills/context-mastery",
+      "visible": true,
+      "write_status": "written",
+      "notes": "minor version 1.5.0"
+    },
+    {
+      "artifact_id": "domain-context-pack-modeling-discipline",
+      "kind": "skill_package",
+      "format": "markdown_and_json_evals",
+      "path": "skills/domain-context-pack",
+      "visible": true,
+      "write_status": "written",
+      "notes": "minor version 1.3.0; existing machine schema reused"
+    },
+    {
+      "artifact_id": "silver-modeling-replay",
+      "kind": "synthetic_behavioral_replay",
+      "format": "python",
+      "path": "scripts/replay_silver_modeling_guidance.py",
+      "visible": true,
+      "write_status": "written",
+      "notes": "simulation_status=synthetic_reference and downstream_adoption_status=not_observed"
+    },
+    {
+      "artifact_id": "silver-modeling-replay-tests",
+      "kind": "conformance_tests",
+      "format": "python_unittest",
+      "path": "tests/test_silver_modeling_guidance_replay.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "silver-modeling-replay-report",
+      "kind": "validation_report",
+      "format": "markdown",
+      "path": "reports/datahub-silver-modeling-replay-2026-08-28.md",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "Scenario 2 is implemented by composing and versioning the existing context-mastery and domain-context-pack capabilities without creating a new Skill, active module, data platform, adapter, or modeling schema.",
+        "source_refs": [
+          "skills/context-mastery/SKILL.md",
+          "skills/domain-context-pack/SKILL.md",
+          "registry/capability-manifest.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The synthetic replay covers clean candidate, false uniqueness, join fanout, temporal mismatch, conflicting authority, late or duplicate events, schema evolution, Gold mismatch, and insufficient evidence while never approving production.",
+        "source_refs": [
+          "scripts/replay_silver_modeling_guidance.py",
+          "tests/test_silver_modeling_guidance_replay.py",
+          "reports/datahub-silver-modeling-replay-2026-08-28.md"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "Canonical projections, manifest, context, composition, public-private, package, Domain Context Pack, Scenario 1 regression, Scenario 2 replay, and all 321 repository tests passed locally.",
+        "source_refs": [
+          "registry/capability-manifest.json",
+          "skills/domain-context-pack/evals/test_domain_context_pack.py",
+          "tests/test_operational_evidence_guidance_replay.py",
+          "tests/test_silver_modeling_guidance_replay.py"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "A modeling-decision route plus task-scoped contracts, evidence-class separation, adversarial checks, and a candidate-only boundary is the smallest sufficient hardening because DataHub and Unity Catalog already own the adjacent platform capabilities.",
+        "based_on": [
+          "reports/datahub-context-architecture-research-2026-08-27.md",
+          "reports/datahub-agentic-data-scenarios-innovation-research-2026-08-28.md",
+          "docs/datahub-context-guidance.md"
+        ],
+        "uncertainty": "Real downstream usefulness and cross-model agent behavior remain unobserved."
+      }
+    ],
+    "citations": [
+      "AGENTS.md",
+      "docs/datahub-context-guidance.md",
+      "skills/context-mastery/SKILL.md",
+      "skills/domain-context-pack/SKILL.md",
+      "reports/datahub-silver-modeling-replay-2026-08-28.md",
+      "scripts/replay_silver_modeling_guidance.py",
+      "tests/test_silver_modeling_guidance_replay.py"
+    ],
+    "uncertainty": [
+      "No real DataHub, Unity Catalog, Databricks, database, or private Silver-modeling case was exercised.",
+      "Deterministic replay and repository tests do not establish external coding-agent behavior."
+    ],
+    "unknowns": [
+      "Downstream field-level authority resolution, source permissions, and live-query interfaces remain environment specific.",
+      "ConPort was unavailable in this runtime, so authoritative repository files and generated registries were read directly."
+    ],
+    "assumptions": [
+      "The existing Domain Context Pack typed source and context-item records are sufficient for public task-scoped modeling guidance without a second permanent schema.",
+      "A real adoption trial will keep proprietary schemas, business rules, queries, samples, and decisions in a private downstream repository."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested Scenario 2 guidance change is represented in existing owned capabilities",
+      "result": "met",
+      "evidence_refs": [
+        "AGENTS.md",
+        "docs/datahub-context-guidance.md",
+        "skills/context-mastery/SKILL.md",
+        "skills/domain-context-pack/SKILL.md"
+      ]
+    },
+    {
+      "signal": "changed Skill packages have increased semantic versions and regenerated projections",
+      "result": "met",
+      "evidence_refs": [
+        "registry/capability-manifest.json",
+        "registry/capability-context-policy.json",
+        "registry/skill-context.catalog.json"
+      ]
+    },
+    {
+      "signal": "behavioral replay challenges the required failure modes and never grants production authority",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/replay_silver_modeling_guidance.py",
+        "tests/test_silver_modeling_guidance_replay.py"
+      ]
+    },
+    {
+      "signal": "Scenario 1 regression and repository validation pass",
+      "result": "met",
+      "evidence_refs": [
+        "tests/test_operational_evidence_guidance_replay.py",
+        "tests/test_silver_modeling_guidance_replay.py"
+      ]
+    },
+    {
+      "signal": "real downstream use and accountable domain-owner acceptance are established",
+      "result": "not_evaluated",
+      "evidence_refs": []
+    }
+  ],
+  "stop": {
+    "reason": "goal_reached",
+    "condition": "Scenario 2 routing, modeling guidance, versioned Skill behavior, evals, synthetic replay, and local repository validation are complete.",
+    "retry_count": 0,
+    "retry_allowed": false,
+    "next_step": "Review and merge the PR, then apply the pinned capability versions to one authorized private downstream Silver-modeling case."
+  },
+  "generated_at": "2026-08-28T02:15:28Z"
+}

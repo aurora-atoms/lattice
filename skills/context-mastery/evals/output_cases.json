@@ -30,5 +30,23 @@
       "claims metadata proves current runtime state"
     ],
     "judge_notes": "Pass only if asset discovery does not inherit the code-originated path."
+  },
+  {
+    "id": "cm-output-003",
+    "prompt": "A task asks for a reliable Silver model using requirements, existing code, DataHub, and live data.",
+    "expected": [
+      "classifies the task as modeling-decision-originated",
+      "selects domain-context-pack before broad metadata or live-data inspection",
+      "requires Gold Consumer and Modeling Question contracts",
+      "uses system-mental-model only for a named implemented-semantics gap",
+      "expects a candidate partial unknown or blocked result for human review"
+    ],
+    "forbidden": [
+      "routes through code inspection merely because code exists",
+      "starts from Bronze shape without the Gold consumer",
+      "automatically creates or approves a Silver table",
+      "implements dashboard interaction-driven analytics"
+    ],
+    "judge_notes": "Pass only if the modeling decision has its own route and retains candidate-only authority."
   }
 ]
