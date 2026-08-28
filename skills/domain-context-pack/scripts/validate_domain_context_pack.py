@@ -14,6 +14,16 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 RECORD_TYPE = "lat.domain_context_pack.v1"
 REF_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://\S+$")
+MODELING_REQUIRED_DIMENSIONS = {
+    "entity_boundary",
+    "grain",
+    "key",
+    "source_authority",
+    "temporal_semantics",
+    "deduplication",
+    "schema_scope",
+    "gold_fit",
+}
 
 
 def parse_time(value: str) -> datetime:
@@ -25,6 +35,141 @@ def add_unique_error(values: list[Any], label: str, errors: list[str]) -> None:
     normalized = [str(value) for value in values]
     if len(normalized) != len(set(normalized)):
         errors.append(f"{label} values must be unique")
+
+
+def _validate_modeling_decision(
+    pack: dict[str, Any],
+    source_by_id: dict[str, dict[str, Any]],
+    selected_source_ids: set[str],
+    unknown_ids: list[Any],
+    blocking_unknown: bool,
+    blocking_conflict: bool,
+    answer_status: Any,
+    errors: list[str],
+) -> None:
+    task = pack.get("task", {})
+    task_origin = task.get("origin") if isinstance(task, dict) else None
+    modeling = pack.get("modeling_decision")
+
+    if task_origin != "modeling_decision":
+        if modeling is not None:
+            errors.append("modeling_decision is only valid when task.origin=modeling_decision")
+        return
+
+    if not isinstance(modeling, dict):
+        errors.append("task.origin=modeling_decision requires modeling_decision")
+        return
+
+    questions = modeling.get("modeling_questions", [])
+    question_ids = [
+        question.get("question_id")
+        for question in questions
+        if isinstance(question, dict)
+    ]
+    add_unique_error(question_ids, "modeling_questions.question_id", errors)
+
+    dimensions = {
+        str(question.get("dimension"))
+        for question in questions
+        if isinstance(question, dict) and question.get("dimension")
+    }
+    missing_dimensions = MODELING_REQUIRED_DIMENSIONS - dimensions
+    if missing_dimensions:
+        errors.append(
+            "modeling_decision must preserve core modeling questions: "
+            + ", ".join(sorted(missing_dimensions))
+        )
+
+    blocking_open_question = any(
+        isinstance(question, dict)
+        and question.get("blocking") is True
+        and question.get("status") in {"open", "blocked"}
+        for question in questions
+    )
+
+    source_roles = modeling.get("source_roles", [])
+    for index, source_role in enumerate(source_roles):
+        if not isinstance(source_role, dict):
+            continue
+        source_id = str(source_role.get("source_id", ""))
+        if source_id not in source_by_id:
+            errors.append(
+                f"modeling_decision.source_roles[{index}] references unknown source_id: {source_id}"
+            )
+        elif source_id not in selected_source_ids:
+            errors.append(
+                f"modeling_decision.source_roles[{index}] source must have selection_status=selected"
+            )
+        role = source_role.get("role")
+        status = source_role.get("status")
+        if role == "authoritative" and status not in {"observed", "verified"}:
+            errors.append(
+                f"modeling_decision.source_roles[{index}] authoritative role cannot be merely inferred or unknown"
+            )
+        if role == "unknown_authority" and status == "verified":
+            errors.append(
+                f"modeling_decision.source_roles[{index}] unknown_authority cannot be verified"
+            )
+        refs = source_role.get("evidence_refs", [])
+        for ref in refs if isinstance(refs, list) else []:
+            if not isinstance(ref, str) or not REF_RE.fullmatch(ref):
+                errors.append(
+                    f"modeling_decision.source_roles[{index}] evidence_ref must be addressable"
+                )
+
+    candidate = modeling.get("candidate")
+    if not isinstance(candidate, dict):
+        errors.append("modeling_decision requires a candidate result, including unknown or blocked")
+        return
+
+    candidate_status = candidate.get("status")
+    candidate_unknown_refs = set(str(value) for value in candidate.get("unknown_refs", []))
+    known_unknown_ids = set(str(value) for value in unknown_ids)
+    dangling_unknown_refs = candidate_unknown_refs - known_unknown_ids
+    if dangling_unknown_refs:
+        errors.append(
+            "modeling candidate unknown_refs must reference declared unknowns: "
+            + ", ".join(sorted(dangling_unknown_refs))
+        )
+
+    refs = candidate.get("evidence_refs", [])
+    for ref in refs if isinstance(refs, list) else []:
+        if not isinstance(ref, str) or not REF_RE.fullmatch(ref):
+            errors.append("modeling candidate evidence_refs must be addressable")
+
+    relationships = candidate.get("relationships", [])
+    if isinstance(relationships, list) and relationships and "join_cardinality" not in dimensions:
+        errors.append(
+            "modeling candidate with relationships requires a join_cardinality modeling question"
+        )
+
+    status_to_answerability = {
+        "candidate": {"answerable"},
+        "partial": {"partial"},
+        "unknown": {"partial", "abstain"},
+        "blocked": {"blocked"},
+    }
+    allowed_answerability = status_to_answerability.get(candidate_status)
+    if allowed_answerability is not None and answer_status not in allowed_answerability:
+        errors.append(
+            f"modeling candidate status {candidate_status} is inconsistent with answerability.status={answer_status}"
+        )
+
+    if candidate_status == "candidate":
+        if blocking_open_question:
+            errors.append("modeling candidate cannot be candidate while a blocking modeling question remains open")
+        if blocking_unknown:
+            errors.append("modeling candidate cannot be candidate while a blocking unknown remains")
+        if blocking_conflict:
+            errors.append("modeling candidate cannot be candidate while a blocking conflict remains unresolved")
+        if candidate.get("gold_fit") != "candidate_fit":
+            errors.append("modeling candidate status=candidate requires gold_fit=candidate_fit")
+        keys = candidate.get("candidate_keys", [])
+        if not isinstance(keys, list) or not keys:
+            errors.append("modeling candidate status=candidate requires at least one candidate key")
+
+    if candidate.get("gold_fit") == "failed" and candidate_status != "blocked":
+        errors.append("gold_fit=failed requires modeling candidate status=blocked")
 
 
 def semantic_errors(pack: dict[str, Any]) -> list[str]:
@@ -218,6 +363,17 @@ def semantic_errors(pack: dict[str, Any]) -> list[str]:
         citations = evidence_summary.get("citations", []) if isinstance(evidence_summary, dict) else []
         if not citations:
             errors.append("answerability=answerable requires at least one evidence citation")
+
+    _validate_modeling_decision(
+        pack,
+        source_by_id,
+        selected_source_ids,
+        unknown_ids,
+        blocking_unknown,
+        blocking_conflict,
+        answer_status,
+        errors,
+    )
 
     if pack.get("simulation_status") == "synthetic_reference" and pack.get("downstream_adoption_status") != "not_observed":
         errors.append("synthetic_reference packs must keep downstream_adoption_status=not_observed")

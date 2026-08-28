@@ -47,6 +47,17 @@ data-originated: "what data exists and where should I look?"
   -> domain-context-pack
   -> authorized DataHub discovery
   -> approved live-source interface when current evidence is required
+
+modeling-decision-originated: "what Silver model candidate is supported?"
+  -> context-mastery
+  -> domain-context-pack
+  -> Gold Consumer Contract
+  -> Modeling Question Contract
+  -> minimum relevant DataHub context
+  -> targeted live-data investigation
+  -> cross-source reconciliation and adversarial checks
+  -> candidate / partial / blocked
+  -> accountable human review
 ```
 
 Use `skills/context-mastery/SKILL.md` to select the smallest understanding capability.
@@ -56,6 +67,112 @@ Use `skills/domain-context-pack/SKILL.md` to assemble only the context required 
 Use `skills/hybrid-knowledge-retrieval-builder/SKILL.md` only if the task is actually to build or evaluate retrieval and an existing DataHub capability has first been shown insufficient. Do not invoke it merely because DataHub is present.
 
 Seeing Elasticsearch, Kafka, a database, or another data-bearing system does not by itself make a question data-originated. If code declares the expected side effect, inspect the bounded code path first. Conversely, do not inspect unrelated code when the task is only asset discovery.
+
+A Silver-model request is modeling-decision-originated even when source code is available. Use `system-mental-model` only for a named uncertainty about implemented behavior; code behavior is evidence, not automatic desired business semantics.
+
+## Contracts Before Silver Modeling
+
+Do not begin from "clean the Bronze tables." Establish two compact task-scoped contracts using the existing Domain Context Pack artifact structure. These are decision inputs, not new permanent schemas.
+
+### Gold Consumer Contract
+
+Capture only what is needed to judge whether a Silver candidate is usable:
+
+- consumer and workflow or question;
+- required business entity or event and grain;
+- required identifiers, dimensions, and relationships;
+- required history and temporal behavior;
+- freshness, completeness, and correctness expectations;
+- security and governance boundary;
+- explicit unusable conditions.
+
+### Modeling Question Contract
+
+Name the unresolved decisions before loading broad metadata or raw data:
+
+- entity or event boundary and record grain;
+- candidate identifiers and what would disprove uniqueness;
+- legitimate joins, expected cardinality, and fanout risk;
+- field-level source authority and reconciliation behavior;
+- event, ingest, update, and effective-time semantics;
+- retry, replay, late-arrival, duplicate, and deduplication behavior;
+- normalization versus business interpretation;
+- valid nulls versus defects;
+- history representation and schema-evolution scope;
+- known ambiguity, counterevidence, and evidence still needed.
+
+Load a context item only when it can change one of these decisions, the live-data test, the candidate, or the stop boundary.
+
+## Evidence and Authority Boundaries for Modeling
+
+Keep these evidence classes separate:
+
+```text
+business requirement or definition
+!= implemented code behavior
+!= DataHub metadata, lineage, profile, or historical context
+!= observed live-data behavior
+!= accountable human or domain-owner authority
+```
+
+Apply these hard boundaries:
+
+```text
+DataHub relationship != verified join
+DataHub profiling != proven grain
+historical query != business rule
+apparent uniqueness != durable primary key
+current distribution != future schema contract
+code behavior != desired business semantics
+```
+
+Do not resolve a conflict by majority vote across evidence classes. Preserve the conflict, identify the decision it blocks, and route it to the accountable authority.
+
+## Source-Role Classification
+
+Classify source roles at the field or decision scope, not only once per dataset:
+
+```text
+authoritative source
+event source
+reference or enrichment source
+derived source
+supporting source
+unknown authority
+```
+
+One source may be authoritative for identity while another is authoritative for event time. "Contains a value" does not establish authority. Record authority, freshness, and observed behavior separately.
+
+## Silver Model Candidate Boundary
+
+The reviewable output is an **evidence-backed Silver Model Candidate**, never an automatically approved table. It should state:
+
+- candidate entity or event boundary, grain, and key candidates;
+- relationships and expected cardinality;
+- temporal, history, late-arrival, and deduplication semantics;
+- field-level source roles and reconciliation rules;
+- normalization rules and quality constraints;
+- schema-evolution assumptions and version/time scope;
+- live evidence used, counterevidence, ambiguity, and missing evidence;
+- Gold consumer fit and unusable conditions;
+- candidate status and the accountable human review needed.
+
+Use `candidate`, `partial`, `unknown`, or `blocked` when evidence is incomplete. Do not promote the result to verified semantic truth, approved architecture, production Silver, or Gold.
+
+## Adversarial Modeling Checks
+
+Challenge the candidate before presenting it for review:
+
+1. **False uniqueness**: test candidate keys against targeted live data, duplicates, time ranges, and relevant schema versions. A profile is only a hypothesis.
+2. **Join fanout**: measure both-side cardinality and row multiplication at the required grain. Reject joins that double count the Gold consumer's facts.
+3. **Temporal mismatch**: distinguish event, ingest, update, and effective time; do not choose a timestamp by availability.
+4. **Conflicting authority**: preserve disagreement among requirement, code, DataHub context, and live behavior for human resolution.
+5. **Late or duplicate events**: expose retry, replay, late-arrival, and deduplication decisions.
+6. **Schema evolution**: check historical/current versions and bound the candidate's version or time scope.
+7. **Gold consumer mismatch**: reject a technically tidy candidate that cannot satisfy required grain, history, identifiers, or metric behavior.
+8. **Insufficient evidence**: keep DataHub-suggested relationships, keys, or meanings partial or unknown until target-relevant evidence exists.
+
+After the candidate exists, `unasked-questions-generator` may be used for a named consequential gap. It does not approve or automatically block the model, and it is not a replacement Silver validator.
 
 ## Expected Effect Before Retrieval
 
@@ -299,6 +416,8 @@ Include only evidence needed to assess:
 
 Modeling recommendations remain proposals until verified against live data and accountable domain knowledge.
 
+For Pre-Silver/Silver work, do not enter Level 4 until the Gold Consumer Contract and Modeling Question Contract are bounded. Level 4 is selected question by question; it is not a requirement to load Levels 0 through 3 in sequence.
+
 ## Context Selection Test
 
 For every candidate context item, ask:
@@ -334,6 +453,8 @@ DataHub and a live source have different authority.
 | DataHub context | asset identity, schema, descriptions, ownership, lineage, usage, historical query patterns, profiling, quality/trust signals, likely field or deployment mapping | that a current event occurred, a current value exists, an exact current count, or a runtime path executed |
 | Live source | current events or values within the queried scope, exact observed fields, timestamps, counts, and correlation matches | why code should have produced the effect or whether an unqueried path was correct |
 | Code/configuration | intended effect, trigger, serialization, destination, suppression and routing logic | that a particular runtime execution or downstream storage actually occurred |
+| Business requirement/definition | desired consumer outcome, declared business meaning, acceptance constraints | that code implements it or current data conforms to it |
+| Accountable human/domain owner | approve semantic and architecture decisions within their authority | replace missing evidence or silently broaden source access |
 
 Use only an approved source-native API, CLI, UI, MCP, or runtime tool for live verification. DataHub MCP availability is neither a live-query interface nor a source permission grant. Record the interface actually used; do not say a live source was checked when only metadata was inspected.
 
@@ -493,6 +614,16 @@ Use `VERIFIED` only when target-relevant live evidence supports the Expected Eff
 
 Do not claim that DataHub was used when it was only described conceptually.
 
+For a Pre-Silver/Silver modeling decision, also report:
+
+- the Gold Consumer Contract and Modeling Question Contract;
+- relevant source roles by field or decision scope;
+- minimum DataHub context selected and material context excluded;
+- targeted live-data checks for grain, keys, joins, time, duplicates, and schema versions;
+- reconciled facts, conflicts, counterevidence, unknowns, and assumptions;
+- the Silver Model Candidate and Gold-fit result;
+- candidate/partial/unknown/blocked status and required human review.
+
 ## Stop Conditions
 
 Stop or defer when:
@@ -502,5 +633,7 @@ Stop or defer when:
 - the requested context would cross a privacy, IP, or data-governance boundary;
 - the current deployment cannot establish the required DataHub feature;
 - metadata or inferred context is being treated as current source truth;
+- a profile, historical query, code path, or DataHub relationship is being treated as durable semantic proof;
+- a modeling conflict needs accountable authority or the candidate lacks evidence for grain, key, join, time, deduplication, schema scope, or Gold fit;
 - the task is drifting into building a duplicate data platform without an evidence-backed gap;
 - the smallest sufficient context has been assembled and the next step is live verification or human review.

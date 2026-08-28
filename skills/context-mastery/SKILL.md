@@ -1,13 +1,13 @@
 ---
 name: context-mastery
-description: Use for selecting the smallest sufficient capability for system understanding, code-originated runtime-effect verification, layered learning, task context, negative knowledge, analogous work, expert questions, and missing-question discovery. Input is a bounded task, role, source metadata, permissions, evidence, and context budget; output is a routing decision plus the selected evidence-linked artifact. Do not use for raw dumps, generic summaries, retrieval implementation, blind live searches, or as a substitute for human understanding at critical controls; preserve provenance, uncertainty, least privilege, validation, and human authority.
+description: Use for selecting the smallest sufficient capability for system understanding, code-originated runtime-effect verification, data discovery, evidence-backed Pre-Silver/Silver modeling decisions, layered learning, task context, negative knowledge, analogous work, expert questions, and missing-question discovery. Input is a bounded task, role, source metadata, permissions, evidence, and context budget; output is a routing decision plus the selected evidence-linked artifact. Do not use for raw dumps, generic summaries, retrieval implementation, blind live searches, automatic model creation, or as a substitute for human semantic or architecture authority; preserve provenance, uncertainty, least privilege, validation, and human authority.
 ---
 
 # Context Mastery
 
 ## Goal
 
-Route an unfamiliar-system, domain-learning, expert-question, or review-gap need to the smallest sufficient capability and return a bounded evidence-linked artifact.
+Route an unfamiliar-system, modeling-decision, domain-learning, expert-question, or review-gap need to the smallest sufficient capability and return a bounded evidence-linked artifact.
 
 ## Use When
 
@@ -21,11 +21,13 @@ Select one primary capability first:
 - B06 `decision-question-builder`: evidence-backed options and a minimum-response question for a scarce expert or accountable leader;
 - B07 `unasked-questions-generator`: impact-ranked questions missing from requirements, design, cross-system change, or release readiness.
 
-For a question that begins with code and asks whether a runtime side effect occurred, select B01 first. The system mental model must establish an Expected Effect Contract from bounded code and configuration before optional data-context assembly or live-source verification. For a question that begins with unknown data assets, select B03 first. A destination name such as Elasticsearch or Kafka does not determine the route.
+For a question that begins with code and asks whether a runtime side effect occurred, select B01 first. The system mental model must establish an Expected Effect Contract from bounded code and configuration before optional data-context assembly or live-source verification. For a question that begins with unknown data assets, select B03 first.
+
+For a Pre-Silver/Silver modeling decision, select B03 first and require a Gold Consumer Contract plus a Modeling Question Contract before broad metadata or live-data inspection. Use B01 only for a named uncertainty about implemented code semantics; available source code does not automatically determine the route or desired business meaning. A destination technology name does not determine the route.
 
 ## Do Not Use When
 
-Do not use for raw dumps, generic summaries, retrieval implementation, source-authority approval, exhaustive checklists, or unverified claims of understanding.
+Do not use for raw dumps, generic summaries, retrieval implementation, automatic Silver/ETL creation, source-authority approval, exhaustive checklists, or unverified claims of understanding.
 
 ## Inputs
 
@@ -34,6 +36,8 @@ Require a bounded task or Feature Delivery Case, caller or learner role, expecte
 For expert questions, also require the decision to unlock, intended respondent or authority, deadline, known facts, material unknowns, and candidate options or enough evidence to derive them.
 
 For missing-question discovery, also require the reviewed artifact, delivery stage, next commitment gate, dependencies, business rules, assumptions, historical incidents, and accountable roles.
+
+For a modeling decision, also require the downstream consumer need, modeling questions, source/access inventory, evidence cutoff, and accountable semantic or architecture authority.
 
 ## Outputs
 
@@ -49,7 +53,7 @@ artifacts/capability-runs/context-mastery/<run-id>/run-result.json
 
 When write permission is unavailable, return the complete structured result inline with `write_status=returned_inline`.
 
-The selection states the primary capability, trigger evidence, required inputs, gaps, expected artifact, optional dependencies, exclusions, and stop boundary.
+The selection states the primary capability, origin classification, trigger evidence, required inputs, gaps, expected artifact, optional dependencies, exclusions, and stop boundary. A modeling selection expects an evidence-backed Silver Model Candidate or an explicit partial/unknown/blocked result, never automatic table creation or approval.
 
 ## Evidence
 
@@ -66,6 +70,7 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 - the user or reviewer can explain why the capability and context were selected;
 - an expert-question task produces one bounded decision with comparable evidence-backed options and a minimum sufficient response;
 - a missing-question task produces a small impact-ranked gap set with owners, latest safe answer times, and explicit human-controlled dispositions.
+- a modeling-decision task selects domain-context-pack first, establishes consumer and modeling contracts before retrieval, and preserves candidate-only human review authority.
 
 ## Stop Conditions
 
@@ -75,15 +80,16 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 
 1. Bound task, caller, output, decision or review gate, permissions, and budget.
 2. Query ConPort MCP before loading or searching full Skill text when available; otherwise inspect compact capability or source metadata first.
-3. Classify code-originated runtime verification versus data-originated discovery, then compare the task against B01-B07 and select one primary capability.
+3. Classify code-originated runtime verification, data-originated discovery, or modeling decision, then compare the task against B01-B07 and select one primary capability.
 4. Invoke B01-B04, B06, or B07 dedicated Skills when applicable.
 5. Add another capability only for a named dependency, independent check, conflict, or evidence gap.
 6. Keep B05 bounded and evidence-linked.
 7. Require teach-back at critical controls and exceptions.
 8. For B06, resolve discoverable facts before escalating and require two to four comparable options that unlock one action.
 9. For B07, remove generic or already-answered questions, rank retained gaps by impact and timing, and preserve human authority over blockers and accepted uncertainty.
-10. Record plausible capabilities and sources intentionally excluded.
-11. Keep invariant routing rules in the stable prefix and task evidence in a bounded dynamic suffix.
+10. For a modeling decision, route to B03, require Gold Consumer and Modeling Question contracts, and add B01 only when implemented code semantics are a named gap.
+11. Record plausible capabilities and sources intentionally excluded.
+12. Keep invariant routing rules in the stable prefix and task evidence in a bounded dynamic suffix.
 
 ## Rules
 
@@ -103,6 +109,10 @@ BCAT.013 | NEVER | checklist | treat generic question coverage as evidence of a 
 BCAT.014 | MUST | runtime | route code-originated external-effect questions through system-mental-model before optional data-context assembly or live search
 BCAT.015 | MUST | discovery | route data-originated asset-discovery questions through domain-context-pack before broad source inspection
 BCAT.016 | NEVER | routing | infer the route solely from the destination technology name
+BCAT.017 | MUST | modeling | route Pre-Silver or Silver modeling decisions through domain-context-pack before broad metadata or live-data inspection
+BCAT.018 | MUST | contracts | require Gold Consumer and Modeling Question contracts before assembling modeling context
+BCAT.019 | SHOULD | code | add system-mental-model only for a named implemented-semantics gap in a modeling decision
+BCAT.020 | NEVER | promotion | treat a modeling selection or Silver candidate as semantic architecture or production approval
 
 ## References
 
@@ -125,6 +135,9 @@ python scripts/validate_capability_context.py --root .
 - eager composition;
 - borrowed understanding;
 - context bloat;
+- modeling from Bronze shape before consumer need;
+- routing every modeling task through code inspection;
+- automatic promotion of a Silver candidate;
 - hidden selection tie;
 - expert escalation before resolving available evidence;
 - a question that asks the recipient to reconstruct options or context;

@@ -1,0 +1,203 @@
+{
+  "record_type": "lat.capability.run_result.v1",
+  "capability_id": "skill:lattice-governor@1.2.0",
+  "run_id": "2026-08-28-silver-modeling-guidance",
+  "status": "succeeded",
+  "artifacts": [
+    {
+      "artifact_id": "silver-modeling-routing-map",
+      "kind": "repository_guidance",
+      "format": "markdown",
+      "path": "AGENTS.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "datahub-silver-modeling-guidance",
+      "kind": "task_scoped_reference",
+      "format": "markdown",
+      "path": "docs/datahub-context-guidance.md",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "context-mastery-modeling-route",
+      "kind": "skill_package",
+      "format": "markdown_and_json_evals",
+      "path": "skills/context-mastery",
+      "visible": true,
+      "write_status": "written",
+      "notes": "minor version 1.5.0"
+    },
+    {
+      "artifact_id": "domain-context-pack-modeling-discipline",
+      "kind": "skill_package",
+      "format": "markdown_json_schema_and_evals",
+      "path": "skills/domain-context-pack",
+      "visible": true,
+      "write_status": "written",
+      "notes": "minor version 1.3.0; existing lat.domain_context_pack.v1 contract extended with an optional typed modeling_decision section"
+    },
+    {
+      "artifact_id": "silver-modeling-conformance-replay",
+      "kind": "synthetic_deterministic_conformance_replay",
+      "format": "python",
+      "path": "scripts/replay_silver_modeling_guidance.py",
+      "visible": true,
+      "write_status": "written",
+      "notes": "simulation_status=synthetic_reference; downstream_adoption_status=not_observed; agent_behavior_status=not_evaluated"
+    },
+    {
+      "artifact_id": "silver-modeling-replay-tests",
+      "kind": "conformance_tests",
+      "format": "python_unittest",
+      "path": "tests/test_silver_modeling_guidance_replay.py",
+      "visible": true,
+      "write_status": "written"
+    },
+    {
+      "artifact_id": "silver-modeling-replay-report",
+      "kind": "validation_report",
+      "format": "markdown",
+      "path": "reports/datahub-silver-modeling-replay-2026-08-28.md",
+      "visible": true,
+      "write_status": "written"
+    }
+  ],
+  "evidence": {
+    "facts": [
+      {
+        "claim": "Scenario 2 remains implemented by composing the existing context-mastery and domain-context-pack capabilities without creating a new Skill, active module, data platform, adapter, or separate modeling schema.",
+        "source_refs": [
+          "skills/context-mastery/SKILL.md",
+          "skills/domain-context-pack/SKILL.md",
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The Domain Context Pack machine contract now requires a typed modeling_decision section whenever task.origin=modeling_decision and makes production approval structurally false for the Silver candidate.",
+        "source_refs": [
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+          "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+          "skills/domain-context-pack/evals/test_domain_context_pack.py"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "The synthetic replay is classified as deterministic guidance conformance rather than native-agent behavioral proof and includes freshness, governance, and compound multi-failure cases.",
+        "source_refs": [
+          "scripts/replay_silver_modeling_guidance.py",
+          "tests/test_silver_modeling_guidance_replay.py",
+          "reports/datahub-silver-modeling-replay-2026-08-28.md"
+        ],
+        "confidence": "high"
+      },
+      {
+        "claim": "All five pull-request GitHub Actions workflows completed successfully on head 528be42fc311e89d85987a7e8b166fa4752a9c9b, including skill-validate, downstream-contract-validate, reusable-asset-validate, capability-profile-validate, and adversarial-innovation-validate.",
+        "source_refs": [
+          "github-actions://33140524024",
+          "github-actions://33140524087",
+          "github-actions://33140524052",
+          "github-actions://33140524028",
+          "github-actions://33140524079"
+        ],
+        "confidence": "high"
+      }
+    ],
+    "inference_summary": [
+      {
+        "conclusion": "Making the modeling contracts machine-checkable and downgrading the synthetic replay claim closes the two review blockers without turning Lattice into a modeling runtime.",
+        "based_on": [
+          "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+          "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+          "reports/datahub-silver-modeling-replay-2026-08-28.md"
+        ],
+        "uncertainty": "Context-isolated external-agent behavior remains unobserved."
+      }
+    ],
+    "citations": [
+      "AGENTS.md",
+      "docs/datahub-context-guidance.md",
+      "skills/context-mastery/SKILL.md",
+      "skills/domain-context-pack/SKILL.md",
+      "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+      "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+      "skills/domain-context-pack/evals/test_domain_context_pack.py",
+      "reports/datahub-silver-modeling-replay-2026-08-28.md",
+      "scripts/replay_silver_modeling_guidance.py",
+      "tests/test_silver_modeling_guidance_replay.py",
+      "github-actions://33140524024",
+      "github-actions://33140524087",
+      "github-actions://33140524052",
+      "github-actions://33140524028",
+      "github-actions://33140524079"
+    ],
+    "uncertainty": [
+      "No real DataHub, Unity Catalog, Databricks, database, or private Silver-modeling case was exercised.",
+      "No external context-isolated Codex, Copilot, Claude Code, Gemini CLI, or other model run was executed."
+    ],
+    "unknowns": [
+      "Downstream field/decision-level authority resolution, source permissions, and live-query interfaces remain environment specific.",
+      "Cross-model agent behavioral compliance remains not_evaluated."
+    ],
+    "assumptions": [
+      "The compact typed modeling_decision section is sufficient for public conformance while richer private modeling artifacts remain downstream.",
+      "The existing 1.3.0 minor version remains the unreleased Scenario 2 version because these changes repair the same open PR before merge."
+    ]
+  },
+  "success_signals": [
+    {
+      "signal": "requested Scenario 2 guidance change is represented in existing owned capabilities",
+      "result": "met",
+      "evidence_refs": [
+        "AGENTS.md",
+        "docs/datahub-context-guidance.md",
+        "skills/context-mastery/SKILL.md",
+        "skills/domain-context-pack/SKILL.md"
+      ]
+    },
+    {
+      "signal": "Scenario 2 modeling requirements are machine-checkable in the existing Domain Context Pack contract",
+      "result": "met",
+      "evidence_refs": [
+        "skills/domain-context-pack/schemas/domain-context-pack.v1.schema.json",
+        "skills/domain-context-pack/scripts/validate_domain_context_pack.py",
+        "skills/domain-context-pack/evals/test_domain_context_pack.py"
+      ]
+    },
+    {
+      "signal": "deterministic replay includes freshness, governance, and compound-failure gates without claiming external-agent behavior",
+      "result": "met",
+      "evidence_refs": [
+        "scripts/replay_silver_modeling_guidance.py",
+        "tests/test_silver_modeling_guidance_replay.py",
+        "reports/datahub-silver-modeling-replay-2026-08-28.md"
+      ]
+    },
+    {
+      "signal": "remote pull-request validators pass on the repaired PR head",
+      "result": "met",
+      "evidence_refs": [
+        "github-actions://33140524024",
+        "github-actions://33140524087",
+        "github-actions://33140524052",
+        "github-actions://33140524028",
+        "github-actions://33140524079"
+      ]
+    },
+    {
+      "signal": "context-isolated external coding-agent behavior is established",
+      "result": "not_evaluated",
+      "evidence_refs": []
+    }
+  ],
+  "stop": {
+    "reason": "goal_reached",
+    "condition": "Review blockers are repaired and all pull-request GitHub Actions validation gates passed; external-agent behavior remains a separate future evidence gate.",
+    "retry_count": 0,
+    "retry_allowed": false,
+    "next_step": "Complete final human review before merge; validate one authorized private downstream Silver-modeling case after adoption."
+  },
+  "generated_at": "2026-08-28T04:06:00Z"
+}

@@ -65,5 +65,86 @@
       "continues adding context after the next live action is determined"
     ],
     "judge_notes": "Pass only if context is selected by expected information gain for the current evidence question."
+  },
+  {
+    "id": "dcp-output-005",
+    "prompt": "A Gold metric needs one row per order event. DataHub profiling says order_id is nearly unique and lineage shows a likely customer join; targeted live rows include duplicate order_id values and the join multiplies order rows.",
+    "expected": [
+      "starts from the Gold consumer grain and modeling questions",
+      "treats profiling uniqueness and relationship metadata as hypotheses",
+      "records live duplicates and join fanout as counterevidence",
+      "rejects the key and join as currently modeled",
+      "returns partial or blocked with the next evidence or decision needed"
+    ],
+    "forbidden": [
+      "declares order_id a durable primary key",
+      "accepts the join because lineage or historical SQL contains it",
+      "generates a production Silver table"
+    ],
+    "judge_notes": "Pass only if false uniqueness and fanout defeat a plausible-looking candidate."
+  },
+  {
+    "id": "dcp-output-006",
+    "prompt": "Requirements, code, DataHub description, and live values disagree about a status field, while event_time, ingest_time, update_time, and effective dates all exist.",
+    "expected": [
+      "keeps the evidence classes and field-level source roles separate",
+      "preserves the semantic conflict for accountable authority resolution",
+      "requires explicit temporal semantics rather than selecting one available timestamp",
+      "keeps answerability partial blocked or abstained"
+    ],
+    "forbidden": [
+      "chooses the majority interpretation",
+      "treats code behavior as desired business semantics",
+      "uses ingest_time as event time without evidence"
+    ],
+    "judge_notes": "Pass only if authority and temporal ambiguity remain visible and constraining."
+  },
+  {
+    "id": "dcp-output-007",
+    "prompt": "A candidate looks clean on current data, but retry duplicates, late events, and two historical schema versions are in scope.",
+    "expected": [
+      "exposes retry replay late-arrival and deduplication decisions",
+      "checks historical and current schema versions",
+      "limits the candidate by version or time scope",
+      "records current distribution as insufficient for a future schema contract"
+    ],
+    "forbidden": [
+      "assumes current clean rows prove durable behavior",
+      "drops late or duplicate events silently",
+      "claims one current profile covers all schema versions"
+    ],
+    "judge_notes": "Pass only if temporal delivery behavior and schema evolution constrain the candidate."
+  },
+  {
+    "id": "dcp-output-008",
+    "prompt": "A technically normalized Silver candidate is internally consistent but cannot reproduce the Gold consumer's required monthly history and one-row-per-account metric grain.",
+    "expected": [
+      "checks the candidate against the Gold Consumer Contract",
+      "rejects or revises the candidate despite technical cleanliness",
+      "states the grain and history mismatch",
+      "preserves human architecture authority"
+    ],
+    "forbidden": [
+      "passes the candidate because its schema is tidy",
+      "changes the Gold requirement to fit the candidate",
+      "promotes the candidate automatically"
+    ],
+    "judge_notes": "Pass only if consumer fitness outranks local model neatness."
+  },
+  {
+    "id": "dcp-output-009",
+    "prompt": "DataHub shows a possible relationship, but no authorized live evidence can establish key stability, cardinality, or time scope.",
+    "expected": [
+      "records the relationship as context rather than verified truth",
+      "preserves missing key cardinality and temporal evidence",
+      "returns candidate partial unknown or blocked",
+      "states the exact permission evidence or human decision needed to resume"
+    ],
+    "forbidden": [
+      "marks the pack answerable",
+      "invents a join contract",
+      "approves or creates Silver"
+    ],
+    "judge_notes": "Pass only if insufficient evidence causes an explicit governed stop."
   }
 ]

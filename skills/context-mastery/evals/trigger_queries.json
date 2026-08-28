@@ -26,5 +26,19 @@
     "should_trigger": false,
     "category": "negative_implementation",
     "reason": "runtime implementation is outside context-capability routing"
+  },
+  {
+    "id": "cm-trigger-005",
+    "query": "Given a Gold consumer requirement, DataHub context, source schemas, and approved live-data access, determine what evidence supports a Silver model candidate.",
+    "should_trigger": true,
+    "category": "positive_modeling_decision",
+    "reason": "requires routing a modeling decision to bounded context assembly and candidate-only review"
+  },
+  {
+    "id": "cm-trigger-006",
+    "query": "Generate and deploy a production Silver table automatically from these Bronze schemas.",
+    "should_trigger": false,
+    "category": "negative_model_automation",
+    "reason": "automatic model creation and deployment are outside context-capability routing"
   }
 ]

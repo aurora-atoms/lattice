@@ -1,6 +1,6 @@
 ---
 name: domain-context-pack
-description: Use for assembling the smallest authorized task-specific context from a large knowledge base, Skills, documents, codebases, schemas, decisions, incidents, and governed owner directories. Input is a bounded task and output contract, caller role, knowledge inventory, access policy, context budget, and source metadata; output is an evidence-linked domain context pack containing business rules, system constraints, historical decisions, accountable contacts or roles, selected capabilities and sources, unknowns, conflicts, exclusions, and an activation plan. Do not use to dump the knowledge base, approve source authority, implement retrieval, expose restricted content, or load every related resource; preserve least privilege, provenance, freshness, uncertainty, validation behavior, and source-system authority.
+description: Use for assembling the smallest authorized task-specific context from a large knowledge base, Skills, documents, codebases, schemas, decisions, incidents, DataHub-like metadata, and governed owner directories, including evidence-backed Pre-Silver/Silver modeling decisions. Input is a bounded task and output contract, caller role, knowledge inventory, access policy, context budget, and source metadata; output is an evidence-linked domain context pack, activation plan, and when applicable a candidate-scoped modeling decision with consumer fit, source roles, live-evidence gaps, conflicts, and unknowns. Do not use to dump the knowledge base, approve source authority, implement retrieval, expose restricted content, automatically create or approve models, or load every related resource; preserve least privilege, provenance, freshness, uncertainty, validation behavior, and human authority.
 ---
 
 # Domain Context Pack
@@ -11,15 +11,17 @@ Activate the smallest useful knowledge and capability set for one task so stored
 
 ## Use When
 
-Use when a task needs relevant Skills, documents, code, rules, decisions, incidents, accountable roles, or research selected from a much larger inventory.
+Use when a task needs relevant Skills, documents, code, rules, decisions, incidents, accountable roles, research, or modeling context selected from a much larger inventory. For Pre-Silver/Silver work, use it to assemble evidence that can change a named entity, grain, key, join, temporal, deduplication, source-authority, schema-scope, or Gold-fit decision.
 
 ## Do Not Use When
 
-Do not use to approve sources, build ingestion or ranking, copy full repositories, or expose content outside the caller authorization.
+Do not use to approve sources or Silver models, build ingestion or ranking, generate ETL or production tables, copy full repositories, or expose content outside the caller authorization.
 
 ## Inputs
 
 Require a bounded task, expected output, caller role, knowledge and capability inventory, source authority and access metadata, context budget, and freshness requirements.
+
+For a modeling decision, also require a task-scoped Gold Consumer Contract and Modeling Question Contract. If either is absent, assemble only the evidence needed to complete it or stop partial; do not infer the consumer from Bronze shape.
 
 ## Outputs
 
@@ -37,6 +39,8 @@ When write permission is unavailable, return the complete structured result inli
 
 The pack must include task scope, caller authorization, context budget, source inventory and selection state, evidence-linked context items, unknowns, conflicts, activation order, answerability, evidence, and expiry or refresh conditions. Business rules, system constraints, historical decisions, accountable contacts or roles, selected Skills, documents, and code surfaces are represented through the typed source and context-item records rather than a raw source dump. For operational-evidence work, bind selection to an Evidence Question and, when code-originated, an Expected Effect Contract supplied by `system-mental-model`; do not treat a context pack as live evidence.
 
+For modeling work, set `task.origin=modeling_decision` and use the optional typed `modeling_decision` section in the same version-1 pack. Keep the Gold Consumer Contract, Modeling Question Contract, field/decision-scoped source roles, and Silver Model Candidate machine-visible there while using the existing source and context-item records for evidence, live observations, counterevidence, and assumptions. This is an extension of the existing Domain Context Pack contract, not a second modeling schema. The candidate covers entity/event boundary, grain, candidate keys, relationships/cardinality, time, deduplication, source reconciliation, schema scope, known ambiguity, missing evidence, Gold fit, and `production_approved=false`. It remains candidate-scoped and requires accountable human review.
+
 ## Machine Contract
 
 `schemas/domain-context-pack.v1.schema.json` is the public machine shape. `scripts/validate_domain_context_pack.py` applies structural and semantic gates that prose alone cannot enforce.
@@ -50,15 +54,20 @@ The validator must establish all of the following before the pack may report `an
 - every conditional source has an explicit activation action such as permission request, refresh, conditional load, or human review;
 - blocking unknowns and unresolved blocking conflicts remain visible and prevent `answerable`;
 - an authorization decision of `deny` cannot carry selected context and must stop as `blocked`;
-- public synthetic fixtures remain `synthetic_reference` with downstream adoption `not_observed`.
+- public synthetic fixtures remain `synthetic_reference` with downstream adoption `not_observed`;
+- `task.origin=modeling_decision` requires typed Gold Consumer and Modeling Question contracts, field/decision-scoped source roles, and a candidate/partial/unknown/blocked result;
+- a modeling candidate cannot be `candidate` while a blocking modeling question, unknown, or conflict remains, while Gold fit failed, or while no candidate key is identified;
+- modeling candidate state must remain consistent with pack answerability, and `production_approved` is always false.
 
-The contract does not grant source authority, access permission, private adoption, or human approval. It only proves that a context pack obeys the declared public shape and fail-closed semantics.
+The contract does not grant source authority, access permission, private adoption, semantic approval, architecture approval, or production approval. It only proves that a context pack obeys the declared public shape and fail-closed semantics.
 
 ## Evidence
 
 Separate source-supported facts from inference. Preserve resolvable citations, source scope and version or observation time, uncertainty, unknowns, assumptions, conflicts, and guesses. Do not continue beyond the evidence boundary. Selection must be justified by task relevance, source authority, permission, freshness, and expected information gain. A retrieved or similar source is not automatically applicable. Accountable contacts must come from authorized directories or source ownership metadata and must not be invented.
 
 For machine-valid packs, each selected source declares the information classes for which it is authoritative or supporting, and each context item cites addressable evidence from that selected source. Stale, denied, unknown-access, or authority-mismatched sources may remain visible as conditional or excluded evidence but may not silently enter selected context.
+
+For modeling, keep business definitions, implemented code behavior, DataHub context, live-data observations, and human authority distinct. A DataHub relationship is not a verified join; a profile is not proven grain or a durable key; historical SQL is not a business rule; a current distribution is not a future schema contract; code behavior is not desired semantics. Preserve cross-class conflicts for authority resolution rather than voting them away.
 
 ## Success Signals
 
@@ -71,7 +80,10 @@ Evaluate each signal as `met`, `not_met`, or `not_evaluated`:
 - selected-token accounting is deterministic and within the declared context budget;
 - the activation plan tells the runtime what to load now, later, after permission or refresh, or never;
 - the schema and semantic validator pass;
-- the pack supports the task without a raw dump.
+- the pack supports the task without a raw dump;
+- a modeling pack starts from the Gold consumer, selects only context that changes a modeling question, classifies field/decision-scoped source roles, and exposes targeted live-evidence needs;
+- a Silver Model Candidate is challenged for false uniqueness, fanout, time mismatch, duplicates, schema evolution, source conflict, Gold mismatch, freshness, and governance mismatch before human review;
+- insufficient modeling evidence remains candidate, partial, unknown, or blocked and never becomes production approval.
 
 ## Stop Conditions
 
@@ -79,11 +91,13 @@ Stop at the requested artifact or next reviewable stage. Stop without repeated p
 
 When blocking unknowns, unresolved material conflicts, denied required sources, or stale required evidence prevent a reliable pack, preserve them and return `answerability.status=partial`, `abstain`, or `blocked` rather than converting them into factual context.
 
+For modeling, also stop before candidate review when grain, key, join cardinality, temporal semantics, source authority, deduplication, schema scope, Gold fit, freshness, correctness, or governance lacks target-relevant evidence. Name the responsible role and the smallest live check or authority decision that can resume work.
+
 ## Workflow
 
-1. Bound the Evidence Question, task, output contract, caller role, permissions, and token budget. If the question is code-originated runtime verification, require the Expected Effect Contract or route to `system-mental-model` before broad context retrieval.
+1. Bound the Evidence Question, task, output contract, caller role, permissions, and token budget. If the question is code-originated runtime verification, require the Expected Effect Contract or route to `system-mental-model` before broad context retrieval. If it is modeling-decision-originated, require the Gold Consumer and Modeling Question contracts.
 2. Query ConPort MCP before loading or searching full Skill text when ConPort is available; otherwise use targeted repository reads. Then query compact knowledge and capability metadata before source bodies.
-3. Identify required information classes: rules, constraints, decisions, accountable roles, code, examples, negative knowledge, research, or runtime evidence.
+3. Identify required information classes: rules, constraints, decisions, accountable roles, code, examples, negative knowledge, research, runtime evidence, or modeling evidence.
 4. Select the smallest authorized sources and Skills by relevance, authority, freshness, expected information gain, and quality-adjusted token ROI.
 5. Load only bounded excerpts, symbols, line ranges, records, or governed summaries that can change asset selection, cross-boundary mapping, query design, hypothesis, verification, or the next effect-path check.
 6. Record source access, authority scope, observation time, expiry, selection state, and the evidence-linked context items actually admitted.
@@ -91,8 +105,9 @@ When blocking unknowns, unresolved material conflicts, denied required sources, 
 8. Produce an activation plan: load now, discover conditionally, request permission, request refresh, human review, or exclude.
 9. Compute selected-token accounting and set answerability from the remaining evidence, permission, freshness, unknown, and conflict state.
 10. Validate the JSON artifact with `scripts/validate_domain_context_pack.py`; perform at most one bounded corrective retry.
-11. Route source authority to team-knowledge-plane-governor, retrieval implementation to hybrid-knowledge-retrieval-builder, repeated profile evaluation to knowledge-profile-evaluator, and conflicts to knowledge-integrity.
-12. Keep invariant policy, schema, and validation guidance in the stable prefix; keep current task evidence, source selections, conflicts, unknowns, and activation state in the dynamic suffix.
+11. For modeling, classify field/decision-scoped source roles; test grain, keys, joins, temporal semantics, duplicates, schema versions, freshness, consumer correctness, and governance with the smallest authorized live evidence; reconcile without collapsing conflicts; challenge Gold fit; emit candidate/partial/unknown/blocked for human review.
+12. Route a named post-candidate consequential gap optionally to unasked-questions-generator. Route source authority to team-knowledge-plane-governor, retrieval implementation to hybrid-knowledge-retrieval-builder, repeated profile evaluation to knowledge-profile-evaluator, and conflicts to knowledge-integrity.
+13. Keep invariant policy, schema, and validation guidance in the stable prefix; keep current task evidence, source selections, conflicts, unknowns, and activation state in the dynamic suffix.
 
 ## Rules
 
@@ -114,6 +129,14 @@ DCP.015 | MUST | validation | fail closed when schema or semantic validation doe
 DCP.016 | MUST | evidence-question | bind operational context selection to the current Evidence Question and Expected Effect Contract when code-originated
 DCP.017 | NEVER | runtime-truth | treat metadata lineage profiles historical queries or context documents as proof of a current runtime effect
 DCP.018 | MUST | stop | stop adding context when the next action is a bounded live query code/configuration check permission request or human decision
+DCP.019 | MUST | modeling-contract | bind modeling context to a machine-visible Gold Consumer Contract and Modeling Question Contract
+DCP.020 | MUST | source-role | classify source authority at the field or decision scope and keep authority freshness and observed behavior separate
+DCP.021 | MUST | challenge | test candidate grain key join cardinality time deduplication schema scope Gold fit freshness and governance with target-relevant evidence
+DCP.022 | NEVER | modeling-proof | treat lineage profiling historical queries current distribution or code behavior as durable semantic proof
+DCP.023 | NEVER | conflict | resolve conflicting evidence classes by model vote or silent preference
+DCP.024 | MUST | candidate | keep Silver modeling output candidate partial unknown or blocked until accountable human review
+DCP.025 | NEVER | automation | automatically create ETL production Silver or Gold or approve architecture from the context pack
+DCP.026 | MUST | machine-contract | require the typed modeling-decision section whenever task origin is modeling-decision
 
 ## References
 
@@ -152,4 +175,12 @@ python -m unittest discover -s skills/domain-context-pack/evals -p 'test_*.py' -
 - invented accountable contacts;
 - hidden source conflicts;
 - context selected without an activation condition;
+- modeling from Bronze shape without a Gold consumer;
+- prose-only modeling contract that the machine artifact cannot express;
+- profile uniqueness promoted to a durable key;
+- relationship metadata promoted to a join without cardinality evidence;
+- event ingest update and effective time collapsed;
+- source conflict resolved by majority vote;
+- technically tidy Silver candidate that fails Gold grain history freshness or governance needs;
+- candidate promoted as production truth;
 - schema-green but semantic-invalid pack.
