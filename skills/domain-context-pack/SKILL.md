@@ -136,7 +136,7 @@ DCP.022 | NEVER | modeling-proof | treat lineage profiling historical queries cu
 DCP.023 | NEVER | conflict | resolve conflicting evidence classes by model vote or silent preference
 DCP.024 | MUST | candidate | keep Silver modeling output candidate partial unknown or blocked until accountable human review
 DCP.025 | NEVER | automation | automatically create ETL production Silver or Gold or approve architecture from the context pack
-DCP.026 | MUST | machine-contract | require the typed modeling_decision section whenever task.origin is modeling_decision
+DCP.026 | MUST | machine-contract | require the typed modeling-decision section whenever task origin is modeling-decision
 
 ## References
 
