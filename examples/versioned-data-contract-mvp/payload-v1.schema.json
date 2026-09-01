@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/synthetic-device-event/1.0.0/payload.schema.json",
+  "title": "Synthetic Device Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["device_id", "event_time", "result_code"],
+  "properties": {
+    "device_id": {"type": "string"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "result_code": {"type": "string"}
+  }
+}
