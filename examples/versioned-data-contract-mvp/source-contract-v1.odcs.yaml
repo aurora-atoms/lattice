@@ -1,0 +1,36 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: 2b25f9f1-8892-4e7b-9000-000000000001
+name: synthetic_device_event
+version: 1.0.0
+status: active
+domain: synthetic-reference
+description:
+  purpose: Demonstrate a producer contract before a physical field rename.
+  limitations: Synthetic reference only; no production authority or observed downstream adoption.
+authoritativeDefinitions:
+  - type: implementation
+    url: https://example.invalid/contracts/synthetic-device-event/1.0.0/payload.schema.json
+    description: Immutable payload schema reference for the synthetic v1 release.
+schema:
+  - id: device-event
+    name: device_event
+    logicalType: object
+    description: One synthetic event emitted by a device.
+    properties:
+      - id: device-id
+        name: device_id
+        logicalType: string
+        required: true
+        description: Stable device identifier.
+      - id: event-time
+        name: event_time
+        logicalType: timestamp
+        required: true
+        description: Time at which the event occurred, expressed in UTC.
+      - id: conversion-status
+        name: result_code
+        businessName: Conversion status
+        logicalType: string
+        required: true
+        description: Outcome code used to determine the canonical conversion status. The stable ID is preserved in v2 because the producer asserts that the meaning is unchanged.

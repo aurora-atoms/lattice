@@ -1,0 +1,48 @@
+# Synthetic consumer-owned binding example.
+# This is intentionally not a registered Lattice schema or universal mapping DSL.
+
+bindingId: synthetic-device-event-to-canonical-conversion
+bindingVersion: 1.0.0
+status: proposed
+
+sourceContract:
+  id: 2b25f9f1-8892-4e7b-9000-000000000001
+  supportedVersions:
+    - contractVersion: 1.0.0
+      schemaRef: https://example.invalid/contracts/synthetic-device-event/1.0.0/payload.schema.json
+    - contractVersion: 2.0.0
+      schemaRef: https://example.invalid/contracts/synthetic-device-event/2.0.0/payload.schema.json
+
+targetModel:
+  id: canonical-device-conversion-event
+  version: 1.0.0
+
+mappings:
+  - sourceFieldId: device-id
+    targetFieldId: device-id
+    operation: identity
+  - sourceFieldId: event-time
+    targetFieldId: event-time
+    operation: identity
+  - sourceFieldId: conversion-status
+    targetFieldId: conversion-status
+    operation: identity
+    rationale: The producer preserves the stable field identity across the v1 result_code -> v2 conversion_status physical rename.
+
+unmappedSourceFields:
+  - sourceFieldId: firmware-family
+    disposition: ignored_by_this_consumer
+
+runtimeContract:
+  implementationMode: declarative_or_hard_coded
+  transformReleaseRequired: true
+  unknownSourceVersion: fail_closed_preserve_raw
+
+provenanceRequired:
+  - source_record_or_batch_id
+  - source_contract_id
+  - source_contract_version
+  - schema_artifact_ref
+  - canonical_binding_id
+  - canonical_binding_version
+  - transform_release
