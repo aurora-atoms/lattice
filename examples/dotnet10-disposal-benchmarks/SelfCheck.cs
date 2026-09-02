@@ -156,5 +156,7 @@ internal static class SelfCheck
         }
     }
 
-    private sealed class ExpectedException : Exception;
+    private sealed class ExpectedException : Exception
+    {
+    }
 }
