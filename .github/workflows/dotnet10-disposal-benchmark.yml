@@ -1,0 +1,55 @@
+name: .NET 10 disposal benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "examples/dotnet10-disposal-benchmarks/**"
+      - ".github/workflows/dotnet10-disposal-benchmark.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: examples/dotnet10-disposal-benchmarks
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Show SDK and runtime
+        run: dotnet --info
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build Release
+        run: dotnet build -c Release --no-restore
+
+      - name: Verify disposal semantics
+        run: dotnet run -c Release --no-build -- --self-check
+
+      - name: Run BenchmarkDotNet suite
+        run: dotnet run -c Release --no-build -- --filter "*"
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet10-disposal-benchmark-results
+          path: examples/dotnet10-disposal-benchmarks/BenchmarkDotNet.Artifacts
+          if-no-files-found: warn
+          retention-days: 14
