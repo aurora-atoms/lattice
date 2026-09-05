@@ -21,6 +21,24 @@ native name and description
 
 Native workspaces own capability discovery. Cross-workspace handoffs standardize bounded evidence, unknowns, conflicts, counterevidence, authority, privacy, and verification requirements; they must not require a shared or runtime-specific discovery projection.
 
+## Agent Work Envelope MVP
+
+For a multi-turn, cross-session, cross-Agent, or reconstruction-prone task, use [Agent Work Envelope MVP](docs/agent-work-envelope-mvp.md) and its copy-ready [template](templates/agent-work-envelope-mvp.template.md). Simple one-shot work does not require the envelope.
+
+The MVP runtime shape is:
+
+```text
+selected Skill + Task Contract + Context Input
+                    -> Agent
+                    -> Work Output + Context Output
+```
+
+Use exactly one primary Skill for the current named gap. Keep the Task Contract small: `goal`, `scope`, `must_not`, `done_when`, and `authority`. Treat plan, To-do, decomposition, tool choice, hypotheses, and implementation as mutable runtime scaffolding. Do not silently change a load-bearing Task Contract field; request an explicit amendment with evidence instead.
+
+Context Input contains only the current state needed to avoid wrong or repeated work. Context Output leaves only the compact state, decisions, changes, reopenable AI evidence, unresolved items, and next safe action needed by the next Agent or session. Do not carry full chat history, full logs, or repository dumps by default.
+
+This envelope is a task-scoped runtime projection, not a new schema, capability identity, fact store, Contract Agent, Verifier Agent, orchestrator, or replacement for existing domain contracts. When a registered Skill or Agent executes, the existing `lat.capability.run_result.v1` result remains required. Capability Profiles, Feature Delivery Case, Senior Attention, Portable Case Pack, Domain Context Pack, and other owned contracts remain authoritative in their scopes.
+
 ## Concept Composition Discovery
 
 Capability identity and multi-stage composition are separate. Do not infer a concept from folder adjacency.
