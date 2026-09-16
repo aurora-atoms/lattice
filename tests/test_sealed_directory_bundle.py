@@ -27,6 +27,7 @@ class SealedDirectoryBundleTests(unittest.TestCase):
     def make_source(self) -> Path:
         source = self.root / "source-demo"
         (source / "nested").mkdir(parents=True)
+        (source / "empty").mkdir()
         (source / "README.md").write_text("demo\n", encoding="utf-8")
         (source / "nested" / "config.json").write_text(
             '{"ok":true}\n',
@@ -34,9 +35,12 @@ class SealedDirectoryBundleTests(unittest.TestCase):
         )
         (source / "nested" / "payload.bin").write_bytes(bytes(range(256)) * 40)
         (source / ".hidden").write_bytes(b"hidden")
+        run = source / "run.sh"
+        run.write_text("#!/bin/sh\necho demo\n", encoding="utf-8")
+        run.chmod(0o755)
         return source
 
-    def test_round_trip_multiple_files_without_compression(self) -> None:
+    def test_round_trip_complete_directory_without_compression(self) -> None:
         source = self.make_source()
         bundle = self.root / "sealed"
         restored = self.root / "restored"
@@ -49,9 +53,13 @@ class SealedDirectoryBundleTests(unittest.TestCase):
         )
         self.assertEqual(manifest["compression"], "none")
         self.assertGreater(manifest["sharding"]["count"], 1)
-        self.assertEqual(manifest["sealed_file_count"], 4)
+        self.assertEqual(manifest["sealed_entry_count"], 7)
+        self.assertEqual(manifest["sealed_file_count"], 5)
+        self.assertEqual(manifest["sealed_directory_count"], 2)
         result = MODULE.verify_bundle(bundle, self.passphrase, schema_root=ROOT)
         self.assertTrue(result["verified"])
+        self.assertEqual(result["file_count"], 5)
+        self.assertEqual(result["directory_count"], 2)
         MODULE.unseal_directory(
             bundle,
             restored,
@@ -69,6 +77,8 @@ class SealedDirectoryBundleTests(unittest.TestCase):
             if p.is_file()
         }
         self.assertEqual(restored_files, source_files)
+        self.assertTrue((restored / "empty").is_dir())
+        self.assertEqual((restored / "run.sh").stat().st_mode & 0o777, 0o755)
 
     def test_public_manifest_does_not_expose_source_paths_or_plaintext_hashes(self) -> None:
         source = self.make_source()
