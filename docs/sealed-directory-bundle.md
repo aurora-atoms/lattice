@@ -33,11 +33,13 @@ sealed-demo/
   ...
 ```
 
-The source directory is serialized into a deterministic, **uncompressed** framed byte stream. The stream contains the original relative paths, file sizes, SHA-256 digests, and bytes. That stream is split into plaintext chunks, and each chunk is independently sealed with AES-256-GCM.
+The source directory is serialized into a deterministic, **uncompressed** framed byte stream. The encrypted inner stream preserves canonical relative paths, files, empty directories, POSIX permission mode bits, file sizes, SHA-256 digests, and exact file bytes. Symlinks are rejected rather than followed or serialized.
+
+That stream is split into plaintext chunks, and each chunk is independently sealed with AES-256-GCM.
 
 Each encrypted shard is Base64-encoded so it remains an ordinary text file for Git-compatible private repositories. Base64 is encoding, not compression.
 
-The plaintext file catalog is inside the encrypted stream. The public manifest intentionally contains no source paths and no plaintext file hashes.
+The plaintext directory/file catalog is inside the encrypted stream. The public manifest intentionally contains no source paths and no plaintext file hashes.
 
 ## Cryptography
 
@@ -111,14 +113,20 @@ A valid round trip must prove:
 5. the passphrase-derived key authenticates every AES-GCM shard;
 6. every restored relative path is canonical and cannot escape the destination root;
 7. every restored file matches the encrypted inner size and SHA-256;
-8. the restored file tree is byte-for-byte equal to the source tree.
+8. empty directories present in the source are restored;
+9. POSIX file permission mode bits, including executable bits, are restored;
+10. the restored file tree is byte-for-byte equal to the source tree.
 
 Negative tests cover wrong passphrases, shard tampering, path traversal, source-contained output, symlinks, and attempts to change `payload_policy` to a public value.
+
+## Portability boundary
+
+The byte content and relative directory structure are portable. POSIX permission restoration is meaningful on operating systems/filesystems that expose POSIX mode bits. The format intentionally does not preserve platform-specific ACLs, extended attributes, ownership IDs, timestamps, device files, hard links, or symlinks.
 
 ## Non-goals
 
 - compression or storage-size optimization;
-- hiding that a bundle exists or how many shards/files it contains;
+- hiding that a bundle exists or how many shards/files/directories it contains;
 - key escrow, recovery, rotation, or enterprise secret management;
 - authorization to move data across repository or employer boundaries;
 - public distribution of encrypted private source;
