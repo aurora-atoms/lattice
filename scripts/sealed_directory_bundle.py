@@ -15,11 +15,12 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import struct
 import sys
 import uuid
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any
 
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -94,30 +95,58 @@ def _safe_rel_path(raw: str) -> PurePosixPath:
     return path
 
 
-def _iter_source_files(source: Path) -> Iterable[tuple[str, bytes]]:
+def _mode(path: Path) -> int:
+    return stat.S_IMODE(path.stat(follow_symlinks=False).st_mode)
+
+
+def _source_entries(source: Path) -> list[dict[str, Any]]:
     if not source.is_dir():
         raise BundleError(f"source is not a directory: {source}")
+    entries: list[dict[str, Any]] = []
     for path in sorted(
         source.rglob("*"),
         key=lambda item: item.relative_to(source).as_posix(),
     ):
         if path.is_symlink():
             raise BundleError(f"symlinks are not supported: {path}")
-        if path.is_dir():
-            continue
-        if not path.is_file():
-            raise BundleError(f"unsupported filesystem entry: {path}")
         rel = path.relative_to(source).as_posix()
         _safe_rel_path(rel)
-        yield rel, path.read_bytes()
+        if path.is_dir():
+            entries.append(
+                {
+                    "kind": "directory",
+                    "path": rel,
+                    "mode": _mode(path),
+                    "data": None,
+                }
+            )
+        elif path.is_file():
+            entries.append(
+                {
+                    "kind": "file",
+                    "path": rel,
+                    "mode": _mode(path),
+                    "data": path.read_bytes(),
+                }
+            )
+        else:
+            raise BundleError(f"unsupported filesystem entry: {path}")
+    return entries
 
 
-def _encode_stream(source: Path) -> tuple[bytes, int]:
-    entries = list(_iter_source_files(source))
+def _encode_stream(source: Path) -> tuple[bytes, dict[str, int]]:
+    entries = _source_entries(source)
+    counts = {
+        "entry_count": len(entries),
+        "file_count": sum(entry["kind"] == "file" for entry in entries),
+        "directory_count": sum(entry["kind"] == "directory" for entry in entries),
+    }
     meta = {
         "format": FORMAT,
         "root_label": source.name,
-        "file_count": len(entries),
+        "entry_count": counts["entry_count"],
+        "file_count": counts["file_count"],
+        "directory_count": counts["directory_count"],
         "encoding": "framed-bytes",
         "compression": "none",
     }
@@ -125,17 +154,28 @@ def _encode_stream(source: Path) -> tuple[bytes, int]:
     out = bytearray(MAGIC)
     out.extend(struct.pack(">I", len(meta_bytes)))
     out.extend(meta_bytes)
-    for rel, data in entries:
-        header = {
-            "path": rel,
-            "size": len(data),
-            "sha256": _sha256(data),
-        }
+    for entry in entries:
+        if entry["kind"] == "directory":
+            header = {
+                "kind": "directory",
+                "path": entry["path"],
+                "mode": entry["mode"],
+            }
+            payload = b""
+        else:
+            payload = entry["data"]
+            header = {
+                "kind": "file",
+                "path": entry["path"],
+                "mode": entry["mode"],
+                "size": len(payload),
+                "sha256": _sha256(payload),
+            }
         header_bytes = _canonical_json(header)
         out.extend(struct.pack(">I", len(header_bytes)))
         out.extend(header_bytes)
-        out.extend(data)
-    return bytes(out), len(entries)
+        out.extend(payload)
+    return bytes(out), counts
 
 
 def _read_u32(data: bytes, offset: int) -> tuple[int, int]:
@@ -145,7 +185,13 @@ def _read_u32(data: bytes, offset: int) -> tuple[int, int]:
     return struct.unpack(">I", data[offset:end])[0], end
 
 
-def _parse_stream(data: bytes) -> tuple[dict[str, Any], list[tuple[str, bytes]]]:
+def _valid_mode(value: Any) -> bool:
+    return isinstance(value, int) and 0 <= value <= 0o7777
+
+
+def _parse_stream(
+    data: bytes,
+) -> tuple[dict[str, Any], list[tuple[str, str, int, bytes]]]:
     if not data.startswith(MAGIC):
         raise BundleError("invalid sealed directory stream magic")
     offset = len(MAGIC)
@@ -161,27 +207,55 @@ def _parse_stream(data: bytes) -> tuple[dict[str, Any], list[tuple[str, bytes]]]
         raise BundleError("stream format mismatch")
     if meta.get("compression") != "none":
         raise BundleError("compressed streams are not supported by this format")
-    expected_count = meta.get("file_count")
+    expected_count = meta.get("entry_count")
+    expected_files = meta.get("file_count")
+    expected_dirs = meta.get("directory_count")
     if not isinstance(expected_count, int) or expected_count < 0:
+        raise BundleError("invalid entry_count in stream metadata")
+    if not isinstance(expected_files, int) or expected_files < 0:
         raise BundleError("invalid file_count in stream metadata")
+    if not isinstance(expected_dirs, int) or expected_dirs < 0:
+        raise BundleError("invalid directory_count in stream metadata")
+    if expected_files + expected_dirs != expected_count:
+        raise BundleError("stream metadata entry counts do not add up")
 
-    entries: list[tuple[str, bytes]] = []
+    entries: list[tuple[str, str, int, bytes]] = []
     seen: set[str] = set()
+    files = 0
+    directories = 0
     for _ in range(expected_count):
         header_len, offset = _read_u32(data, offset)
         if header_len <= 0 or offset + header_len > len(data):
-            raise BundleError("invalid file header length")
+            raise BundleError("invalid entry header length")
         try:
             header = json.loads(data[offset : offset + header_len].decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise BundleError(f"invalid file header: {exc}") from exc
+            raise BundleError(f"invalid entry header: {exc}") from exc
         offset += header_len
-        if not isinstance(header, dict) or set(header) != {"path", "size", "sha256"}:
-            raise BundleError("file header fields are invalid")
+        if not isinstance(header, dict):
+            raise BundleError("entry header must be an object")
+        kind = header.get("kind")
+        if kind not in {"file", "directory"}:
+            raise BundleError("entry kind must be file or directory")
+        expected_fields = (
+            {"kind", "path", "mode", "size", "sha256"}
+            if kind == "file"
+            else {"kind", "path", "mode"}
+        )
+        if set(header) != expected_fields:
+            raise BundleError(f"{kind} header fields are invalid")
         rel = _safe_rel_path(header["path"]).as_posix()
         if rel in seen:
             raise BundleError(f"duplicate path in stream: {rel}")
         seen.add(rel)
+        mode = header["mode"]
+        if not _valid_mode(mode):
+            raise BundleError(f"invalid mode for {rel}")
+        if kind == "directory":
+            directories += 1
+            entries.append((kind, rel, mode, b""))
+            continue
+        files += 1
         size = header["size"]
         digest = header["sha256"]
         if not isinstance(size, int) or size < 0:
@@ -195,9 +269,11 @@ def _parse_stream(data: bytes) -> tuple[dict[str, Any], list[tuple[str, bytes]]]
         offset = end
         if _sha256(payload) != digest:
             raise BundleError(f"file hash mismatch for {rel}")
-        entries.append((rel, payload))
+        entries.append((kind, rel, mode, payload))
     if offset != len(data):
         raise BundleError("unexpected trailing bytes in stream")
+    if files != expected_files or directories != expected_dirs:
+        raise BundleError("stream entry counts do not match metadata")
     return meta, entries
 
 
@@ -264,7 +340,7 @@ def seal_directory(
     _validate_chunk_bytes(chunk_bytes)
     if source == output or source in output.parents:
         raise BundleError("bundle output must not be inside the source directory")
-    stream, file_count = _encode_stream(source)
+    stream, counts = _encode_stream(source)
     chunks = [
         stream[index : index + chunk_bytes]
         for index in range(0, len(stream), chunk_bytes)
@@ -317,7 +393,9 @@ def seal_directory(
             "count": count,
         },
         "shards": shards,
-        "sealed_file_count": file_count,
+        "sealed_entry_count": counts["entry_count"],
+        "sealed_file_count": counts["file_count"],
+        "sealed_directory_count": counts["directory_count"],
         "public_metadata_policy": "no_source_paths_or_plaintext_hashes",
     }
     errors = validate_manifest(manifest, schema_root=schema_root)
@@ -438,9 +516,18 @@ def verify_bundle(
     return {
         "schema": FORMAT,
         "verified": True,
-        "file_count": len(entries),
+        "entry_count": len(entries),
+        "file_count": meta["file_count"],
+        "directory_count": meta["directory_count"],
         "root_label": meta["root_label"],
     }
+
+
+def _apply_mode(path: Path, mode: int) -> None:
+    try:
+        path.chmod(mode)
+    except OSError as exc:
+        raise BundleError(f"cannot restore mode for {path}: {exc}") from exc
 
 
 def unseal_directory(
@@ -458,11 +545,16 @@ def unseal_directory(
     tmp = output.with_name(output.name + f".tmp-{uuid.uuid4().hex}")
     tmp.mkdir(parents=False)
     try:
-        for rel, payload in entries:
+        for kind, rel, mode, payload in entries:
             rel_path = _safe_rel_path(rel)
             target = tmp.joinpath(*rel_path.parts)
+            if kind == "directory":
+                target.mkdir(parents=True, exist_ok=True)
+                _apply_mode(target, mode)
+                continue
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(payload)
+            _apply_mode(target, mode)
         tmp.replace(output)
     except Exception:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -470,7 +562,9 @@ def unseal_directory(
     return {
         "schema": FORMAT,
         "restored": True,
-        "file_count": len(entries),
+        "entry_count": len(entries),
+        "file_count": meta["file_count"],
+        "directory_count": meta["directory_count"],
         "root_label": meta["root_label"],
     }
 
