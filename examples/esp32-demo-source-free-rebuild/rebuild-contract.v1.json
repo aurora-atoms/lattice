@@ -1,0 +1,349 @@
+{
+  "schema": "lat.esp32-demo-rebuild-contract.v1",
+  "contract_id": "esp32-demo-rebuild-v1",
+  "activation_scope": "reference_only",
+  "consumer": "source_isolated_implementation_agent",
+  "purpose": {
+    "goal": "Rebuild a behaviorally compatible ESP32 synthetic swarm demo without access to or copying the original implementation source.",
+    "compatibility_target": "observable_behavior_and_acceptance",
+    "source_compatibility_required": false,
+    "framework_compatibility_required": false,
+    "wire_encoding_compatibility_required": false,
+    "protocol_semantics_required": true,
+    "completion_rule": "All baseline acceptance cases pass from a newly implemented codebase using only allowed inputs; deferred work remains correctly classified and no forbidden input is required."
+  },
+  "public_boundary": {
+    "source_code_included": false,
+    "private_repository_coordinates_included": false,
+    "private_runtime_evidence_included": false,
+    "company_internal_material_included": false,
+    "legal_clean_room_claim": false,
+    "allowed_inputs": [
+      "this rebuild contract",
+      "its public JSON Schema",
+      "its public semantic validator",
+      "synthetic fixtures created from this contract"
+    ],
+    "forbidden_inputs": [
+      "original implementation source code",
+      "private repository history or coordinates",
+      "private CI or runtime artifacts",
+      "company-internal source code, data, documents, tickets, logs, architecture, credentials, or product interfaces"
+    ]
+  },
+  "authority": {
+    "unknown_behavior": "do_not_invent",
+    "conflict_resolution": "explicit_contract_wins",
+    "readiness_conflict": "stricter_gate_wins",
+    "implementation_freedom": "allowed_outside_observable_contract"
+  },
+  "mission": {
+    "truth_invariant": "PC Controller defines scenario and control intent -> ESP32 executes virtual Operator/Drone state -> ESP32 emits current-state telemetry -> Browser renders accepted ESP32 telemetry only.",
+    "product_side_external": true,
+    "actual_state_source": "accepted_esp32_telemetry",
+    "controller_targets_are_intent_only": true,
+    "command_sent_is_not_execution_evidence": true
+  },
+  "system_roles": [
+    {
+      "id": "pc_controller",
+      "owns": [
+        "scenario_selection",
+        "operator_to_drone_relationships",
+        "formation_geometry",
+        "geo_path_progression",
+        "target_positions",
+        "config_lifecycle",
+        "runtime_identity_rotation"
+      ],
+      "must_not": [
+        "claim_command_as_execution",
+        "substitute_targets_for_actual_telemetry"
+      ]
+    },
+    {
+      "id": "esp32",
+      "owns": [
+        "configured_virtual_entity_runtime_state",
+        "local_target_execution_and_interpolation",
+        "per_entity_telemetry_sequence",
+        "current_position_telemetry",
+        "board_boot_identity"
+      ],
+      "must_not": [
+        "plan_formations",
+        "calculate_operator_drone_ownership",
+        "discover_runtime_gis_paths",
+        "perform_product_side_tracking_or_scoring"
+      ]
+    },
+    {
+      "id": "browser_ui",
+      "owns": [
+        "render_accepted_telemetry",
+        "fresh_stale_last_known_source_loss_presentation",
+        "geo_observation_camera",
+        "human_readable_identity_and_emission_labels"
+      ],
+      "must_not": [
+        "invent_missing_motion",
+        "render_reference_geometry_or_controller_targets_as_actual"
+      ]
+    },
+    {
+      "id": "external_product_side",
+      "owns": [
+        "real_detector_collector_product_behavior",
+        "product_side_comparison_if_later_authorized"
+      ],
+      "must_not": [
+        "be_assumed_implemented_by_this_demo"
+      ]
+    }
+  ],
+  "entity_model": {
+    "entity_types": ["operator", "drone"],
+    "first_class_entities": {"operator": true, "drone": true},
+    "topology": {
+      "operator_controls_min_drones": 1,
+      "operator_and_controlled_drones_same_board": true,
+      "max_drones_per_board": 16,
+      "primary": {"operator_count": 1, "drone_count_min": 6, "drone_count_max": 8},
+      "fallback": {"operator_count": 2, "drone_count": 16, "drones_per_operator": [8, 8]}
+    },
+    "coordinates": {
+      "axes": ["x", "y", "z"],
+      "finite_only": true,
+      "operator_position_multiple_drones": "3d_centroid",
+      "operator_position_single_drone": "stable_nonzero_offset"
+    }
+  },
+  "identity_contract": {
+    "human_readable": true,
+    "max_visible_chars": 20,
+    "stable_within_run": true,
+    "rotate_each_start": true,
+    "shared_association_component": "animal_group_name_only",
+    "full_id_inspectable": true
+  },
+  "emission_contract": {
+    "modes": ["WF", "BT", "WB"],
+    "meanings": {"WF": "Wi-Fi", "BT": "Bluetooth", "WB": "Wi-Fi & Bluetooth"},
+    "operator_and_drone_independent": true,
+    "semantics": "simulated_outward_signal_classification",
+    "telemetry_transport": "UDP/WiFi",
+    "telemetry_transport_is_not_emission_mode": true,
+    "product_facing_rf_emitter_required": false
+  },
+  "protocol_contract": {
+    "semantic_version": 5,
+    "wire_encoding_free": true,
+    "command_transport": "UDP/WiFi",
+    "command_port": 4210,
+    "telemetry_port": 4211,
+    "commands": {
+      "CONFIGURE": ["config_id", "board_id", "operators", "drones"],
+      "UPDATE": ["config_id", "frame_id", "board_id", "entity_targets"],
+      "STOP": ["config_id", "board_id"]
+    },
+    "telemetry_required_fields": [
+      "entity_type",
+      "board_id",
+      "operator_id",
+      "emission_mode",
+      "x",
+      "y",
+      "z",
+      "seq",
+      "frame_id",
+      "config_id",
+      "boot_id",
+      "ts_ms"
+    ],
+    "drone_additional_field": "drone_id",
+    "duplicate_configure": "idempotent",
+    "partial_updates_allowed": true,
+    "update_ordering": "per_entity",
+    "config_id_allocation": "persisted_monotonic_generation_with_wall_clock_floor",
+    "controller_restart_without_board_reboot": true
+  },
+  "telemetry_lifecycle": {
+    "output_interval_ms": 100,
+    "stale_after_ms": 1500,
+    "freshness_scope": "per_entity",
+    "source_disconnect_is_separate_state": true,
+    "stopped_samples_are_last_known": true,
+    "old_session_packets_rejected": true,
+    "sequence_reset_allowed_after_new_config": true,
+    "boot_change_requires_reinitialize": true,
+    "reject_non_finite_coordinates": true,
+    "reject_emission_mode_mismatch": true
+  },
+  "formation_contract": {
+    "supported": ["circle", "triangle", "smiley", "phoenix", "right-square-pyramid"],
+    "all_are_3d": true,
+    "state_is_per_operator": true,
+    "right_square_pyramid": {
+      "square_coplanar_base": true,
+      "adjacent_base_edges_perpendicular": true,
+      "apex_above_base_center": true,
+      "nonzero_height": true
+    }
+  },
+  "geo_contract": {
+    "scene_id": "doubtful-sound-patea",
+    "label": "Doubtful Sound / Patea, Fiordland, New Zealand",
+    "center": {"lat": -45.324545, "lon": 166.996455},
+    "simulation_only": true,
+    "runtime_gis_lookup": false,
+    "precomputed_anchor_count": 11,
+    "default_spacing_m": 12.0,
+    "speed_mps": 20.0,
+    "default_target_cadence_ms": 250,
+    "observation_zoom": 60,
+    "reference_path_is_not_actual": true,
+    "camera_acquisition": {
+      "pre_geo_cached_telemetry_may_remain_visible": true,
+      "pre_geo_cached_telemetry_must_not_lock": true,
+      "requires_geo_frame_or_later": true,
+      "requires_selected_operator_and_all_controlled_drones": true,
+      "requires_candidate_projection_visible": true,
+      "refresh_or_reselection_reacquires_near_current_path_segment": true,
+      "reference_path_only_gates_lock_readiness": true
+    },
+    "observation": {
+      "camera_fixed_after_lock": true,
+      "window_seconds": 1,
+      "minimum_marker_diameters_moved": 1.5
+    }
+  },
+  "display_contract": {
+    "telemetry_only": true,
+    "controller_targets_must_not_be_rendered_as_actual": true,
+    "reference_geometry_must_be_labeled": true,
+    "stale_distinct_from_fresh": true,
+    "source_disconnect_distinct": true,
+    "operator_marker": "square",
+    "drone_marker": "circle",
+    "ownership_link_visible": true,
+    "emission_mode_visible": true
+  },
+  "scenario_contract": {
+    "baseline_required": [
+      "primary-circle-triangle",
+      "geo-visible-patrol",
+      "controller-restart-board-stays-up"
+    ],
+    "next_required": {
+      "case_id": "single-target-silence-recovery",
+      "priority": "MUST",
+      "status": "DEFERRED",
+      "required_for_baseline": false,
+      "rule": "Implement and validate this case before adding or activating another new scenario."
+    },
+    "scenario_expansion": "blocked_until_next_required_is_implemented_and_validated"
+  },
+  "acceptance_matrix": [
+    {
+      "id": "R01_START_FRESH",
+      "required_for_baseline": true,
+      "pass": "Start allocates a current config, resolves readable runtime entities, and the selected Operator and Drones become fresh only after accepted ESP32 telemetry."
+    },
+    {
+      "id": "R02_CIRCLE",
+      "required_for_baseline": true,
+      "pass": "Circle completes only from returned accepted telemetry; command issuance or Controller targets alone do not satisfy completion."
+    },
+    {
+      "id": "R03_TRIANGLE",
+      "required_for_baseline": true,
+      "pass": "Triangle completes from accepted telemetry while runtime identities remain stable within the same run."
+    },
+    {
+      "id": "R04_STOP_LAST_KNOWN",
+      "required_for_baseline": true,
+      "pass": "STOP makes current samples non-live while retaining last-known positions and explicit state."
+    },
+    {
+      "id": "R05_RESTART_ROTATES_SESSION",
+      "required_for_baseline": true,
+      "pass": "Restart allocates a strictly newer config, rotates runtime entity IDs, and rejects old-session telemetry."
+    },
+    {
+      "id": "R06_CONTROLLER_RESTART_BOARD_STAYS_UP",
+      "required_for_baseline": true,
+      "pass": "A new Controller process sharing persisted session generation can reconfigure the still-powered board under a higher config while the board boot identity remains unchanged."
+    },
+    {
+      "id": "R07_GEO_TRANSITION",
+      "required_for_baseline": true,
+      "pass": "Triangle-to-Geo transition keeps prior telemetry visible but never locks the high-zoom camera from cached pre-Geo samples; lock waits for complete current-scene coverage."
+    },
+    {
+      "id": "R08_GEO_REACQUIRE",
+      "required_for_baseline": true,
+      "pass": "Browser refresh or Operator reselection during active patrol reacquires from current accepted telemetry near the current path segment rather than requiring the route start."
+    },
+    {
+      "id": "R09_GEO_PARTIAL_TELEMETRY",
+      "required_for_baseline": true,
+      "pass": "Partial current-scene telemetry never establishes the high-zoom lock while selected peer entities still carry older samples."
+    },
+    {
+      "id": "R10_GEO_VISIBLE_MOTION",
+      "required_for_baseline": true,
+      "pass": "After lock, the camera stays fixed and accepted telemetry produces at least 1.5 Drone marker diameters of screen displacement within one second."
+    },
+    {
+      "id": "R11_SINGLE_TARGET_SILENCE_RECOVERY",
+      "required_for_baseline": false,
+      "status": "DEFERRED",
+      "pass": "In one run, silence only one Drone while peers remain fresh; preserve its last-known position and stale state; resume the same runtime Drone ID under the same config and board boot identity."
+    }
+  ],
+  "implementation_freedom": {
+    "may_change": [
+      "programming_language",
+      "web_framework",
+      "server_framework",
+      "class_and_function_names",
+      "directory_layout",
+      "internal_module_boundaries",
+      "internal_algorithms_that_do_not_change_observable_behavior",
+      "wire_encoding_as_long_as_both_rebuilt_endpoints_share_the_same_semantics"
+    ],
+    "must_preserve": [
+      "truth_invariant",
+      "role_boundaries",
+      "entity_and_identity_semantics",
+      "emission_vs_transport_separation",
+      "protocol_semantics",
+      "telemetry_freshness_and_lifecycle",
+      "geo_camera_acceptance_semantics",
+      "baseline_acceptance_matrix",
+      "deferred_next_scenario_status"
+    ]
+  },
+  "non_goals": [
+    "source_compatible_reimplementation",
+    "real_flight_control",
+    "real_product_detector_or_collector_integration",
+    "automatic_product_vs_reality_scoring",
+    "real_product_rf_emission_generation",
+    "runtime_gis_discovery",
+    "proof_of_legal_clean_room_status",
+    "physical_demo_readiness_claim_from_software_only_evidence"
+  ],
+  "readiness": {
+    "software_rebuild_may_claim": "SOFTWARE_PARITY_CANDIDATE",
+    "software_green_does_not_claim": "PHYSICAL_READY",
+    "hardware_and_intended_screen_evidence_required_separately": true
+  },
+  "stop_conditions": [
+    "A required behavior is missing or contradictory in this contract.",
+    "Implementation would require original source code or private repository history.",
+    "Implementation would require company-internal or otherwise restricted material.",
+    "A proposed shortcut would render Controller intent as actual telemetry.",
+    "A proposed change would silently activate deferred scenario work or add a new scenario."
+  ]
+}
