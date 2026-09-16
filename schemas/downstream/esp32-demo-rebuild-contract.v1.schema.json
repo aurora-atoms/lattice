@@ -1,0 +1,404 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.local/schemas/downstream/esp32-demo-rebuild-contract.v1.schema.json",
+  "title": "ESP32 Demo Source-Free Rebuild Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "contract_id",
+    "activation_scope",
+    "consumer",
+    "purpose",
+    "public_boundary",
+    "authority",
+    "mission",
+    "system_roles",
+    "entity_model",
+    "identity_contract",
+    "emission_contract",
+    "protocol_contract",
+    "telemetry_lifecycle",
+    "formation_contract",
+    "geo_contract",
+    "display_contract",
+    "scenario_contract",
+    "acceptance_matrix",
+    "implementation_freedom",
+    "non_goals",
+    "readiness",
+    "stop_conditions"
+  ],
+  "properties": {
+    "schema": {"const": "lat.esp32-demo-rebuild-contract.v1"},
+    "contract_id": {"const": "esp32-demo-rebuild-v1"},
+    "activation_scope": {"const": "reference_only"},
+    "consumer": {"const": "source_isolated_implementation_agent"},
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "goal",
+        "compatibility_target",
+        "source_compatibility_required",
+        "framework_compatibility_required",
+        "wire_encoding_compatibility_required",
+        "protocol_semantics_required",
+        "completion_rule"
+      ],
+      "properties": {
+        "goal": {"type": "string", "minLength": 20},
+        "compatibility_target": {"const": "observable_behavior_and_acceptance"},
+        "source_compatibility_required": {"const": false},
+        "framework_compatibility_required": {"const": false},
+        "wire_encoding_compatibility_required": {"const": false},
+        "protocol_semantics_required": {"const": true},
+        "completion_rule": {"type": "string", "minLength": 20}
+      }
+    },
+    "public_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_code_included",
+        "private_repository_coordinates_included",
+        "private_runtime_evidence_included",
+        "company_internal_material_included",
+        "legal_clean_room_claim",
+        "allowed_inputs",
+        "forbidden_inputs"
+      ],
+      "properties": {
+        "source_code_included": {"const": false},
+        "private_repository_coordinates_included": {"const": false},
+        "private_runtime_evidence_included": {"const": false},
+        "company_internal_material_included": {"const": false},
+        "legal_clean_room_claim": {"const": false},
+        "allowed_inputs": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "forbidden_inputs": {"$ref": "#/$defs/nonEmptyStringArray"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_behavior", "conflict_resolution", "readiness_conflict", "implementation_freedom"],
+      "properties": {
+        "unknown_behavior": {"const": "do_not_invent"},
+        "conflict_resolution": {"const": "explicit_contract_wins"},
+        "readiness_conflict": {"const": "stricter_gate_wins"},
+        "implementation_freedom": {"const": "allowed_outside_observable_contract"}
+      }
+    },
+    "mission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truth_invariant", "product_side_external", "actual_state_source", "controller_targets_are_intent_only", "command_sent_is_not_execution_evidence"],
+      "properties": {
+        "truth_invariant": {"type": "string", "minLength": 40},
+        "product_side_external": {"const": true},
+        "actual_state_source": {"const": "accepted_esp32_telemetry"},
+        "controller_targets_are_intent_only": {"const": true},
+        "command_sent_is_not_execution_evidence": {"const": true}
+      }
+    },
+    "system_roles": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/role"}
+    },
+    "entity_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_types", "first_class_entities", "topology", "coordinates"],
+      "properties": {
+        "entity_types": {"type": "array", "prefixItems": [{"const": "operator"}, {"const": "drone"}], "items": false},
+        "first_class_entities": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operator", "drone"],
+          "properties": {"operator": {"const": true}, "drone": {"const": true}}
+        },
+        "topology": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operator_controls_min_drones", "operator_and_controlled_drones_same_board", "max_drones_per_board", "primary", "fallback"],
+          "properties": {
+            "operator_controls_min_drones": {"type": "integer", "minimum": 1},
+            "operator_and_controlled_drones_same_board": {"const": true},
+            "max_drones_per_board": {"type": "integer", "minimum": 1},
+            "primary": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["operator_count", "drone_count_min", "drone_count_max"],
+              "properties": {
+                "operator_count": {"type": "integer", "minimum": 1},
+                "drone_count_min": {"type": "integer", "minimum": 1},
+                "drone_count_max": {"type": "integer", "minimum": 1}
+              }
+            },
+            "fallback": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["operator_count", "drone_count", "drones_per_operator"],
+              "properties": {
+                "operator_count": {"type": "integer", "minimum": 1},
+                "drone_count": {"type": "integer", "minimum": 1},
+                "drones_per_operator": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": 1}}
+              }
+            }
+          }
+        },
+        "coordinates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["axes", "finite_only", "operator_position_multiple_drones", "operator_position_single_drone"],
+          "properties": {
+            "axes": {"type": "array", "prefixItems": [{"const": "x"}, {"const": "y"}, {"const": "z"}], "items": false},
+            "finite_only": {"const": true},
+            "operator_position_multiple_drones": {"const": "3d_centroid"},
+            "operator_position_single_drone": {"const": "stable_nonzero_offset"}
+          }
+        }
+      }
+    },
+    "identity_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["human_readable", "max_visible_chars", "stable_within_run", "rotate_each_start", "shared_association_component", "full_id_inspectable"],
+      "properties": {
+        "human_readable": {"const": true},
+        "max_visible_chars": {"type": "integer", "minimum": 1, "maximum": 64},
+        "stable_within_run": {"const": true},
+        "rotate_each_start": {"const": true},
+        "shared_association_component": {"const": "animal_group_name_only"},
+        "full_id_inspectable": {"const": true}
+      }
+    },
+    "emission_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modes", "meanings", "operator_and_drone_independent", "semantics", "telemetry_transport", "telemetry_transport_is_not_emission_mode", "product_facing_rf_emitter_required"],
+      "properties": {
+        "modes": {"type": "array", "prefixItems": [{"const": "WF"}, {"const": "BT"}, {"const": "WB"}], "items": false},
+        "meanings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["WF", "BT", "WB"],
+          "properties": {"WF": {"const": "Wi-Fi"}, "BT": {"const": "Bluetooth"}, "WB": {"const": "Wi-Fi & Bluetooth"}}
+        },
+        "operator_and_drone_independent": {"const": true},
+        "semantics": {"const": "simulated_outward_signal_classification"},
+        "telemetry_transport": {"const": "UDP/WiFi"},
+        "telemetry_transport_is_not_emission_mode": {"const": true},
+        "product_facing_rf_emitter_required": {"const": false}
+      }
+    },
+    "protocol_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_version", "wire_encoding_free", "command_transport", "command_port", "telemetry_port", "commands", "telemetry_required_fields", "drone_additional_field", "duplicate_configure", "partial_updates_allowed", "update_ordering", "config_id_allocation", "controller_restart_without_board_reboot"],
+      "properties": {
+        "semantic_version": {"type": "integer", "minimum": 1},
+        "wire_encoding_free": {"const": true},
+        "command_transport": {"const": "UDP/WiFi"},
+        "command_port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "telemetry_port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "commands": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["CONFIGURE", "UPDATE", "STOP"],
+          "properties": {
+            "CONFIGURE": {"$ref": "#/$defs/nonEmptyStringArray"},
+            "UPDATE": {"$ref": "#/$defs/nonEmptyStringArray"},
+            "STOP": {"$ref": "#/$defs/nonEmptyStringArray"}
+          }
+        },
+        "telemetry_required_fields": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "drone_additional_field": {"const": "drone_id"},
+        "duplicate_configure": {"const": "idempotent"},
+        "partial_updates_allowed": {"const": true},
+        "update_ordering": {"const": "per_entity"},
+        "config_id_allocation": {"const": "persisted_monotonic_generation_with_wall_clock_floor"},
+        "controller_restart_without_board_reboot": {"const": true}
+      }
+    },
+    "telemetry_lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["output_interval_ms", "stale_after_ms", "freshness_scope", "source_disconnect_is_separate_state", "stopped_samples_are_last_known", "old_session_packets_rejected", "sequence_reset_allowed_after_new_config", "boot_change_requires_reinitialize", "reject_non_finite_coordinates", "reject_emission_mode_mismatch"],
+      "properties": {
+        "output_interval_ms": {"type": "integer", "minimum": 1},
+        "stale_after_ms": {"type": "integer", "minimum": 1},
+        "freshness_scope": {"const": "per_entity"},
+        "source_disconnect_is_separate_state": {"const": true},
+        "stopped_samples_are_last_known": {"const": true},
+        "old_session_packets_rejected": {"const": true},
+        "sequence_reset_allowed_after_new_config": {"const": true},
+        "boot_change_requires_reinitialize": {"const": true},
+        "reject_non_finite_coordinates": {"const": true},
+        "reject_emission_mode_mismatch": {"const": true}
+      }
+    },
+    "formation_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported", "all_are_3d", "state_is_per_operator", "right_square_pyramid"],
+      "properties": {
+        "supported": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "all_are_3d": {"const": true},
+        "state_is_per_operator": {"const": true},
+        "right_square_pyramid": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["square_coplanar_base", "adjacent_base_edges_perpendicular", "apex_above_base_center", "nonzero_height"],
+          "properties": {
+            "square_coplanar_base": {"const": true},
+            "adjacent_base_edges_perpendicular": {"const": true},
+            "apex_above_base_center": {"const": true},
+            "nonzero_height": {"const": true}
+          }
+        }
+      }
+    },
+    "geo_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scene_id", "label", "center", "simulation_only", "runtime_gis_lookup", "precomputed_anchor_count", "default_spacing_m", "speed_mps", "default_target_cadence_ms", "observation_zoom", "reference_path_is_not_actual", "camera_acquisition", "observation"],
+      "properties": {
+        "scene_id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "center": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lat", "lon"],
+          "properties": {"lat": {"type": "number"}, "lon": {"type": "number"}}
+        },
+        "simulation_only": {"const": true},
+        "runtime_gis_lookup": {"const": false},
+        "precomputed_anchor_count": {"type": "integer", "minimum": 2},
+        "default_spacing_m": {"type": "number", "exclusiveMinimum": 0},
+        "speed_mps": {"type": "number", "exclusiveMinimum": 0},
+        "default_target_cadence_ms": {"type": "integer", "minimum": 1},
+        "observation_zoom": {"type": "number", "exclusiveMinimum": 0},
+        "reference_path_is_not_actual": {"const": true},
+        "camera_acquisition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pre_geo_cached_telemetry_may_remain_visible", "pre_geo_cached_telemetry_must_not_lock", "requires_geo_frame_or_later", "requires_selected_operator_and_all_controlled_drones", "requires_candidate_projection_visible", "refresh_or_reselection_reacquires_near_current_path_segment", "reference_path_only_gates_lock_readiness"],
+          "properties": {
+            "pre_geo_cached_telemetry_may_remain_visible": {"const": true},
+            "pre_geo_cached_telemetry_must_not_lock": {"const": true},
+            "requires_geo_frame_or_later": {"const": true},
+            "requires_selected_operator_and_all_controlled_drones": {"const": true},
+            "requires_candidate_projection_visible": {"const": true},
+            "refresh_or_reselection_reacquires_near_current_path_segment": {"const": true},
+            "reference_path_only_gates_lock_readiness": {"const": true}
+          }
+        },
+        "observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["camera_fixed_after_lock", "window_seconds", "minimum_marker_diameters_moved"],
+          "properties": {
+            "camera_fixed_after_lock": {"const": true},
+            "window_seconds": {"type": "number", "exclusiveMinimum": 0},
+            "minimum_marker_diameters_moved": {"type": "number", "exclusiveMinimum": 0}
+          }
+        }
+      }
+    },
+    "display_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["telemetry_only", "controller_targets_must_not_be_rendered_as_actual", "reference_geometry_must_be_labeled", "stale_distinct_from_fresh", "source_disconnect_distinct", "operator_marker", "drone_marker", "ownership_link_visible", "emission_mode_visible"],
+      "properties": {
+        "telemetry_only": {"const": true},
+        "controller_targets_must_not_be_rendered_as_actual": {"const": true},
+        "reference_geometry_must_be_labeled": {"const": true},
+        "stale_distinct_from_fresh": {"const": true},
+        "source_disconnect_distinct": {"const": true},
+        "operator_marker": {"const": "square"},
+        "drone_marker": {"const": "circle"},
+        "ownership_link_visible": {"const": true},
+        "emission_mode_visible": {"const": true}
+      }
+    },
+    "scenario_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline_required", "next_required", "scenario_expansion"],
+      "properties": {
+        "baseline_required": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "next_required": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["case_id", "priority", "status", "required_for_baseline", "rule"],
+          "properties": {
+            "case_id": {"const": "single-target-silence-recovery"},
+            "priority": {"const": "MUST"},
+            "status": {"const": "DEFERRED"},
+            "required_for_baseline": {"const": false},
+            "rule": {"type": "string", "minLength": 20}
+          }
+        },
+        "scenario_expansion": {"const": "blocked_until_next_required_is_implemented_and_validated"}
+      }
+    },
+    "acceptance_matrix": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/acceptanceCase"}
+    },
+    "implementation_freedom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_change", "must_preserve"],
+      "properties": {
+        "may_change": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "must_preserve": {"$ref": "#/$defs/nonEmptyStringArray"}
+      }
+    },
+    "non_goals": {"$ref": "#/$defs/nonEmptyStringArray"},
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["software_rebuild_may_claim", "software_green_does_not_claim", "hardware_and_intended_screen_evidence_required_separately"],
+      "properties": {
+        "software_rebuild_may_claim": {"const": "SOFTWARE_PARITY_CANDIDATE"},
+        "software_green_does_not_claim": {"const": "PHYSICAL_READY"},
+        "hardware_and_intended_screen_evidence_required_separately": {"const": true}
+      }
+    },
+    "stop_conditions": {"$ref": "#/$defs/nonEmptyStringArray"}
+  },
+  "$defs": {
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "role": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owns", "must_not"],
+      "properties": {
+        "id": {"enum": ["pc_controller", "esp32", "browser_ui", "external_product_side"]},
+        "owns": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "must_not": {"$ref": "#/$defs/nonEmptyStringArray"}
+      }
+    },
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "required_for_baseline", "pass"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^R[0-9]{2}_[A-Z0-9_]+$"},
+        "required_for_baseline": {"type": "boolean"},
+        "status": {"enum": ["DEFERRED"]},
+        "pass": {"type": "string", "minLength": 20}
+      }
+    }
+  }
+}
