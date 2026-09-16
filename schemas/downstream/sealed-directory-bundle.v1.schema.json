@@ -13,7 +13,9 @@
     "cipher",
     "sharding",
     "shards",
+    "sealed_entry_count",
     "sealed_file_count",
+    "sealed_directory_count",
     "public_metadata_policy"
   ],
   "properties": {
@@ -68,7 +70,9 @@
         }
       }
     },
+    "sealed_entry_count": {"type": "integer", "minimum": 0},
     "sealed_file_count": {"type": "integer", "minimum": 0},
+    "sealed_directory_count": {"type": "integer", "minimum": 0},
     "public_metadata_policy": {"const": "no_source_paths_or_plaintext_hashes"}
   }
 }
