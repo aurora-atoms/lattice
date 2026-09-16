@@ -82,3 +82,7 @@ Preserve `UNKNOWN` and state the next evidence needed.
 A first evidenced real use can support `used_once`; a separately evidenced later use is required for `reused`; explicit private governance approval is additionally required for `team_available`. A public fixture never advances these states.
 
 Before changing the Lattice pin, compare contract and capability versions, validate private extensions, regenerate the pack, rerun negative checks, and obtain accountable private review. Roll back to the prior immutable pin if compatibility cannot be established.
+
+## Optional Sealed Directory Transfer
+
+When an authorized private repository needs to move a whole directory tree as multiple Git-friendly files instead of a ZIP/tar archive, use [Sealed Directory Bundle v1](sealed-directory-bundle.md). Run sealing, storage, and unsealing only inside the authorized private boundary. Public Lattice contains the protocol/tooling and synthetic tests only; it must not receive real encrypted payload shards.

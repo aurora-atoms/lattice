@@ -27,6 +27,7 @@ PRIVATE_PATTERNS = {
         r"(?i)(?:api[_-]?key|access[_-]?token|client[_-]?secret|password)\s*[:=]\s*[\"']?[^\\s\"']+"
     ),
 }
+SEALED_PRIVATE_PAYLOAD_SUFFIX = ".lsb64"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -147,11 +148,23 @@ def fixture_errors(path: Path) -> list[str]:
     return errors
 
 
+def sealed_payload_errors(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in sorted(root.rglob(f"*{SEALED_PRIVATE_PAYLOAD_SUFFIX}")):
+        if path.is_file():
+            errors.append(
+                f"{path}: sealed directory payload shards are private downstream artifacts "
+                "and may not be committed to public Lattice"
+            )
+    return errors
+
+
 def validate_root(root: Path) -> list[str]:
     errors: list[str] = []
     manifest = load_json(root / "registry" / "capability-manifest.json")
     if "downstream_adoption_status" in json.dumps(manifest):
         errors.append("canonical public manifest contains private downstream adoption state")
+    errors.extend(sealed_payload_errors(root))
     fixture_roots = [
         root / "feature-delivery-harness-mvp" / "evals",
         root / "examples",

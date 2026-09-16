@@ -111,6 +111,14 @@ class PublicPrivateBoundaryTests(unittest.TestCase):
             errors = MODULE.fixture_errors(path)
             self.assertTrue(any("DeliveryYield cannot approve" in item for item in errors))
 
+    def test_public_lattice_rejects_sealed_private_payload_shards(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            shard = root / "part-000001.lsb64"
+            shard.write_text("synthetic-ciphertext-placeholder\n", encoding="utf-8")
+            errors = MODULE.sealed_payload_errors(root)
+            self.assertTrue(any("private downstream artifacts" in item for item in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

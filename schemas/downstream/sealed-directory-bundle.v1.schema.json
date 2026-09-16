@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.local/schemas/downstream/sealed-directory-bundle.v1.schema.json",
+  "title": "Lattice Sealed Directory Bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "bundle_id",
+    "payload_policy",
+    "encoding",
+    "compression",
+    "cipher",
+    "sharding",
+    "shards",
+    "sealed_entry_count",
+    "sealed_file_count",
+    "sealed_directory_count",
+    "public_metadata_policy"
+  ],
+  "properties": {
+    "schema": {"const": "lat.sealed-directory-bundle.v1"},
+    "bundle_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "payload_policy": {"const": "private_downstream_only"},
+    "encoding": {"const": "base64"},
+    "compression": {"const": "none"},
+    "cipher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kdf"],
+      "properties": {
+        "name": {"const": "AES-256-GCM"},
+        "kdf": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "salt_b64", "n", "r", "p", "length"],
+          "properties": {
+            "name": {"const": "scrypt"},
+            "salt_b64": {"type": "string", "minLength": 20, "maxLength": 32},
+            "n": {"const": 32768},
+            "r": {"const": 8},
+            "p": {"const": 1},
+            "length": {"const": 32}
+          }
+        }
+      }
+    },
+    "sharding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plaintext_chunk_bytes", "count"],
+      "properties": {
+        "plaintext_chunk_bytes": {"type": "integer", "minimum": 4096, "maximum": 16777216},
+        "count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "shards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "file", "nonce_b64", "ciphertext_sha256", "ciphertext_bytes"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 0},
+          "file": {"type": "string", "pattern": "^part-[0-9]{6}\\.lsb64$"},
+          "nonce_b64": {"type": "string", "minLength": 16, "maxLength": 16},
+          "ciphertext_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "ciphertext_bytes": {"type": "integer", "minimum": 16}
+        }
+      }
+    },
+    "sealed_entry_count": {"type": "integer", "minimum": 0},
+    "sealed_file_count": {"type": "integer", "minimum": 0},
+    "sealed_directory_count": {"type": "integer", "minimum": 0},
+    "public_metadata_policy": {"const": "no_source_paths_or_plaintext_hashes"}
+  }
+}
