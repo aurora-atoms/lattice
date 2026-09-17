@@ -90,6 +90,7 @@ EXPECTED_STAGE_BEHAVIORS: dict[str, set[str]] = {
         "controller_precomputes_ordered_strokes_and_3d_waypoints",
         "drones_follow_time_ordered_continuous_3d_waypoints",
         "shape_is_revealed_by_strokes_not_instant_final_formation",
+        "horizontal_xy_projection_remains_recognizable_without_using_z",
         "visual_trail_is_derived_only_from_accepted_telemetry_history",
         "visual_trail_does_not_invent_missing_motion",
         "accepted_telemetry_is_the_only_displayed_actual_state",
@@ -135,6 +136,7 @@ EXPECTED_STAGE_BEHAVIORS: dict[str, set[str]] = {
         "starts_from_geo_coast_patrol_current_positions",
         "uses_remaining_active_members_only",
         "formation_transition_is_continuous_in_3d",
+        "phoenix_horizontal_xy_projection_preserves_recognizable_silhouette",
         "phoenix_is_in_the_main_mission_but_is_not_product_validation_proof",
     },
     "distributed-landing": {
@@ -239,6 +241,20 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
         "recovery_continues_same_mission_stroke",
     ):
         expect(f"drawing.{key}", drawing.get(key), True)
+
+    projection = main_demo.get("horizontal_projection", {})
+    expect("horizontal_projection.projection_plane", projection.get("projection_plane"), "xy")
+    expect("horizontal_projection.purpose", projection.get("purpose"), "planar_product_comparison")
+    for key in (
+        "applies_to_all_3d_formations",
+        "top_down_projection_must_be_recognizable",
+        "xy_silhouette_is_primary_shape_signature",
+        "z_axis_may_add_depth_but_must_not_define_shape_identity_alone",
+        "z_only_separation_must_not_be_required_for_recognition",
+        "projected_self_overlap_must_not_destroy_key_shape_features",
+        "projection_must_remain_comparable_when_altitude_is_ignored",
+    ):
+        expect(f"horizontal_projection.{key}", projection.get(key), True)
 
     continuity = main_demo.get("mission_continuity", {})
     for key in (
