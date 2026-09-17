@@ -80,6 +80,18 @@ class Esp32DemoPresentationEvidenceAddendumTests(unittest.TestCase):
         errors = self.validate_mutation(value)
         self.assertTrue(any("visual_trail_must_not_invent_missing_motion" in error for error in errors))
 
+    def test_3d_formation_must_remain_recognizable_in_xy_projection(self) -> None:
+        value = self.load_addendum()
+        value["main_demo"]["horizontal_projection"]["top_down_projection_must_be_recognizable"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("horizontal_projection.top_down_projection_must_be_recognizable" in error for error in errors))
+
+    def test_shape_identity_cannot_depend_on_z_only(self) -> None:
+        value = self.load_addendum()
+        value["main_demo"]["horizontal_projection"]["z_only_separation_must_not_be_required_for_recognition"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("z_only_separation_must_not_be_required_for_recognition" in error for error in errors))
+
     def test_mission_cannot_reset_between_stages(self) -> None:
         value = self.load_addendum()
         value["main_demo"]["mission_continuity"]["config_reset_between_stages"] = True
