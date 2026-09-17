@@ -3,7 +3,7 @@
   "contract_id": "esp32-demo-presentation-evidence-addendum-v1",
   "extends_contract": "esp32-demo-rebuild-v1",
   "purpose": {
-    "goal": "Turn the existing ESP32 synthetic swarm demo into an evidence-first side-by-side presentation while keeping Playwright screenshot-only and keeping Phoenix outside the main validation story.",
+    "goal": "Present one continuous mission flown by the same synthetic ESP32 swarm, with screenshot-only side-by-side evidence against the real product UI.",
     "presentation_only": true,
     "truth_invariant_unchanged": true,
     "core_baseline_acceptance_unchanged": true
@@ -17,7 +17,7 @@
   "playwright_evidence": {
     "mode": "screenshot_only",
     "comparison_layout": "left_simulated_source_state_right_real_product",
-    "pairing_key": "scenario_checkpoint",
+    "pairing_key": "mission_checkpoint",
     "left_panel": {
       "label": "Simulated Source State",
       "source": "browser_render_of_accepted_esp32_telemetry_only"
@@ -45,25 +45,48 @@
     "runtime_screenshots_committed_to_public_repo": false
   },
   "main_demo": {
-    "theme": "progressive_state_then_adversarial_contrast",
-    "story": "Establish an intuitive normal motion baseline, then introduce controlled ambiguity and failure while preserving a visible comparison between simulated source state and the real product UI.",
+    "theme": "single_swarm_continuous_mission",
+    "story": "One swarm takes off once, performs a drawing task, experiences controlled disruptions without resetting the mission, continues into coastal patrol, forms Phoenix as the mission climax, and lands the remaining active drones at distributed points.",
     "sequence": [
       "multi-point-takeoff",
-      "perfect-progressive-drawing",
-      "single-target-silence-recovery",
+      "progressive-formation-drawing",
+      "in-stroke-silence",
+      "same-drone-recovery",
       "landing-vs-airborne-disconnect",
-      "duplicate-observation-dedup",
-      "shared-remote-id-identity-conflict",
-      "geo-visible-patrol",
+      "duplicate-signal-and-identity-conflict",
+      "geo-coast-patrol",
+      "phoenix-formation",
       "distributed-landing"
     ],
     "first_new_scenario_gate": "single-target-silence-recovery",
+    "first_new_scenario_gate_stages": [
+      "in-stroke-silence",
+      "same-drone-recovery"
+    ],
     "later_new_stages_activate_only_after_first_gate_passes": true,
+    "mission_continuity": {
+      "single_mission": true,
+      "single_run": true,
+      "mission_roster_created_once_at_start": true,
+      "stage_transition_start_state": "previous_stage_last_accepted_telemetry",
+      "new_start_between_stages": false,
+      "config_reset_between_stages": false,
+      "runtime_identity_rotation_between_stages": false,
+      "respawn_or_reseed_between_stages": false,
+      "truth_entity_roster_changes_for_observation_tests": false,
+      "inactive_members_remain_part_of_mission_roster": true,
+      "later_stages_use_remaining_active_members": true,
+      "phoenix_uses_remaining_active_members": true,
+      "distributed_landing_closes_remaining_active_members": true
+    },
     "phoenix": {
       "retained": true,
       "supported_formation": "phoenix",
-      "in_main_sequence": false,
-      "role": "standalone_showcase",
+      "in_main_sequence": true,
+      "role": "mission_climax_showcase",
+      "follows_stage": "geo-coast-patrol",
+      "precedes_stage": "distributed-landing",
+      "uses_remaining_active_members": true,
       "may_be_run_separately": true,
       "may_be_used_as_validation_proof": false
     }
@@ -71,75 +94,95 @@
   "stage_contracts": [
     {
       "id": "multi-point-takeoff",
-      "intent": "Show lifecycle from ground state into flight instead of making targets appear already airborne.",
+      "intent": "Begin one mission by launching the swarm from different ground positions instead of materializing targets already airborne.",
       "required_behavior": [
+        "mission_roster_is_created_once_here",
         "drones_may_start_from_different_positions",
         "accepted_telemetry_shows_takeoff_progression_before_cruise_motion",
         "no_controller_reference_position_is_rendered_as_actual"
       ]
     },
     {
-      "id": "perfect-progressive-drawing",
-      "intent": "Teach the audience what continuous correct motion looks like before faults are introduced.",
+      "id": "progressive-formation-drawing",
+      "intent": "Use the same airborne swarm to draw a recognizable formation smoothly so the audience first learns what correct continuous motion looks like.",
       "required_behavior": [
+        "starts_from_multi_point_takeoff_final_accepted_positions",
         "formation_does_not_pop_directly_into_final_state",
         "drones_progress_through_continuous_3d_waypoints",
         "accepted_telemetry_is_the_only_displayed_actual_state"
       ]
     },
     {
-      "id": "single-target-silence-recovery",
-      "intent": "Silence one Drone while peers remain fresh, then recover the same runtime Drone under the same config and board boot identity.",
+      "id": "in-stroke-silence",
+      "intent": "Interrupt one Drone during an active drawing stroke while the rest of the same swarm continues the mission.",
       "required_behavior": [
-        "only_one_drone_is_silenced",
-        "peers_remain_fresh",
-        "last_known_position_is_preserved_while_silent",
-        "recovery_reuses_same_runtime_drone_id"
+        "starts_from_progressive_drawing_current_positions",
+        "only_one_existing_drone_is_silenced",
+        "peers_continue_the_same_drawing_task_and_remain_fresh",
+        "silent_drone_last_known_position_is_preserved",
+        "mission_config_and_runtime_roster_are_not_reset"
+      ]
+    },
+    {
+      "id": "same-drone-recovery",
+      "intent": "Restore the interrupted Drone into the same mission so the broken stroke visibly resumes rather than starting a new test case.",
+      "required_behavior": [
+        "recovery_reuses_same_runtime_drone_id",
+        "recovery_reuses_same_config_and_board_boot_identity",
+        "recovered_drone_resumes_from_continuous_mission_state",
+        "drawing_task_continues_without_respawning_the_swarm"
       ]
     },
     {
       "id": "landing-vs-airborne-disconnect",
-      "intent": "Make two visually similar disappearances carry different source evidence.",
+      "intent": "Within the same mission roster, create two different disappearances: one Drone visibly lands while another stops reporting while still airborne.",
       "required_behavior": [
-        "landing_target_descends_before_telemetry_ceases",
-        "disconnect_target_ceases_while_last_known_state_is_airborne",
+        "one_existing_drone_descends_and_lands_before_telemetry_ceases",
+        "one_different_existing_drone_ceases_while_last_known_state_is_airborne",
+        "both_drones_remain_members_of_the_same_mission_roster",
+        "landed_and_disconnected_drones_leave_the_active_flying_subset",
         "simulated_source_state_does_not_relabel_disconnect_as_landing"
       ]
     },
     {
-      "id": "duplicate-observation-dedup",
-      "intent": "Exercise repeated observations of one simulated Drone without inventing additional simulated truth entities.",
+      "id": "duplicate-signal-and-identity-conflict",
+      "intent": "Stress observation and identity using remaining members of the same swarm, first with duplicate observations and then with multiple existing Drones claiming one Remote ID.",
       "required_behavior": [
-        "one_runtime_drone_remains_one_simulated_truth_entity",
-        "duplicate_observations_may_be_emitted_for_the_same_claimed_identity",
+        "duplicate_observations_reuse_one_existing_runtime_drone_without_creating_a_truth_entity",
+        "two_or_three_existing_active_drones_may_claim_the_same_remote_id",
+        "distinct_runtime_drone_ids_and_trajectories_are_preserved",
+        "identity_stress_does_not_change_the_mission_truth_roster",
         "product_ui_response_is_recorded_only_by_screenshot"
       ]
     },
     {
-      "id": "shared-remote-id-identity-conflict",
-      "intent": "Exercise two or three distinct simulated Drones that intentionally claim the same Remote ID while following distinct trajectories.",
+      "id": "geo-coast-patrol",
+      "intent": "Transition the remaining active members of the same swarm from identity stress into a recognizable coastal patrol without resetting their mission state.",
       "required_behavior": [
-        "truth_entity_count_can_progress_one_to_two_to_three",
-        "distinct_runtime_drone_ids_are_preserved",
-        "claimed_remote_id_may_be_shared",
-        "shared_remote_id_must_not_collapse_simulated_truth_entities",
-        "product_ui_response_is_recorded_only_by_screenshot"
-      ]
-    },
-    {
-      "id": "geo-visible-patrol",
-      "intent": "Return to a recognizable geospatial motion pattern after identity and lifecycle stress.",
-      "required_behavior": [
+        "starts_from_previous_stage_last_accepted_positions",
         "existing_doubtful_sound_precomputed_path_is_reused",
+        "remaining_active_members_join_the_patrol_continuously",
         "runtime_gis_lookup_is_not_added",
         "accepted_telemetry_remains_the_actual_state_source"
       ]
     },
     {
-      "id": "distributed-landing",
-      "intent": "Close the story with visible descent and landing rather than targets simply disappearing.",
+      "id": "phoenix-formation",
+      "intent": "Use the remaining active mission members to leave coastal patrol and continuously assemble the Phoenix as the visual climax of the same mission.",
       "required_behavior": [
-        "drones_may_land_at_different_points",
+        "starts_from_geo_coast_patrol_current_positions",
+        "uses_remaining_active_members_only",
+        "formation_transition_is_continuous_in_3d",
+        "phoenix_is_in_the_main_mission_but_is_not_product_validation_proof"
+      ]
+    },
+    {
+      "id": "distributed-landing",
+      "intent": "Finish the same mission by sending every remaining active Drone from the Phoenix into visible descents toward different landing points.",
+      "required_behavior": [
+        "starts_from_phoenix_current_positions",
+        "no_new_drone_is_spawned_for_landing",
+        "remaining_active_drones_may_land_at_different_points",
         "descent_is_visible_before_each_target_becomes_non_live",
         "last_known_landed_state_is_preserved_according_to_core_lifecycle_rules"
       ]
@@ -148,21 +191,22 @@
   "identity_test_semantics": {
     "runtime_drone_id_is_truth_entity_identity": true,
     "claimed_remote_id_is_test_stimulus_identity": true,
-    "duplicate_observation_case": "many_observations_one_truth_entity",
-    "shared_remote_id_case": "multiple_truth_entities_one_claimed_remote_id",
+    "duplicate_observation_case": "many_observations_one_existing_truth_entity",
+    "shared_remote_id_case": "multiple_existing_truth_entities_one_claimed_remote_id",
     "remote_id_alone_must_not_define_truth_entity_count": true,
+    "identity_stress_must_not_change_mission_roster": true,
     "real_product_identity_policy_is_not_assumed": true
   },
   "evidence_checkpoints": [
     "takeoff-established",
-    "perfect-drawing-mid-stroke",
-    "single-target-silent-peers-fresh",
-    "same-target-recovered",
-    "landed-target-vs-airborne-disconnected-target",
-    "duplicate-observation-window",
-    "shared-remote-id-two-targets",
-    "shared-remote-id-three-targets",
-    "geo-patrol-in-motion",
+    "drawing-mid-stroke",
+    "stroke-interrupted-one-drone-silent",
+    "same-drone-recovered-drawing-resumed",
+    "landed-vs-airborne-disconnected",
+    "duplicate-signal-window",
+    "shared-remote-id-conflict",
+    "coast-patrol-in-motion",
+    "phoenix-formed",
     "distributed-landing-complete"
   ],
   "evidence_boundary": {
@@ -178,7 +222,9 @@
     "API or WebSocket inspection of the real product",
     "automated product scoring from Playwright",
     "pixel-diff as an authoritative product verdict",
-    "Phoenix as the main demo theme or validation proof",
+    "restarting or respawning a new swarm between presentation stages",
+    "using disconnected or landed state changes to rewrite mission roster history",
+    "treating Phoenix as a separate demo story instead of the mission climax",
     "publication of private product screenshots or runtime evidence"
   ]
 }
