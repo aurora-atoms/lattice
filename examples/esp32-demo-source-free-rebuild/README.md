@@ -102,6 +102,37 @@ Therefore, when a Drone is silenced during an active stroke:
 
 This makes the visual effect useful for assurance: an interrupted stroke becomes a human-readable representation of a telemetry interruption without allowing the UI to fabricate continuity.
 
+## 3D shape / horizontal projection rule
+
+All formations remain genuinely 3D, but the **XY horizontal projection must still be clearly recognizable** so the simulated source state can be compared directly with a planar product map.
+
+The design rule is:
+
+```text
+3D formation
+  = recognizable XY shape signature
+  + Z-axis depth variation
+```
+
+not:
+
+```text
+unrecognizable XY overlap
+  + Z separation that is required to understand the shape
+```
+
+Concretely:
+
+- the top-down XY projection is the primary visual signature for comparison;
+- altitude may add depth, layering, or 3D structure but must not be the only reason the formation is recognizable;
+- ignoring Z must not destroy the essential outline or key distinguishing features;
+- projected self-overlap must not collapse important parts of the figure into an ambiguous cluster;
+- ASMR Stroke Drawing paths must remain legible in XY even while their Z values vary;
+- Phoenix must keep a recognizable Phoenix silhouette from above;
+- a 3D Right Square Pyramid must still present a clear square-base footprint with the apex projecting near the intended center rather than degenerating into an unreadable point cloud.
+
+This rule exists specifically because the comparison surface on the real product may be a 2D map. The 3D source geometry should add information without making the 2D comparison harder.
+
 ## Phoenix boundary
 
 Phoenix is retained and now appears **inside the same mission** after Geo coast patrol and before distributed landing.
@@ -110,6 +141,7 @@ Its role is `mission_climax_showcase`:
 
 - it uses the remaining active members of the same swarm;
 - the transition from patrol to Phoenix is continuous in 3D;
+- its XY projection remains recognizable from a planar/top-down view;
 - it may still be run independently as a showcase;
 - it is not, by itself, product validation proof.
 
@@ -175,6 +207,11 @@ final formation and do not draw motion that was not observed in accepted telemet
 A silence fault occurs during an active stroke; recovery continues the same Drone and the
 same unfinished stroke.
 
+For every 3D formation, keep the XY/top-down projection clearly recognizable. Z may add
+depth but must not be required to identify the shape. Do not allow projected overlap to
+destroy key silhouette features. This rule applies to Stroke Drawing, Phoenix, the Right
+Square Pyramid, and other 3D formations used for planar comparison.
+
 Keep the visual comparison left=Simulated Source State and right=Real Product.
 Playwright is screenshot-only; do not use DOM/API/WebSocket/network inspection as semantic
 evidence and do not generate an automated product verdict.
@@ -207,6 +244,8 @@ The validators reject, among other things:
 - Browser UI inventing missing motion;
 - resetting or respawning a new swarm between presentation stages;
 - an instant final formation replacing Stroke Drawing;
+- a 3D formation whose identity depends on Z-only separation;
+- a top-down projection that loses the key shape signature;
 - a visual trail bridging an unobserved interval as observed motion;
 - changing runtime identity during recovery;
 - allowing identity stress to rewrite the mission truth roster;
