@@ -59,6 +59,17 @@
       "fault_may_interrupt_an_active_stroke": true,
       "recovery_continues_same_mission_stroke": true
     },
+    "horizontal_projection": {
+      "projection_plane": "xy",
+      "purpose": "planar_product_comparison",
+      "applies_to_all_3d_formations": true,
+      "top_down_projection_must_be_recognizable": true,
+      "xy_silhouette_is_primary_shape_signature": true,
+      "z_axis_may_add_depth_but_must_not_define_shape_identity_alone": true,
+      "z_only_separation_must_not_be_required_for_recognition": true,
+      "projected_self_overlap_must_not_destroy_key_shape_features": true,
+      "projection_must_remain_comparable_when_altitude_is_ignored": true
+    },
     "sequence": [
       "multi-point-takeoff",
       "asmr-stroke-drawing",
@@ -122,6 +133,7 @@
         "controller_precomputes_ordered_strokes_and_3d_waypoints",
         "drones_follow_time_ordered_continuous_3d_waypoints",
         "shape_is_revealed_by_strokes_not_instant_final_formation",
+        "horizontal_xy_projection_remains_recognizable_without_using_z",
         "visual_trail_is_derived_only_from_accepted_telemetry_history",
         "visual_trail_does_not_invent_missing_motion",
         "accepted_telemetry_is_the_only_displayed_actual_state"
@@ -191,6 +203,7 @@
         "starts_from_geo_coast_patrol_current_positions",
         "uses_remaining_active_members_only",
         "formation_transition_is_continuous_in_3d",
+        "phoenix_horizontal_xy_projection_preserves_recognizable_silhouette",
         "phoenix_is_in_the_main_mission_but_is_not_product_validation_proof"
       ]
     },
@@ -241,6 +254,7 @@
     "automated product scoring from Playwright",
     "pixel-diff as an authoritative product verdict",
     "front-end animation that invents a stroke not present in accepted telemetry",
+    "3D formations whose identity is only recognizable from altitude separation",
     "restarting or respawning a new swarm between presentation stages",
     "using disconnected or landed state changes to rewrite mission roster history",
     "treating Phoenix as a separate demo story instead of the mission climax",
