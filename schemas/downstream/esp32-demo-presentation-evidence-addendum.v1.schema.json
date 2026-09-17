@@ -84,6 +84,7 @@
         "theme",
         "story",
         "drawing_mode",
+        "horizontal_projection",
         "sequence",
         "first_new_scenario_gate",
         "first_new_scenario_gate_stages",
@@ -120,6 +121,32 @@
             "visual_trail_must_not_invent_missing_motion": {"const": true},
             "fault_may_interrupt_an_active_stroke": {"const": true},
             "recovery_continues_same_mission_stroke": {"const": true}
+          }
+        },
+        "horizontal_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "projection_plane",
+            "purpose",
+            "applies_to_all_3d_formations",
+            "top_down_projection_must_be_recognizable",
+            "xy_silhouette_is_primary_shape_signature",
+            "z_axis_may_add_depth_but_must_not_define_shape_identity_alone",
+            "z_only_separation_must_not_be_required_for_recognition",
+            "projected_self_overlap_must_not_destroy_key_shape_features",
+            "projection_must_remain_comparable_when_altitude_is_ignored"
+          ],
+          "properties": {
+            "projection_plane": {"const": "xy"},
+            "purpose": {"const": "planar_product_comparison"},
+            "applies_to_all_3d_formations": {"const": true},
+            "top_down_projection_must_be_recognizable": {"const": true},
+            "xy_silhouette_is_primary_shape_signature": {"const": true},
+            "z_axis_may_add_depth_but_must_not_define_shape_identity_alone": {"const": true},
+            "z_only_separation_must_not_be_required_for_recognition": {"const": true},
+            "projected_self_overlap_must_not_destroy_key_shape_features": {"const": true},
+            "projection_must_remain_comparable_when_altitude_is_ignored": {"const": true}
           }
         },
         "sequence": {"$ref": "#/$defs/nonEmptyStringArray"},
