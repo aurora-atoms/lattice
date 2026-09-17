@@ -3,7 +3,7 @@
   "contract_id": "esp32-demo-presentation-evidence-addendum-v1",
   "extends_contract": "esp32-demo-rebuild-v1",
   "purpose": {
-    "goal": "Present one continuous mission flown by the same synthetic ESP32 swarm, with screenshot-only side-by-side evidence against the real product UI.",
+    "goal": "Present one continuous mission flown by the same synthetic ESP32 swarm, using ASMR-like Stroke Drawing for intuitive motion and screenshot-only side-by-side evidence against the real product UI.",
     "presentation_only": true,
     "truth_invariant_unchanged": true,
     "core_baseline_acceptance_unchanged": true
@@ -46,10 +46,22 @@
   },
   "main_demo": {
     "theme": "single_swarm_continuous_mission",
-    "story": "One swarm takes off once, performs a drawing task, experiences controlled disruptions without resetting the mission, continues into coastal patrol, forms Phoenix as the mission climax, and lands the remaining active drones at distributed points.",
+    "story": "One swarm takes off once, performs ASMR-like Stroke Drawing, experiences controlled disruptions without resetting the mission, continues into coastal patrol, forms Phoenix as the mission climax, and lands the remaining active drones at distributed points.",
+    "drawing_mode": {
+      "name": "ASMR-like Stroke Drawing",
+      "contract_id": "asmr_stroke_drawing",
+      "stroke_source": "accepted_esp32_telemetry_history_only",
+      "precomputed_stroke_plan_owned_by_controller": true,
+      "continuous_3d_waypoints_required": true,
+      "instant_final_formation_snap_forbidden": true,
+      "telemetry_derived_visual_trail_allowed": true,
+      "visual_trail_must_not_invent_missing_motion": true,
+      "fault_may_interrupt_an_active_stroke": true,
+      "recovery_continues_same_mission_stroke": true
+    },
     "sequence": [
       "multi-point-takeoff",
-      "progressive-formation-drawing",
+      "asmr-stroke-drawing",
       "in-stroke-silence",
       "same-drone-recovery",
       "landing-vs-airborne-disconnect",
@@ -103,34 +115,40 @@
       ]
     },
     {
-      "id": "progressive-formation-drawing",
-      "intent": "Use the same airborne swarm to draw a recognizable formation smoothly so the audience first learns what correct continuous motion looks like.",
+      "id": "asmr-stroke-drawing",
+      "intent": "Use the same airborne swarm to reveal a recognizable shape stroke by stroke with calm continuous motion, making the expected direction visually obvious before faults are introduced.",
       "required_behavior": [
         "starts_from_multi_point_takeoff_final_accepted_positions",
-        "formation_does_not_pop_directly_into_final_state",
-        "drones_progress_through_continuous_3d_waypoints",
+        "controller_precomputes_ordered_strokes_and_3d_waypoints",
+        "drones_follow_time_ordered_continuous_3d_waypoints",
+        "shape_is_revealed_by_strokes_not_instant_final_formation",
+        "visual_trail_is_derived_only_from_accepted_telemetry_history",
+        "visual_trail_does_not_invent_missing_motion",
         "accepted_telemetry_is_the_only_displayed_actual_state"
       ]
     },
     {
       "id": "in-stroke-silence",
-      "intent": "Interrupt one Drone during an active drawing stroke while the rest of the same swarm continues the mission.",
+      "intent": "Interrupt one Drone while an ASMR-like drawing stroke is actively being traced, while the rest of the same swarm continues the mission.",
       "required_behavior": [
-        "starts_from_progressive_drawing_current_positions",
+        "starts_from_asmr_stroke_drawing_current_positions",
+        "fault_occurs_during_an_active_stroke",
         "only_one_existing_drone_is_silenced",
         "peers_continue_the_same_drawing_task_and_remain_fresh",
         "silent_drone_last_known_position_is_preserved",
+        "visual_trail_does_not_bridge_unobserved_motion_as_observed",
         "mission_config_and_runtime_roster_are_not_reset"
       ]
     },
     {
       "id": "same-drone-recovery",
-      "intent": "Restore the interrupted Drone into the same mission so the broken stroke visibly resumes rather than starting a new test case.",
+      "intent": "Restore the interrupted Drone into the same mission so the interrupted drawing visibly resumes rather than starting a new test case.",
       "required_behavior": [
         "recovery_reuses_same_runtime_drone_id",
         "recovery_reuses_same_config_and_board_boot_identity",
         "recovered_drone_resumes_from_continuous_mission_state",
-        "drawing_task_continues_without_respawning_the_swarm"
+        "remaining_stroke_continues_without_respawning_the_swarm",
+        "missing_interval_is_not_rewritten_as_observed_telemetry"
       ]
     },
     {
@@ -199,9 +217,9 @@
   },
   "evidence_checkpoints": [
     "takeoff-established",
-    "drawing-mid-stroke",
-    "stroke-interrupted-one-drone-silent",
-    "same-drone-recovered-drawing-resumed",
+    "asmr-stroke-mid-drawing",
+    "active-stroke-interrupted-one-drone-silent",
+    "same-drone-recovered-stroke-resumed",
     "landed-vs-airborne-disconnected",
     "duplicate-signal-window",
     "shared-remote-id-conflict",
@@ -222,6 +240,7 @@
     "API or WebSocket inspection of the real product",
     "automated product scoring from Playwright",
     "pixel-diff as an authoritative product verdict",
+    "front-end animation that invents a stroke not present in accepted telemetry",
     "restarting or respawning a new swarm between presentation stages",
     "using disconnected or landed state changes to rewrite mission roster history",
     "treating Phoenix as a separate demo story instead of the mission climax",
