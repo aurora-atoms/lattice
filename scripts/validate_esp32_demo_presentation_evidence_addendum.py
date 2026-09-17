@@ -39,25 +39,26 @@ SCHEMA_PATH = (
 
 EXPECTED_SEQUENCE = [
     "multi-point-takeoff",
-    "perfect-progressive-drawing",
-    "single-target-silence-recovery",
+    "asmr-stroke-drawing",
+    "in-stroke-silence",
+    "same-drone-recovery",
     "landing-vs-airborne-disconnect",
-    "duplicate-observation-dedup",
-    "shared-remote-id-identity-conflict",
-    "geo-visible-patrol",
+    "duplicate-signal-and-identity-conflict",
+    "geo-coast-patrol",
+    "phoenix-formation",
     "distributed-landing",
 ]
 
 EXPECTED_CHECKPOINTS = [
     "takeoff-established",
-    "perfect-drawing-mid-stroke",
-    "single-target-silent-peers-fresh",
-    "same-target-recovered",
-    "landed-target-vs-airborne-disconnected-target",
-    "duplicate-observation-window",
-    "shared-remote-id-two-targets",
-    "shared-remote-id-three-targets",
-    "geo-patrol-in-motion",
+    "asmr-stroke-mid-drawing",
+    "active-stroke-interrupted-one-drone-silent",
+    "same-drone-recovered-stroke-resumed",
+    "landed-vs-airborne-disconnected",
+    "duplicate-signal-window",
+    "shared-remote-id-conflict",
+    "coast-patrol-in-motion",
+    "phoenix-formed",
     "distributed-landing-complete",
 ]
 
@@ -79,45 +80,67 @@ EXPECTED_FORBIDDEN_ACTIONS = {
 
 EXPECTED_STAGE_BEHAVIORS: dict[str, set[str]] = {
     "multi-point-takeoff": {
+        "mission_roster_is_created_once_here",
         "drones_may_start_from_different_positions",
         "accepted_telemetry_shows_takeoff_progression_before_cruise_motion",
         "no_controller_reference_position_is_rendered_as_actual",
     },
-    "perfect-progressive-drawing": {
-        "formation_does_not_pop_directly_into_final_state",
-        "drones_progress_through_continuous_3d_waypoints",
+    "asmr-stroke-drawing": {
+        "starts_from_multi_point_takeoff_final_accepted_positions",
+        "controller_precomputes_ordered_strokes_and_3d_waypoints",
+        "drones_follow_time_ordered_continuous_3d_waypoints",
+        "shape_is_revealed_by_strokes_not_instant_final_formation",
+        "visual_trail_is_derived_only_from_accepted_telemetry_history",
+        "visual_trail_does_not_invent_missing_motion",
         "accepted_telemetry_is_the_only_displayed_actual_state",
     },
-    "single-target-silence-recovery": {
-        "only_one_drone_is_silenced",
-        "peers_remain_fresh",
-        "last_known_position_is_preserved_while_silent",
+    "in-stroke-silence": {
+        "starts_from_asmr_stroke_drawing_current_positions",
+        "fault_occurs_during_an_active_stroke",
+        "only_one_existing_drone_is_silenced",
+        "peers_continue_the_same_drawing_task_and_remain_fresh",
+        "silent_drone_last_known_position_is_preserved",
+        "visual_trail_does_not_bridge_unobserved_motion_as_observed",
+        "mission_config_and_runtime_roster_are_not_reset",
+    },
+    "same-drone-recovery": {
         "recovery_reuses_same_runtime_drone_id",
+        "recovery_reuses_same_config_and_board_boot_identity",
+        "recovered_drone_resumes_from_continuous_mission_state",
+        "remaining_stroke_continues_without_respawning_the_swarm",
+        "missing_interval_is_not_rewritten_as_observed_telemetry",
     },
     "landing-vs-airborne-disconnect": {
-        "landing_target_descends_before_telemetry_ceases",
-        "disconnect_target_ceases_while_last_known_state_is_airborne",
+        "one_existing_drone_descends_and_lands_before_telemetry_ceases",
+        "one_different_existing_drone_ceases_while_last_known_state_is_airborne",
+        "both_drones_remain_members_of_the_same_mission_roster",
+        "landed_and_disconnected_drones_leave_the_active_flying_subset",
         "simulated_source_state_does_not_relabel_disconnect_as_landing",
     },
-    "duplicate-observation-dedup": {
-        "one_runtime_drone_remains_one_simulated_truth_entity",
-        "duplicate_observations_may_be_emitted_for_the_same_claimed_identity",
+    "duplicate-signal-and-identity-conflict": {
+        "duplicate_observations_reuse_one_existing_runtime_drone_without_creating_a_truth_entity",
+        "two_or_three_existing_active_drones_may_claim_the_same_remote_id",
+        "distinct_runtime_drone_ids_and_trajectories_are_preserved",
+        "identity_stress_does_not_change_the_mission_truth_roster",
         "product_ui_response_is_recorded_only_by_screenshot",
     },
-    "shared-remote-id-identity-conflict": {
-        "truth_entity_count_can_progress_one_to_two_to_three",
-        "distinct_runtime_drone_ids_are_preserved",
-        "claimed_remote_id_may_be_shared",
-        "shared_remote_id_must_not_collapse_simulated_truth_entities",
-        "product_ui_response_is_recorded_only_by_screenshot",
-    },
-    "geo-visible-patrol": {
+    "geo-coast-patrol": {
+        "starts_from_previous_stage_last_accepted_positions",
         "existing_doubtful_sound_precomputed_path_is_reused",
+        "remaining_active_members_join_the_patrol_continuously",
         "runtime_gis_lookup_is_not_added",
         "accepted_telemetry_remains_the_actual_state_source",
     },
+    "phoenix-formation": {
+        "starts_from_geo_coast_patrol_current_positions",
+        "uses_remaining_active_members_only",
+        "formation_transition_is_continuous_in_3d",
+        "phoenix_is_in_the_main_mission_but_is_not_product_validation_proof",
+    },
     "distributed-landing": {
-        "drones_may_land_at_different_points",
+        "starts_from_phoenix_current_positions",
+        "no_new_drone_is_spawned_for_landing",
+        "remaining_active_drones_may_land_at_different_points",
         "descent_is_visible_before_each_target_becomes_non_live",
         "last_known_landed_state_is_preserved_according_to_core_lifecycle_rules",
     },
@@ -173,7 +196,7 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
         evidence.get("comparison_layout"),
         "left_simulated_source_state_right_real_product",
     )
-    expect("playwright.pairing_key", evidence.get("pairing_key"), "scenario_checkpoint")
+    expect("playwright.pairing_key", evidence.get("pairing_key"), "mission_checkpoint")
     expect("playwright.allowed_actions", set(evidence.get("allowed_actions", [])), EXPECTED_ALLOWED_ACTIONS)
     expect("playwright.forbidden_actions", set(evidence.get("forbidden_actions", [])), EXPECTED_FORBIDDEN_ACTIONS)
     expect("playwright.automated_image_diff_is_product_verdict", evidence.get("automated_image_diff_is_product_verdict"), False)
@@ -192,22 +215,66 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     expect("playwright.right_panel.source", right.get("source"), "real_product_ui")
 
     main_demo = addendum.get("main_demo", {})
+    expect("main_demo.theme", main_demo.get("theme"), "single_swarm_continuous_mission")
     expect("main_demo.sequence", main_demo.get("sequence"), EXPECTED_SEQUENCE)
     expect("main_demo.first_new_scenario_gate", main_demo.get("first_new_scenario_gate"), "single-target-silence-recovery")
+    expect("main_demo.first_new_scenario_gate_stages", main_demo.get("first_new_scenario_gate_stages"), ["in-stroke-silence", "same-drone-recovery"])
     expect(
         "main_demo.later_new_stages_activate_only_after_first_gate_passes",
         main_demo.get("later_new_stages_activate_only_after_first_gate_passes"),
         True,
     )
+
+    drawing = main_demo.get("drawing_mode", {})
+    expect("drawing.name", drawing.get("name"), "ASMR-like Stroke Drawing")
+    expect("drawing.contract_id", drawing.get("contract_id"), "asmr_stroke_drawing")
+    expect("drawing.stroke_source", drawing.get("stroke_source"), "accepted_esp32_telemetry_history_only")
+    for key in (
+        "precomputed_stroke_plan_owned_by_controller",
+        "continuous_3d_waypoints_required",
+        "instant_final_formation_snap_forbidden",
+        "telemetry_derived_visual_trail_allowed",
+        "visual_trail_must_not_invent_missing_motion",
+        "fault_may_interrupt_an_active_stroke",
+        "recovery_continues_same_mission_stroke",
+    ):
+        expect(f"drawing.{key}", drawing.get(key), True)
+
+    continuity = main_demo.get("mission_continuity", {})
+    for key in (
+        "single_mission",
+        "single_run",
+        "mission_roster_created_once_at_start",
+        "inactive_members_remain_part_of_mission_roster",
+        "later_stages_use_remaining_active_members",
+        "phoenix_uses_remaining_active_members",
+        "distributed_landing_closes_remaining_active_members",
+    ):
+        expect(f"mission_continuity.{key}", continuity.get(key), True)
+    expect(
+        "mission_continuity.stage_transition_start_state",
+        continuity.get("stage_transition_start_state"),
+        "previous_stage_last_accepted_telemetry",
+    )
+    for key in (
+        "new_start_between_stages",
+        "config_reset_between_stages",
+        "runtime_identity_rotation_between_stages",
+        "respawn_or_reseed_between_stages",
+        "truth_entity_roster_changes_for_observation_tests",
+    ):
+        expect(f"mission_continuity.{key}", continuity.get(key), False)
+
     phoenix = main_demo.get("phoenix", {})
     expect("main_demo.phoenix.retained", phoenix.get("retained"), True)
     expect("main_demo.phoenix.supported_formation", phoenix.get("supported_formation"), "phoenix")
-    expect("main_demo.phoenix.in_main_sequence", phoenix.get("in_main_sequence"), False)
-    expect("main_demo.phoenix.role", phoenix.get("role"), "standalone_showcase")
+    expect("main_demo.phoenix.in_main_sequence", phoenix.get("in_main_sequence"), True)
+    expect("main_demo.phoenix.role", phoenix.get("role"), "mission_climax_showcase")
+    expect("main_demo.phoenix.follows_stage", phoenix.get("follows_stage"), "geo-coast-patrol")
+    expect("main_demo.phoenix.precedes_stage", phoenix.get("precedes_stage"), "distributed-landing")
+    expect("main_demo.phoenix.uses_remaining_active_members", phoenix.get("uses_remaining_active_members"), True)
     expect("main_demo.phoenix.may_be_run_separately", phoenix.get("may_be_run_separately"), True)
     expect("main_demo.phoenix.may_be_used_as_validation_proof", phoenix.get("may_be_used_as_validation_proof"), False)
-    if "phoenix" in main_demo.get("sequence", []):
-        errors.append("main_demo.sequence: Phoenix must remain outside the main demo sequence")
 
     stages = addendum.get("stage_contracts", [])
     if not isinstance(stages, list):
@@ -230,9 +297,10 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     identity = addendum.get("identity_test_semantics", {})
     expect("identity.runtime_drone_id_is_truth_entity_identity", identity.get("runtime_drone_id_is_truth_entity_identity"), True)
     expect("identity.claimed_remote_id_is_test_stimulus_identity", identity.get("claimed_remote_id_is_test_stimulus_identity"), True)
-    expect("identity.duplicate_observation_case", identity.get("duplicate_observation_case"), "many_observations_one_truth_entity")
-    expect("identity.shared_remote_id_case", identity.get("shared_remote_id_case"), "multiple_truth_entities_one_claimed_remote_id")
+    expect("identity.duplicate_observation_case", identity.get("duplicate_observation_case"), "many_observations_one_existing_truth_entity")
+    expect("identity.shared_remote_id_case", identity.get("shared_remote_id_case"), "multiple_existing_truth_entities_one_claimed_remote_id")
     expect("identity.remote_id_alone_must_not_define_truth_entity_count", identity.get("remote_id_alone_must_not_define_truth_entity_count"), True)
+    expect("identity.identity_stress_must_not_change_mission_roster", identity.get("identity_stress_must_not_change_mission_roster"), True)
     expect("identity.real_product_identity_policy_is_not_assumed", identity.get("real_product_identity_policy_is_not_assumed"), True)
 
     expect("evidence_checkpoints", addendum.get("evidence_checkpoints"), EXPECTED_CHECKPOINTS)
