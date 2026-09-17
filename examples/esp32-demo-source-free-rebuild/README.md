@@ -166,6 +166,10 @@ Allowed Playwright behavior is limited to:
 - capture the combined side-by-side view;
 - record checkpoint identity and capture time.
 
+The combined side-by-side screenshot is the required checkpoint evidence. Both panels must
+appear in the same capture frame with a visible shared run clock and checkpoint ID. Separate
+panel captures are supplemental diagnostics only; they cannot replace the combined frame.
+
 Playwright must not:
 
 - read product DOM state as semantic evidence;
@@ -175,6 +179,37 @@ Playwright must not:
 - mutate simulator truth to match product output.
 
 Screenshots are evidence, not ground truth. Pixel/image diff is not an authoritative product verdict. Real product screenshots and runtime evidence remain private/downstream.
+
+## Visual-first, log-confirmed evidence
+
+The demo is intentionally smaller than a human-factors study. It may claim only that a
+correct visual divergence was noticed before raw-log confirmation in one recorded run.
+
+Three checkpoints carry this proof burden:
+
+- one Drone becomes silent during an active stroke;
+- one Drone lands while another disappears airborne;
+- multiple truth entities claim one Remote ID.
+
+At each checkpoint, the observer first reviews the unannotated side-by-side view. The
+observer's first-notice time and interpretation are frozen before raw logs are opened.
+Annotations may be added only after that record is frozen. The downstream evidence record
+then links the same stimulus, combined screenshot, visual observation, and later log
+confirmation under one run and checkpoint identity.
+
+The downstream record stays private and must include enough identity and timing metadata to
+attest that the source state and product view concern the same delivered stimulus. The public
+contract does not contain product payloads, private screenshots, or product interfaces.
+
+This bounded evidence may not be generalized into a claim that visual comparison is always
+superior to log analysis.
+
+## Proof versus showcase
+
+Stroke interruption/recovery, landing-versus-disconnect, and identity conflict form the
+proof segment. Geo patrol, Phoenix, and distributed landing form the showcase outro. The
+outro completes the same continuous mission but must not be reported as product-validation
+evidence.
 
 ## Identity stress semantics
 
@@ -213,8 +248,15 @@ destroy key silhouette features. This rule applies to Stroke Drawing, Phoenix, t
 Square Pyramid, and other 3D formations used for planar comparison.
 
 Keep the visual comparison left=Simulated Source State and right=Real Product.
-Playwright is screenshot-only; do not use DOM/API/WebSocket/network inspection as semantic
-evidence and do not generate an automated product verdict.
+Playwright is screenshot-only. Capture both panels in one required combined frame with a
+visible shared run clock and checkpoint ID; separate panel captures are supplemental only.
+Do not use DOM/API/WebSocket/network inspection as semantic evidence and do not generate an
+automated product verdict.
+
+For the three proof checkpoints, freeze the observer's unannotated visual interpretation
+before opening raw logs. Preserve a private downstream record tying the same delivered
+stimulus, combined screenshot, visual notice time, interpretation, and log confirmation to
+one run/checkpoint. Claim only what that recorded run demonstrates.
 
 After identity/lifecycle stress, continue the same active swarm into Geo coast patrol,
 then form Phoenix as the mission climax, then land the remaining active Drones at distributed
@@ -252,8 +294,18 @@ The validators reject, among other things:
 - moving Phoenix out of the continuous mission or treating it as validation proof;
 - using Playwright DOM/API/WebSocket/network inspection as semantic evidence;
 - allowing screenshot/pixel diff to become an automatic product verdict;
+- replacing a combined same-frame comparison with separately timed panel screenshots;
+- opening raw logs or highlighting the fault before the visual observation is frozen;
+- omitting downstream attestation that both sides concern the same delivered stimulus;
+- generalizing one recorded run into universal visual superiority;
+- reporting the Phoenix showcase outro as product-validation evidence;
 - committing private runtime screenshots to this public package.
 
 ## Readiness boundary
 
-Passing these contracts proves only contract conformance and software parity against the public specification. It does not prove target-board execution, intended-screen visual acceptance, repeat-run physical reliability, real product detection quality, source-code permission, or legal clean-room status.
+Passing these contracts proves only contract conformance and software parity against the
+public specification. `CONTRACT_VALID` does not mean runtime evidence was captured. Runtime
+capture does not mean a human reviewed it. Human review does not automatically confirm a
+product issue. Target-board execution, intended-screen visual acceptance, repeat-run
+physical reliability, and real product detection quality require separate downstream
+evidence and authority.

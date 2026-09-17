@@ -18,6 +18,11 @@
     "mode": "screenshot_only",
     "comparison_layout": "left_simulated_source_state_right_real_product",
     "pairing_key": "mission_checkpoint",
+    "combined_side_by_side_capture_required": true,
+    "separate_panel_captures_are_supplemental_only": true,
+    "same_capture_frame_required": true,
+    "shared_run_clock_visible": true,
+    "checkpoint_id_visible": true,
     "left_panel": {
       "label": "Simulated Source State",
       "source": "browser_render_of_accepted_esp32_telemetry_only"
@@ -43,6 +48,46 @@
     "automated_image_diff_is_product_verdict": false,
     "screenshots_are_evidence_not_ground_truth": true,
     "runtime_screenshots_committed_to_public_repo": false
+  },
+  "comparison_evidence": {
+    "purpose": "Demonstrate whether a human can notice and correctly describe a product-view divergence from the simulated source state before opening the corresponding raw logs.",
+    "scope": "single_demo_run_not_general_human_factors_research",
+    "proof_checkpoints": [
+      "active-stroke-interrupted-one-drone-silent",
+      "landed-vs-airborne-disconnected",
+      "shared-remote-id-conflict"
+    ],
+    "observation_order": "visual_first_then_raw_log_confirmation",
+    "visual_observation_must_be_frozen_before_logs_open": true,
+    "fault_highlight_before_visual_observation_is_frozen": false,
+    "post_observation_reveal_annotation_allowed": true,
+    "required_downstream_record_fields": [
+      "run_id",
+      "mission_checkpoint",
+      "stimulus_event_id",
+      "source_config_id",
+      "source_boot_ids",
+      "stimulus_started_at_ms",
+      "combined_capture_at_ms",
+      "product_observation_window_ms",
+      "same_stimulus_delivery_attestation",
+      "combined_screenshot_ref",
+      "visual_first_notice_at_ms",
+      "visual_interpretation",
+      "visual_interpretation_correct",
+      "log_review_started_at_ms",
+      "log_confirmation_at_ms",
+      "log_evidence_ref",
+      "outcome_status"
+    ],
+    "downstream_record_storage": "private_downstream_only",
+    "same_stimulus_delivery_attestation_required": true,
+    "permitted_claim": "visual_divergence_was_noticed_before_log_confirmation_in_this_recorded_run",
+    "forbidden_claims": [
+      "visual_comparison_is_generally_superior_to_log_analysis",
+      "screenshots_alone_prove_product_detection_quality",
+      "contract_validation_proves_runtime_product_behavior"
+    ]
   },
   "main_demo": {
     "theme": "single_swarm_continuous_mission",
@@ -112,6 +157,21 @@
       "uses_remaining_active_members": true,
       "may_be_run_separately": true,
       "may_be_used_as_validation_proof": false
+    },
+    "presentation_segments": {
+      "proof": [
+        "asmr-stroke-drawing",
+        "in-stroke-silence",
+        "same-drone-recovery",
+        "landing-vs-airborne-disconnect",
+        "duplicate-signal-and-identity-conflict"
+      ],
+      "showcase_outro": [
+        "geo-coast-patrol",
+        "phoenix-formation",
+        "distributed-landing"
+      ],
+      "showcase_outro_must_not_be_reported_as_product_validation": true
     }
   },
   "stage_contracts": [
@@ -246,7 +306,10 @@
     "right_side_is_product_observation_not_ground_truth": true,
     "human_or_separate_review_may_compare_images": true,
     "playwright_itself_makes_no_detection_quality_claim": true,
-    "no_real_product_detection_quality_claim_from_public_contract": true
+    "no_real_product_detection_quality_claim_from_public_contract": true,
+    "contract_valid_does_not_mean_demo_runtime_captured": true,
+    "demo_runtime_captured_does_not_mean_human_reviewed": true,
+    "human_reviewed_does_not_automatically_mean_product_issue_confirmed": true
   },
   "non_goals": [
     "DOM-based semantic verification of the real product",

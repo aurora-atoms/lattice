@@ -11,6 +11,7 @@
     "purpose",
     "authority",
     "playwright_evidence",
+    "comparison_evidence",
     "main_demo",
     "stage_contracts",
     "identity_test_semantics",
@@ -56,6 +57,11 @@
         "mode",
         "comparison_layout",
         "pairing_key",
+        "combined_side_by_side_capture_required",
+        "separate_panel_captures_are_supplemental_only",
+        "same_capture_frame_required",
+        "shared_run_clock_visible",
+        "checkpoint_id_visible",
         "left_panel",
         "right_panel",
         "allowed_actions",
@@ -68,6 +74,11 @@
         "mode": {"const": "screenshot_only"},
         "comparison_layout": {"const": "left_simulated_source_state_right_real_product"},
         "pairing_key": {"const": "mission_checkpoint"},
+        "combined_side_by_side_capture_required": {"const": true},
+        "separate_panel_captures_are_supplemental_only": {"const": true},
+        "same_capture_frame_required": {"const": true},
+        "shared_run_clock_visible": {"const": true},
+        "checkpoint_id_visible": {"const": true},
         "left_panel": {"$ref": "#/$defs/panel"},
         "right_panel": {"$ref": "#/$defs/panel"},
         "allowed_actions": {"$ref": "#/$defs/nonEmptyStringArray"},
@@ -75,6 +86,38 @@
         "automated_image_diff_is_product_verdict": {"const": false},
         "screenshots_are_evidence_not_ground_truth": {"const": true},
         "runtime_screenshots_committed_to_public_repo": {"const": false}
+      }
+    },
+    "comparison_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose",
+        "scope",
+        "proof_checkpoints",
+        "observation_order",
+        "visual_observation_must_be_frozen_before_logs_open",
+        "fault_highlight_before_visual_observation_is_frozen",
+        "post_observation_reveal_annotation_allowed",
+        "required_downstream_record_fields",
+        "downstream_record_storage",
+        "same_stimulus_delivery_attestation_required",
+        "permitted_claim",
+        "forbidden_claims"
+      ],
+      "properties": {
+        "purpose": {"type": "string", "minLength": 40},
+        "scope": {"const": "single_demo_run_not_general_human_factors_research"},
+        "proof_checkpoints": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "observation_order": {"const": "visual_first_then_raw_log_confirmation"},
+        "visual_observation_must_be_frozen_before_logs_open": {"const": true},
+        "fault_highlight_before_visual_observation_is_frozen": {"const": false},
+        "post_observation_reveal_annotation_allowed": {"const": true},
+        "required_downstream_record_fields": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "downstream_record_storage": {"const": "private_downstream_only"},
+        "same_stimulus_delivery_attestation_required": {"const": true},
+        "permitted_claim": {"const": "visual_divergence_was_noticed_before_log_confirmation_in_this_recorded_run"},
+        "forbidden_claims": {"$ref": "#/$defs/nonEmptyStringArray"}
       }
     },
     "main_demo": {
@@ -90,7 +133,8 @@
         "first_new_scenario_gate_stages",
         "later_new_stages_activate_only_after_first_gate_passes",
         "mission_continuity",
-        "phoenix"
+        "phoenix",
+        "presentation_segments"
       ],
       "properties": {
         "theme": {"const": "single_swarm_continuous_mission"},
@@ -212,6 +256,16 @@
             "may_be_run_separately": {"const": true},
             "may_be_used_as_validation_proof": {"const": false}
           }
+        },
+        "presentation_segments": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["proof", "showcase_outro", "showcase_outro_must_not_be_reported_as_product_validation"],
+          "properties": {
+            "proof": {"$ref": "#/$defs/nonEmptyStringArray"},
+            "showcase_outro": {"$ref": "#/$defs/nonEmptyStringArray"},
+            "showcase_outro_must_not_be_reported_as_product_validation": {"const": true}
+          }
         }
       }
     },
@@ -252,7 +306,10 @@
         "right_side_is_product_observation_not_ground_truth",
         "human_or_separate_review_may_compare_images",
         "playwright_itself_makes_no_detection_quality_claim",
-        "no_real_product_detection_quality_claim_from_public_contract"
+        "no_real_product_detection_quality_claim_from_public_contract",
+        "contract_valid_does_not_mean_demo_runtime_captured",
+        "demo_runtime_captured_does_not_mean_human_reviewed",
+        "human_reviewed_does_not_automatically_mean_product_issue_confirmed"
       ],
       "properties": {
         "left_side_is_not_physical_reality": {"const": true},
@@ -260,7 +317,10 @@
         "right_side_is_product_observation_not_ground_truth": {"const": true},
         "human_or_separate_review_may_compare_images": {"const": true},
         "playwright_itself_makes_no_detection_quality_claim": {"const": true},
-        "no_real_product_detection_quality_claim_from_public_contract": {"const": true}
+        "no_real_product_detection_quality_claim_from_public_contract": {"const": true},
+        "contract_valid_does_not_mean_demo_runtime_captured": {"const": true},
+        "demo_runtime_captured_does_not_mean_human_reviewed": {"const": true},
+        "human_reviewed_does_not_automatically_mean_product_issue_confirmed": {"const": true}
       }
     },
     "non_goals": {"$ref": "#/$defs/nonEmptyStringArray"}

@@ -78,6 +78,52 @@ EXPECTED_FORBIDDEN_ACTIONS = {
     "mutate_simulator_truth_to_match_product_output",
 }
 
+EXPECTED_PROOF_CHECKPOINTS = [
+    "active-stroke-interrupted-one-drone-silent",
+    "landed-vs-airborne-disconnected",
+    "shared-remote-id-conflict",
+]
+
+EXPECTED_DOWNSTREAM_RECORD_FIELDS = {
+    "run_id",
+    "mission_checkpoint",
+    "stimulus_event_id",
+    "source_config_id",
+    "source_boot_ids",
+    "stimulus_started_at_ms",
+    "combined_capture_at_ms",
+    "product_observation_window_ms",
+    "same_stimulus_delivery_attestation",
+    "combined_screenshot_ref",
+    "visual_first_notice_at_ms",
+    "visual_interpretation",
+    "visual_interpretation_correct",
+    "log_review_started_at_ms",
+    "log_confirmation_at_ms",
+    "log_evidence_ref",
+    "outcome_status",
+}
+
+EXPECTED_FORBIDDEN_CLAIMS = {
+    "visual_comparison_is_generally_superior_to_log_analysis",
+    "screenshots_alone_prove_product_detection_quality",
+    "contract_validation_proves_runtime_product_behavior",
+}
+
+EXPECTED_PROOF_SEGMENT = [
+    "asmr-stroke-drawing",
+    "in-stroke-silence",
+    "same-drone-recovery",
+    "landing-vs-airborne-disconnect",
+    "duplicate-signal-and-identity-conflict",
+]
+
+EXPECTED_SHOWCASE_OUTRO = [
+    "geo-coast-patrol",
+    "phoenix-formation",
+    "distributed-landing",
+]
+
 EXPECTED_STAGE_BEHAVIORS: dict[str, set[str]] = {
     "multi-point-takeoff": {
         "mission_roster_is_created_once_here",
@@ -199,6 +245,14 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
         "left_simulated_source_state_right_real_product",
     )
     expect("playwright.pairing_key", evidence.get("pairing_key"), "mission_checkpoint")
+    for key in (
+        "combined_side_by_side_capture_required",
+        "separate_panel_captures_are_supplemental_only",
+        "same_capture_frame_required",
+        "shared_run_clock_visible",
+        "checkpoint_id_visible",
+    ):
+        expect(f"playwright.{key}", evidence.get(key), True)
     expect("playwright.allowed_actions", set(evidence.get("allowed_actions", [])), EXPECTED_ALLOWED_ACTIONS)
     expect("playwright.forbidden_actions", set(evidence.get("forbidden_actions", [])), EXPECTED_FORBIDDEN_ACTIONS)
     expect("playwright.automated_image_diff_is_product_verdict", evidence.get("automated_image_diff_is_product_verdict"), False)
@@ -215,6 +269,63 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     )
     expect("playwright.right_panel.label", right.get("label"), "Real Product")
     expect("playwright.right_panel.source", right.get("source"), "real_product_ui")
+
+    comparison = addendum.get("comparison_evidence", {})
+    expect(
+        "comparison_evidence.scope",
+        comparison.get("scope"),
+        "single_demo_run_not_general_human_factors_research",
+    )
+    expect(
+        "comparison_evidence.proof_checkpoints",
+        comparison.get("proof_checkpoints"),
+        EXPECTED_PROOF_CHECKPOINTS,
+    )
+    expect(
+        "comparison_evidence.observation_order",
+        comparison.get("observation_order"),
+        "visual_first_then_raw_log_confirmation",
+    )
+    expect(
+        "comparison_evidence.visual_observation_must_be_frozen_before_logs_open",
+        comparison.get("visual_observation_must_be_frozen_before_logs_open"),
+        True,
+    )
+    expect(
+        "comparison_evidence.fault_highlight_before_visual_observation_is_frozen",
+        comparison.get("fault_highlight_before_visual_observation_is_frozen"),
+        False,
+    )
+    expect(
+        "comparison_evidence.post_observation_reveal_annotation_allowed",
+        comparison.get("post_observation_reveal_annotation_allowed"),
+        True,
+    )
+    expect(
+        "comparison_evidence.required_downstream_record_fields",
+        set(comparison.get("required_downstream_record_fields", [])),
+        EXPECTED_DOWNSTREAM_RECORD_FIELDS,
+    )
+    expect(
+        "comparison_evidence.downstream_record_storage",
+        comparison.get("downstream_record_storage"),
+        "private_downstream_only",
+    )
+    expect(
+        "comparison_evidence.same_stimulus_delivery_attestation_required",
+        comparison.get("same_stimulus_delivery_attestation_required"),
+        True,
+    )
+    expect(
+        "comparison_evidence.permitted_claim",
+        comparison.get("permitted_claim"),
+        "visual_divergence_was_noticed_before_log_confirmation_in_this_recorded_run",
+    )
+    expect(
+        "comparison_evidence.forbidden_claims",
+        set(comparison.get("forbidden_claims", [])),
+        EXPECTED_FORBIDDEN_CLAIMS,
+    )
 
     main_demo = addendum.get("main_demo", {})
     expect("main_demo.theme", main_demo.get("theme"), "single_swarm_continuous_mission")
@@ -292,6 +403,15 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     expect("main_demo.phoenix.may_be_run_separately", phoenix.get("may_be_run_separately"), True)
     expect("main_demo.phoenix.may_be_used_as_validation_proof", phoenix.get("may_be_used_as_validation_proof"), False)
 
+    segments = main_demo.get("presentation_segments", {})
+    expect("presentation_segments.proof", segments.get("proof"), EXPECTED_PROOF_SEGMENT)
+    expect("presentation_segments.showcase_outro", segments.get("showcase_outro"), EXPECTED_SHOWCASE_OUTRO)
+    expect(
+        "presentation_segments.showcase_outro_must_not_be_reported_as_product_validation",
+        segments.get("showcase_outro_must_not_be_reported_as_product_validation"),
+        True,
+    )
+
     stages = addendum.get("stage_contracts", [])
     if not isinstance(stages, list):
         errors.append("stage_contracts must be a list")
@@ -327,6 +447,9 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     expect("evidence_boundary.right_side_is_product_observation_not_ground_truth", boundary.get("right_side_is_product_observation_not_ground_truth"), True)
     expect("evidence_boundary.playwright_itself_makes_no_detection_quality_claim", boundary.get("playwright_itself_makes_no_detection_quality_claim"), True)
     expect("evidence_boundary.no_real_product_detection_quality_claim_from_public_contract", boundary.get("no_real_product_detection_quality_claim_from_public_contract"), True)
+    expect("evidence_boundary.contract_valid_does_not_mean_demo_runtime_captured", boundary.get("contract_valid_does_not_mean_demo_runtime_captured"), True)
+    expect("evidence_boundary.demo_runtime_captured_does_not_mean_human_reviewed", boundary.get("demo_runtime_captured_does_not_mean_human_reviewed"), True)
+    expect("evidence_boundary.human_reviewed_does_not_automatically_mean_product_issue_confirmed", boundary.get("human_reviewed_does_not_automatically_mean_product_issue_confirmed"), True)
 
     core = load_json(CORE_CONTRACT_PATH)
     formations = core.get("formation_contract", {}).get("supported", [])

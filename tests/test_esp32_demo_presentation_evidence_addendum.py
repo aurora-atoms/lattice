@@ -57,6 +57,46 @@ class Esp32DemoPresentationEvidenceAddendumTests(unittest.TestCase):
         value["playwright_evidence"]["automated_image_diff_is_product_verdict"] = True
         self.assertTrue(self.validate_mutation(value))
 
+    def test_checkpoint_requires_one_combined_same_frame_capture(self) -> None:
+        value = self.load_addendum()
+        value["playwright_evidence"]["same_capture_frame_required"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("same_capture_frame_required" in error for error in errors))
+
+    def test_separate_panel_captures_cannot_replace_combined_evidence(self) -> None:
+        value = self.load_addendum()
+        value["playwright_evidence"]["combined_side_by_side_capture_required"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("combined_side_by_side_capture_required" in error for error in errors))
+
+    def test_visual_observation_must_be_frozen_before_logs_open(self) -> None:
+        value = self.load_addendum()
+        value["comparison_evidence"]["visual_observation_must_be_frozen_before_logs_open"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("visual_observation_must_be_frozen_before_logs_open" in error for error in errors))
+
+    def test_fault_cannot_be_highlighted_before_visual_observation(self) -> None:
+        value = self.load_addendum()
+        value["comparison_evidence"]["fault_highlight_before_visual_observation_is_frozen"] = True
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("fault_highlight_before_visual_observation_is_frozen" in error for error in errors))
+
+    def test_downstream_record_must_attest_same_stimulus_delivery(self) -> None:
+        value = self.load_addendum()
+        value["comparison_evidence"]["required_downstream_record_fields"].remove(
+            "same_stimulus_delivery_attestation"
+        )
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("required_downstream_record_fields" in error for error in errors))
+
+    def test_contract_cannot_claim_general_visual_superiority(self) -> None:
+        value = self.load_addendum()
+        value["comparison_evidence"]["forbidden_claims"].remove(
+            "visual_comparison_is_generally_superior_to_log_analysis"
+        )
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("forbidden_claims" in error for error in errors))
+
     def test_public_repo_cannot_claim_runtime_screenshot_evidence(self) -> None:
         value = self.load_addendum()
         value["playwright_evidence"]["runtime_screenshots_committed_to_public_repo"] = True
@@ -115,6 +155,20 @@ class Esp32DemoPresentationEvidenceAddendumTests(unittest.TestCase):
         value = self.load_addendum()
         value["main_demo"]["phoenix"]["may_be_used_as_validation_proof"] = True
         self.assertTrue(self.validate_mutation(value))
+
+    def test_showcase_outro_cannot_be_reported_as_product_validation(self) -> None:
+        value = self.load_addendum()
+        value["main_demo"]["presentation_segments"][
+            "showcase_outro_must_not_be_reported_as_product_validation"
+        ] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("showcase_outro" in error for error in errors))
+
+    def test_contract_validation_cannot_imply_runtime_capture(self) -> None:
+        value = self.load_addendum()
+        value["evidence_boundary"]["contract_valid_does_not_mean_demo_runtime_captured"] = False
+        errors = self.validate_mutation(value)
+        self.assertTrue(any("contract_valid_does_not_mean_demo_runtime_captured" in error for error in errors))
 
     def test_silence_recovery_remains_first_new_scenario_gate(self) -> None:
         value = self.load_addendum()
