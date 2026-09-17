@@ -83,6 +83,7 @@
       "required": [
         "theme",
         "story",
+        "drawing_mode",
         "sequence",
         "first_new_scenario_gate",
         "first_new_scenario_gate_stages",
@@ -93,16 +94,37 @@
       "properties": {
         "theme": {"const": "single_swarm_continuous_mission"},
         "story": {"type": "string", "minLength": 40},
+        "drawing_mode": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "contract_id",
+            "stroke_source",
+            "precomputed_stroke_plan_owned_by_controller",
+            "continuous_3d_waypoints_required",
+            "instant_final_formation_snap_forbidden",
+            "telemetry_derived_visual_trail_allowed",
+            "visual_trail_must_not_invent_missing_motion",
+            "fault_may_interrupt_an_active_stroke",
+            "recovery_continues_same_mission_stroke"
+          ],
+          "properties": {
+            "name": {"const": "ASMR-like Stroke Drawing"},
+            "contract_id": {"const": "asmr_stroke_drawing"},
+            "stroke_source": {"const": "accepted_esp32_telemetry_history_only"},
+            "precomputed_stroke_plan_owned_by_controller": {"const": true},
+            "continuous_3d_waypoints_required": {"const": true},
+            "instant_final_formation_snap_forbidden": {"const": true},
+            "telemetry_derived_visual_trail_allowed": {"const": true},
+            "visual_trail_must_not_invent_missing_motion": {"const": true},
+            "fault_may_interrupt_an_active_stroke": {"const": true},
+            "recovery_continues_same_mission_stroke": {"const": true}
+          }
+        },
         "sequence": {"$ref": "#/$defs/nonEmptyStringArray"},
         "first_new_scenario_gate": {"const": "single-target-silence-recovery"},
-        "first_new_scenario_gate_stages": {
-          "type": "array",
-          "prefixItems": [
-            {"const": "in-stroke-silence"},
-            {"const": "same-drone-recovery"}
-          ],
-          "items": false
-        },
+        "first_new_scenario_gate_stages": {"$ref": "#/$defs/nonEmptyStringArray"},
         "later_new_stages_activate_only_after_first_gate_passes": {"const": true},
         "mission_continuity": {
           "type": "object",
