@@ -13,29 +13,12 @@ from typing import Any
 try:
     from jsonschema import Draft202012Validator
 except ImportError as exc:  # pragma: no cover
-    raise SystemExit(
-        "jsonschema is required; install requirements-validation.txt"
-    ) from exc
+    raise SystemExit("jsonschema is required; install requirements-validation.txt") from exc
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ADDENDUM = (
-    ROOT
-    / "examples"
-    / "esp32-demo-source-free-rebuild"
-    / "presentation-evidence-addendum.v1.json"
-)
-CORE_CONTRACT_PATH = (
-    ROOT
-    / "examples"
-    / "esp32-demo-source-free-rebuild"
-    / "rebuild-contract.v1.json"
-)
-SCHEMA_PATH = (
-    ROOT
-    / "schemas"
-    / "downstream"
-    / "esp32-demo-presentation-evidence-addendum.v1.schema.json"
-)
+DEFAULT_ADDENDUM = ROOT / "examples" / "esp32-demo-source-free-rebuild" / "presentation-evidence-addendum.v1.json"
+CORE_CONTRACT_PATH = ROOT / "examples" / "esp32-demo-source-free-rebuild" / "rebuild-contract.v1.json"
+SCHEMA_PATH = ROOT / "schemas" / "downstream" / "esp32-demo-presentation-evidence-addendum.v1.schema.json"
 
 EXPECTED_SEQUENCE = [
     "multi-point-takeoff",
@@ -62,11 +45,18 @@ EXPECTED_CHECKPOINTS = [
     "distributed-landing-complete",
 ]
 
+EXPECTED_PROOF_CHECKPOINTS = [
+    "active-stroke-interrupted-one-drone-silent",
+    "landed-vs-airborne-disconnected",
+    "duplicate-signal-window",
+    "shared-remote-id-conflict",
+]
+
 EXPECTED_ALLOWED_ACTIONS = {
     "capture_left_panel_screenshot",
     "capture_right_panel_screenshot",
-    "capture_combined_side_by_side_screenshot",
-    "record_checkpoint_id_and_capture_time",
+    "record_checkpoint_id_and_capture_times",
+    "compose_captured_images_side_by_side_without_semantic_mutation",
 }
 
 EXPECTED_FORBIDDEN_ACTIONS = {
@@ -76,36 +66,25 @@ EXPECTED_FORBIDDEN_ACTIONS = {
     "derive_automated_product_pass_fail",
     "mutate_product_state_to_make_a_checkpoint_pass",
     "mutate_simulator_truth_to_match_product_output",
+    "alter_product_native_alerts_or_highlights_in_composition",
 }
-
-EXPECTED_PROOF_CHECKPOINTS = [
-    "active-stroke-interrupted-one-drone-silent",
-    "landed-vs-airborne-disconnected",
-    "shared-remote-id-conflict",
-]
 
 EXPECTED_DOWNSTREAM_RECORD_FIELDS = {
     "run_id",
     "mission_checkpoint",
     "stimulus_event_id",
-    "source_config_id",
-    "source_boot_ids",
-    "stimulus_started_at_ms",
-    "combined_capture_at_ms",
-    "product_observation_window_ms",
+    "left_screenshot_ref",
+    "right_screenshot_ref",
+    "capture_pairing_metadata",
     "same_stimulus_delivery_attestation",
-    "combined_screenshot_ref",
-    "visual_first_notice_at_ms",
-    "visual_interpretation",
-    "visual_interpretation_correct",
-    "log_review_started_at_ms",
-    "log_confirmation_at_ms",
+    "visual_observation",
     "log_evidence_ref",
-    "outcome_status",
+    "log_confirmation",
 }
 
 EXPECTED_FORBIDDEN_CLAIMS = {
     "visual_comparison_is_generally_superior_to_log_analysis",
+    "visual_comparison_is_faster_than_log_analysis",
     "screenshots_alone_prove_product_detection_quality",
     "contract_validation_proves_runtime_product_behavior",
 }
@@ -117,12 +96,7 @@ EXPECTED_PROOF_SEGMENT = [
     "landing-vs-airborne-disconnect",
     "duplicate-signal-and-identity-conflict",
 ]
-
-EXPECTED_SHOWCASE_OUTRO = [
-    "geo-coast-patrol",
-    "phoenix-formation",
-    "distributed-landing",
-]
+EXPECTED_SHOWCASE_OUTRO = ["geo-coast-patrol", "phoenix-formation", "distributed-landing"]
 
 EXPECTED_STAGE_BEHAVIORS: dict[str, set[str]] = {
     "multi-point-takeoff": {
@@ -225,34 +199,24 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     expect("purpose.core_baseline_acceptance_unchanged", purpose.get("core_baseline_acceptance_unchanged"), True)
 
     authority = addendum.get("authority", {})
-    expect(
-        "authority.core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics",
-        authority.get("core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics"),
-        True,
-    )
-    expect(
-        "authority.this_addendum_controls_demo_sequence_and_visual_evidence_capture_only",
-        authority.get("this_addendum_controls_demo_sequence_and_visual_evidence_capture_only"),
-        True,
-    )
+    expect("authority.core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics", authority.get("core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics"), True)
+    expect("authority.this_addendum_controls_demo_sequence_and_visual_evidence_capture_only", authority.get("this_addendum_controls_demo_sequence_and_visual_evidence_capture_only"), True)
     expect("authority.real_runtime_evidence_is_downstream_only", authority.get("real_runtime_evidence_is_downstream_only"), True)
 
     evidence = addendum.get("playwright_evidence", {})
     expect("playwright.mode", evidence.get("mode"), "screenshot_only")
-    expect(
-        "playwright.comparison_layout",
-        evidence.get("comparison_layout"),
-        "left_simulated_source_state_right_real_product",
-    )
+    expect("playwright.comparison_layout", evidence.get("comparison_layout"), "left_simulated_source_state_right_real_product")
     expect("playwright.pairing_key", evidence.get("pairing_key"), "mission_checkpoint")
     for key in (
-        "combined_side_by_side_capture_required",
-        "separate_panel_captures_are_supplemental_only",
-        "same_capture_frame_required",
-        "shared_run_clock_visible",
-        "checkpoint_id_visible",
+        "source_and_product_are_separate_browser_pages",
+        "separate_panel_captures_required",
+        "side_by_side_composition_required",
+        "composition_is_presentation_only",
+        "capture_time_skew_must_be_recorded",
+        "checkpoint_id_and_capture_times_must_be_recorded",
     ):
         expect(f"playwright.{key}", evidence.get(key), True)
+    expect("playwright.same_capture_frame_required", evidence.get("same_capture_frame_required"), False)
     expect("playwright.allowed_actions", set(evidence.get("allowed_actions", [])), EXPECTED_ALLOWED_ACTIONS)
     expect("playwright.forbidden_actions", set(evidence.get("forbidden_actions", [])), EXPECTED_FORBIDDEN_ACTIONS)
     expect("playwright.automated_image_diff_is_product_verdict", evidence.get("automated_image_diff_is_product_verdict"), False)
@@ -262,81 +226,32 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     left = evidence.get("left_panel", {})
     right = evidence.get("right_panel", {})
     expect("playwright.left_panel.label", left.get("label"), "Simulated Source State")
-    expect(
-        "playwright.left_panel.source",
-        left.get("source"),
-        "browser_render_of_accepted_esp32_telemetry_only",
-    )
+    expect("playwright.left_panel.source", left.get("source"), "browser_render_of_accepted_esp32_telemetry_only")
     expect("playwright.right_panel.label", right.get("label"), "Real Product")
     expect("playwright.right_panel.source", right.get("source"), "real_product_ui")
 
     comparison = addendum.get("comparison_evidence", {})
-    expect(
-        "comparison_evidence.scope",
-        comparison.get("scope"),
-        "single_demo_run_not_general_human_factors_research",
-    )
-    expect(
-        "comparison_evidence.proof_checkpoints",
-        comparison.get("proof_checkpoints"),
-        EXPECTED_PROOF_CHECKPOINTS,
-    )
-    expect(
-        "comparison_evidence.observation_order",
-        comparison.get("observation_order"),
-        "visual_first_then_raw_log_confirmation",
-    )
-    expect(
-        "comparison_evidence.visual_observation_must_be_frozen_before_logs_open",
-        comparison.get("visual_observation_must_be_frozen_before_logs_open"),
-        True,
-    )
-    expect(
-        "comparison_evidence.fault_highlight_before_visual_observation_is_frozen",
-        comparison.get("fault_highlight_before_visual_observation_is_frozen"),
-        False,
-    )
-    expect(
-        "comparison_evidence.post_observation_reveal_annotation_allowed",
-        comparison.get("post_observation_reveal_annotation_allowed"),
-        True,
-    )
-    expect(
-        "comparison_evidence.required_downstream_record_fields",
-        set(comparison.get("required_downstream_record_fields", [])),
-        EXPECTED_DOWNSTREAM_RECORD_FIELDS,
-    )
-    expect(
-        "comparison_evidence.downstream_record_storage",
-        comparison.get("downstream_record_storage"),
-        "private_downstream_only",
-    )
-    expect(
-        "comparison_evidence.same_stimulus_delivery_attestation_required",
-        comparison.get("same_stimulus_delivery_attestation_required"),
-        True,
-    )
-    expect(
-        "comparison_evidence.permitted_claim",
-        comparison.get("permitted_claim"),
-        "visual_divergence_was_noticed_before_log_confirmation_in_this_recorded_run",
-    )
-    expect(
-        "comparison_evidence.forbidden_claims",
-        set(comparison.get("forbidden_claims", [])),
-        EXPECTED_FORBIDDEN_CLAIMS,
-    )
+    expect("comparison_evidence.scope", comparison.get("scope"), "single_demo_run_not_general_human_factors_research")
+    expect("comparison_evidence.proof_checkpoints", comparison.get("proof_checkpoints"), EXPECTED_PROOF_CHECKPOINTS)
+    expect("comparison_evidence.observation_order", comparison.get("observation_order"), "visual_observation_then_independent_log_confirmation")
+    expect("comparison_evidence.visual_observation_must_be_frozen_before_log_confirmation", comparison.get("visual_observation_must_be_frozen_before_log_confirmation"), True)
+    expect("comparison_evidence.log_confirmation_is_not_a_speed_competitor", comparison.get("log_confirmation_is_not_a_speed_competitor"), True)
+    expect("comparison_evidence.visual_vs_log_speed_claim_allowed", comparison.get("visual_vs_log_speed_claim_allowed"), False)
+    expect("comparison_evidence.test_added_fault_annotation_before_visual_observation_is_frozen", comparison.get("test_added_fault_annotation_before_visual_observation_is_frozen"), False)
+    expect("comparison_evidence.product_native_alerts_and_highlights_must_be_preserved", comparison.get("product_native_alerts_and_highlights_must_be_preserved"), True)
+    expect("comparison_evidence.post_observation_test_annotation_allowed", comparison.get("post_observation_test_annotation_allowed"), True)
+    expect("comparison_evidence.required_downstream_record_fields", set(comparison.get("required_downstream_record_fields", [])), EXPECTED_DOWNSTREAM_RECORD_FIELDS)
+    expect("comparison_evidence.downstream_record_storage", comparison.get("downstream_record_storage"), "private_downstream_only")
+    expect("comparison_evidence.same_stimulus_delivery_attestation_required", comparison.get("same_stimulus_delivery_attestation_required"), True)
+    expect("comparison_evidence.permitted_claim", comparison.get("permitted_claim"), "visual_divergence_identified_and_independently_confirmed_by_logs_in_same_run")
+    expect("comparison_evidence.forbidden_claims", set(comparison.get("forbidden_claims", [])), EXPECTED_FORBIDDEN_CLAIMS)
 
     main_demo = addendum.get("main_demo", {})
     expect("main_demo.theme", main_demo.get("theme"), "single_swarm_continuous_mission")
     expect("main_demo.sequence", main_demo.get("sequence"), EXPECTED_SEQUENCE)
     expect("main_demo.first_new_scenario_gate", main_demo.get("first_new_scenario_gate"), "single-target-silence-recovery")
     expect("main_demo.first_new_scenario_gate_stages", main_demo.get("first_new_scenario_gate_stages"), ["in-stroke-silence", "same-drone-recovery"])
-    expect(
-        "main_demo.later_new_stages_activate_only_after_first_gate_passes",
-        main_demo.get("later_new_stages_activate_only_after_first_gate_passes"),
-        True,
-    )
+    expect("main_demo.later_new_stages_activate_only_after_first_gate_passes", main_demo.get("later_new_stages_activate_only_after_first_gate_passes"), True)
 
     drawing = main_demo.get("drawing_mode", {})
     expect("drawing.name", drawing.get("name"), "ASMR-like Stroke Drawing")
@@ -378,11 +293,7 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
         "distributed_landing_closes_remaining_active_members",
     ):
         expect(f"mission_continuity.{key}", continuity.get(key), True)
-    expect(
-        "mission_continuity.stage_transition_start_state",
-        continuity.get("stage_transition_start_state"),
-        "previous_stage_last_accepted_telemetry",
-    )
+    expect("mission_continuity.stage_transition_start_state", continuity.get("stage_transition_start_state"), "previous_stage_last_accepted_telemetry")
     for key in (
         "new_start_between_stages",
         "config_reset_between_stages",
@@ -406,29 +317,17 @@ def semantic_errors(addendum: dict[str, Any]) -> list[str]:
     segments = main_demo.get("presentation_segments", {})
     expect("presentation_segments.proof", segments.get("proof"), EXPECTED_PROOF_SEGMENT)
     expect("presentation_segments.showcase_outro", segments.get("showcase_outro"), EXPECTED_SHOWCASE_OUTRO)
-    expect(
-        "presentation_segments.showcase_outro_must_not_be_reported_as_product_validation",
-        segments.get("showcase_outro_must_not_be_reported_as_product_validation"),
-        True,
-    )
+    expect("presentation_segments.showcase_outro_must_not_be_reported_as_product_validation", segments.get("showcase_outro_must_not_be_reported_as_product_validation"), True)
 
     stages = addendum.get("stage_contracts", [])
     if not isinstance(stages, list):
         errors.append("stage_contracts must be a list")
     else:
-        stage_map = {
-            str(stage.get("id")): stage
-            for stage in stages
-            if isinstance(stage, dict) and stage.get("id") is not None
-        }
+        stage_map = {str(stage.get("id")): stage for stage in stages if isinstance(stage, dict) and stage.get("id") is not None}
         expect("stage_contract IDs", list(stage_map), EXPECTED_SEQUENCE)
         for stage_id, expected_behaviors in EXPECTED_STAGE_BEHAVIORS.items():
             stage = stage_map.get(stage_id, {})
-            expect(
-                f"stage_contracts[{stage_id}].required_behavior",
-                set(stage.get("required_behavior", [])),
-                expected_behaviors,
-            )
+            expect(f"stage_contracts[{stage_id}].required_behavior", set(stage.get("required_behavior", [])), expected_behaviors)
 
     identity = addendum.get("identity_test_semantics", {})
     expect("identity.runtime_drone_id_is_truth_entity_identity", identity.get("runtime_drone_id_is_truth_entity_identity"), True)
