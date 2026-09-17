@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.local/schemas/downstream/esp32-demo-presentation-evidence-addendum.v1.schema.json",
+  "title": "ESP32 Demo Presentation and Evidence Addendum v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "contract_id",
+    "extends_contract",
+    "purpose",
+    "authority",
+    "playwright_evidence",
+    "main_demo",
+    "stage_contracts",
+    "identity_test_semantics",
+    "evidence_checkpoints",
+    "evidence_boundary",
+    "non_goals"
+  ],
+  "properties": {
+    "schema": {"const": "lat.esp32-demo-presentation-evidence-addendum.v1"},
+    "contract_id": {"const": "esp32-demo-presentation-evidence-addendum-v1"},
+    "extends_contract": {"const": "esp32-demo-rebuild-v1"},
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal", "presentation_only", "truth_invariant_unchanged", "core_baseline_acceptance_unchanged"],
+      "properties": {
+        "goal": {"type": "string", "minLength": 40},
+        "presentation_only": {"const": true},
+        "truth_invariant_unchanged": {"const": true},
+        "core_baseline_acceptance_unchanged": {"const": true}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core_contract",
+        "core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics",
+        "this_addendum_controls_demo_sequence_and_visual_evidence_capture_only",
+        "real_runtime_evidence_is_downstream_only"
+      ],
+      "properties": {
+        "core_contract": {"const": "examples/esp32-demo-source-free-rebuild/rebuild-contract.v1.json"},
+        "core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics": {"const": true},
+        "this_addendum_controls_demo_sequence_and_visual_evidence_capture_only": {"const": true},
+        "real_runtime_evidence_is_downstream_only": {"const": true}
+      }
+    },
+    "playwright_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "comparison_layout",
+        "pairing_key",
+        "left_panel",
+        "right_panel",
+        "allowed_actions",
+        "forbidden_actions",
+        "automated_image_diff_is_product_verdict",
+        "screenshots_are_evidence_not_ground_truth",
+        "runtime_screenshots_committed_to_public_repo"
+      ],
+      "properties": {
+        "mode": {"const": "screenshot_only"},
+        "comparison_layout": {"const": "left_simulated_source_state_right_real_product"},
+        "pairing_key": {"const": "scenario_checkpoint"},
+        "left_panel": {"$ref": "#/$defs/panel"},
+        "right_panel": {"$ref": "#/$defs/panel"},
+        "allowed_actions": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "forbidden_actions": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "automated_image_diff_is_product_verdict": {"const": false},
+        "screenshots_are_evidence_not_ground_truth": {"const": true},
+        "runtime_screenshots_committed_to_public_repo": {"const": false}
+      }
+    },
+    "main_demo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "theme",
+        "story",
+        "sequence",
+        "first_new_scenario_gate",
+        "later_new_stages_activate_only_after_first_gate_passes",
+        "phoenix"
+      ],
+      "properties": {
+        "theme": {"const": "progressive_state_then_adversarial_contrast"},
+        "story": {"type": "string", "minLength": 40},
+        "sequence": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "first_new_scenario_gate": {"const": "single-target-silence-recovery"},
+        "later_new_stages_activate_only_after_first_gate_passes": {"const": true},
+        "phoenix": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["retained", "supported_formation", "in_main_sequence", "role", "may_be_run_separately", "may_be_used_as_validation_proof"],
+          "properties": {
+            "retained": {"const": true},
+            "supported_formation": {"const": "phoenix"},
+            "in_main_sequence": {"const": false},
+            "role": {"const": "standalone_showcase"},
+            "may_be_run_separately": {"const": true},
+            "may_be_used_as_validation_proof": {"const": false}
+          }
+        }
+      }
+    },
+    "stage_contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/stage"}
+    },
+    "identity_test_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_drone_id_is_truth_entity_identity",
+        "claimed_remote_id_is_test_stimulus_identity",
+        "duplicate_observation_case",
+        "shared_remote_id_case",
+        "remote_id_alone_must_not_define_truth_entity_count",
+        "real_product_identity_policy_is_not_assumed"
+      ],
+      "properties": {
+        "runtime_drone_id_is_truth_entity_identity": {"const": true},
+        "claimed_remote_id_is_test_stimulus_identity": {"const": true},
+        "duplicate_observation_case": {"const": "many_observations_one_truth_entity"},
+        "shared_remote_id_case": {"const": "multiple_truth_entities_one_claimed_remote_id"},
+        "remote_id_alone_must_not_define_truth_entity_count": {"const": true},
+        "real_product_identity_policy_is_not_assumed": {"const": true}
+      }
+    },
+    "evidence_checkpoints": {"$ref": "#/$defs/nonEmptyStringArray"},
+    "evidence_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "left_side_is_not_physical_reality",
+        "left_side_name",
+        "right_side_is_product_observation_not_ground_truth",
+        "human_or_separate_review_may_compare_images",
+        "playwright_itself_makes_no_detection_quality_claim",
+        "no_real_product_detection_quality_claim_from_public_contract"
+      ],
+      "properties": {
+        "left_side_is_not_physical_reality": {"const": true},
+        "left_side_name": {"const": "Simulated Source State"},
+        "right_side_is_product_observation_not_ground_truth": {"const": true},
+        "human_or_separate_review_may_compare_images": {"const": true},
+        "playwright_itself_makes_no_detection_quality_claim": {"const": true},
+        "no_real_product_detection_quality_claim_from_public_contract": {"const": true}
+      }
+    },
+    "non_goals": {"$ref": "#/$defs/nonEmptyStringArray"}
+  },
+  "$defs": {
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "source"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "intent", "required_behavior"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "intent": {"type": "string", "minLength": 20},
+        "required_behavior": {"$ref": "#/$defs/nonEmptyStringArray"}
+      }
+    }
+  }
+}
