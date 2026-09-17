@@ -89,24 +89,11 @@ precomputed ordered strokes
         -> telemetry-derived visual trail
 ```
 
-The visual trail may use accepted telemetry history, but it must never invent missing motion.
-
-Therefore, when a Drone is silenced during an active stroke:
-
-- peers continue drawing;
-- the silent Drone keeps its last-known point;
-- the trail must not visually bridge the unobserved interval as if it were observed;
-- recovery uses the same runtime Drone ID, config, and board boot identity;
-- the remaining stroke continues without respawning the swarm;
-- the missing interval is not rewritten as observed telemetry.
-
-This makes the visual effect useful for assurance: an interrupted stroke becomes a human-readable representation of a telemetry interruption without allowing the UI to fabricate continuity.
+The visual trail may use accepted telemetry history, but it must never invent missing motion. When a Drone is silenced during an active stroke, peers continue drawing, the silent Drone keeps its last-known point, and the trail must not bridge the unobserved interval as if it were observed. Recovery uses the same runtime Drone ID, config, and board boot identity and continues the unfinished stroke.
 
 ## 3D shape / horizontal projection rule
 
 All formations remain genuinely 3D, but the **XY horizontal projection must still be clearly recognizable** so the simulated source state can be compared directly with a planar product map.
-
-The design rule is:
 
 ```text
 3D formation
@@ -114,106 +101,88 @@ The design rule is:
   + Z-axis depth variation
 ```
 
-not:
-
-```text
-unrecognizable XY overlap
-  + Z separation that is required to understand the shape
-```
-
-Concretely:
-
-- the top-down XY projection is the primary visual signature for comparison;
-- altitude may add depth, layering, or 3D structure but must not be the only reason the formation is recognizable;
-- ignoring Z must not destroy the essential outline or key distinguishing features;
-- projected self-overlap must not collapse important parts of the figure into an ambiguous cluster;
-- ASMR Stroke Drawing paths must remain legible in XY even while their Z values vary;
-- Phoenix must keep a recognizable Phoenix silhouette from above;
-- a 3D Right Square Pyramid must still present a clear square-base footprint with the apex projecting near the intended center rather than degenerating into an unreadable point cloud.
-
-This rule exists specifically because the comparison surface on the real product may be a 2D map. The 3D source geometry should add information without making the 2D comparison harder.
+The top-down XY projection is the primary visual signature. Z may add depth or layering but must not be required to identify the shape. Projected self-overlap must not destroy key features. This applies to Stroke Drawing, Phoenix, Right Square Pyramid, and other 3D formations.
 
 ## Phoenix boundary
 
-Phoenix is retained and now appears **inside the same mission** after Geo coast patrol and before distributed landing.
+Phoenix appears inside the same mission after Geo coast patrol and before distributed landing. It uses the remaining active members and transitions continuously in 3D. Its XY projection must remain recognizable. Phoenix is a visual climax, not product-validation proof by itself.
 
-Its role is `mission_climax_showcase`:
+## Playwright boundary: separate browser pages
 
-- it uses the remaining active members of the same swarm;
-- the transition from patrol to Phoenix is continuous in 3D;
-- its XY projection remains recognizable from a planar/top-down view;
-- it may still be run independently as a showcase;
-- it is not, by itself, product validation proof.
+The real product is a **separate browser page/window** from the simulated source view. Therefore the contract does not require an impossible same-frame browser screenshot.
 
-## Playwright boundary
-
-Playwright is screenshot-only evidence capture.
-
-At each mission checkpoint:
+At each checkpoint:
 
 ```text
-LEFT:  Simulated Source State
-       browser rendering of accepted ESP32 telemetry only
-
-RIGHT: Real Product
-       real product UI
+Browser/page A                    Browser/page B
+Simulated Source State            Real Product
+        |                              |
+        +---- screenshot A             +---- screenshot B
+                  \                    /
+                   \-- timing/pairing-/
+                           |
+                           v
+                side-by-side composition
 ```
 
-Allowed Playwright behavior is limited to:
+Playwright is still screenshot-only. It may:
 
-- capture the left panel;
-- capture the right panel;
-- capture the combined side-by-side view;
-- record checkpoint identity and capture time.
+- capture the source page;
+- capture the real-product page;
+- record checkpoint ID and both capture times;
+- record capture-time skew/pairing metadata;
+- compose the already captured images side by side **without semantic mutation**.
 
-The combined side-by-side screenshot is the required checkpoint evidence. Both panels must
-appear in the same capture frame with a visible shared run clock and checkpoint ID. Separate
-panel captures are supplemental diagnostics only; they cannot replace the combined frame.
+The composed image is a presentation artifact, not a claim that both pages were captured in one instant. The downstream record must attest that both captures concern the same delivered stimulus.
 
 Playwright must not:
 
 - read product DOM state as semantic evidence;
 - inspect product APIs, WebSocket payloads, or network payloads;
 - derive an automated product pass/fail verdict;
-- mutate the product to make a checkpoint pass;
-- mutate simulator truth to match product output.
+- mutate product or simulator state to manufacture a match;
+- suppress, add, remove, or alter product-native alerts/highlights during composition.
 
-Screenshots are evidence, not ground truth. Pixel/image diff is not an authoritative product verdict. Real product screenshots and runtime evidence remain private/downstream.
+## Visual discovery, log confirmation
 
-## Visual-first, log-confirmed evidence
+The proof model is intentionally simple:
 
-The demo is intentionally smaller than a human-factors study. It may claim only that a
-correct visual divergence was noticed before raw-log confirmation in one recorded run.
+```text
+side-by-side visual comparison
+        ↓
+human identifies a divergence
+        ↓
+freeze the observation
+        ↓
+raw log independently confirms or refutes it
+```
 
-Three checkpoints carry this proof burden:
+**Logs are confirmation, not a deliberately delayed speed competitor.** This demo does not claim that visual comparison is faster than log analysis. A separate controlled experiment would be required for that claim.
+
+The proof checkpoints are:
 
 - one Drone becomes silent during an active stroke;
 - one Drone lands while another disappears airborne;
-- multiple truth entities claim one Remote ID.
+- duplicate observations of one existing truth entity;
+- multiple existing truth entities claim one Remote ID.
 
-At each checkpoint, the observer first reviews the unannotated side-by-side view. The
-observer's first-notice time and interpretation are frozen before raw logs are opened.
-Annotations may be added only after that record is frozen. The downstream evidence record
-then links the same stimulus, combined screenshot, visual observation, and later log
-confirmation under one run and checkpoint identity.
+Before the visual observation is frozen, the test harness may not add a fault arrow, annotation, circle, label, or other clue that tells the observer where the problem is. This restriction does **not** apply to the real product's own native alert, marker change, LOST state, identity warning, or highlight. Those are part of the product behavior and must remain visible and unmodified.
 
-The downstream record stays private and must include enough identity and timing metadata to
-attest that the source state and product view concern the same delivered stimulus. The public
-contract does not contain product payloads, private screenshots, or product interfaces.
+After the observation is frozen, test-added annotation may be used to explain the finding.
 
-This bounded evidence may not be generalized into a claim that visual comparison is always
-superior to log analysis.
+The private downstream evidence record is deliberately small. It records the run/checkpoint/stimulus identity, left and right screenshot references with pairing metadata, same-stimulus attestation, the frozen visual observation, and the log evidence/confirmation.
+
+The permitted claim is bounded to:
+
+> A visual divergence was identified and independently confirmed by logs in the same recorded run.
+
+It does not establish general visual superiority, visual-versus-log speed advantage, or product detection quality from screenshots alone.
 
 ## Proof versus showcase
 
-Stroke interruption/recovery, landing-versus-disconnect, and identity conflict form the
-proof segment. Geo patrol, Phoenix, and distributed landing form the showcase outro. The
-outro completes the same continuous mission but must not be reported as product-validation
-evidence.
+Stroke interruption/recovery, landing-versus-disconnect, duplicate observation, and identity conflict form the proof segment. Geo patrol, Phoenix, and distributed landing form the showcase outro. The outro completes the same continuous mission but must not be reported as product-validation evidence.
 
 ## Identity stress semantics
-
-Two related but different conditions remain separate while using the same mission roster:
 
 ```text
 duplicate observation:
@@ -236,37 +205,22 @@ Use presentation-evidence-addendum.v1.json for one continuous mission. Create th
 roster once, preserve config/runtime identity between stages, and continue each stage from
 the previous stage's last accepted telemetry.
 
-Use ASMR-like Stroke Drawing: Controller-owned ordered strokes -> continuous 3D waypoints
--> accepted ESP32 telemetry -> telemetry-derived visual trail. Do not snap directly to a
-final formation and do not draw motion that was not observed in accepted telemetry.
-A silence fault occurs during an active stroke; recovery continues the same Drone and the
-same unfinished stroke.
+Use ASMR-like Stroke Drawing with Controller-owned ordered strokes, continuous 3D waypoints,
+accepted ESP32 telemetry, and telemetry-derived trails. Never invent missing motion.
+Keep every 3D formation recognizable in its XY/top-down projection.
 
-For every 3D formation, keep the XY/top-down projection clearly recognizable. Z may add
-depth but must not be required to identify the shape. Do not allow projected overlap to
-destroy key silhouette features. This rule applies to Stroke Drawing, Phoenix, the Right
-Square Pyramid, and other 3D formations used for planar comparison.
+The Simulated Source State and Real Product run in separate browser pages. Capture each page
+separately, record both capture times and their skew, then compose the captured images side
+by side without semantic mutation. Do not pretend the composition is a same-frame capture.
+Playwright remains screenshot-only; do not inspect DOM/API/WebSocket/network data.
 
-Keep the visual comparison left=Simulated Source State and right=Real Product.
-Playwright is screenshot-only. Capture both panels in one required combined frame with a
-visible shared run clock and checkpoint ID; separate panel captures are supplemental only.
-Do not use DOM/API/WebSocket/network inspection as semantic evidence and do not generate an
-automated product verdict.
+For proof checkpoints, let the observer see the unmodified product UI, including any native
+alerts/highlights. Do not add test annotations before the visual observation is frozen.
+Then use raw logs only to independently confirm or refute the frozen visual finding. Do not
+claim that visual comparison is faster than log analysis from this workflow.
 
-For the three proof checkpoints, freeze the observer's unannotated visual interpretation
-before opening raw logs. Preserve a private downstream record tying the same delivered
-stimulus, combined screenshot, visual notice time, interpretation, and log confirmation to
-one run/checkpoint. Claim only what that recorded run demonstrates.
-
-After identity/lifecycle stress, continue the same active swarm into Geo coast patrol,
-then form Phoenix as the mission climax, then land the remaining active Drones at distributed
-points. Phoenix is visually important but is not validation proof by itself.
-
-Do not request or use original implementation source, private repository history, private
-runtime evidence, or company-internal material. Preserve the existing baseline acceptance
-cases. Implement and validate single-target-silence-recovery as the first new scenario gate
-before activating later new presentation stages. Do not claim PHYSICAL_READY or real-product
-detection quality from software contracts or screenshots alone.
+Continue the same swarm into Geo coast patrol, Phoenix, and distributed landing. Phoenix is
+a showcase climax, not validation proof by itself.
 ```
 
 ## Validation
@@ -282,30 +236,20 @@ python -m unittest discover -s tests -p 'test_esp32_demo_presentation_evidence_a
 
 The validators reject, among other things:
 
-- Controller targets becoming displayed actual state;
+- using Controller targets as displayed actual state;
 - Browser UI inventing missing motion;
-- resetting or respawning a new swarm between presentation stages;
-- an instant final formation replacing Stroke Drawing;
+- resetting or respawning the swarm between stages;
 - a 3D formation whose identity depends on Z-only separation;
-- a top-down projection that loses the key shape signature;
-- a visual trail bridging an unobserved interval as observed motion;
-- changing runtime identity during recovery;
-- allowing identity stress to rewrite the mission truth roster;
-- moving Phoenix out of the continuous mission or treating it as validation proof;
+- requiring a false same-frame screenshot across separate browser pages;
+- failing to record capture pairing/skew;
+- semantically changing either screenshot during side-by-side composition;
+- test-added fault highlighting before the observation is frozen;
+- suppressing or altering product-native alerts/highlights;
+- treating log confirmation as evidence that visual comparison is faster;
+- omitting duplicate-signal from the proof checkpoints;
 - using Playwright DOM/API/WebSocket/network inspection as semantic evidence;
-- allowing screenshot/pixel diff to become an automatic product verdict;
-- replacing a combined same-frame comparison with separately timed panel screenshots;
-- opening raw logs or highlighting the fault before the visual observation is frozen;
-- omitting downstream attestation that both sides concern the same delivered stimulus;
-- generalizing one recorded run into universal visual superiority;
-- reporting the Phoenix showcase outro as product-validation evidence;
-- committing private runtime screenshots to this public package.
+- reporting the showcase outro as product-validation evidence.
 
 ## Readiness boundary
 
-Passing these contracts proves only contract conformance and software parity against the
-public specification. `CONTRACT_VALID` does not mean runtime evidence was captured. Runtime
-capture does not mean a human reviewed it. Human review does not automatically confirm a
-product issue. Target-board execution, intended-screen visual acceptance, repeat-run
-physical reliability, and real product detection quality require separate downstream
-evidence and authority.
+Passing these contracts proves only contract conformance and software parity against the public specification. `CONTRACT_VALID` does not mean runtime evidence was captured. Runtime capture does not mean a human reviewed it. Human review does not automatically confirm a product issue. Target-board execution, intended-screen visual acceptance, repeat-run physical reliability, and real product detection quality require separate downstream evidence and authority.
