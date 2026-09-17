@@ -1,0 +1,184 @@
+{
+  "schema": "lat.esp32-demo-presentation-evidence-addendum.v1",
+  "contract_id": "esp32-demo-presentation-evidence-addendum-v1",
+  "extends_contract": "esp32-demo-rebuild-v1",
+  "purpose": {
+    "goal": "Turn the existing ESP32 synthetic swarm demo into an evidence-first side-by-side presentation while keeping Playwright screenshot-only and keeping Phoenix outside the main validation story.",
+    "presentation_only": true,
+    "truth_invariant_unchanged": true,
+    "core_baseline_acceptance_unchanged": true
+  },
+  "authority": {
+    "core_contract": "examples/esp32-demo-source-free-rebuild/rebuild-contract.v1.json",
+    "core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics": true,
+    "this_addendum_controls_demo_sequence_and_visual_evidence_capture_only": true,
+    "real_runtime_evidence_is_downstream_only": true
+  },
+  "playwright_evidence": {
+    "mode": "screenshot_only",
+    "comparison_layout": "left_simulated_source_state_right_real_product",
+    "pairing_key": "scenario_checkpoint",
+    "left_panel": {
+      "label": "Simulated Source State",
+      "source": "browser_render_of_accepted_esp32_telemetry_only"
+    },
+    "right_panel": {
+      "label": "Real Product",
+      "source": "real_product_ui"
+    },
+    "allowed_actions": [
+      "capture_left_panel_screenshot",
+      "capture_right_panel_screenshot",
+      "capture_combined_side_by_side_screenshot",
+      "record_checkpoint_id_and_capture_time"
+    ],
+    "forbidden_actions": [
+      "read_product_dom_as_semantic_evidence",
+      "inspect_product_api_payloads",
+      "inspect_product_websocket_or_network_payloads",
+      "derive_automated_product_pass_fail",
+      "mutate_product_state_to_make_a_checkpoint_pass",
+      "mutate_simulator_truth_to_match_product_output"
+    ],
+    "automated_image_diff_is_product_verdict": false,
+    "screenshots_are_evidence_not_ground_truth": true,
+    "runtime_screenshots_committed_to_public_repo": false
+  },
+  "main_demo": {
+    "theme": "progressive_state_then_adversarial_contrast",
+    "story": "Establish an intuitive normal motion baseline, then introduce controlled ambiguity and failure while preserving a visible comparison between simulated source state and the real product UI.",
+    "sequence": [
+      "multi-point-takeoff",
+      "perfect-progressive-drawing",
+      "single-target-silence-recovery",
+      "landing-vs-airborne-disconnect",
+      "duplicate-observation-dedup",
+      "shared-remote-id-identity-conflict",
+      "geo-visible-patrol",
+      "distributed-landing"
+    ],
+    "first_new_scenario_gate": "single-target-silence-recovery",
+    "later_new_stages_activate_only_after_first_gate_passes": true,
+    "phoenix": {
+      "retained": true,
+      "supported_formation": "phoenix",
+      "in_main_sequence": false,
+      "role": "standalone_showcase",
+      "may_be_run_separately": true,
+      "may_be_used_as_validation_proof": false
+    }
+  },
+  "stage_contracts": [
+    {
+      "id": "multi-point-takeoff",
+      "intent": "Show lifecycle from ground state into flight instead of making targets appear already airborne.",
+      "required_behavior": [
+        "drones_may_start_from_different_positions",
+        "accepted_telemetry_shows_takeoff_progression_before_cruise_motion",
+        "no_controller_reference_position_is_rendered_as_actual"
+      ]
+    },
+    {
+      "id": "perfect-progressive-drawing",
+      "intent": "Teach the audience what continuous correct motion looks like before faults are introduced.",
+      "required_behavior": [
+        "formation_does_not_pop_directly_into_final_state",
+        "drones_progress_through_continuous_3d_waypoints",
+        "accepted_telemetry_is_the_only_displayed_actual_state"
+      ]
+    },
+    {
+      "id": "single-target-silence-recovery",
+      "intent": "Silence one Drone while peers remain fresh, then recover the same runtime Drone under the same config and board boot identity.",
+      "required_behavior": [
+        "only_one_drone_is_silenced",
+        "peers_remain_fresh",
+        "last_known_position_is_preserved_while_silent",
+        "recovery_reuses_same_runtime_drone_id"
+      ]
+    },
+    {
+      "id": "landing-vs-airborne-disconnect",
+      "intent": "Make two visually similar disappearances carry different source evidence.",
+      "required_behavior": [
+        "landing_target_descends_before_telemetry_ceases",
+        "disconnect_target_ceases_while_last_known_state_is_airborne",
+        "simulated_source_state_does_not_relabel_disconnect_as_landing"
+      ]
+    },
+    {
+      "id": "duplicate-observation-dedup",
+      "intent": "Exercise repeated observations of one simulated Drone without inventing additional simulated truth entities.",
+      "required_behavior": [
+        "one_runtime_drone_remains_one_simulated_truth_entity",
+        "duplicate_observations_may_be_emitted_for_the_same_claimed_identity",
+        "product_ui_response_is_recorded_only_by_screenshot"
+      ]
+    },
+    {
+      "id": "shared-remote-id-identity-conflict",
+      "intent": "Exercise two or three distinct simulated Drones that intentionally claim the same Remote ID while following distinct trajectories.",
+      "required_behavior": [
+        "truth_entity_count_can_progress_one_to_two_to_three",
+        "distinct_runtime_drone_ids_are_preserved",
+        "claimed_remote_id_may_be_shared",
+        "shared_remote_id_must_not_collapse_simulated_truth_entities",
+        "product_ui_response_is_recorded_only_by_screenshot"
+      ]
+    },
+    {
+      "id": "geo-visible-patrol",
+      "intent": "Return to a recognizable geospatial motion pattern after identity and lifecycle stress.",
+      "required_behavior": [
+        "existing_doubtful_sound_precomputed_path_is_reused",
+        "runtime_gis_lookup_is_not_added",
+        "accepted_telemetry_remains_the_actual_state_source"
+      ]
+    },
+    {
+      "id": "distributed-landing",
+      "intent": "Close the story with visible descent and landing rather than targets simply disappearing.",
+      "required_behavior": [
+        "drones_may_land_at_different_points",
+        "descent_is_visible_before_each_target_becomes_non_live",
+        "last_known_landed_state_is_preserved_according_to_core_lifecycle_rules"
+      ]
+    }
+  ],
+  "identity_test_semantics": {
+    "runtime_drone_id_is_truth_entity_identity": true,
+    "claimed_remote_id_is_test_stimulus_identity": true,
+    "duplicate_observation_case": "many_observations_one_truth_entity",
+    "shared_remote_id_case": "multiple_truth_entities_one_claimed_remote_id",
+    "remote_id_alone_must_not_define_truth_entity_count": true,
+    "real_product_identity_policy_is_not_assumed": true
+  },
+  "evidence_checkpoints": [
+    "takeoff-established",
+    "perfect-drawing-mid-stroke",
+    "single-target-silent-peers-fresh",
+    "same-target-recovered",
+    "landed-target-vs-airborne-disconnected-target",
+    "duplicate-observation-window",
+    "shared-remote-id-two-targets",
+    "shared-remote-id-three-targets",
+    "geo-patrol-in-motion",
+    "distributed-landing-complete"
+  ],
+  "evidence_boundary": {
+    "left_side_is_not_physical_reality": true,
+    "left_side_name": "Simulated Source State",
+    "right_side_is_product_observation_not_ground_truth": true,
+    "human_or_separate_review_may_compare_images": true,
+    "playwright_itself_makes_no_detection_quality_claim": true,
+    "no_real_product_detection_quality_claim_from_public_contract": true
+  },
+  "non_goals": [
+    "DOM-based semantic verification of the real product",
+    "API or WebSocket inspection of the real product",
+    "automated product scoring from Playwright",
+    "pixel-diff as an authoritative product verdict",
+    "Phoenix as the main demo theme or validation proof",
+    "publication of private product screenshots or runtime evidence"
+  ]
+}
