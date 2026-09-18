@@ -1,0 +1,43 @@
+{
+  "schema": "lat.esp32-demo-synthetic-geo-route.v1",
+  "asset_id": "doubtful-sound-patea-synthetic-route-v1",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "scene": {
+    "scene_id": "doubtful-sound-patea",
+    "label": "Doubtful Sound / Patea, Fiordland, New Zealand",
+    "center": {
+      "lat": -45.324545,
+      "lon": 166.996455
+    },
+    "simulation_only": true
+  },
+  "provenance": {
+    "origin": "independently_authored_for_public_reference",
+    "method": "Synthetic offsets were authored from the already-public scene center in the rebuild contract. They are not copied from a private implementation route and are not intended to trace a navigation-grade coastline.",
+    "third_party_data": false,
+    "navigation_grade": false
+  },
+  "route": {
+    "closed": false,
+    "units": "degrees",
+    "points": [
+      {"seq": 0, "lat": -45.322545, "lon": 166.984455},
+      {"seq": 1, "lat": -45.320545, "lon": 166.989455},
+      {"seq": 2, "lat": -45.319545, "lon": 166.995455},
+      {"seq": 3, "lat": -45.320545, "lon": 167.001455},
+      {"seq": 4, "lat": -45.322545, "lon": 167.006455},
+      {"seq": 5, "lat": -45.325545, "lon": 167.008455},
+      {"seq": 6, "lat": -45.328545, "lon": 167.006455},
+      {"seq": 7, "lat": -45.330545, "lon": 167.001455},
+      {"seq": 8, "lat": -45.331545, "lon": 166.995455},
+      {"seq": 9, "lat": -45.329545, "lon": 166.989455},
+      {"seq": 10, "lat": -45.326545, "lon": 166.985455}
+    ]
+  },
+  "usage_constraints": [
+    "Use as synthetic visual reference geometry only.",
+    "Do not represent this route as surveyed shoreline, flight authorization, or navigation-grade data.",
+    "Displayed actual entity state must still come from accepted ESP32 telemetry."
+  ]
+}
