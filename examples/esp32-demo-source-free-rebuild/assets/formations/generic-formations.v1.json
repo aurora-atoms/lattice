@@ -1,0 +1,56 @@
+{
+  "schema": "lat.esp32-demo-generic-formations.v1",
+  "asset_id": "generic-formation-point-sets-v1",
+  "simulation_status": "synthetic_reference",
+  "downstream_adoption_status": "not_observed",
+  "provenance": {
+    "origin": "independently_authored_from_generic_geometry",
+    "third_party_data": false,
+    "private_implementation_source_used": false
+  },
+  "coordinate_system": {
+    "xy": "normalized_local_scene",
+    "z": "relative_demo_altitude",
+    "xy_projection_is_primary_shape_signature": true
+  },
+  "formations": {
+    "circle": {
+      "minimum_points": 4,
+      "points": [
+        {"x": 0.0, "y": -0.8, "z": 0.0},
+        {"x": 0.8, "y": 0.0, "z": 400.0},
+        {"x": 0.0, "y": 0.8, "z": -300.0},
+        {"x": -0.8, "y": 0.0, "z": 700.0}
+      ]
+    },
+    "triangle": {
+      "minimum_points": 3,
+      "points": [
+        {"x": -0.8, "y": -0.6, "z": -200.0},
+        {"x": 0.8, "y": -0.6, "z": 300.0},
+        {"x": 0.0, "y": 0.8, "z": 900.0}
+      ]
+    },
+    "right-square-pyramid": {
+      "minimum_points": 5,
+      "points": [
+        {"x": -0.7, "y": -0.7, "z": -600.0},
+        {"x": 0.7, "y": -0.7, "z": -600.0},
+        {"x": 0.7, "y": 0.7, "z": -600.0},
+        {"x": -0.7, "y": 0.7, "z": -600.0},
+        {"x": 0.0, "y": 0.0, "z": 1600.0}
+      ],
+      "invariants": {
+        "square_coplanar_base": true,
+        "adjacent_base_edges_perpendicular": true,
+        "apex_above_base_center": true,
+        "nonzero_height": true
+      }
+    }
+  },
+  "usage_constraints": [
+    "These are public fixtures, not a claim about a private implementation's exact geometry.",
+    "A rebuild may replace the point sets while preserving the observable contract.",
+    "Do not add a product-specific failure expectation to these assets."
+  ]
+}
