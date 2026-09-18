@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-atoms.local/schemas/downstream/esp32-demo-presentation-evidence-addendum.v1.schema.json",
+  "title": "ESP32 Demo Presentation and Evidence Addendum v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","contract_id","extends_contract","purpose","authority","playwright_evidence","comparison_evidence","main_demo","stage_contracts","identity_test_semantics","evidence_checkpoints","evidence_boundary","non_goals"],
+  "properties": {
+    "schema": {"const": "lat.esp32-demo-presentation-evidence-addendum.v1"},
+    "contract_id": {"const": "esp32-demo-presentation-evidence-addendum-v1"},
+    "extends_contract": {"const": "esp32-demo-rebuild-v1"},
+    "purpose": {
+      "type": "object", "additionalProperties": false,
+      "required": ["goal","presentation_only","truth_invariant_unchanged","core_baseline_acceptance_unchanged"],
+      "properties": {
+        "goal": {"type":"string","minLength":40},
+        "presentation_only":{"const":true},
+        "truth_invariant_unchanged":{"const":true},
+        "core_baseline_acceptance_unchanged":{"const":true}
+      }
+    },
+    "authority": {
+      "type":"object","additionalProperties":false,
+      "required":["core_contract","core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics","this_addendum_controls_demo_sequence_and_visual_evidence_capture_only","real_runtime_evidence_is_downstream_only"],
+      "properties": {
+        "core_contract":{"const":"examples/esp32-demo-source-free-rebuild/rebuild-contract.v1.json"},
+        "core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics":{"const":true},
+        "this_addendum_controls_demo_sequence_and_visual_evidence_capture_only":{"const":true},
+        "real_runtime_evidence_is_downstream_only":{"const":true}
+      }
+    },
+    "playwright_evidence": {
+      "type":"object","additionalProperties":false,
+      "required":["mode","comparison_layout","pairing_key","source_and_product_are_separate_browser_pages","separate_panel_captures_required","same_capture_frame_required","side_by_side_composition_required","composition_is_presentation_only","capture_time_skew_must_be_recorded","checkpoint_id_and_capture_times_must_be_recorded","left_panel","right_panel","allowed_actions","forbidden_actions","automated_image_diff_is_product_verdict","screenshots_are_evidence_not_ground_truth","runtime_screenshots_committed_to_public_repo"],
+      "properties": {
+        "mode":{"const":"screenshot_only"},
+        "comparison_layout":{"const":"left_simulated_source_state_right_real_product"},
+        "pairing_key":{"const":"mission_checkpoint"},
+        "source_and_product_are_separate_browser_pages":{"const":true},
+        "separate_panel_captures_required":{"const":true},
+        "same_capture_frame_required":{"const":false},
+        "side_by_side_composition_required":{"const":true},
+        "composition_is_presentation_only":{"const":true},
+        "capture_time_skew_must_be_recorded":{"const":true},
+        "checkpoint_id_and_capture_times_must_be_recorded":{"const":true},
+        "left_panel":{"$ref":"#/$defs/panel"},
+        "right_panel":{"$ref":"#/$defs/panel"},
+        "allowed_actions":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "forbidden_actions":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "automated_image_diff_is_product_verdict":{"const":false},
+        "screenshots_are_evidence_not_ground_truth":{"const":true},
+        "runtime_screenshots_committed_to_public_repo":{"const":false}
+      }
+    },
+    "comparison_evidence": {
+      "type":"object","additionalProperties":false,
+      "required":["purpose","scope","proof_checkpoints","observation_order","visual_observation_must_be_frozen_before_log_confirmation","log_confirmation_is_not_a_speed_competitor","visual_vs_log_speed_claim_allowed","test_added_fault_annotation_before_visual_observation_is_frozen","product_native_alerts_and_highlights_must_be_preserved","post_observation_test_annotation_allowed","required_downstream_record_fields","downstream_record_storage","same_stimulus_delivery_attestation_required","permitted_claim","forbidden_claims"],
+      "properties": {
+        "purpose":{"type":"string","minLength":40},
+        "scope":{"const":"single_demo_run_not_general_human_factors_research"},
+        "proof_checkpoints":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "observation_order":{"const":"visual_observation_then_independent_log_confirmation"},
+        "visual_observation_must_be_frozen_before_log_confirmation":{"const":true},
+        "log_confirmation_is_not_a_speed_competitor":{"const":true},
+        "visual_vs_log_speed_claim_allowed":{"const":false},
+        "test_added_fault_annotation_before_visual_observation_is_frozen":{"const":false},
+        "product_native_alerts_and_highlights_must_be_preserved":{"const":true},
+        "post_observation_test_annotation_allowed":{"const":true},
+        "required_downstream_record_fields":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "downstream_record_storage":{"const":"private_downstream_only"},
+        "same_stimulus_delivery_attestation_required":{"const":true},
+        "permitted_claim":{"const":"visual_divergence_identified_and_independently_confirmed_by_logs_in_same_run"},
+        "forbidden_claims":{"$ref":"#/$defs/nonEmptyStringArray"}
+      }
+    },
+    "main_demo": {
+      "type":"object","additionalProperties":false,
+      "required":["theme","story","drawing_mode","horizontal_projection","sequence","first_new_scenario_gate","first_new_scenario_gate_stages","later_new_stages_activate_only_after_first_gate_passes","mission_continuity","phoenix","presentation_segments"],
+      "properties": {
+        "theme":{"const":"single_swarm_continuous_mission"},
+        "story":{"type":"string","minLength":40},
+        "drawing_mode":{"$ref":"#/$defs/drawingMode"},
+        "horizontal_projection":{"$ref":"#/$defs/horizontalProjection"},
+        "sequence":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "first_new_scenario_gate":{"const":"single-target-silence-recovery"},
+        "first_new_scenario_gate_stages":{"$ref":"#/$defs/nonEmptyStringArray"},
+        "later_new_stages_activate_only_after_first_gate_passes":{"const":true},
+        "mission_continuity":{"$ref":"#/$defs/missionContinuity"},
+        "phoenix":{"$ref":"#/$defs/phoenix"},
+        "presentation_segments":{"$ref":"#/$defs/presentationSegments"}
+      }
+    },
+    "stage_contracts":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/stage"}},
+    "identity_test_semantics": {
+      "type":"object","additionalProperties":false,
+      "required":["runtime_drone_id_is_truth_entity_identity","claimed_remote_id_is_test_stimulus_identity","duplicate_observation_case","shared_remote_id_case","remote_id_alone_must_not_define_truth_entity_count","identity_stress_must_not_change_mission_roster","real_product_identity_policy_is_not_assumed"],
+      "properties": {
+        "runtime_drone_id_is_truth_entity_identity":{"const":true},
+        "claimed_remote_id_is_test_stimulus_identity":{"const":true},
+        "duplicate_observation_case":{"const":"many_observations_one_existing_truth_entity"},
+        "shared_remote_id_case":{"const":"multiple_existing_truth_entities_one_claimed_remote_id"},
+        "remote_id_alone_must_not_define_truth_entity_count":{"const":true},
+        "identity_stress_must_not_change_mission_roster":{"const":true},
+        "real_product_identity_policy_is_not_assumed":{"const":true}
+      }
+    },
+    "evidence_checkpoints":{"$ref":"#/$defs/nonEmptyStringArray"},
+    "evidence_boundary": {
+      "type":"object","additionalProperties":false,
+      "required":["left_side_is_not_physical_reality","left_side_name","right_side_is_product_observation_not_ground_truth","human_or_separate_review_may_compare_images","playwright_itself_makes_no_detection_quality_claim","no_real_product_detection_quality_claim_from_public_contract","contract_valid_does_not_mean_demo_runtime_captured","demo_runtime_captured_does_not_mean_human_reviewed","human_reviewed_does_not_automatically_mean_product_issue_confirmed"],
+      "properties": {
+        "left_side_is_not_physical_reality":{"const":true},
+        "left_side_name":{"const":"Simulated Source State"},
+        "right_side_is_product_observation_not_ground_truth":{"const":true},
+        "human_or_separate_review_may_compare_images":{"const":true},
+        "playwright_itself_makes_no_detection_quality_claim":{"const":true},
+        "no_real_product_detection_quality_claim_from_public_contract":{"const":true},
+        "contract_valid_does_not_mean_demo_runtime_captured":{"const":true},
+        "demo_runtime_captured_does_not_mean_human_reviewed":{"const":true},
+        "human_reviewed_does_not_automatically_mean_product_issue_confirmed":{"const":true}
+      }
+    },
+    "non_goals":{"$ref":"#/$defs/nonEmptyStringArray"}
+  },
+  "$defs": {
+    "nonEmptyStringArray":{"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "panel":{"type":"object","additionalProperties":false,"required":["label","source"],"properties":{"label":{"type":"string","minLength":1},"source":{"type":"string","minLength":1}}},
+    "drawingMode":{"type":"object","additionalProperties":false,"required":["name","contract_id","stroke_source","precomputed_stroke_plan_owned_by_controller","continuous_3d_waypoints_required","instant_final_formation_snap_forbidden","telemetry_derived_visual_trail_allowed","visual_trail_must_not_invent_missing_motion","fault_may_interrupt_an_active_stroke","recovery_continues_same_mission_stroke"],"properties":{"name":{"const":"ASMR-like Stroke Drawing"},"contract_id":{"const":"asmr_stroke_drawing"},"stroke_source":{"const":"accepted_esp32_telemetry_history_only"},"precomputed_stroke_plan_owned_by_controller":{"const":true},"continuous_3d_waypoints_required":{"const":true},"instant_final_formation_snap_forbidden":{"const":true},"telemetry_derived_visual_trail_allowed":{"const":true},"visual_trail_must_not_invent_missing_motion":{"const":true},"fault_may_interrupt_an_active_stroke":{"const":true},"recovery_continues_same_mission_stroke":{"const":true}}},
+    "horizontalProjection":{"type":"object","additionalProperties":false,"required":["projection_plane","purpose","applies_to_all_3d_formations","top_down_projection_must_be_recognizable","xy_silhouette_is_primary_shape_signature","z_axis_may_add_depth_but_must_not_define_shape_identity_alone","z_only_separation_must_not_be_required_for_recognition","projected_self_overlap_must_not_destroy_key_shape_features","projection_must_remain_comparable_when_altitude_is_ignored"],"properties":{"projection_plane":{"const":"xy"},"purpose":{"const":"planar_product_comparison"},"applies_to_all_3d_formations":{"const":true},"top_down_projection_must_be_recognizable":{"const":true},"xy_silhouette_is_primary_shape_signature":{"const":true},"z_axis_may_add_depth_but_must_not_define_shape_identity_alone":{"const":true},"z_only_separation_must_not_be_required_for_recognition":{"const":true},"projected_self_overlap_must_not_destroy_key_shape_features":{"const":true},"projection_must_remain_comparable_when_altitude_is_ignored":{"const":true}}},
+    "missionContinuity":{"type":"object","additionalProperties":false,"required":["single_mission","single_run","mission_roster_created_once_at_start","stage_transition_start_state","new_start_between_stages","config_reset_between_stages","runtime_identity_rotation_between_stages","respawn_or_reseed_between_stages","truth_entity_roster_changes_for_observation_tests","inactive_members_remain_part_of_mission_roster","later_stages_use_remaining_active_members","phoenix_uses_remaining_active_members","distributed_landing_closes_remaining_active_members"],"properties":{"single_mission":{"const":true},"single_run":{"const":true},"mission_roster_created_once_at_start":{"const":true},"stage_transition_start_state":{"const":"previous_stage_last_accepted_telemetry"},"new_start_between_stages":{"const":false},"config_reset_between_stages":{"const":false},"runtime_identity_rotation_between_stages":{"const":false},"respawn_or_reseed_between_stages":{"const":false},"truth_entity_roster_changes_for_observation_tests":{"const":false},"inactive_members_remain_part_of_mission_roster":{"const":true},"later_new_stages_use_remaining_active_members":{"const":true},"later_stages_use_remaining_active_members":{"const":true},"phoenix_uses_remaining_active_members":{"const":true},"distributed_landing_closes_remaining_active_members":{"const":true}}},
+    "phoenix":{"type":"object","additionalProperties":false,"required":["retained","supported_formation","in_main_sequence","role","follows_stage","precedes_stage","uses_remaining_active_members","may_be_run_separately","may_be_used_as_validation_proof"],"properties":{"retained":{"const":true},"supported_formation":{"const":"phoenix"},"in_main_sequence":{"const":true},"role":{"const":"mission_climax_showcase"},"follows_stage":{"const":"geo-coast-patrol"},"precedes_stage":{"const":"distributed-landing"},"uses_remaining_active_members":{"const":true},"may_be_run_separately":{"const":true},"may_be_used_as_validation_proof":{"const":false}}},
+    "presentationSegments":{"type":"object","additionalProperties":false,"required":["proof","showcase_outro","showcase_outro_must_not_be_reported_as_product_validation"],"properties":{"proof":{"$ref":"#/$defs/nonEmptyStringArray"},"showcase_outro":{"$ref":"#/$defs/nonEmptyStringArray"},"showcase_outro_must_not_be_reported_as_product_validation":{"const":true}}},
+    "stage":{"type":"object","additionalProperties":false,"required":["id","intent","required_behavior"],"properties":{"id":{"type":"string","minLength":1},"intent":{"type":"string","minLength":20},"required_behavior":{"$ref":"#/$defs/nonEmptyStringArray"}}}
+  }
+}

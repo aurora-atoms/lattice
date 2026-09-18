@@ -1,0 +1,330 @@
+{
+  "schema": "lat.esp32-demo-presentation-evidence-addendum.v1",
+  "contract_id": "esp32-demo-presentation-evidence-addendum-v1",
+  "extends_contract": "esp32-demo-rebuild-v1",
+  "purpose": {
+    "goal": "Present one continuous mission flown by the same synthetic ESP32 swarm, using ASMR-like Stroke Drawing for intuitive motion and screenshot-only evidence against a real product running in a separate browser window.",
+    "presentation_only": true,
+    "truth_invariant_unchanged": true,
+    "core_baseline_acceptance_unchanged": true
+  },
+  "authority": {
+    "core_contract": "examples/esp32-demo-source-free-rebuild/rebuild-contract.v1.json",
+    "core_contract_remains_authoritative_for_truth_telemetry_and_session_semantics": true,
+    "this_addendum_controls_demo_sequence_and_visual_evidence_capture_only": true,
+    "real_runtime_evidence_is_downstream_only": true
+  },
+  "playwright_evidence": {
+    "mode": "screenshot_only",
+    "comparison_layout": "left_simulated_source_state_right_real_product",
+    "pairing_key": "mission_checkpoint",
+    "source_and_product_are_separate_browser_pages": true,
+    "separate_panel_captures_required": true,
+    "same_capture_frame_required": false,
+    "side_by_side_composition_required": true,
+    "composition_is_presentation_only": true,
+    "capture_time_skew_must_be_recorded": true,
+    "checkpoint_id_and_capture_times_must_be_recorded": true,
+    "left_panel": {
+      "label": "Simulated Source State",
+      "source": "browser_render_of_accepted_esp32_telemetry_only"
+    },
+    "right_panel": {
+      "label": "Real Product",
+      "source": "real_product_ui"
+    },
+    "allowed_actions": [
+      "capture_left_panel_screenshot",
+      "capture_right_panel_screenshot",
+      "record_checkpoint_id_and_capture_times",
+      "compose_captured_images_side_by_side_without_semantic_mutation"
+    ],
+    "forbidden_actions": [
+      "read_product_dom_as_semantic_evidence",
+      "inspect_product_api_payloads",
+      "inspect_product_websocket_or_network_payloads",
+      "derive_automated_product_pass_fail",
+      "mutate_product_state_to_make_a_checkpoint_pass",
+      "mutate_simulator_truth_to_match_product_output",
+      "alter_product_native_alerts_or_highlights_in_composition"
+    ],
+    "automated_image_diff_is_product_verdict": false,
+    "screenshots_are_evidence_not_ground_truth": true,
+    "runtime_screenshots_committed_to_public_repo": false
+  },
+  "comparison_evidence": {
+    "purpose": "Demonstrate that a human-visible divergence can be identified from the source-versus-product comparison and then independently confirmed against the corresponding raw logs from the same run.",
+    "scope": "single_demo_run_not_general_human_factors_research",
+    "proof_checkpoints": [
+      "active-stroke-interrupted-one-drone-silent",
+      "landed-vs-airborne-disconnected",
+      "duplicate-signal-window",
+      "shared-remote-id-conflict"
+    ],
+    "observation_order": "visual_observation_then_independent_log_confirmation",
+    "visual_observation_must_be_frozen_before_log_confirmation": true,
+    "log_confirmation_is_not_a_speed_competitor": true,
+    "visual_vs_log_speed_claim_allowed": false,
+    "test_added_fault_annotation_before_visual_observation_is_frozen": false,
+    "product_native_alerts_and_highlights_must_be_preserved": true,
+    "post_observation_test_annotation_allowed": true,
+    "required_downstream_record_fields": [
+      "run_id",
+      "mission_checkpoint",
+      "stimulus_event_id",
+      "left_screenshot_ref",
+      "right_screenshot_ref",
+      "capture_pairing_metadata",
+      "same_stimulus_delivery_attestation",
+      "visual_observation",
+      "log_evidence_ref",
+      "log_confirmation"
+    ],
+    "downstream_record_storage": "private_downstream_only",
+    "same_stimulus_delivery_attestation_required": true,
+    "permitted_claim": "visual_divergence_identified_and_independently_confirmed_by_logs_in_same_run",
+    "forbidden_claims": [
+      "visual_comparison_is_generally_superior_to_log_analysis",
+      "visual_comparison_is_faster_than_log_analysis",
+      "screenshots_alone_prove_product_detection_quality",
+      "contract_validation_proves_runtime_product_behavior"
+    ]
+  },
+  "main_demo": {
+    "theme": "single_swarm_continuous_mission",
+    "story": "One swarm takes off once, performs ASMR-like Stroke Drawing, experiences controlled disruptions without resetting the mission, continues into coastal patrol, forms Phoenix as the mission climax, and lands the remaining active drones at distributed points.",
+    "drawing_mode": {
+      "name": "ASMR-like Stroke Drawing",
+      "contract_id": "asmr_stroke_drawing",
+      "stroke_source": "accepted_esp32_telemetry_history_only",
+      "precomputed_stroke_plan_owned_by_controller": true,
+      "continuous_3d_waypoints_required": true,
+      "instant_final_formation_snap_forbidden": true,
+      "telemetry_derived_visual_trail_allowed": true,
+      "visual_trail_must_not_invent_missing_motion": true,
+      "fault_may_interrupt_an_active_stroke": true,
+      "recovery_continues_same_mission_stroke": true
+    },
+    "horizontal_projection": {
+      "projection_plane": "xy",
+      "purpose": "planar_product_comparison",
+      "applies_to_all_3d_formations": true,
+      "top_down_projection_must_be_recognizable": true,
+      "xy_silhouette_is_primary_shape_signature": true,
+      "z_axis_may_add_depth_but_must_not_define_shape_identity_alone": true,
+      "z_only_separation_must_not_be_required_for_recognition": true,
+      "projected_self_overlap_must_not_destroy_key_shape_features": true,
+      "projection_must_remain_comparable_when_altitude_is_ignored": true
+    },
+    "sequence": [
+      "multi-point-takeoff",
+      "asmr-stroke-drawing",
+      "in-stroke-silence",
+      "same-drone-recovery",
+      "landing-vs-airborne-disconnect",
+      "duplicate-signal-and-identity-conflict",
+      "geo-coast-patrol",
+      "phoenix-formation",
+      "distributed-landing"
+    ],
+    "first_new_scenario_gate": "single-target-silence-recovery",
+    "first_new_scenario_gate_stages": [
+      "in-stroke-silence",
+      "same-drone-recovery"
+    ],
+    "later_new_stages_activate_only_after_first_gate_passes": true,
+    "mission_continuity": {
+      "single_mission": true,
+      "single_run": true,
+      "mission_roster_created_once_at_start": true,
+      "stage_transition_start_state": "previous_stage_last_accepted_telemetry",
+      "new_start_between_stages": false,
+      "config_reset_between_stages": false,
+      "runtime_identity_rotation_between_stages": false,
+      "respawn_or_reseed_between_stages": false,
+      "truth_entity_roster_changes_for_observation_tests": false,
+      "inactive_members_remain_part_of_mission_roster": true,
+      "later_stages_use_remaining_active_members": true,
+      "phoenix_uses_remaining_active_members": true,
+      "distributed_landing_closes_remaining_active_members": true
+    },
+    "phoenix": {
+      "retained": true,
+      "supported_formation": "phoenix",
+      "in_main_sequence": true,
+      "role": "mission_climax_showcase",
+      "follows_stage": "geo-coast-patrol",
+      "precedes_stage": "distributed-landing",
+      "uses_remaining_active_members": true,
+      "may_be_run_separately": true,
+      "may_be_used_as_validation_proof": false
+    },
+    "presentation_segments": {
+      "proof": [
+        "asmr-stroke-drawing",
+        "in-stroke-silence",
+        "same-drone-recovery",
+        "landing-vs-airborne-disconnect",
+        "duplicate-signal-and-identity-conflict"
+      ],
+      "showcase_outro": [
+        "geo-coast-patrol",
+        "phoenix-formation",
+        "distributed-landing"
+      ],
+      "showcase_outro_must_not_be_reported_as_product_validation": true
+    }
+  },
+  "stage_contracts": [
+    {
+      "id": "multi-point-takeoff",
+      "intent": "Begin one mission by launching the swarm from different ground positions instead of materializing targets already airborne.",
+      "required_behavior": [
+        "mission_roster_is_created_once_here",
+        "drones_may_start_from_different_positions",
+        "accepted_telemetry_shows_takeoff_progression_before_cruise_motion",
+        "no_controller_reference_position_is_rendered_as_actual"
+      ]
+    },
+    {
+      "id": "asmr-stroke-drawing",
+      "intent": "Use the same airborne swarm to reveal a recognizable shape stroke by stroke with calm continuous motion, making the expected direction visually obvious before faults are introduced.",
+      "required_behavior": [
+        "starts_from_multi_point_takeoff_final_accepted_positions",
+        "controller_precomputes_ordered_strokes_and_3d_waypoints",
+        "drones_follow_time_ordered_continuous_3d_waypoints",
+        "shape_is_revealed_by_strokes_not_instant_final_formation",
+        "horizontal_xy_projection_remains_recognizable_without_using_z",
+        "visual_trail_is_derived_only_from_accepted_telemetry_history",
+        "visual_trail_does_not_invent_missing_motion",
+        "accepted_telemetry_is_the_only_displayed_actual_state"
+      ]
+    },
+    {
+      "id": "in-stroke-silence",
+      "intent": "Interrupt one Drone while an ASMR-like drawing stroke is actively being traced, while the rest of the same swarm continues the mission.",
+      "required_behavior": [
+        "starts_from_asmr_stroke_drawing_current_positions",
+        "fault_occurs_during_an_active_stroke",
+        "only_one_existing_drone_is_silenced",
+        "peers_continue_the_same_drawing_task_and_remain_fresh",
+        "silent_drone_last_known_position_is_preserved",
+        "visual_trail_does_not_bridge_unobserved_motion_as_observed",
+        "mission_config_and_runtime_roster_are_not_reset"
+      ]
+    },
+    {
+      "id": "same-drone-recovery",
+      "intent": "Restore the interrupted Drone into the same mission so the interrupted drawing visibly resumes rather than starting a new test case.",
+      "required_behavior": [
+        "recovery_reuses_same_runtime_drone_id",
+        "recovery_reuses_same_config_and_board_boot_identity",
+        "recovered_drone_resumes_from_continuous_mission_state",
+        "remaining_stroke_continues_without_respawning_the_swarm",
+        "missing_interval_is_not_rewritten_as_observed_telemetry"
+      ]
+    },
+    {
+      "id": "landing-vs-airborne-disconnect",
+      "intent": "Within the same mission roster, create two different disappearances: one Drone visibly lands while another stops reporting while still airborne.",
+      "required_behavior": [
+        "one_existing_drone_descends_and_lands_before_telemetry_ceases",
+        "one_different_existing_drone_ceases_while_last_known_state_is_airborne",
+        "both_drones_remain_members_of_the_same_mission_roster",
+        "landed_and_disconnected_drones_leave_the_active_flying_subset",
+        "simulated_source_state_does_not_relabel_disconnect_as_landing"
+      ]
+    },
+    {
+      "id": "duplicate-signal-and-identity-conflict",
+      "intent": "Stress observation and identity using remaining members of the same swarm, first with duplicate observations and then with multiple existing Drones claiming one Remote ID.",
+      "required_behavior": [
+        "duplicate_observations_reuse_one_existing_runtime_drone_without_creating_a_truth_entity",
+        "two_or_three_existing_active_drones_may_claim_the_same_remote_id",
+        "distinct_runtime_drone_ids_and_trajectories_are_preserved",
+        "identity_stress_does_not_change_the_mission_truth_roster",
+        "product_ui_response_is_recorded_only_by_screenshot"
+      ]
+    },
+    {
+      "id": "geo-coast-patrol",
+      "intent": "Transition the remaining active members of the same swarm from identity stress into a recognizable coastal patrol without resetting their mission state.",
+      "required_behavior": [
+        "starts_from_previous_stage_last_accepted_positions",
+        "existing_doubtful_sound_precomputed_path_is_reused",
+        "remaining_active_members_join_the_patrol_continuously",
+        "runtime_gis_lookup_is_not_added",
+        "accepted_telemetry_remains_the_actual_state_source"
+      ]
+    },
+    {
+      "id": "phoenix-formation",
+      "intent": "Use the remaining active mission members to leave coastal patrol and continuously assemble the Phoenix as the visual climax of the same mission.",
+      "required_behavior": [
+        "starts_from_geo_coast_patrol_current_positions",
+        "uses_remaining_active_members_only",
+        "formation_transition_is_continuous_in_3d",
+        "phoenix_horizontal_xy_projection_preserves_recognizable_silhouette",
+        "phoenix_is_in_the_main_mission_but_is_not_product_validation_proof"
+      ]
+    },
+    {
+      "id": "distributed-landing",
+      "intent": "Finish the same mission by sending every remaining active Drone from the Phoenix into visible descents toward different landing points.",
+      "required_behavior": [
+        "starts_from_phoenix_current_positions",
+        "no_new_drone_is_spawned_for_landing",
+        "remaining_active_drones_may_land_at_different_points",
+        "descent_is_visible_before_each_target_becomes_non_live",
+        "last_known_landed_state_is_preserved_according_to_core_lifecycle_rules"
+      ]
+    }
+  ],
+  "identity_test_semantics": {
+    "runtime_drone_id_is_truth_entity_identity": true,
+    "claimed_remote_id_is_test_stimulus_identity": true,
+    "duplicate_observation_case": "many_observations_one_existing_truth_entity",
+    "shared_remote_id_case": "multiple_existing_truth_entities_one_claimed_remote_id",
+    "remote_id_alone_must_not_define_truth_entity_count": true,
+    "identity_stress_must_not_change_mission_roster": true,
+    "real_product_identity_policy_is_not_assumed": true
+  },
+  "evidence_checkpoints": [
+    "takeoff-established",
+    "asmr-stroke-mid-drawing",
+    "active-stroke-interrupted-one-drone-silent",
+    "same-drone-recovered-stroke-resumed",
+    "landed-vs-airborne-disconnected",
+    "duplicate-signal-window",
+    "shared-remote-id-conflict",
+    "coast-patrol-in-motion",
+    "phoenix-formed",
+    "distributed-landing-complete"
+  ],
+  "evidence_boundary": {
+    "left_side_is_not_physical_reality": true,
+    "left_side_name": "Simulated Source State",
+    "right_side_is_product_observation_not_ground_truth": true,
+    "human_or_separate_review_may_compare_images": true,
+    "playwright_itself_makes_no_detection_quality_claim": true,
+    "no_real_product_detection_quality_claim_from_public_contract": true,
+    "contract_valid_does_not_mean_demo_runtime_captured": true,
+    "demo_runtime_captured_does_not_mean_human_reviewed": true,
+    "human_reviewed_does_not_automatically_mean_product_issue_confirmed": true
+  },
+  "non_goals": [
+    "DOM-based semantic verification of the real product",
+    "API or WebSocket inspection of the real product",
+    "automated product scoring from Playwright",
+    "pixel-diff as an authoritative product verdict",
+    "using delayed log access to claim visual comparison is faster than logs",
+    "test-added pre-highlighting of a fault before visual observation is frozen",
+    "suppressing or altering product-native alerts or highlights",
+    "front-end animation that invents a stroke not present in accepted telemetry",
+    "3D formations whose identity is only recognizable from altitude separation",
+    "restarting or respawning a new swarm between presentation stages",
+    "using disconnected or landed state changes to rewrite mission roster history",
+    "treating Phoenix as a separate demo story instead of the mission climax",
+    "publication of private product screenshots or runtime evidence"
+  ]
+}

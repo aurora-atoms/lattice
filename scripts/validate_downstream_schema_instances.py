@@ -48,6 +48,8 @@ def validate_all(root: Path) -> tuple[list[str], int]:
         / "schemas/downstream/private-capability-extension.v1.schema.json",
         "esp32_rebuild": root
         / "schemas/downstream/esp32-demo-rebuild-contract.v1.schema.json",
+        "esp32_presentation": root
+        / "schemas/downstream/esp32-demo-presentation-evidence-addendum.v1.schema.json",
         "asset_pack": root
         / "schemas/evidence/delivery-evidence-asset-pack.v1.schema.json",
         "claim": root / "schemas/evidence/evidence-claim.v1.schema.json",
@@ -82,6 +84,12 @@ def validate_all(root: Path) -> tuple[list[str], int]:
             "ESP32 source-free rebuild contract",
             root
             / "examples/esp32-demo-source-free-rebuild/rebuild-contract.v1.json",
+        ),
+        (
+            "esp32_presentation",
+            "ESP32 screenshot-only presentation evidence addendum",
+            root
+            / "examples/esp32-demo-source-free-rebuild/presentation-evidence-addendum.v1.json",
         ),
         ("asset_pack", "golden asset pack", golden / "asset-pack.manifest.json"),
         ("report", "golden validation report", golden / "validation-report.json"),
