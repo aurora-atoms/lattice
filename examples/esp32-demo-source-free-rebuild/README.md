@@ -27,6 +27,12 @@ examples/esp32-demo-source-free-rebuild/
   README.md
   rebuild-contract.v1.json
   presentation-evidence-addendum.v1.json
+  assets/
+    asset-manifest.v1.json
+    geo/
+      doubtful-sound-patea.synthetic-route.v1.json
+    formations/
+      generic-formations.v1.json
 
 schemas/downstream/
   esp32-demo-rebuild-contract.v1.schema.json
@@ -40,6 +46,35 @@ tests/
   test_esp32_demo_rebuild_contract.py
   test_esp32_demo_presentation_evidence_addendum.py
 ```
+
+## Public synthetic assets and provenance
+
+The optional `assets/` directory provides portable public fixtures for source-isolated rebuilds. These assets are intentionally separated from implementation source.
+
+The first asset pack contains:
+
+- an independently authored synthetic route anchored to the scene center already published by the rebuild contract;
+- independently authored generic Circle, Triangle, and Right Square Pyramid point sets;
+- a manifest that records origin, intended use, public/private boundary, simulation status, and downstream adoption status.
+
+These fixtures are **not** copied from a private implementation route or formation generator. They do not contain private runtime evidence, real-product behavior, customer/employer material, or product-specific failure expectations.
+
+The geo route is visual simulation geometry only. It is not surveyed shoreline, navigation-grade data, flight authorization, or a claim that a downstream private implementation uses the same points.
+
+The public/private promotion rule is:
+
+```text
+private implementation idea or behavior
+        |
+        | identify a neutral reusable artifact
+        v
+independently authored / provenance-recorded synthetic asset
+        |
+        v
+public Lattice fixture
+```
+
+Do not promote a private source file by copying it into Lattice. When provenance is uncertain, keep the material private or recreate a public fixture from public/synthetic inputs.
 
 ## Core truth contract
 
