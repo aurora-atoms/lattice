@@ -1,0 +1,42 @@
+{
+  "schema": "lat.esp32-demo-public-asset-manifest.v1",
+  "asset_pack_id": "esp32-demo-public-synthetic-assets-v1",
+  "purpose": "Provide public, independently authored synthetic reference assets that can be consumed by a source-isolated ESP32 demo rebuild without copying private implementation source or runtime evidence.",
+  "license": "Apache-2.0",
+  "boundary": {
+    "original_private_source_included": false,
+    "private_runtime_evidence_included": false,
+    "real_product_behavior_included": false,
+    "customer_or_employer_material_included": false,
+    "simulation_status": "synthetic_reference",
+    "downstream_adoption_status": "not_observed"
+  },
+  "assets": [
+    {
+      "asset_id": "doubtful-sound-patea-synthetic-route-v1",
+      "path": "assets/geo/doubtful-sound-patea.synthetic-route.v1.json",
+      "kind": "geo_route",
+      "origin": "independently_authored_for_public_reference",
+      "source_material": [
+        "public rebuild-contract.v1.json scene center and simulation-only boundary"
+      ],
+      "third_party_data": false,
+      "navigation_grade": false,
+      "intended_use": "repeatable visual demo trajectory",
+      "publication_decision": "allow"
+    },
+    {
+      "asset_id": "generic-formation-point-sets-v1",
+      "path": "assets/formations/generic-formations.v1.json",
+      "kind": "formation_points",
+      "origin": "independently_authored_from_generic_geometry",
+      "source_material": [
+        "public formation names and 3D/XY recognizability constraints from rebuild-contract.v1.json"
+      ],
+      "third_party_data": false,
+      "navigation_grade": false,
+      "intended_use": "portable public formation fixtures",
+      "publication_decision": "allow"
+    }
+  ]
+}
